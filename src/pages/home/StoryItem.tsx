@@ -1,9 +1,9 @@
 import { Grid, Typography } from "@mui/material";
 import React from "react";
-import { Story } from "../../utils/utils.interface";
 import { black, coffee, primary, softGrey } from "../../styles/Style";
 import { Tag } from "../../components/Tag";
 import { ProfileItem } from "./ProfileItem";
+import { Story } from "../../utils/utils";
 
 interface Props {
 	story: Story;
