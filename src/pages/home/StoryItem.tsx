@@ -3,7 +3,7 @@ import React from "react";
 import { black, coffee, primary, softGrey } from "../../styles/Style";
 import { Tag } from "../../components/Tag";
 import { ProfileItem } from "./ProfileItem";
-import { Story } from "../../utils/utils";
+import { Story } from "../../utils/data";
 
 interface Props {
 	story: Story;
@@ -22,6 +22,7 @@ export const StoryItem = ({ story }: Props) => {
 				borderRadius: 5,
 				display: "flex",
 				width: "22vw",
+				minHeight: "21vh"
 			}}
 		>
 			<ProfileItem name={story.wrName} />
@@ -29,15 +30,18 @@ export const StoryItem = ({ story }: Props) => {
 			<Typography
 				variant="h6"
 				fontFamily={"Segoe UI"}
-				fontWeight={"600"}
+				fontWeight={"400"}
 				style={{
 					display: "flex",
+					textOverflow: "ellipsis",
+					wordWrap: "break-word",
+					overflow: "hidden",
 				}}
 				p={1}
 				pt={1.5}
 				pb={1.5}
 			>
-				{story.summary}
+				{story.summary?.slice(0, 150)}
 			</Typography>
 
 			<div
@@ -48,7 +52,7 @@ export const StoryItem = ({ story }: Props) => {
 				}}
 			>
 				{story.tags.map((tag: string) => (
-					<Tag tag={tag} />
+					<Tag key={tag} tag={tag} />
 				))}
 			</div>
 		</Grid>

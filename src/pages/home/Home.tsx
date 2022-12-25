@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Stories } from "./Stories";
 import { AddStory } from "../addstory/AddStory";
-import { stories } from "../../utils/utils";
 import { AddStoryForm } from "../addstory/AddStoryForm";
 
 function Home() {
@@ -13,7 +12,7 @@ function Home() {
 			<div onClick={openForm}>
 				<AddStory />
 			</div>
-			<Stories stories={stories} />
+			<Stories />
 			<AddStoryForm open={open} handleClose={closeForm} />
 		</>
 	);

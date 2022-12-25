@@ -26,9 +26,10 @@ export const AddStory = () => {
 					paddingBottom: 12,
 					width: "25vw",
 					backgroundColor: primary,
+					
 				}}
 			>
-				<h3 style={{}}>Share with us your story...</h3>
+				<h3 style={{fontWeight: "400"}}>Share with us your story...</h3>
 				<KeyboardIcon style={{color: softGrey}} fontSize={"large"} />
 			</div>
 		</div>

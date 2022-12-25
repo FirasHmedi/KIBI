@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material";
-import React, { useState } from "react";
-import { Story } from "../../utils/utils";
+import React, { useEffect, useState } from "react";
+import { Story } from "../../utils/data";
+import { getStories } from "../../utils/db";
 import { StoryModal } from "../story/StoryModal";
 import { StoryItem } from "./StoryItem";
 
@@ -8,16 +9,18 @@ interface Props {
 	stories: Story[];
 }
 
-const filterStories = (stories: Story[]) =>
-	stories.filter(
-		({ content, summary, tags }) =>
-			!!content && !!summary && !!tags && tags.length > 0
-	);
-
-export const Stories = ({ stories }: Props) => {
-	const filteredStories = filterStories(stories);
+export const Stories = () => {
+	const [stories, setStories] = useState<Story[]>([]);
 	const [open, setOpen] = useState(false);
 	const [openedStory, setOpenedStory] = useState<Story>();
+
+	useEffect(() => {
+		async function waitStories() {
+			const _stories = (await getStories()) ?? [];
+			setStories(_stories);
+		}
+		waitStories();
+	}, []);
 
 	const handleClose = () => setOpen(false);
 	const openStory = (story: Story) => {
@@ -43,8 +46,8 @@ export const Stories = ({ stories }: Props) => {
 				justifyContent="center"
 				style={{}}
 			>
-				{filteredStories.map((story) => (
-					<div onClick={() => openStory(story)}>
+				{stories.map((story) => (
+					<div key={story.id} onClick={() => openStory(story)}>
 						<StoryItem story={story} />
 					</div>
 				))}

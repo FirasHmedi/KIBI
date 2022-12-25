@@ -4,24 +4,24 @@ import { black, coffee, kaki, primary, softGrey } from "../styles/Style";
 
 interface Props {
 	tag: string;
+	bgColor?: string
 }
 
-export const Tag = ({ tag }: Props) => {
+export const Tag = ({ tag, bgColor = kaki }: Props) => {
 	return (
 		<Box
 			style={{
-				backgroundColor: kaki,
+				backgroundColor: bgColor,
 				color: black,
-				width: "4.6vw",
 				display: "flex",
 				justifyContent: "center",
 				alignItems: "center",
 				borderRadius: 5,
-				paddingTop: 4,
-				paddingBottom: 4,
-				paddingLeft:"0.1vw",
-				paddingRight: "0.1vw"
 			}}
+			pt={0.5}
+			pb={0.5}
+			pl={1}
+			pr={1}
 		>
 			<Typography
 				variant="body2"

@@ -2,7 +2,7 @@ import { Box, Modal, Typography } from "@mui/material";
 import React from "react";
 import { Tag } from "../../components/Tag";
 import { primary, softGrey } from "../../styles/Style";
-import { Story } from "../../utils/utils";
+import { Story } from "../../utils/data";
 import { ProfileItem } from "../home/ProfileItem";
 
 interface Props {
@@ -42,7 +42,7 @@ export const StoryModal = ({ story, open, handleClose }: Props) => {
 					<ProfileItem name={story.wrName} variant={"h6"} />
 					<div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
 						{story.tags.map((tag: string) => (
-							<Tag tag={tag} />
+							<Tag key={tag} tag={tag} />
 						))}
 					</div>
 				</Box>
