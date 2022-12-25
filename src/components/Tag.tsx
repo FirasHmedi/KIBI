@@ -12,20 +12,21 @@ export const Tag = ({ tag }: Props) => {
 			style={{
 				backgroundColor: kaki,
 				color: black,
-				width: "5vw",
+				width: "4.6vw",
 				display: "flex",
 				justifyContent: "center",
 				alignItems: "center",
 				borderRadius: 5,
-				paddingTop: 7,
-				paddingBottom: 7,
-				marginRight: 10
+				paddingTop: 4,
+				paddingBottom: 4,
+				paddingLeft:"0.1vw",
+				paddingRight: "0.1vw"
 			}}
 		>
 			<Typography
 				variant="body2"
 				fontFamily={"Segoe UI"}
-				fontWeight={"bold"}
+				fontWeight={"600"}
 			>
 				{tag}
 			</Typography>

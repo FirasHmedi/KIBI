@@ -10,7 +10,7 @@ export const Header = () => {
                 display: 'flex',
 				backgroundColor: black,
                 color: kaki,
-				height: '4vh',
+				height: '6vh',
 				alignItems: "center",
 			}}
 		>

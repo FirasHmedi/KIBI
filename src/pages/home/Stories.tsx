@@ -37,7 +37,7 @@ export const Stories = ({ stories }: Props) => {
 			<Grid
 				container
 				pt={3}
-				pb={150}
+				pb={100}
 				columnGap={8}
 				rowGap={8}
 				justifyContent="center"

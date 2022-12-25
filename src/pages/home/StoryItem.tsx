@@ -24,12 +24,12 @@ export const StoryItem = ({ story }: Props) => {
 				width: "22vw",
 			}}
 		>
-			<ProfileItem name={"SUB-ZERO"} />
+			<ProfileItem name={story.wrName} />
 
 			<Typography
 				variant="h6"
 				fontFamily={"Segoe UI"}
-				fontWeight={"bold"}
+				fontWeight={"600"}
 				style={{
 					display: "flex",
 				}}

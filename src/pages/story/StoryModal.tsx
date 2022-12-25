@@ -21,36 +21,45 @@ export const StoryModal = ({ story, open, handleClose }: Props) => {
 					color: softGrey,
 					borderRadius: 5,
 					display: "flex",
-					width: "80%",
-					height: "85%",
+					width: "90%",
+					height: "90%",
 					flexDirection: "column",
 					position: "absolute",
 					top: "5%",
-					left: "10%",
+					left: "5%",
+					overflowY: "auto",
 				}}
-				p={3}
 			>
-				<ProfileItem name={"SUB-ZERO"} />
+				<Box
+					style={{
+						display: "flex",
+						justifyContent: "space-between"
+					}}
+					p={3}
+					pl={4}
+					pr={4}
+				>
+					<ProfileItem name={story.wrName} variant={"h6"} />
+					<div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+						{story.tags.map((tag: string) => (
+							<Tag tag={tag} />
+						))}
+					</div>
+				</Box>
 
 				<div style={{ flex: 5 }}>
 					<Typography
-						variant="h6"
+						variant="subtitle1"
 						fontFamily={"Segoe UI"}
-						style={{
-							display: "flex",
-						}}
-						p={1}
-						pt={1.5}
-						pb={1.5}
+						fontWeight={"400"}
+						fontSize={"1.3vw"}
+						lineHeight={1.8}
+						p={10}
+						pt={0}
+						pb={3}
 					>
 						{story.content}
 					</Typography>
-				</div>
-
-				<div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-					{story.tags.map((tag: string) => (
-						<Tag tag={tag} />
-					))}
 				</div>
 			</Box>
 		</Modal>
