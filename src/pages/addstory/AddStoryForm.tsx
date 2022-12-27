@@ -44,15 +44,18 @@ export const AddStoryForm = ({ open, handleClose }: Props) => {
 					color: softGrey,
 					borderRadius: 5,
 					display: "flex",
-					width: "80vw",
-					height: "90vh",
+					width: "76vw",
+					height: "86vh",
 					flexDirection: "column",
 					position: "absolute",
 					top: "5vh",
 					left: "10vw",
 					overflowY: "auto",
+					paddingLeft: '2vw',
+					paddingRight: '2vw',
+					paddingTop: '2vh',
+					paddingBottom: '2vh'
 				}}
-				p={3}
 			>
 				<div
 					style={{
@@ -63,7 +66,7 @@ export const AddStoryForm = ({ open, handleClose }: Props) => {
 				>
 					{tags.map((tag: any) => (
 						<button
-							style={{ margin: 5 }}
+							style={{ marginRight: 10 }}
 							key={tag.name}
 							onClick={() => toggleTag(tag.name)}
 						>
@@ -71,31 +74,40 @@ export const AddStoryForm = ({ open, handleClose }: Props) => {
 						</button>
 					))}
 				</div>
-
-				<div style={{ flex: 5, marginTop: 20 }}>
+				<Box
+					style={{
+						flex: 5,
+						padding: 15,
+						border: "2px solid",
+						borderRadius: 5,
+						borderColor: kaki,
+					}}
+					mt={3}
+					mb={3}
+				>
 					<textarea
 						value={content}
 						onChange={(event: any) => setContent(event.target.value)}
 						style={{
-							outline: "none",
 							width: "100%",
-							height: "95%",
+							height: "100%",
+							outline: "none",
 							fontWeight: 400,
 							lineHeight: 1.8,
-							fontSize: "1.3vw",
+							fontSize: "1.2vw",
 							fontFamily: "Segoe UI",
 							color: softGrey,
 							backgroundColor: "transparent",
-							border: "2px solid",
-							borderColor: softKaki,
-							borderRadius: 5,
-							padding: 4
+							resize: "none",
+							overflow: "hidden",
+							borderWidth: 0,
 						}}
 						placeholder={
 							"Once upon a time ? no just kidding, write whatever you like"
 						}
 					/>
-				</div>
+				</Box>
+
 				<button
 					style={{
 						backgroundColor: kaki,
@@ -107,7 +119,7 @@ export const AddStoryForm = ({ open, handleClose }: Props) => {
 						justifyContent: "center",
 						alignItems: "center",
 						fontWeight: "bold",
-						alignSelf: "flex-end"
+						alignSelf: "flex-end",
 					}}
 					onClick={() => submitStory()}
 				>

@@ -1,5 +1,6 @@
 import { addDoc, collection, getDocs } from "firebase/firestore";
-import { db } from "../App";
+import { db } from "../main";
+
 import { Story } from "./data";
 
 const STORIES = "stories";

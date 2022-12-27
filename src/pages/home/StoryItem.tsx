@@ -22,7 +22,6 @@ export const StoryItem = ({ story }: Props) => {
 				borderRadius: 5,
 				display: "flex",
 				width: "22vw",
-				minHeight: "21vh"
 			}}
 		>
 			<ProfileItem name={story.wrName} />
@@ -38,7 +37,6 @@ export const StoryItem = ({ story }: Props) => {
 					overflow: "hidden",
 				}}
 				p={1}
-				pt={1.5}
 				pb={1.5}
 			>
 				{story.summary?.slice(0, 150)}

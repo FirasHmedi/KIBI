@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { black } from "../../styles/Style";
 import { Story } from "../../utils/data";
 import { getStories } from "../../utils/db";
 import { StoryModal } from "../story/StoryModal";
@@ -35,12 +36,12 @@ export const Stories = () => {
 				paddingLeft: "2%",
 				paddingRight: "2%",
 				overflowY: "auto",
+				backgroundColor: black,
 			}}
 		>
 			<Grid
 				container
 				pt={3}
-				pb={100}
 				columnGap={8}
 				rowGap={8}
 				justifyContent="center"

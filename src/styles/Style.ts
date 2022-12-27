@@ -9,7 +9,13 @@ export const black = "#000000";
 export const appStyle = {
 	backgroundColor: "black",
 	height: "100vh",
+};
+
+export const headerStyle = {
 	display: "flex",
-	flexDirection: "column" as "column",
+	backgroundColor: black,
+	color: kaki,
+	height: "6vh",
+	alignItems: "center",
 	justifyContent: "space-between",
 };
