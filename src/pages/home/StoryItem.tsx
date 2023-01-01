@@ -36,7 +36,8 @@ export const StoryItem = ({ story }: Props) => {
 					wordWrap: "break-word",
 					overflow: "hidden",
 					fontSize: '1.1rem',
-					minHeight: '10.5vh'
+					minHeight: '10.5vh',
+					height: '8.5rem'
 				}}
 				p={1}
 				pb={1.5}

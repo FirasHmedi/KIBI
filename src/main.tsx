@@ -1,12 +1,11 @@
 import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { Layout } from './components/Layout';
 import './index.css';
-import Home from './pages/home/Home';
-import { SignUp } from './pages/registration/SignUp';
+import { routes } from './utils/routes';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -26,33 +25,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const auth = getAuth(app);
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: (
-      <Layout>
-        <Home />
-      </Layout>
-    ),
-  },
-  {
-    path: '/signup',
-    element: (
-      <Layout>
-        <SignUp />
-      </Layout>
-    ),
-  },
-  {
-    path: '/signin',
-    element: (
-      <Layout>
-        <SignUp />
-      </Layout>
-    ),
-  },
-]);
+const router = createBrowserRouter(routes);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
