@@ -12,14 +12,14 @@ export const centerStyle: React.CSSProperties = {
   alignItems: 'center',
 };
 
-export const appStyle = {
+export const appStyle: React.CSSProperties = {
   backgroundColor: 'black',
   height: '100%',
   display: 'flex',
-  flexDirection: 'column' as 'column',
+  flexDirection: 'column',
 };
 
-export const headerStyle = {
+export const headerStyle: React.CSSProperties = {
   ...centerStyle,
   color: kaki,
   height: '6vh',
@@ -27,3 +27,31 @@ export const headerStyle = {
   paddingLeft: 30,
   paddingRight: 30,
 };
+
+export const buttonStyle: React.CSSProperties = {
+  backgroundColor: kaki,
+  color: black,
+  padding: 7,
+  borderRadius: 5,
+  fontWeight: 'bold',
+  paddingLeft: 13,
+  paddingRight: 13,
+};
+
+
+export const signupContainerStyle: React.CSSProperties = {
+  ...centerStyle,
+  backgroundColor: primary,
+  borderRadius: 5,
+  width: '20vw',
+  alignSelf: 'center',
+  flexDirection: 'column',
+  gap: 30,
+  marginTop: 100,
+  padding: 10,
+  paddingTop: 30,
+  paddingBottom: 30,
+  minHeight: '40vh'
+}
+
+export const signinContainerStyle: React.CSSProperties = {...signupContainerStyle};

@@ -1,9 +1,9 @@
 import { addDoc, collection, getDocs } from 'firebase/firestore';
-import { db } from '../main';
-
+import { db } from '../firebase';
 import { Story } from './data';
 
-const STORIES = 'stories';
+export const STORIES = 'stories';
+export const USERS = 'users';
 
 const validateStory = (story: Partial<Story>): boolean =>
   !!story.id &&

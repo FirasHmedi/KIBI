@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { black, kaki, primary, softGrey, softKaki } from '../../styles/Style';
+import {
+  black,
+  centerStyle,
+  kaki,
+  primary,
+  signinContainerStyle,
+  softGrey,
+  softKaki,
+} from '../../styles/Style';
 import { loginWithEmailPsw } from '../../utils/auth';
 import { isNotEmpty } from '../../utils/helpers';
 
 const inputStyle = {
   height: '3vh',
   borderRadius: 5,
-  padding: 1,
+  padding: 3,
+  width: '15vw',
+  borderWidth: 0,
 };
 
 export const SignIn = () => {
@@ -24,21 +34,7 @@ export const SignIn = () => {
   const isEnabled = () => isNotEmpty(psw) && email.includes('@');
 
   return (
-    <div
-      style={{
-        backgroundColor: primary,
-        borderRadius: 5,
-        height: '40vh',
-        width: '20vw',
-        alignSelf: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 30,
-        margin: 100,
-      }}
-    >
+    <div style={signinContainerStyle}>
       <input
         type='text'
         placeholder='Email address'
@@ -64,7 +60,7 @@ export const SignIn = () => {
           fontWeight: 'bold',
         }}
         disabled={!isEnabled()}
-        onClick={signIn}
+        onClick={() => signIn()}
       >
         Sign In
       </button>

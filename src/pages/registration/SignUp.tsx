@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { black, kaki, primary, softGrey, softKaki } from '../../styles/Style';
+import {
+  black,
+  buttonStyle,
+  centerStyle,
+  kaki,
+  primary,
+  signupContainerStyle,
+  softGrey,
+  softKaki,
+} from '../../styles/Style';
 import { isNotEmpty } from '../../utils/helpers';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { registerWithEmailPsw } from '../../utils/auth';
+import { loginWithGoogle, registerWithEmailPsw } from '../../utils/auth';
 
 const inputStyle = {
   height: '3vh',
@@ -13,47 +22,50 @@ const inputStyle = {
   borderWidth: 0,
 };
 
+export const SignUpfss = () => {
+  return <></>;
+};
+
 export const SignUp = () => {
   const navigate = useNavigate();
 
-  const [userName, setUserName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [psw, setPsw] = useState('');
   const [confirmPsw, setConfirmPsw] = useState('');
 
-  const signUp = () => {
-    registerWithEmailPsw(email, psw);
-    navigate('/');
+  const signUp = async () => {
+    try {
+      if (!isNotEmpty(username)) return;
+      const isUserRegistered = await registerWithEmailPsw(username, email, psw);
+      if (isUserRegistered) navigate('/');
+    } catch (e) {}
+  };
+
+  const signUpWithGoogle = async () => {
+    try {
+      if (!isNotEmpty(username)) return;
+      const isUserRegistered = await loginWithGoogle(username);
+      if (isUserRegistered) navigate('/');
+    } catch (e) {}
   };
 
   const isEnabled = () =>
-    psw === confirmPsw && isNotEmpty(psw) && email.includes('@');
+    true ||
+    (isNotEmpty(username, 2) &&
+      psw === confirmPsw &&
+      isNotEmpty(psw) &&
+      email.includes('@'));
 
   return (
-    <div
-      style={{
-        backgroundColor: primary,
-        borderRadius: 5,
-        width: '20vw',
-        alignSelf: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 30,
-        margin: 100,
-        padding: 10,
-        paddingTop: 25,
-        paddingBottom: 25,
-      }}
-    >
+    <div style={signupContainerStyle}>
       <input
         type='text'
         placeholder='Username'
         required
         style={inputStyle}
-        value={userName}
-        onChange={(e) => setUserName(e.target.value)}
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
       />
       <input
         type='text'
@@ -81,18 +93,16 @@ export const SignUp = () => {
       />
       <button
         style={{
+          ...buttonStyle,
           backgroundColor: isEnabled() ? kaki : softKaki,
-          color: black,
-          padding: 7,
-          borderRadius: 5,
-          fontWeight: 'bold',
-          paddingLeft: 13,
-          paddingRight: 13,
         }}
         disabled={!isEnabled()}
         onClick={signUp}
       >
         Sign Up
+      </button>
+      <button style={buttonStyle} onClick={signUpWithGoogle}>
+        Sign Up with Google
       </button>
       <Link style={{ color: softGrey }} to='/signin'>
         Already have an account? Sign in
