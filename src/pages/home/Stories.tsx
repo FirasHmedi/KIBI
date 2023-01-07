@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { black } from '../../styles/Style';
+import { black, kaki } from '../../styles/Style';
 import { Story } from '../../utils/data';
 import { getStories } from '../../utils/db';
 import { StoryModal } from '../story/StoryModal';
@@ -29,31 +29,33 @@ export const Stories = () => {
     setOpen(true);
   };
 
-  return (
+  const StoriesByCategory = ({ name }: { name: string }) => (
     <div
       style={{
-        display: 'flex',
-        paddingLeft: '2%',
-        paddingRight: '2%',
-        overflowY: 'auto',
-        backgroundColor: black,
+        padding: 5,
       }}
     >
-      <Grid
-        container
-        pt={3}
-        columnGap={8}
-        rowGap={8}
-        justifyContent='center'
-        style={{}}
-      >
+      <h2 style={{ color: kaki, fontWeight: 'bold' }}>{name}</h2>
+      <Grid container pt={3} columnGap={6} style={{}}>
         {stories.map((story) => (
           <div key={story.id} onClick={() => openStory(story)}>
             <StoryItem story={story} />
           </div>
         ))}
       </Grid>
+    </div>
+  );
 
+  return (
+    <div>
+      <div style={{height: '3vh'}} />
+      <StoriesByCategory name={'Trends'} />
+      <div style={{height: '3vh'}} />
+      <StoriesByCategory name={'Success'} />
+      <div style={{height: '3vh'}} />
+      <StoriesByCategory name={'Lesson'} />
+      <div style={{height: '3vh'}} />
+      <StoriesByCategory name={'Regret'} />
       {openedStory && (
         <StoryModal story={openedStory} open={open} handleClose={handleClose} />
       )}

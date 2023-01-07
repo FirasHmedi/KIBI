@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 export const Header = () => {
   return (
-    <Box p={1} style={headerStyle} pl={4} pr={4}>
+    <div style={headerStyle}>
       <Link
         style={{
           textDecoration: 'none',
@@ -29,7 +29,7 @@ export const Header = () => {
       >
         Sign Up
       </Link>
-    </Box>
+    </div>
   );
 };
 

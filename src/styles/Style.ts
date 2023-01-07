@@ -6,18 +6,24 @@ export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
 export const black = '#000000';
 
+export const centerStyle: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
 export const appStyle = {
   backgroundColor: 'black',
-  height: '100vh',
+  height: '100%',
   display: 'flex',
-  flexDirection: 'column' as 'column'
+  flexDirection: 'column' as 'column',
 };
 
 export const headerStyle = {
-  display: 'flex',
-  backgroundColor: black,
+  ...centerStyle,
   color: kaki,
   height: '6vh',
-  alignItems: 'center',
   justifyContent: 'space-between',
+  paddingLeft: 30,
+  paddingRight: 30,
 };

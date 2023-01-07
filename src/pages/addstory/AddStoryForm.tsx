@@ -1,7 +1,14 @@
 import { Box, Modal, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Tag } from '../../components/Tag';
-import { black, kaki, primary, softGrey, softKaki } from '../../styles/Style';
+import {
+  black,
+  centerStyle,
+  kaki,
+  primary,
+  softGrey,
+  softKaki,
+} from '../../styles/Style';
 import { MAX_LENGTH_CONTENT, MIN_LENGTH_CONTENT, TAGS } from '../../utils/data';
 import { addStory } from '../../utils/db';
 import { isNotEmpty } from '../../utils/helpers';
@@ -119,9 +126,8 @@ export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
         </Box>
         <div
           style={{
-            display: 'flex',
+            ...centerStyle,
             justifyContent: 'space-between',
-            alignItems: 'center',
           }}
         >
           <span style={{ color: kaki, fontWeight: 'bold' }}>
