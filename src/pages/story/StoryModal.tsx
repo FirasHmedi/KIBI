@@ -21,15 +21,14 @@ export const StoryModal = ({ story, open, handleClose }: Props) => {
           color: softGrey,
           borderRadius: 5,
           display: 'flex',
-          width: '90%',
-          height: '90%',
+          width: '80%',
+          height: '84%',
           flexDirection: 'column',
           position: 'absolute',
-          top: '5%',
-          left: '5%',
+          top: '8%',
+          left: '10%',
           overflowY: 'auto',
-        }}
-      >
+        }}>
         <Box
           style={{
             display: 'flex',
@@ -37,9 +36,8 @@ export const StoryModal = ({ story, open, handleClose }: Props) => {
           }}
           p={3}
           pl={4}
-          pr={4}
-        >
-          <ProfileItem name={story.wrName} variant={'h6'} />
+          pr={4}>
+          <ProfileItem name={story.wrName} variant={'subtitle1'} />
           <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
             {story.tags.map((tag: string) => (
               <Tag key={tag} tag={tag} />
@@ -52,12 +50,11 @@ export const StoryModal = ({ story, open, handleClose }: Props) => {
             variant='subtitle1'
             fontFamily={'Segoe UI'}
             fontWeight={'400'}
-            fontSize={'1.3vw'}
+            fontSize={'1rem'}
             lineHeight={1.8}
             p={10}
             pt={0}
-            pb={3}
-          >
+            pb={3}>
             {story.content}
           </Typography>
         </div>

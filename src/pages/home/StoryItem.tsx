@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import React from 'react';
-import { black, coffee, primary, softGrey } from '../../styles/Style';
+import { primary, softGrey } from '../../styles/Style';
 import { Tag } from '../../components/Tag';
 import { ProfileItem } from './ProfileItem';
 import { Story } from '../../utils/data';
@@ -22,6 +22,7 @@ export const StoryItem = ({ story }: Props) => {
         borderRadius: 5,
         display: 'flex',
         width: '19vw',
+        justifyContent: 'space-between',
       }}>
       <ProfileItem name={story.wrName} />
 
@@ -35,11 +36,9 @@ export const StoryItem = ({ story }: Props) => {
           wordWrap: 'break-word',
           overflow: 'hidden',
           fontSize: '1rem',
-          minHeight: '9vh',
-          height: '6rem',
-        }}
-        pt={1}
-        pb={1.5}>
+          userSelect: 'none',
+          minHeight: '10rem',
+        }}>
         {story.summary?.slice(0, 150)}
       </Typography>
 

@@ -17,6 +17,7 @@ export const Tag = ({ tag, bgColor = kaki }: Props) => {
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5,
+        userSelect: 'none',
       }}
       pt={0.5}
       pb={0.5}

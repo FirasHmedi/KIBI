@@ -10,8 +10,7 @@ export const AddStory = () => {
         justifyContent: 'center',
         alignItems: 'center',
         padding: 8,
-      }}
-    >
+      }}>
       <div
         style={{
           borderRadius: 10,
@@ -20,15 +19,16 @@ export const AddStory = () => {
           alignItems: 'center',
           color: softGrey,
           borderColor: kaki,
-          paddingLeft: 18,
-          paddingRight: 18,
-          paddingTop: 12,
-          paddingBottom: 12,
+          paddingLeft: 15,
+          paddingRight: 15,
+          paddingTop: 10,
+          paddingBottom: 10,
           width: '25vw',
           backgroundColor: primary,
-        }}
-      >
-        <h3 style={{ fontWeight: '400' }}>Share with us your story...</h3>
+        }}>
+        <h4 style={{ fontWeight: '400', userSelect: 'none' }}>
+          Share with us your story...
+        </h4>
         <KeyboardIcon style={{ color: softGrey }} fontSize={'large'} />
       </div>
     </div>

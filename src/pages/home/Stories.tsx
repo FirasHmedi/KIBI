@@ -29,12 +29,12 @@ export const Stories = () => {
     setOpen(true);
   };
 
-  const TrendStories = () => (
+  const StoriesByCategory = ({name}: {name: string}) => (
     <div
       style={{
         padding: 5,
       }}>
-      <h2 style={{ color: kaki, fontWeight: 'bold' }}>Trends</h2>
+      <h3 style={{ color: kaki, fontWeight: 'bold' }}>{name}</h3>
       <Grid container pt={3} columnGap={6} style={{}}>
         {stories.map(story => (
           <div key={story.id} onClick={() => openStory(story)}>
@@ -47,16 +47,10 @@ export const Stories = () => {
 
   return (
     <div>
-      <div style={{ height: '3vh' }} />
-      <TrendStories />
-      <div style={{ height: '3vh' }} />
-      <Grid container pt={3} columnGap={6} style={{}}>
-        {stories.map(story => (
-          <div key={story.id} onClick={() => openStory(story)}>
-            <StoryItem story={story} />
-          </div>
-        ))}
-      </Grid>
+      <div style={{ height: '4vh' }} />
+      <StoriesByCategory name={'Trending'} />
+      <div style={{ height: '4vh' }} />
+      <StoriesByCategory name={'Recently added'} />
       {openedStory && (
         <StoryModal story={openedStory} open={open} handleClose={handleClose} />
       )}
