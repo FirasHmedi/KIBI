@@ -41,7 +41,7 @@ export const SignIn = () => {
         required
         style={inputStyle}
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
       />
       <input
         type='password'
@@ -49,7 +49,7 @@ export const SignIn = () => {
         required
         style={inputStyle}
         value={psw}
-        onChange={(e) => setPsw(e.target.value)}
+        onChange={e => setPsw(e.target.value)}
       />
       <button
         style={{
@@ -60,8 +60,7 @@ export const SignIn = () => {
           fontWeight: 'bold',
         }}
         disabled={!isEnabled()}
-        onClick={() => signIn()}
-      >
+        onClick={() => signIn()}>
         Sign In
       </button>
       <Link style={{ color: softGrey }} to='/signup'>

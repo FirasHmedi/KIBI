@@ -9,7 +9,12 @@ import {
   softGrey,
   softKaki,
 } from '../../styles/Style';
-import { MAX_LENGTH_CONTENT, MIN_LENGTH_CONTENT, TAGS } from '../../utils/data';
+import {
+  MAX_LENGTH_CONTENT,
+  MIN_LENGTH_CONTENT,
+  TAGS_ENV,
+  TAGS_STATE,
+} from '../../utils/data';
 import { addStory } from '../../utils/db';
 import { isNotEmpty } from '../../utils/helpers';
 import SaveIcon from '@mui/icons-material/Save';
@@ -22,28 +27,25 @@ interface Props {
 
 export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
   const [content, setContent] = useState('');
-  const [tags, setTags] = useState(
-    TAGS.map((tag) => ({ name: tag, selected: false }))
-  );
+  const [selectedStateTag, setSelectedStateTag] = useState(TAGS_STATE[0]);
+  const [selectedEnvTag, setSelectedEnvTag] = useState(TAGS_ENV[0]);
 
-  const getTagColor = (selected: boolean) => (selected ? kaki : softKaki);
-  const toggleTag = (name: string) =>
-    setTags((tags) =>
-      tags.map((tag) => {
-        return tag.name === name ? { ...tag, selected: !tag.selected } : tag;
-      })
-    );
+  const selectStateTag = (name: string) =>
+    name !== selectedStateTag ? setSelectedStateTag(name) : undefined;
+  const selectEnvTag = (name: string) =>
+    name !== selectedEnvTag ? setSelectedEnvTag(name) : undefined;
 
   const isSaveEnabled = () =>
-    isNotEmpty(tags.filter((tag) => tag.selected)) &&
-    isNotEmpty(content, MIN_LENGTH_CONTENT);
+    isNotEmpty(content, MIN_LENGTH_CONTENT) &&
+    isNotEmpty(selectedStateTag) &&
+    isNotEmpty(selectedEnvTag);
 
   const submitStory = async () => {
     try {
       const story = {
         summary: content,
         content: content,
-        tags: tags.filter((tag) => tag.selected).map((tag) => tag.name),
+        tags: [selectedStateTag, selectedEnvTag],
         wrName: 'ZERO-ONE',
         wrId: Math.floor(Math.random() * 10000000).toString(),
       };
@@ -62,35 +64,55 @@ export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
           color: softGrey,
           borderRadius: 5,
           display: 'flex',
-          width: '76vw',
-          height: '86vh',
+          width: '60vw',
+          height: '80vh',
           flexDirection: 'column',
           position: 'absolute',
-          top: '5vh',
-          left: '10vw',
+          top: '8vh',
+          left: '18vw',
           overflowY: 'auto',
           paddingLeft: '2vw',
           paddingRight: '2vw',
           paddingTop: '2vh',
           paddingBottom: '2vh',
-        }}
-      >
+        }}>
         <div
           style={{
             width: '100%',
-            display: 'inline-block',
             gap: 10,
-          }}
-        >
-          {tags.map((tag: any) => (
-            <button
-              style={{ marginRight: 10 }}
-              key={tag.name}
-              onClick={() => toggleTag(tag.name)}
-            >
-              <Tag tag={tag.name} bgColor={getTagColor(tag.selected)} />
-            </button>
-          ))}
+            paddingBottom: 10,
+            paddingTop: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-around',
+            height: '7vh'
+          }}>
+          <div>
+            {TAGS_STATE.map(tag => (
+              <button
+                style={{ marginRight: 10 }}
+                key={tag}
+                onClick={() => selectStateTag(tag)}>
+                <Tag
+                  tag={tag}
+                  bgColor={tag === selectedStateTag ? kaki : softKaki}
+                />
+              </button>
+            ))}
+          </div>
+          <div>
+            {TAGS_ENV.map(tag => (
+              <button
+                style={{ marginRight: 10 }}
+                key={tag}
+                onClick={() => selectEnvTag(tag)}>
+                <Tag
+                  tag={tag}
+                  bgColor={tag === selectedEnvTag ? kaki : softKaki}
+                />
+              </button>
+            ))}
+          </div>
         </div>
         <Box
           style={{
@@ -99,9 +121,8 @@ export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
             display: 'flex',
             width: '100%',
           }}
-          mt={3}
-          mb={3}
-        >
+          mt={2}
+          mb={2}>
           <textarea
             value={content}
             onChange={(event: any) => setContent(event.target.value)}
@@ -110,7 +131,7 @@ export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
               outline: 'none',
               fontWeight: 400,
               lineHeight: 1.8,
-              fontSize: '2.5vh',
+              fontSize: '1rem',
               fontFamily: 'Segoe UI',
               color: softGrey,
               backgroundColor: 'transparent',
@@ -120,7 +141,7 @@ export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
               borderWidth: 0,
             }}
             placeholder={
-              'Once upon a time ? no just kidding, write whatever you like'
+              'Once upon a time ? no just kidding, write whatever you like...'
             }
           />
         </Box>
@@ -128,8 +149,7 @@ export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
           style={{
             ...centerStyle,
             justifyContent: 'space-between',
-          }}
-        >
+          }}>
           <span style={{ color: kaki, fontWeight: 'bold' }}>
             {MAX_LENGTH_CONTENT - content.length}
           </span>
@@ -152,16 +172,15 @@ const SaveButton = ({
       backgroundColor: isEnabled ? kaki : softKaki,
       color: black,
       borderRadius: 5,
-      width: '3.8vw',
-      padding: 2,
+      width: '4.8vw',
+      padding: 4,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       fontWeight: 'bold',
     }}
     onClick={() => submitStory()}
-    disabled={!isEnabled}
-  >
+    disabled={!isEnabled}>
     <SaveIcon />
   </button>
 );

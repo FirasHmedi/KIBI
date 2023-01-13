@@ -65,7 +65,7 @@ export const SignUp = () => {
         required
         style={inputStyle}
         value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        onChange={e => setUsername(e.target.value)}
       />
       <input
         type='text'
@@ -73,7 +73,7 @@ export const SignUp = () => {
         required
         style={inputStyle}
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
       />
       <input
         type='password'
@@ -81,7 +81,7 @@ export const SignUp = () => {
         required
         style={inputStyle}
         value={psw}
-        onChange={(e) => setPsw(e.target.value)}
+        onChange={e => setPsw(e.target.value)}
       />
       <input
         type='password'
@@ -89,7 +89,7 @@ export const SignUp = () => {
         required
         style={inputStyle}
         value={confirmPsw}
-        onChange={(e) => setConfirmPsw(e.target.value)}
+        onChange={e => setConfirmPsw(e.target.value)}
       />
       <button
         style={{
@@ -97,8 +97,7 @@ export const SignUp = () => {
           backgroundColor: isEnabled() ? kaki : softKaki,
         }}
         disabled={!isEnabled()}
-        onClick={signUp}
-      >
+        onClick={signUp}>
         Sign Up
       </button>
       <button style={buttonStyle} onClick={signUpWithGoogle}>

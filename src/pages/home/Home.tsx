@@ -19,12 +19,12 @@ function Home() {
   }, []);
 
   return (
-    <div style={{backgroundColor: black}} >
+    <div style={{ backgroundColor: black }}>
       <div onClick={openForm}>
         <AddStory />
       </div>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div style={{ width: '10vw'}}></div>
+        <div style={{ width: '10vw' }}></div>
         <Stories />
       </div>
       <AddStoryForm

@@ -29,15 +29,14 @@ export const Stories = () => {
     setOpen(true);
   };
 
-  const StoriesByCategory = ({ name }: { name: string }) => (
+  const TrendStories = () => (
     <div
       style={{
         padding: 5,
-      }}
-    >
-      <h2 style={{ color: kaki, fontWeight: 'bold' }}>{name}</h2>
+      }}>
+      <h2 style={{ color: kaki, fontWeight: 'bold' }}>Trends</h2>
       <Grid container pt={3} columnGap={6} style={{}}>
-        {stories.map((story) => (
+        {stories.map(story => (
           <div key={story.id} onClick={() => openStory(story)}>
             <StoryItem story={story} />
           </div>
@@ -48,14 +47,16 @@ export const Stories = () => {
 
   return (
     <div>
-      <div style={{height: '3vh'}} />
-      <StoriesByCategory name={'Trends'} />
-      <div style={{height: '3vh'}} />
-      <StoriesByCategory name={'Success'} />
-      <div style={{height: '3vh'}} />
-      <StoriesByCategory name={'Lesson'} />
-      <div style={{height: '3vh'}} />
-      <StoriesByCategory name={'Regret'} />
+      <div style={{ height: '3vh' }} />
+      <TrendStories />
+      <div style={{ height: '3vh' }} />
+      <Grid container pt={3} columnGap={6} style={{}}>
+        {stories.map(story => (
+          <div key={story.id} onClick={() => openStory(story)}>
+            <StoryItem story={story} />
+          </div>
+        ))}
+      </Grid>
       {openedStory && (
         <StoryModal story={openedStory} open={open} handleClose={handleClose} />
       )}
