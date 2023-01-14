@@ -22,7 +22,7 @@ export const appStyle: React.CSSProperties = {
 export const headerStyle: React.CSSProperties = {
   ...centerStyle,
   color: kaki,
-  height: '6vh',
+  height: '9vh',
   justifyContent: 'space-between',
   paddingLeft: 30,
   paddingRight: 30,

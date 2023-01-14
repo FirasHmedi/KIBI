@@ -64,15 +64,15 @@ export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
           color: softGrey,
           borderRadius: 5,
           display: 'flex',
-          width: '60vw',
+          width: '56vw',
           height: '80vh',
           flexDirection: 'column',
           position: 'absolute',
           top: '8vh',
-          left: '18vw',
+          left: '20vw',
           overflowY: 'auto',
-          paddingLeft: '2vw',
-          paddingRight: '2vw',
+          paddingLeft: '1.5vw',
+          paddingRight: '1.5vw',
           paddingTop: '2vh',
           paddingBottom: '2vh',
         }}>
@@ -85,7 +85,7 @@ export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-around',
-            height: '7vh'
+            height: '7vh',
           }}>
           <div>
             {TAGS_STATE.map(tag => (

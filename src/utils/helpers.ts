@@ -4,7 +4,7 @@ import { routes } from './routes';
 export const isNotEmpty = (input: string | Array<any>, minLength = 0) =>
   input.length > minLength;
 
-/*export const getCurrentPathName = () => {
+export const getCurrentPathName = () => {
   const location = useLocation();
   return location.pathname;
-};*/
+};

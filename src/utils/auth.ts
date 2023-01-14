@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  updateProfile,
 } from 'firebase/auth';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
@@ -21,6 +22,7 @@ export const registerWithEmailPsw = async (
       email,
       password
     );
+    await updateProfile(userCredential.user, { displayName: username });
     await addUser(userCredential.user.uid, username, email);
     return true;
   } catch (e) {
@@ -34,6 +36,7 @@ export const loginWithGoogle = async (username: string) => {
     const result = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const user = result.user;
+    await updateProfile(user, { displayName: username });
     if (user.email) await addUser(user.uid, username, user.email);
     return true;
   } catch (e) {

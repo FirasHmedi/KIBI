@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Stories } from './Stories';
 import { AddStory } from '../addstory/AddStory';
 import { AddStoryForm } from '../addstory/AddStoryForm';
-import { auth } from '../../firebase';
 import { black } from '../../styles/Style';
+import { SidePanel } from '../../components/SidePanel';
 
 function Home() {
   const [open, setOpen] = useState(false);
@@ -13,20 +13,12 @@ function Home() {
 
   const closeForm = () => setOpen(false);
 
-  useEffect(() => {
-    console.log(auth);
-    return () => {};
-  }, []);
-
   return (
     <div style={{ backgroundColor: black }}>
       <div onClick={openForm}>
         <AddStory />
       </div>
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div style={{ width: '10vw' }}></div>
-        <Stories />
-      </div>
+      <Stories />
       <AddStoryForm
         open={open}
         handleClose={closeForm}

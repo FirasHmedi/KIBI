@@ -21,12 +21,12 @@ export const StoryModal = ({ story, open, handleClose }: Props) => {
           color: softGrey,
           borderRadius: 5,
           display: 'flex',
-          width: '80%',
+          width: '50%',
           height: '84%',
           flexDirection: 'column',
           position: 'absolute',
           top: '8%',
-          left: '10%',
+          left: '25%',
           overflowY: 'auto',
         }}>
         <Box
@@ -35,8 +35,8 @@ export const StoryModal = ({ story, open, handleClose }: Props) => {
             justifyContent: 'space-between',
           }}
           p={3}
-          pl={4}
-          pr={4}>
+          pl={2}
+          pr={2}>
           <ProfileItem name={story.wrName} variant={'subtitle1'} />
           <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
             {story.tags.map((tag: string) => (
@@ -52,9 +52,9 @@ export const StoryModal = ({ story, open, handleClose }: Props) => {
             fontWeight={'400'}
             fontSize={'1rem'}
             lineHeight={1.8}
-            p={10}
+            p={3}
             pt={0}
-            pb={3}>
+            pb={1}>
             {story.content}
           </Typography>
         </div>

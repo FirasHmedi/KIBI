@@ -21,7 +21,7 @@ export const StoryItem = ({ story }: Props) => {
         color: softGrey,
         borderRadius: 5,
         display: 'flex',
-        width: '19vw',
+        width: '20vw',
         justifyContent: 'space-between',
       }}>
       <ProfileItem name={story.wrName} />
@@ -37,7 +37,7 @@ export const StoryItem = ({ story }: Props) => {
           overflow: 'hidden',
           fontSize: '1rem',
           userSelect: 'none',
-          minHeight: '10rem',
+          minHeight: '9rem',
         }}>
         {story.summary?.slice(0, 150)}
       </Typography>

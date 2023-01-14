@@ -32,10 +32,10 @@ export const Stories = () => {
   const StoriesByCategory = ({name}: {name: string}) => (
     <div
       style={{
-        padding: 5,
+        padding: 2,
       }}>
-      <h3 style={{ color: kaki, fontWeight: 'bold' }}>{name}</h3>
-      <Grid container pt={3} columnGap={6} style={{}}>
+      <h3 style={{ color: kaki, fontWeight: 'bold', paddingLeft: 25 }}>{name}</h3>
+      <Grid container pt={2} columnGap={5} style={{display: 'flex', justifyContent: 'center'}}>
         {stories.map(story => (
           <div key={story.id} onClick={() => openStory(story)}>
             <StoryItem story={story} />

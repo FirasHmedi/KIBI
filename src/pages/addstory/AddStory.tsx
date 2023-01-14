@@ -1,16 +1,11 @@
 import React from 'react';
-import { black, coffee, kaki, primary, softGrey } from '../../styles/Style';
+import { black, centerStyle, coffee, kaki, primary, softGrey } from '../../styles/Style';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 
 export const AddStory = () => {
   return (
     <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 8,
-      }}>
+      style={centerStyle}>
       <div
         style={{
           borderRadius: 10,
@@ -21,8 +16,8 @@ export const AddStory = () => {
           borderColor: kaki,
           paddingLeft: 15,
           paddingRight: 15,
-          paddingTop: 10,
-          paddingBottom: 10,
+          paddingTop: 5,
+          paddingBottom: 5,
           width: '25vw',
           backgroundColor: primary,
         }}>
