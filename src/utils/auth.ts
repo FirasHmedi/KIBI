@@ -6,6 +6,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   updateProfile,
+  signOut,
 } from 'firebase/auth';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
@@ -53,6 +54,15 @@ export const loginWithGoogle = async (username: string) => {
   }
 };
 
+export const signOutUser = async () => {
+  try {
+    await signOut(auth);
+    return true;
+  } catch (e) {
+    console.log('error registering', e);
+  }
+};
+
 const addUser = async (uid: string, username: string, email: string) => {
   try {
     const docRef = await setDoc(doc(db, USERS, uid), {
@@ -67,12 +77,12 @@ const addUser = async (uid: string, username: string, email: string) => {
 
 export const loginWithEmailPsw = (email: string, password: string) => {
   signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(userCredential => {
       // Signed in
       const user = userCredential.user;
       // ...
     })
-    .catch((error) => {
+    .catch(error => {
       console.log('error logging in', error);
     });
 };

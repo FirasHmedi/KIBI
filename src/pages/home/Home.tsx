@@ -3,14 +3,15 @@ import { Stories } from './Stories';
 import { AddStory } from '../addstory/AddStory';
 import { AddStoryForm } from '../addstory/AddStoryForm';
 import { black } from '../../styles/Style';
-import { SidePanel } from '../../components/SidePanel';
+import { User } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { SINGUP_PATH } from '../../utils/data';
 
-function Home() {
+function Home({ user }: { user?: User }) {
+  const navigate = useNavigate();
+
   const [open, setOpen] = useState(false);
-  const openForm = () => setOpen(true);
-  const [isSnackbar, setIsSnackbar] = useState(false);
-  //const openSnackbar = () => setIsSnackbar(true);
-
+  const openForm = () => (!!user ? setOpen(true) : navigate(SINGUP_PATH));
   const closeForm = () => setOpen(false);
 
   return (
@@ -19,16 +20,7 @@ function Home() {
         <AddStory />
       </div>
       <Stories />
-      <AddStoryForm
-        open={open}
-        handleClose={closeForm}
-        openSnackbar={() => {}}
-      />
-      {/* <Snackbar
-          open={false}
-          autoHideDuration={2000}
-          message={'Story submitted for review!'}
-        /> */}
+      <AddStoryForm open={open} handleClose={closeForm} />
     </div>
   );
 }

@@ -38,6 +38,10 @@ export const TAGS_ENV = [
   'friends',
 ];
 
+export const SINGUP_PATH = '/signup';
+export const SIGNIN_PATH = '/signin';
+export const HOME_PATH = '/';
+
 // export const stories: Story[] = [
 // 	{
 // 		id: 1,
@@ -53,51 +57,6 @@ export const TAGS_ENV = [
 // 		summary: fakeSummary,
 // 		content: fakeContent,
 // 		tags: [TAGS[1], TAGS[3]],
-// 		views: INITIAL_VIEWS,
-// 		wrName: "user1",
-// 		wrId: 2,
-// 	},
-// 	{
-// 		id: 3,
-// 		summary: fakeSummary,
-// 		content: fakeContent,
-// 		tags: [TAGS[6], TAGS[4]],
-// 		views: INITIAL_VIEWS,
-// 		wrName: "user1",
-// 		wrId: 2,
-// 	},
-// 	{
-// 		id: 4,
-// 		summary: fakeSummary,
-// 		content: fakeContent,
-// 		tags: [TAGS[7], TAGS[8]],
-// 		views: INITIAL_VIEWS,
-// 		wrName: "user1",
-// 		wrId: 2,
-// 	},
-// 	{
-// 		id: 5,
-// 		summary: fakeSummary,
-// 		content: fakeContent,
-// 		tags: [TAGS[0], TAGS[2]],
-// 		views: INITIAL_VIEWS,
-// 		wrName: "user1",
-// 		wrId: 2,
-// 	},
-// 	{
-// 		id: 6,
-// 		summary: fakeSummary,
-// 		content: fakeContent,
-// 		tags: [TAGS[9]],
-// 		views: INITIAL_VIEWS,
-// 		wrName: "user1",
-// 		wrId: 2,
-// 	},
-// 	{
-// 		id: 7,
-// 		summary: fakeSummary,
-// 		content: fakeContent,
-// 		tags: [TAGS[10]],
 // 		views: INITIAL_VIEWS,
 // 		wrName: "user1",
 // 		wrId: 2,

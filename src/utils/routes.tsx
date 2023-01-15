@@ -2,10 +2,11 @@ import { Layout } from '../components/Layout';
 import { SignIn } from '../pages/registration/SignIn';
 import Home from '../pages/home/Home';
 import { SignUp } from '../pages/registration/SignUp';
+import { HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
 
 export const routes = [
   {
-    path: '/',
+    path: HOME_PATH,
     element: (
       <Layout>
         <Home />
@@ -13,7 +14,7 @@ export const routes = [
     ),
   },
   {
-    path: '/signup',
+    path: SINGUP_PATH,
     element: (
       <Layout>
         <SignUp />
@@ -21,7 +22,7 @@ export const routes = [
     ),
   },
   {
-    path: '/signin',
+    path: SIGNIN_PATH,
     element: (
       <Layout>
         <SignIn />

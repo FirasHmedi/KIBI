@@ -14,14 +14,14 @@ export const StoryItem = ({ story }: Props) => {
     <Grid
       item
       key={story.id}
-      p={1.5}
+      p={1}
       flexDirection='column'
       style={{
         backgroundColor: primary,
         color: softGrey,
         borderRadius: 5,
         display: 'flex',
-        width: '20vw',
+        width: '19vw',
         justifyContent: 'space-between',
       }}>
       <ProfileItem name={story.wrName} />
@@ -35,9 +35,9 @@ export const StoryItem = ({ story }: Props) => {
           textOverflow: 'ellipsis',
           wordWrap: 'break-word',
           overflow: 'hidden',
-          fontSize: '1rem',
+          fontSize: '0.95rem',
           userSelect: 'none',
-          minHeight: '9rem',
+          minHeight: '8rem',
         }}>
         {story.summary?.slice(0, 150)}
       </Typography>

@@ -10,6 +10,7 @@ import {
   softKaki,
 } from '../../styles/Style';
 import { loginWithEmailPsw } from '../../utils/auth';
+import { SINGUP_PATH } from '../../utils/data';
 import { isNotEmpty } from '../../utils/helpers';
 
 const inputStyle = {
@@ -63,7 +64,7 @@ export const SignIn = () => {
         onClick={() => signIn()}>
         Sign In
       </button>
-      <Link style={{ color: softGrey }} to='/signup'>
+      <Link style={{ color: softGrey }} to={SINGUP_PATH}>
         Want to register? Sign up
       </Link>
     </div>

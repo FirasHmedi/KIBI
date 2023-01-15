@@ -22,10 +22,9 @@ import SaveIcon from '@mui/icons-material/Save';
 interface Props {
   open: boolean;
   handleClose: () => void;
-  openSnackbar: () => void;
 }
 
-export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
+export const AddStoryForm = ({ open, handleClose }: Props) => {
   const [content, setContent] = useState('');
   const [selectedStateTag, setSelectedStateTag] = useState(TAGS_STATE[0]);
   const [selectedEnvTag, setSelectedEnvTag] = useState(TAGS_ENV[0]);
@@ -51,7 +50,6 @@ export const AddStoryForm = ({ open, handleClose, openSnackbar }: Props) => {
       };
       await addStory(story);
       handleClose();
-      //openSnackbar();
     } catch (e) {}
   };
   console.log('open ', open);

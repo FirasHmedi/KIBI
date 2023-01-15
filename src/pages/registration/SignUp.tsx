@@ -13,6 +13,7 @@ import {
 import { isNotEmpty } from '../../utils/helpers';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { loginWithGoogle, registerWithEmailPsw } from '../../utils/auth';
+import { HOME_PATH } from '../../utils/data';
 
 const inputStyle = {
   height: '3vh',
@@ -38,7 +39,7 @@ export const SignUp = () => {
     try {
       if (!isNotEmpty(username)) return;
       const isUserRegistered = await registerWithEmailPsw(username, email, psw);
-      if (isUserRegistered) navigate('/');
+      if (isUserRegistered) navigate(HOME_PATH);
     } catch (e) {}
   };
 
@@ -46,7 +47,7 @@ export const SignUp = () => {
     try {
       if (!isNotEmpty(username)) return;
       const isUserRegistered = await loginWithGoogle(username);
-      if (isUserRegistered) navigate('/');
+      if (isUserRegistered) navigate(HOME_PATH);
     } catch (e) {}
   };
 

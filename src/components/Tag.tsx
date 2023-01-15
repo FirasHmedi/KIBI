@@ -21,8 +21,8 @@ export const Tag = ({ tag, bgColor = kaki }: Props) => {
       }}
       pt={0.5}
       pb={0.5}
-      pl={1}
-      pr={1}
+      pl={0.7}
+      pr={0.7}
     >
       <Typography variant='body2' fontFamily={'Segoe UI'} fontWeight={'600'}>
         {tag}

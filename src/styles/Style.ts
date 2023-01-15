@@ -38,7 +38,6 @@ export const buttonStyle: React.CSSProperties = {
   paddingRight: 13,
 };
 
-
 export const signupContainerStyle: React.CSSProperties = {
   ...centerStyle,
   backgroundColor: primary,
@@ -51,7 +50,9 @@ export const signupContainerStyle: React.CSSProperties = {
   padding: 10,
   paddingTop: 30,
   paddingBottom: 30,
-  minHeight: '40vh'
-}
+  minHeight: '40vh',
+};
 
-export const signinContainerStyle: React.CSSProperties = {...signupContainerStyle};
+export const signinContainerStyle: React.CSSProperties = {
+  ...signupContainerStyle,
+};
