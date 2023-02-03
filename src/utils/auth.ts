@@ -31,7 +31,7 @@ export const registerWithEmailPsw = async (
   }
 };
 
-export const loginWithGoogle = async (username: string) => {
+export const signUpWithGoogle = async (username: string) => {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -85,4 +85,17 @@ export const loginWithEmailPsw = (email: string, password: string) => {
     .catch(error => {
       console.log('error logging in', error);
     });
+};
+
+
+export const loginWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const user = result.user;
+    return true;
+  } catch (e) {
+    return false;
+  }
 };

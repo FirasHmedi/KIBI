@@ -13,7 +13,6 @@ import {
   MAX_LENGTH_CONTENT,
   MIN_LENGTH_CONTENT,
   TAGS_ENV,
-  TAGS_STATE,
 } from '../../utils/data';
 import { addStory } from '../../utils/db';
 import { isNotEmpty } from '../../utils/helpers';
@@ -26,25 +25,20 @@ interface Props {
 
 export const AddStoryForm = ({ open, handleClose }: Props) => {
   const [content, setContent] = useState('');
-  const [selectedStateTag, setSelectedStateTag] = useState(TAGS_STATE[0]);
   const [selectedEnvTag, setSelectedEnvTag] = useState(TAGS_ENV[0]);
 
-  const selectStateTag = (name: string) =>
-    name !== selectedStateTag ? setSelectedStateTag(name) : undefined;
   const selectEnvTag = (name: string) =>
     name !== selectedEnvTag ? setSelectedEnvTag(name) : undefined;
 
   const isSaveEnabled = () =>
-    isNotEmpty(content, MIN_LENGTH_CONTENT) &&
-    isNotEmpty(selectedStateTag) &&
-    isNotEmpty(selectedEnvTag);
+    isNotEmpty(content, MIN_LENGTH_CONTENT) && isNotEmpty(selectedEnvTag);
 
   const submitStory = async () => {
     try {
       const story = {
         summary: content,
         content: content,
-        tags: [selectedStateTag, selectedEnvTag],
+        tags: [selectedEnvTag],
         wrName: 'ZERO-ONE',
         wrId: Math.floor(Math.random() * 10000000).toString(),
       };
@@ -52,7 +46,7 @@ export const AddStoryForm = ({ open, handleClose }: Props) => {
       handleClose();
     } catch (e) {}
   };
-  console.log('open ', open);
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box
@@ -62,55 +56,30 @@ export const AddStoryForm = ({ open, handleClose }: Props) => {
           color: softGrey,
           borderRadius: 5,
           display: 'flex',
-          width: '56vw',
-          height: '80vh',
+          width: '50vw',
+          height: '70vh',
           flexDirection: 'column',
           position: 'absolute',
-          top: '8vh',
-          left: '20vw',
+          top: '13vh',
+          left: '23vw',
           overflowY: 'auto',
           paddingLeft: '1.5vw',
           paddingRight: '1.5vw',
           paddingTop: '2vh',
           paddingBottom: '2vh',
         }}>
-        <div
-          style={{
-            width: '100%',
-            gap: 10,
-            paddingBottom: 10,
-            paddingTop: 10,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-around',
-            height: '7vh',
-          }}>
-          <div>
-            {TAGS_STATE.map(tag => (
-              <button
-                style={{ marginRight: 10 }}
-                key={tag}
-                onClick={() => selectStateTag(tag)}>
-                <Tag
-                  tag={tag}
-                  bgColor={tag === selectedStateTag ? kaki : softKaki}
-                />
-              </button>
-            ))}
-          </div>
-          <div>
-            {TAGS_ENV.map(tag => (
-              <button
-                style={{ marginRight: 10 }}
-                key={tag}
-                onClick={() => selectEnvTag(tag)}>
-                <Tag
-                  tag={tag}
-                  bgColor={tag === selectedEnvTag ? kaki : softKaki}
-                />
-              </button>
-            ))}
-          </div>
+        <div>
+          {TAGS_ENV.map(tag => (
+            <button
+              style={{ marginRight: 10 }}
+              key={tag}
+              onClick={() => selectEnvTag(tag)}>
+              <Tag
+                tag={tag}
+                bgColor={tag === selectedEnvTag ? kaki : softKaki}
+              />
+            </button>
+          ))}
         </div>
         <Box
           style={{
@@ -139,7 +108,7 @@ export const AddStoryForm = ({ open, handleClose }: Props) => {
               borderWidth: 0,
             }}
             placeholder={
-              'Once upon a time ? no just kidding, write whatever you like...'
+              'Start it ...'
             }
           />
         </Box>

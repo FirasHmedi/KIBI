@@ -12,7 +12,7 @@ import {
 } from '../../styles/Style';
 import { isNotEmpty } from '../../utils/helpers';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { loginWithGoogle, registerWithEmailPsw } from '../../utils/auth';
+import { loginWithGoogle, registerWithEmailPsw, signUpWithGoogle } from '../../utils/auth';
 import { HOME_PATH } from '../../utils/data';
 
 const inputStyle = {
@@ -43,10 +43,10 @@ export const SignUp = () => {
     } catch (e) {}
   };
 
-  const signUpWithGoogle = async () => {
+  const registerWithGoogle = async () => {
     try {
       if (!isNotEmpty(username)) return;
-      const isUserRegistered = await loginWithGoogle(username);
+      const isUserRegistered = await signUpWithGoogle(username);
       if (isUserRegistered) navigate(HOME_PATH);
     } catch (e) {}
   };
@@ -101,7 +101,7 @@ export const SignUp = () => {
         onClick={signUp}>
         Sign Up
       </button>
-      <button style={buttonStyle} onClick={signUpWithGoogle}>
+      <button style={buttonStyle} onClick={registerWithGoogle}>
         Sign Up with Google
       </button>
       <Link style={{ color: softGrey }} to='/signin'>

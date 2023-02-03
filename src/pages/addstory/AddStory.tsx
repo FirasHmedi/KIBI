@@ -16,13 +16,13 @@ export const AddStory = () => {
           borderColor: kaki,
           paddingLeft: 15,
           paddingRight: 15,
-          paddingTop: 5,
-          paddingBottom: 5,
-          width: '25vw',
+          paddingTop: 10,
+          paddingBottom: 10,
+          width: '20vw',
           backgroundColor: primary,
         }}>
         <h4 style={{ fontWeight: '400', userSelect: 'none' }}>
-          Share with us your story...
+          Write it ...
         </h4>
         <KeyboardIcon style={{ color: softGrey }} fontSize={'large'} />
       </div>

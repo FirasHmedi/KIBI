@@ -35,9 +35,10 @@ export const StoryItem = ({ story }: Props) => {
           textOverflow: 'ellipsis',
           wordWrap: 'break-word',
           overflow: 'hidden',
-          fontSize: '0.95rem',
+          fontSize: '0.91rem',
           userSelect: 'none',
           minHeight: '8rem',
+          alignItems: 'center'
         }}>
         {story.summary?.slice(0, 150)}
       </Typography>

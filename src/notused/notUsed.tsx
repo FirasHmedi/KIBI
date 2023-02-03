@@ -13,3 +13,14 @@ const CustomAvatar = () => {
     />
   );
 };
+
+const TAGS_STATE = [
+  'general',
+  'success',
+  'fail',
+  'regret',
+  'hope',
+  'funny',
+  'sad',
+  'nostalgia',
+];

@@ -37,11 +37,7 @@ export const Stories = () => {
       <h3 style={{ color: kaki, fontWeight: 'bold', paddingLeft: '5vw' }}>
         {name}
       </h3>
-      <Grid
-        container
-        pt={1}
-        columnGap={5}
-        style={{ display: 'flex', justifyContent: 'center' }}>
+      <Grid container pt={2} columnGap={6} rowGap={5} justifyContent={'center'}>
         {stories.map(story => (
           <div key={story.id} onClick={() => openStory(story)}>
             <StoryItem story={story} />

@@ -8,11 +8,14 @@ interface Props {
   variant?: Variant;
 }
 
-export const ProfileItem = ({ name, variant = 'subtitle2' }: Props) => {
+export const ProfileItem = ({ name, variant = 'h6' }: Props) => {
   return (
     <div style={{ display: 'flex' }}>
       <Typography
-        style={{ userSelect: 'none' }}
+        style={{ 
+          userSelect: 'none',
+          fontSize: '0.9rem',
+        }}
         variant={variant}
         fontFamily={'Segoe UI'}
         fontWeight={'bold'}

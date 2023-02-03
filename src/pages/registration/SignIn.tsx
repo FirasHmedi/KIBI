@@ -9,7 +9,7 @@ import {
   softGrey,
   softKaki,
 } from '../../styles/Style';
-import { loginWithEmailPsw } from '../../utils/auth';
+import { loginWithEmailPsw, loginWithGoogle } from '../../utils/auth';
 import { SINGUP_PATH } from '../../utils/data';
 import { isNotEmpty } from '../../utils/helpers';
 
@@ -29,6 +29,12 @@ export const SignIn = () => {
 
   const signIn = () => {
     loginWithEmailPsw(email, psw);
+    navigate('/');
+  };
+
+  //signInWithGoogle
+  const signInWithGoogle = () => {
+    loginWithGoogle();
     navigate('/');
   };
 
@@ -63,6 +69,18 @@ export const SignIn = () => {
         disabled={!isEnabled()}
         onClick={() => signIn()}>
         Sign In
+      </button>
+      <button
+        style={{
+          backgroundColor: isEnabled() ? kaki : softKaki,
+          color: black,
+          padding: 7,
+          borderRadius: 5,
+          fontWeight: 'bold',
+        }}
+        disabled={!isEnabled()}
+        onClick={() => signInWithGoogle()}>
+        Sign In with Google
       </button>
       <Link style={{ color: softGrey }} to={SINGUP_PATH}>
         Want to register? Sign up

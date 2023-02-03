@@ -39,6 +39,9 @@ export const Header = ({
         to={HOME_PATH}>
         KAWA
       </Link>
+      <h4>
+        Share confessions, secrets, lessons of your life 🤗
+      </h4>
       {loading ? null : !!user ? (
         <div style={{ ...centerStyle, flexDirection: 'row', gap: '1vw' }}>
           <h5>{user.displayName}</h5>
