@@ -3,6 +3,7 @@ import { SignIn } from '../pages/registration/SignIn';
 import Home from '../pages/home/Home';
 import { SignUp } from '../pages/registration/SignUp';
 import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
+import Game from '../pages/home/Game';
 
 export const routes = [
   {
@@ -17,7 +18,7 @@ export const routes = [
     path: GAME_PATH,
     element: (
       <Layout>
-        <Home />
+        <Game />
       </Layout>
     ),
   },

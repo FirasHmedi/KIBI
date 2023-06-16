@@ -1,4 +1,4 @@
-import {  getDatabase, onValue, ref, set } from 'firebase/database';
+import { getDatabase, onValue, ref, set, update } from 'firebase/database';
 import { db } from '../firebase';
 
 export const STORIES = 'stories';
@@ -12,24 +12,24 @@ const validateStory = (story: Partial<any>): boolean =>
   !!story.wrName &&
   !!story.wrId;
 
-export const addItem = async (story: Partial<any>) => {
+export const addItem = async (path: string, item: any) => {
   try {
-   const result = set(ref(db, 'users/' + 'id'), {
-    test: 10
-  });
+    const result = update(ref(db, path), item);
     console.log('Result', result);
+    return result;
   } catch (e) {
     console.error('Error adding document: ', e);
     throw e;
   }
 };
 
-export const getItems = async () => {
+export const getItems = async (path: string) => {
   try {
-    const itemsRef = ref(db, 'items/' + 'test');
-    onValue(itemsRef, (snapshot) => {
+    const itemsRef = ref(db, path);
+    onValue(itemsRef, snapshot => {
       const data = snapshot.val();
       console.log('data ', data);
+      return data;
     });
   } catch (e) {
     console.error('Error getting stories: ', e);

@@ -13,7 +13,7 @@ export const Items = () => {
 
   useEffect(() => {
     async function waitStories() {
-      const _items = (await getItems()) ?? [];
+      const _items = (await getItems('board')) ?? [];
       setItems(_items);
     }
     waitStories();
