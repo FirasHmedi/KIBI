@@ -1,11 +1,10 @@
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import {  getDatabase, onValue, ref, set } from 'firebase/database';
 import { db } from '../firebase';
-import { Story } from './data';
 
 export const STORIES = 'stories';
 export const USERS = 'users';
 
-const validateStory = (story: Partial<Story>): boolean =>
+const validateStory = (story: Partial<any>): boolean =>
   !!story.id &&
   !!story.content &&
   !!story.tags &&
@@ -13,22 +12,25 @@ const validateStory = (story: Partial<Story>): boolean =>
   !!story.wrName &&
   !!story.wrId;
 
-export const addStory = async (story: Partial<Story>) => {
+export const addItem = async (story: Partial<any>) => {
   try {
-    const docRef = await addDoc(collection(db, STORIES), story);
-    console.log('Document written with ID: ', docRef.id);
+   const result = set(ref(db, 'users/' + 'id'), {
+    test: 10
+  });
+    console.log('Result', result);
   } catch (e) {
     console.error('Error adding document: ', e);
     throw e;
   }
 };
 
-export const getStories = async () => {
+export const getItems = async () => {
   try {
-    const querySnapshot = await getDocs(collection(db, STORIES));
-    return querySnapshot.docs
-      .map((doc) => ({ ...doc.data(), id: doc.id } as Partial<Story>))
-      .filter((story: Partial<Story>) => validateStory(story)) as Story[];
+    const itemsRef = ref(db, 'items/' + 'test');
+    onValue(itemsRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log('data ', data);
+    });
   } catch (e) {
     console.error('Error getting stories: ', e);
     return [];

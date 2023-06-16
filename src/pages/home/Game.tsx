@@ -5,7 +5,7 @@ import { User } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { SINGUP_PATH } from '../../utils/data';
 
-function Home({ user }: { user?: User }) {
+function Game() {
   const navigate = useNavigate();
 
   return (
@@ -15,4 +15,4 @@ function Home({ user }: { user?: User }) {
   );
 }
 
-export default Home;
+export default Game;

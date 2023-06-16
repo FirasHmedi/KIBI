@@ -12,7 +12,7 @@ import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { USERS } from './db';
 
-export const registerWithEmailPsw = async (
+/* export const registerWithEmailPsw = async (
   username: string,
   email: string,
   password: string
@@ -61,9 +61,9 @@ export const signOutUser = async () => {
   } catch (e) {
     console.log('error registering', e);
   }
-};
+}; */
 
-const addUser = async (uid: string, username: string, email: string) => {
+/* const addUser = async (uid: string, username: string, email: string) => {
   try {
     const docRef = await setDoc(doc(db, USERS, uid), {
       username,
@@ -73,7 +73,7 @@ const addUser = async (uid: string, username: string, email: string) => {
   } catch (e) {
     console.log('error ', e);
   }
-};
+}; */
 
 export const loginWithEmailPsw = (email: string, password: string) => {
   signInWithEmailAndPassword(auth, email, password)

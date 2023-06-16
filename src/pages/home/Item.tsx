@@ -1,12 +1,10 @@
 import { Grid, Typography } from '@mui/material';
 import React from 'react';
 import { primary, softGrey } from '../../styles/Style';
-import { Tag } from '../../components/Tag';
 import { ProfileItem } from './ProfileItem';
-import { Story } from '../../utils/data';
 
 interface Props {
-  story: Story;
+  story: any;
 }
 
 export const StoryItem = ({ story }: Props) => {
@@ -42,17 +40,6 @@ export const StoryItem = ({ story }: Props) => {
         }}>
         {story.summary?.slice(0, 150)}
       </Typography>
-
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          gap: 10,
-        }}>
-        {story.tags.map((tag: string) => (
-          <Tag key={tag} tag={tag} />
-        ))}
-      </div>
     </Grid>
   );
 };

@@ -4,15 +4,12 @@ import {
   black,
   buttonStyle,
   centerStyle,
-  kaki,
   primary,
   signupContainerStyle,
   softGrey,
-  softKaki,
 } from '../../styles/Style';
 import { isNotEmpty } from '../../utils/helpers';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { loginWithGoogle, registerWithEmailPsw, signUpWithGoogle } from '../../utils/auth';
 import { HOME_PATH } from '../../utils/data';
 
 const inputStyle = {
@@ -35,13 +32,13 @@ export const SignUp = () => {
   const [psw, setPsw] = useState('');
   const [confirmPsw, setConfirmPsw] = useState('');
 
-  const signUp = async () => {
+  /* const signUp = async () => {
     try {
       if (!isNotEmpty(username)) return;
       const isUserRegistered = await registerWithEmailPsw(username, email, psw);
       if (isUserRegistered) navigate(HOME_PATH);
     } catch (e) {}
-  };
+  }; 
 
   const registerWithGoogle = async () => {
     try {
@@ -58,7 +55,7 @@ export const SignUp = () => {
       isNotEmpty(psw) &&
       email.includes('@'));
 
-  return (
+  /* return (
     <div style={signupContainerStyle}>
       <input
         type='text'
@@ -95,7 +92,6 @@ export const SignUp = () => {
       <button
         style={{
           ...buttonStyle,
-          backgroundColor: isEnabled() ? kaki : softKaki,
         }}
         disabled={!isEnabled()}
         onClick={signUp}>
@@ -108,5 +104,5 @@ export const SignUp = () => {
         Already have an account? Sign in
       </Link>
     </div>
-  );
+  ); */
 };

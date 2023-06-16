@@ -3,11 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   black,
   centerStyle,
-  kaki,
   primary,
   signinContainerStyle,
   softGrey,
-  softKaki,
 } from '../../styles/Style';
 import { loginWithEmailPsw, loginWithGoogle } from '../../utils/auth';
 import { SINGUP_PATH } from '../../utils/data';
@@ -40,7 +38,7 @@ export const SignIn = () => {
 
   const isEnabled = () => isNotEmpty(psw) && email.includes('@');
 
-  return (
+  /* return (
     <div style={signinContainerStyle}>
       <input
         type='text'
@@ -60,7 +58,6 @@ export const SignIn = () => {
       />
       <button
         style={{
-          backgroundColor: isEnabled() ? kaki : softKaki,
           color: black,
           padding: 7,
           borderRadius: 5,
@@ -86,5 +83,5 @@ export const SignIn = () => {
         Want to register? Sign up
       </Link>
     </div>
-  );
+  ); */
 };

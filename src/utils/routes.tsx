@@ -2,7 +2,7 @@ import { Layout } from '../components/Layout';
 import { SignIn } from '../pages/registration/SignIn';
 import Home from '../pages/home/Home';
 import { SignUp } from '../pages/registration/SignUp';
-import { HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
+import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
 
 export const routes = [
   {
@@ -14,10 +14,17 @@ export const routes = [
     ),
   },
   {
+    path: GAME_PATH,
+    element: (
+      <Layout>
+        <Home />
+      </Layout>
+    ),
+  },
+  {
     path: SINGUP_PATH,
     element: (
       <Layout>
-        <SignUp />
       </Layout>
     ),
   },
@@ -25,7 +32,6 @@ export const routes = [
     path: SIGNIN_PATH,
     element: (
       <Layout>
-        <SignIn />
       </Layout>
     ),
   },
