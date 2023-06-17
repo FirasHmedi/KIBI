@@ -14,14 +14,8 @@ import { auth } from '../firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from '../utils/data';
 
-export const Header = ({
-  loading,
-}: {
-  loading: boolean;
-}) => {
+export const Header = ({ loading }: { loading: boolean }) => {
   const path = getCurrentPathName();
-  const linkPath = path === SINGUP_PATH ? SIGNIN_PATH : SINGUP_PATH;
-  const linkName = path === SINGUP_PATH ? 'Sign In' : 'Sign Up';
 
   return (
     <div style={headerStyle}>
@@ -43,13 +37,7 @@ export const Header = ({
 export const Layout = ({ children }: any) => {
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
-  return (
-    <div style={appStyle}>
-      <Header loading={loading} />
-      {React.cloneElement(children)}
-    </div>
-  );
+  return <div style={appStyle}>{React.cloneElement(children)}</div>;
 };

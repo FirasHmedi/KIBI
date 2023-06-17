@@ -1,4 +1,4 @@
-export const primary = '#ecf0f1'; //#242422 232323
+export const primary = '#bdc3c7'; //#242422 232323
 export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
 export const black = '#000000';
@@ -8,6 +8,8 @@ export const centerStyle: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  textAlign: 'center',
+  width: 'auto',
 };
 
 export const appStyle: React.CSSProperties = {
@@ -28,12 +30,14 @@ export const headerStyle: React.CSSProperties = {
 
 export const buttonStyle: React.CSSProperties = {
   backgroundColor: primaryBlue,
-  color: black,
+  color: 'white',
   padding: 7,
   borderRadius: 5,
   fontWeight: 'bold',
   paddingLeft: 13,
   paddingRight: 13,
+  maxWidth: 150,
+  margin: 10,
 };
 
 export const signupContainerStyle: React.CSSProperties = {
