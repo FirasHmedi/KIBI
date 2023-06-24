@@ -7,6 +7,7 @@ import { CLANS, PlayerType } from '../utils/data';
 interface Props {
   playerId: string;
   playerType: PlayerType;
+  roomId: string;
 }
 
 export type ClanName = 'air' | 'earth' | 'fire' | 'water';
@@ -20,7 +21,7 @@ export interface Animal {
   role: string;
 }
 
-export const AnimalsSelection = ({ playerType, playerId }: Props) => {
+export const AnimalsSelection = ({ playerType, playerId, roomId }: Props) => {
   const [idsSelected, setIdsSelected] = useState<Set<string>>(new Set());
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [disabledBtn, setDisabledBtn] = useState(true);
@@ -54,6 +55,11 @@ export const AnimalsSelection = ({ playerType, playerId }: Props) => {
     console.log(playerType, playerId, [...idsSelected]);
     await setItem(`players/${playerType}/${playerId}`, {
       deckCardsId: [...idsSelected],
+    });
+    await setItem('rooms/' + roomId, {
+      [`${playerType}`]: {
+        status: 'ready',
+      },
     });
   };
 

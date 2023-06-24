@@ -3,13 +3,32 @@ export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
 export const black = '#000000';
 export const primaryBlue = '#2980b9';
+export const violet = '#8e44ad';
+
+export const waterColor = '#2980b9';
+export const fireColor = '#c0392b';
+export const airColor = '#2ecc71';
+export const earthColor = '#f39c12';
+
+export const flexRowStyle: React.CSSProperties = {
+  display: 'flex',
+  textAlign: 'center',
+  width: 'auto',
+  flexDirection: 'row',
+};
+
+export const flexColumnStyle: React.CSSProperties = {
+  display: 'flex',
+  textAlign: 'center',
+  width: 'auto',
+  flexDirection: 'column',
+};
 
 export const centerStyle: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   textAlign: 'center',
-  width: 'auto',
 };
 
 export const appStyle: React.CSSProperties = {

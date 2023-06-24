@@ -28,13 +28,16 @@ export const getItemsOnce = async (path: string) => {
   }
 };
 
-export const subscribeToItems = async (path: string) => {
+export const subscribeToItems = async (
+  path: string,
+  setItemsState: (item: any) => void
+) => {
   try {
     onValue(ref(db, path), snapshot => {
       console.log('snapshot', snapshot);
       const data = snapshot.val();
       console.log('data ', data);
-      return data;
+      setItemsState(data);
     });
   } catch (e) {
     console.error('Error getting items: ', e);

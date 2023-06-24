@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import React from 'react';
-import { primary, softGrey } from '../../styles/Style';
+import { primary, softGrey } from '../styles/Style';
 import { ProfileItem } from './ProfileItem';
 
 interface Props {
@@ -36,7 +36,7 @@ export const StoryItem = ({ story }: Props) => {
           fontSize: '0.91rem',
           userSelect: 'none',
           minHeight: '8rem',
-          alignItems: 'center'
+          alignItems: 'center',
         }}>
         {story.summary?.slice(0, 150)}
       </Typography>

@@ -1,3 +1,5 @@
+import { airColor, earthColor, fireColor, waterColor } from '../styles/Style';
+
 export interface Card {
   id: string;
   content: string;
@@ -15,15 +17,15 @@ export enum PlayerType {
 
 export const CLANS = {
   water: {
-    color: '#2980b9',
+    color: waterColor,
   },
   fire: {
-    color: '#c0392b',
+    color: fireColor,
   },
   earth: {
-    color: '#f39c12',
+    color: earthColor,
   },
   air: {
-    color: '#2ecc71',
+    color: airColor,
   },
 };

@@ -1,7 +1,6 @@
 import { Typography } from '@mui/material';
 import { Variant } from '@mui/material/styles/createTypography';
-import React from 'react';
-import { softGrey } from '../../styles/Style';
+import { softGrey } from '../styles/Style';
 
 interface Props {
   name: string;
@@ -12,7 +11,7 @@ export const ProfileItem = ({ name, variant = 'h6' }: Props) => {
   return (
     <div style={{ display: 'flex' }}>
       <Typography
-        style={{ 
+        style={{
           userSelect: 'none',
           fontSize: '0.9rem',
         }}

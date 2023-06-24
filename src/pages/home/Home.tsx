@@ -11,14 +11,6 @@ function Home() {
   const [roomId, setRoomId] = useState('');
   const [disabledButton, setDisabledButton] = useState(false);
 
-  async function subscribeToRoom() {
-    await subscribeToItems('room/');
-  }
-
-  useEffect(() => {
-    subscribeToRoom();
-  }, []);
-
   const createRoom = async () => {
     const roomId = uuidv4();
     const p1Id = uuidv4();
@@ -27,7 +19,7 @@ function Home() {
     const boardId = uuidv4();
     const mainDeckId = uuidv4();
 
-    await setItem('room/' + roomId, {
+    await setItem('rooms/' + roomId, {
       p1Id,
       animalGraveyardId,
       powerGraveyardId,
@@ -55,7 +47,7 @@ function Home() {
   const joinRoom = async () => {
     if (roomId.length === 0) return;
     const p2Id = uuidv4();
-    await setItem('room/' + roomId, {
+    await setItem('rooms/' + roomId, {
       p2Id: p2Id,
     });
     await setItem('players/two/' + p2Id, {
