@@ -1,28 +1,40 @@
 import { flexRowStyle } from '../styles/Style';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 
-export const CurrentPView = ({ player, deck }: { player: any; deck: any }) => (
+interface Props {
+  player: any;
+  deck: any[];
+}
+
+export const CurrentPView = ({ player, deck }: Props) => (
   <div
     style={{
       ...flexRowStyle,
       height: '20vh',
+      alignItems: 'center',
     }}>
-    <h5>
-      Player {player.playerName} / {player.playerType}
-    </h5>
-    <CurrentPDeck deck={[]} />
+    <div style={{ width: '7vw', position: 'absolute', left: 10, top: 10 }}>
+      <h5>
+        {player.playerName} : {player.playerType}
+      </h5>
+      <h5>Deck: {deck.length} cards</h5>
+    </div>
+    <CurrentPDeck deck={deck} />
   </div>
 );
 
-export const OpponentPView = ({ player, deck }: { player: any; deck: any }) => (
+export const OpponentPView = ({ player, deck }: Props) => (
   <div
     style={{
       ...flexRowStyle,
       height: '20vh',
     }}>
-    <h5>
-      Player {player.playerName} / {player.playerType}
-    </h5>
-    <OpponentPDeck deck={[]} />
+    <div style={{ width: '7vw', position: 'absolute', left: 10, bottom: 10 }}>
+      <h5>
+        {player.playerName} : {player.playerType}
+      </h5>
+      <h5>Deck: {deck.length} cards</h5>
+    </div>
+    <OpponentPDeck deck={deck} />
   </div>
 );

@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { black, buttonStyle, primaryBlue } from '../../styles/Style';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PlayerType, SINGUP_PATH } from '../../utils/data';
-import { setItem, subscribeToItems } from '../../utils/db';
 import { v4 as uuidv4 } from 'uuid';
+import { buttonStyle } from '../../styles/Style';
+import { PlayerType } from '../../utils/data';
+import { setItem } from '../../utils/db';
 
 function Home() {
-  console.log('home');
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
   const [disabledButton, setDisabledButton] = useState(false);
@@ -77,10 +76,7 @@ function Home() {
           alignItems: 'center',
           flexDirection: 'column',
         }}>
-        <button
-          style={buttonStyle}
-          disabled={false}
-          onClick={() => createRoom()}>
+        <button style={buttonStyle} disabled={false} onClick={() => createRoom()}>
           Create a room
         </button>
 
@@ -94,10 +90,7 @@ function Home() {
             disabled={disabledButton}
             onChange={e => setRoomId(e.target.value)}
           />
-          <button
-            style={buttonStyle}
-            disabled={disabledButton}
-            onClick={() => joinRoom()}>
+          <button style={buttonStyle} disabled={disabledButton} onClick={() => joinRoom()}>
             Join a room
           </button>
         </div>

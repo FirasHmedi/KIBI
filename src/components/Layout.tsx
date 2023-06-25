@@ -1,18 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
-import {
-  appStyle,
-  black,
-  primaryBlue,
-  buttonStyle,
-  centerStyle,
-  headerStyle,
-} from '../styles/Style';
 import { Link } from 'react-router-dom';
+import { appStyle, headerStyle, primaryBlue } from '../styles/Style';
+import { HOME_PATH } from '../utils/data';
 import { getCurrentPathName } from '../utils/helpers';
-import { auth } from '../firebase';
-import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from '../utils/data';
 
 export const Header = ({ loading }: { loading: boolean }) => {
   const path = getCurrentPathName();

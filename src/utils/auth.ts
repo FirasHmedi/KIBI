@@ -1,16 +1,5 @@
-import { FirebaseError } from '@firebase/app';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  updateProfile,
-  signOut,
-} from 'firebase/auth';
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase';
-import { USERS } from './db';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth } from '../firebase';
 
 /* export const registerWithEmailPsw = async (
   username: string,
@@ -86,7 +75,6 @@ export const loginWithEmailPsw = (email: string, password: string) => {
       console.log('error logging in', error);
     });
 };
-
 
 export const loginWithGoogle = async () => {
   try {

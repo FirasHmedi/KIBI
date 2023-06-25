@@ -1,6 +1,6 @@
 import { FirebaseApp, initializeApp } from 'firebase/app';
-import { Auth, getAuth } from 'firebase/auth';
-import { Database, getDatabase } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
+import { getDatabase } from 'firebase/database';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -8,14 +8,14 @@ import { Database, getDatabase } from 'firebase/database';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAOskHYiGBo3Fu44OoxBYNI8obg1IMcIlU",
-  authDomain: "kibi-143dd.firebaseapp.com",
-  databaseURL: "https://kibi-143dd-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "kibi-143dd",
-  storageBucket: "kibi-143dd.appspot.com",
-  messagingSenderId: "423811484583",
-  appId: "1:423811484583:web:08e0fec3b92c0017d88482",
-  measurementId: "G-NM25PLZNZ3"
+  apiKey: 'AIzaSyAOskHYiGBo3Fu44OoxBYNI8obg1IMcIlU',
+  authDomain: 'kibi-143dd.firebaseapp.com',
+  databaseURL: 'https://kibi-143dd-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 'kibi-143dd',
+  storageBucket: 'kibi-143dd.appspot.com',
+  messagingSenderId: '423811484583',
+  appId: '1:423811484583:web:08e0fec3b92c0017d88482',
+  measurementId: 'G-NM25PLZNZ3',
 };
 
 let appInstance: FirebaseApp;

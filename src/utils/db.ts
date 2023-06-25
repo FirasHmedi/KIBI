@@ -1,4 +1,4 @@
-import { get, getDatabase, onValue, ref, set, update } from 'firebase/database';
+import { get, onValue, ref, update } from 'firebase/database';
 import { db } from '../firebase';
 
 export const STORIES = 'stories';
@@ -28,10 +28,7 @@ export const getItemsOnce = async (path: string) => {
   }
 };
 
-export const subscribeToItems = async (
-  path: string,
-  setItemsState: (item: any) => void
-) => {
+export const subscribeToItems = async (path: string, setItemsState: (item: any) => void) => {
   try {
     onValue(ref(db, path), snapshot => {
       console.log('snapshot', snapshot);

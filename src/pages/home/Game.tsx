@@ -37,6 +37,24 @@ function Game() {
     }
   }, [data]);
 
+  const testDeck = [
+    {
+      id: '1',
+    },
+    {
+      id: '2',
+    },
+    {
+      id: '3',
+    },
+    {
+      id: '4',
+    },
+    {
+      id: '5',
+    },
+  ];
+
   return (
     <div
       style={{
@@ -45,6 +63,7 @@ function Game() {
         backgroundColor: '#ecf0f1',
         justifyContent: 'flex-start',
         height: '100vh',
+        width: '100vw',
       }}>
       {game.running && (
         <div
@@ -54,17 +73,17 @@ function Game() {
             height: '100vh',
             justifyContent: 'space-between',
           }}>
-          <OpponentPView player={player} deck={[]} />
-          <Board />
-          <CurrentPView player={player} deck={[]} />
+          <OpponentPView player={player} deck={testDeck} />
+          <Board animalsGY={[]} powersGY={[]} />
+          <CurrentPView player={player} deck={testDeck} />
         </div>
       )}
 
       {!game.running && (
-        <div>
+        <div style={{ width: '100vw' }}>
           <AnimalsSelection playerType={playerType} playerId={playerId} roomId={roomId} />
           <h5>
-            Player {playerName} / Order {playerType}
+            {playerName} : {playerType}
           </h5>
         </div>
       )}

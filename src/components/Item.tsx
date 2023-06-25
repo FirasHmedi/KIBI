@@ -1,5 +1,4 @@
 import { Grid, Typography } from '@mui/material';
-import React from 'react';
 import { primary, softGrey } from '../styles/Style';
 import { ProfileItem } from './ProfileItem';
 

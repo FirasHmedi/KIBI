@@ -1,8 +1,7 @@
-import { Grid, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { getItemsOnce, setItem } from '../utils/db';
+import { useEffect, useState } from 'react';
 import { buttonStyle, centerStyle, primaryBlue } from '../styles/Style';
 import { CLANS, PlayerType } from '../utils/data';
+import { getItemsOnce, setItem } from '../utils/db';
 
 interface Props {
   playerId: string;
@@ -79,32 +78,30 @@ export const AnimalsSelection = ({ playerType, playerId, roomId }: Props) => {
           flexDirection: 'row',
           alignItems: 'center',
         }}>
-        {animals.map(
-          ({ id, name, clan, description, role, ability }: Animal) => (
-            <div
-              key={id}
-              style={{
-                border: 'solid 7px #95a5a6',
-                borderRadius: 5,
-                borderColor: idsSelected.has(id) ? '#2c3e50' : '#95a5a6',
-                backgroundColor: CLANS[clan].color,
-                color: 'white',
-                fontSize: 24,
-                margin: 5,
-                padding: 5,
-                ...centerStyle,
-                flexDirection: 'column',
-                height: '20vh',
-                width: '8vw',
-              }}
-              onClick={() => toggleAnimalSelection(id)}>
-              <h4>{name}</h4>
-              <h6>{description}</h6>
-              <h6>{role}</h6>
-              <h6>{ability}</h6>
-            </div>
-          )
-        )}
+        {animals.map(({ id, name, clan, description, role, ability }: Animal) => (
+          <div
+            key={id}
+            style={{
+              border: 'solid 7px #95a5a6',
+              borderRadius: 5,
+              borderColor: idsSelected.has(id) ? '#2c3e50' : '#95a5a6',
+              backgroundColor: CLANS[clan].color,
+              color: 'white',
+              fontSize: 24,
+              margin: 5,
+              padding: 5,
+              ...centerStyle,
+              flexDirection: 'column',
+              height: '20vh',
+              width: '8vw',
+            }}
+            onClick={() => toggleAnimalSelection(id)}>
+            <h4>{name}</h4>
+            <h6>{description}</h6>
+            <h6>{role}</h6>
+            <h6>{ability}</h6>
+          </div>
+        ))}
       </div>
       <button
         style={{
