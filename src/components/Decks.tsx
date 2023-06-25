@@ -1,32 +1,32 @@
 import { flexRowStyle } from '../styles/Style';
-import { Slot, SlotBack } from './Slots';
+import { AllCards, Slot, SlotBack } from './Slots';
 
 interface Props {
-  deck: any[];
+  deck: AllCards[];
 }
 
-export const CurrentPDeck = ({ deck = [] }: Props) => (
+export const CurrentPDeck = ({ deck }: Props = { deck: [] }) => (
   <div
     style={{
       ...flexRowStyle,
       flex: 1,
       justifyContent: 'center',
     }}>
-    {deck.map(card => (
-      <Slot nb={card.id} />
+    {deck.map((card, index) => (
+      <Slot key={index} card={card} />
     ))}
   </div>
 );
 
-export const OpponentPDeck = ({ deck = [] }: Props) => (
+export const OpponentPDeck = ({ deck }: Props = { deck: [] }) => (
   <div
     style={{
       ...flexRowStyle,
       flex: 1,
       justifyContent: 'center',
     }}>
-    {deck.map(card => (
-      <SlotBack nb={card.id} />
+    {deck.map((card, index) => (
+      <SlotBack key={index} id={index} />
     ))}
   </div>
 );
