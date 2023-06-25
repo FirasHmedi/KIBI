@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { AnimalsSelection } from '../../components/AnimalsSelection';
 import { Board } from '../../components/Board';
 import { CurrentPView, OpponentPView } from '../../components/Players';
 import { centerStyle, flexColumnStyle } from '../../styles/Style';
+import { GeneralTestData, TestDeck } from '../../utils/data';
 import { subscribeToItems } from '../../utils/db';
 
 function Game() {
-  const navigate = useNavigate();
   const location = useLocation();
-  const testData = { roomId: 'test', playerName: 'test', playerType: 'one', playerId: 'testId' };
-  const { roomId, playerName, playerType, playerId } = location.state ?? testData;
+  const { roomId, playerName, playerType, playerId } = location.state ?? GeneralTestData;
   const [data, setData] = useState<any>();
   const [game, setGame] = useState({
     running: true,
@@ -37,24 +36,6 @@ function Game() {
     }
   }, [data]);
 
-  const testDeck = [
-    {
-      id: '1',
-    },
-    {
-      id: '2',
-    },
-    {
-      id: '3',
-    },
-    {
-      id: '4',
-    },
-    {
-      id: '5',
-    },
-  ];
-
   return (
     <div
       style={{
@@ -73,9 +54,9 @@ function Game() {
             height: '100vh',
             justifyContent: 'space-between',
           }}>
-          <OpponentPView player={player} deck={testDeck} />
-          <Board animalsGY={[]} powersGY={[]} />
-          <CurrentPView player={player} deck={testDeck} />
+          <OpponentPView player={player} deck={TestDeck} />
+          <Board animalsGY={[]} powersGY={[]} mainDeck={[]} opponentPSlots={[]} currentPSlots={[]} />
+          <CurrentPView player={player} deck={TestDeck} />
         </div>
       )}
 

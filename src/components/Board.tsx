@@ -1,13 +1,14 @@
 import { centerStyle, flexColumnStyle } from '../styles/Style';
-import { CLANS } from '../utils/data';
-import { CurrentPSlots, EnvSlot, OpponentPSlots, SlotBack } from './Slots';
+import { Card } from '../utils/data';
+import { AllCards, CurrentPSlots, EnvSlot, OpponentPSlots, SlotBack } from './Slots';
 
 interface Props {
-  mainDeck?: any[];
-  opponentPSlots?: any[];
-  currentPSlots?: any[];
-  animalsGY: any[];
-  powersGY: any[];
+  mainDeck: Card[];
+  opponentPSlots: AllCards[];
+  currentPSlots: AllCards[];
+  animalsGY: AllCards[];
+  powersGY: AllCards[];
+  envCard?: Card;
 }
 
 const DefaultProps = {
@@ -18,7 +19,7 @@ const DefaultProps = {
   powersGY: [],
 };
 
-export const Board = ({ mainDeck, opponentPSlots, currentPSlots, animalsGY, powersGY }: Props = DefaultProps) => {
+export const Board = ({ mainDeck, opponentPSlots, currentPSlots, animalsGY, powersGY, envCard }: Props = DefaultProps) => {
   return (
     <div
       style={{
@@ -34,21 +35,21 @@ export const Board = ({ mainDeck, opponentPSlots, currentPSlots, animalsGY, powe
         <div>{mainDeck?.length ?? 0} cards</div>
       </div>
       <div style={{ ...centerStyle, ...flexColumnStyle }}>
-        <OpponentPSlots />
-        <EnvSlot name={'Water'} color={CLANS.water.color} />
-        <CurrentPSlots />
+        <OpponentPSlots opponentPSlots={opponentPSlots ?? []} />
+        <EnvSlot envCard={envCard} />
+        <CurrentPSlots currentPSlots={currentPSlots} />
       </div>
       <div style={{ width: '15vw', backgroundColor: 'pink' }}>
         <div style={{ minHeight: '5vh' }}>
           <h4>Animals graveyard ({animalsGY.length} cards)</h4>
           {animalsGY.map(card => (
-            <h5>{card.text}</h5>
+            <h5>{card?.description}</h5>
           ))}
         </div>
         <div style={{ minHeight: '5vh' }}>
           <h4>Power graveyard ({powersGY.length} cards)</h4>
           {powersGY.map(card => (
-            <h5>{card.text}</h5>
+            <h5>{card?.description}</h5>
           ))}
         </div>
       </div>

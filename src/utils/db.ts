@@ -1,9 +1,6 @@
 import { get, onValue, ref, update } from 'firebase/database';
 import { db } from '../firebase';
 
-export const STORIES = 'stories';
-export const USERS = 'users';
-
 export const setItem = async (path: string, item: any) => {
   try {
     const result = await update(ref(db, path), item);
