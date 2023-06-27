@@ -1,3 +1,4 @@
+import animalsCardsJson from '../assets/animal-cards.json';
 import { airColor, earthColor, fireColor, waterColor } from '../styles/Style';
 
 export interface Card {
@@ -15,6 +16,10 @@ export enum PlayerType {
   TWO = 'two',
 }
 
+export const ClansNames = ['water', 'earth', 'fire', 'air'];
+
+export type ClanName = 'air' | 'earth' | 'fire' | 'water';
+
 export const CLANS = {
   water: {
     color: waterColor,
@@ -29,3 +34,54 @@ export const CLANS = {
     color: airColor,
   },
 };
+
+export interface Card {
+  id: string;
+  ability?: string;
+  description: string;
+  name?: string;
+}
+
+export interface AnimalCard extends Card {
+  clan: ClanName;
+  role: string;
+}
+
+export const TestDeck = [
+  {
+    id: '1',
+  },
+  {
+    id: '2',
+  },
+  {
+    id: '3',
+  },
+  {
+    id: '4',
+  },
+  {
+    id: '5',
+  },
+  {
+    id: '6',
+  },
+  {
+    id: '7',
+  },
+  {
+    id: '8',
+  },
+];
+
+export const GeneralTestData = { roomId: 'test', playerName: 'test', playerType: 'one', playerId: 'testId' };
+export const AnimalsGY = [];
+export const PowersGY = [];
+
+const getArrayFromJson = (file: any) => {
+  const object = JSON.parse(JSON.stringify(file));
+  return Object.keys(object).map(id => ({ id, ...object[id] }));
+};
+
+export const ANIMALS_CARDS: AnimalCard[] = getArrayFromJson(animalsCardsJson);
+export const POWER_CARDS: Card[] = getArrayFromJson(animalsCardsJson);

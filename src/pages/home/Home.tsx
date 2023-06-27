@@ -12,24 +12,23 @@ function Home() {
 
   const createRoom = async () => {
     const roomId = uuidv4();
-    const p1Id = uuidv4();
-    const animalGraveyardId = uuidv4();
-    const powerGraveyardId = uuidv4();
-    const boardId = uuidv4();
-    const mainDeckId = uuidv4();
-
     await setItem('rooms/' + roomId, {
-      p1Id,
-      animalGraveyardId,
-      powerGraveyardId,
-      boardId,
-      mainDeckId,
+      board: {
+        one: [1, 2, 3],
+        two: [1, 2, 3],
+        envCard: 'unknown',
+      },
+      mainDeck: [1, 2],
+      animalsGY: [1],
+      powersGY: [1],
       status: 'prepare',
-    });
-    await setItem('players/one/' + p1Id, {
-      id: p1Id,
-      hp: 8,
-      deckCardsIds: [],
+      one: {
+        hp: 8,
+        deckCardsIds: [1],
+        playerName: 'player2',
+        canPlayAnimals: true,
+        canPlayPowers: true,
+      },
     });
 
     setDisabledButton(true);
@@ -38,30 +37,23 @@ function Home() {
         roomId: roomId,
         playerName: 'player1',
         playerType: PlayerType.ONE,
-        playerId: p1Id,
       },
     });
   };
 
   const joinRoom = async () => {
     if (roomId.length === 0) return;
-    const p2Id = uuidv4();
-    await setItem('rooms/' + roomId, {
-      p2Id: p2Id,
-    });
-    await setItem('players/two/' + p2Id, {
-      id: p2Id,
+    await setItem('rooms/' + roomId + '/two', {
       hp: 8,
       deckCardsIds: [],
+      playerName: 'player2',
     });
-
     setDisabledButton(true);
     navigate('game/' + roomId, {
       state: {
         roomId: roomId,
         playerName: 'player2',
         playerType: PlayerType.TWO,
-        playerId: p2Id,
       },
     });
   };
