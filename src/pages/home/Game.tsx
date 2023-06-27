@@ -5,12 +5,13 @@ import { Board } from '../../components/Board';
 import { CurrentPView, OpponentPView } from '../../components/Players';
 import { centerStyle, flexColumnStyle } from '../../styles/Style';
 import { GeneralTestData, TestDeck } from '../../utils/data';
-import { subscribeToItems } from '../../utils/db';
+import { setItem, subscribeToItems } from '../../utils/db';
 
 function Game() {
   const location = useLocation();
   const { roomId, playerName, playerType, playerId } = location.state ?? GeneralTestData;
   const [data, setData] = useState<any>();
+  const [board, setBoard] = useState<Board>();
   const [game, setGame] = useState({
     running: true,
   });
@@ -33,6 +34,10 @@ function Game() {
       setGame({
         running: true,
       });
+      setItem('rooms/' + roomId, { status: 'running' });
+    }
+    if (data?.status === 'running') {
+      setBoard(data.board);
     }
   }, [data]);
 
@@ -55,7 +60,7 @@ function Game() {
             justifyContent: 'space-between',
           }}>
           <OpponentPView player={player} deck={TestDeck} />
-          <Board animalsGY={[]} powersGY={[]} mainDeck={[]} opponentPSlots={[]} currentPSlots={[]} />
+          <Board board={board} />
           <CurrentPView player={player} deck={TestDeck} />
         </div>
       )}
@@ -68,8 +73,6 @@ function Game() {
           </h5>
         </div>
       )}
-
-      <div style={{ position: 'absolute', bottom: 10, ...centerStyle }}></div>
     </div>
   );
 }

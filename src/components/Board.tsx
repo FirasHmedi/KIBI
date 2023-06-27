@@ -3,6 +3,10 @@ import { Card } from '../utils/data';
 import { AllCards, CurrentPSlots, EnvSlot, OpponentPSlots, SlotBack } from './Slots';
 
 interface Props {
+  board?: Board;
+}
+
+export interface Board {
   mainDeck: Card[];
   opponentPSlots: AllCards[];
   currentPSlots: AllCards[];
@@ -11,15 +15,18 @@ interface Props {
   envCard?: Card;
 }
 
-const DefaultProps = {
+const DefaultBoard = {
   mainDeck: [],
   opponentPSlots: [],
   currentPSlots: [],
   animalsGY: [],
   powersGY: [],
+  envCard: undefined,
 };
 
-export const Board = ({ mainDeck, opponentPSlots, currentPSlots, animalsGY, powersGY, envCard }: Props = DefaultProps) => {
+export const Board = ({ board }: Props) => {
+  console.log('board ', board);
+  const { mainDeck, opponentPSlots, currentPSlots, animalsGY, powersGY, envCard } = board ?? DefaultBoard;
   return (
     <div
       style={{
@@ -41,7 +48,7 @@ export const Board = ({ mainDeck, opponentPSlots, currentPSlots, animalsGY, powe
       </div>
       <div style={{ width: '15vw', backgroundColor: 'pink' }}>
         <div style={{ minHeight: '5vh' }}>
-          <h4>Animals graveyard ({animalsGY.length} cards)</h4>
+          <h4>Animals graveyard ({animalsGY?.length} cards)</h4>
           {animalsGY.map((card, index) => (
             <h5 key={index}>{card?.description}</h5>
           ))}

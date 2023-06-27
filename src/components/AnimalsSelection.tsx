@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { buttonStyle, centerStyle, primaryBlue } from '../styles/Style';
-import { CLANS, PlayerType } from '../utils/data';
-import { getItemsOnce, setItem } from '../utils/db';
+import { ANIMALS_CARDS, AnimalCard, CLANS, PlayerType } from '../utils/data';
+import { setItem } from '../utils/db';
 
 interface Props {
   playerId: string;
@@ -9,32 +9,9 @@ interface Props {
   roomId: string;
 }
 
-export type ClanName = 'air' | 'earth' | 'fire' | 'water';
-
-export interface Animal {
-  id: string;
-  name: string;
-  clan: ClanName;
-  description: string;
-  ability: string;
-  role: string;
-}
-
 export const AnimalsSelection = ({ playerType, playerId, roomId }: Props) => {
   const [idsSelected, setIdsSelected] = useState<Set<string>>(new Set());
-  const [animals, setAnimals] = useState<Animal[]>([]);
   const [disabledBtn, setDisabledBtn] = useState(true);
-
-  useEffect(() => {
-    (async function () {
-      let animals = await getItemsOnce('animal-cards');
-      animals = Object.keys(animals).map((id: string) => ({
-        id,
-        ...animals[id],
-      }));
-      setAnimals(animals);
-    })();
-  }, []);
 
   useEffect(() => {
     console.log(playerId, playerType);
@@ -51,13 +28,9 @@ export const AnimalsSelection = ({ playerType, playerId, roomId }: Props) => {
 
   const submitAnimalCards = async () => {
     setDisabledBtn(true);
-    await setItem(`players/${playerType}/${playerId}`, {
-      deckCardsId: [...idsSelected],
-    });
-    await setItem('rooms/' + roomId, {
-      [`${playerType}`]: {
-        status: 'ready',
-      },
+    await setItem('rooms/' + roomId + `/${playerType}`, {
+      deckCardsId: [...idsSelected].map(id => `${playerType}-${id}`),
+      status: 'ready',
     });
   };
 
@@ -73,14 +46,16 @@ export const AnimalsSelection = ({ playerType, playerId, roomId }: Props) => {
       <div
         style={{
           display: 'flex',
-          flex: 1,
           flexDirection: 'row',
           alignItems: 'center',
+          maxWidth: '90%',
+          overflowY: 'scroll',
         }}>
-        {animals.map(({ id, name, clan, description, role, ability }: Animal) => (
+        {ANIMALS_CARDS.map(({ id, name, clan, description, role, ability }: AnimalCard) => (
           <div
             key={id}
             style={{
+              display: 'flex',
               border: 'solid 7px #95a5a6',
               borderRadius: 5,
               borderColor: idsSelected.has(id) ? '#2c3e50' : '#95a5a6',
@@ -88,20 +63,21 @@ export const AnimalsSelection = ({ playerType, playerId, roomId }: Props) => {
               color: 'white',
               fontSize: 24,
               margin: 5,
-              padding: 5,
-              ...centerStyle,
+              padding: 15,
               flexDirection: 'column',
-              height: '20vh',
+              height: '18vh',
               width: '8vw',
+              flexShrink: 0,
+              justifyContent: 'space-between',
             }}
             onClick={() => toggleAnimalSelection(id)}>
-            <h4>{name}</h4>
-            <h6>{description}</h6>
-            <h6>{role}</h6>
+            <h4>{name?.toUpperCase()}</h4>
             <h6>{ability}</h6>
+            <h6>{role}</h6>
           </div>
         ))}
       </div>
+      <h5>{idsSelected.size} cards</h5>
       <button
         style={{
           ...buttonStyle,
