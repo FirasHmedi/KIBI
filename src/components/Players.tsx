@@ -1,12 +1,12 @@
 import { flexRowStyle } from '../styles/Style';
+import { Player } from '../utils/data';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 
 interface Props {
-  player: any;
-  deck: any[];
+  player: Player;
 }
 
-export const CurrentPView = ({ player, deck }: Props) => (
+export const CurrentPView = ({ player }: Props) => (
   <div
     style={{
       ...flexRowStyle,
@@ -15,15 +15,15 @@ export const CurrentPView = ({ player, deck }: Props) => (
     }}>
     <div style={{ width: '7vw', position: 'absolute', left: 10, top: 10 }}>
       <h5>
-        {player.playerName} : {player.playerType}
+        {player.playerName} : {player.playerType} : {player.hp} hp
       </h5>
-      <h5>Deck: {deck.length} cards</h5>
+      <h5>{player.deckCardsIds?.length ?? 0} cards in Deck</h5>
     </div>
-    <CurrentPDeck deck={deck} />
+    <CurrentPDeck deckCardsIds={player.deckCardsIds ?? []} />
   </div>
 );
 
-export const OpponentPView = ({ player, deck }: Props) => (
+export const OpponentPView = ({ player }: Props) => (
   <div
     style={{
       ...flexRowStyle,
@@ -31,10 +31,10 @@ export const OpponentPView = ({ player, deck }: Props) => (
     }}>
     <div style={{ width: '7vw', position: 'absolute', left: 10, bottom: 10 }}>
       <h5>
-        {player.playerName} : {player.playerType}
+        {player.playerName} : {player.playerType} : {player.hp} hp
       </h5>
-      <h5>Deck: {deck.length} cards</h5>
+      <h5>Deck: {player.deckCardsIds?.length ?? 0} cards</h5>
     </div>
-    <OpponentPDeck deck={deck} />
+    <OpponentPDeck deckCardsIds={player.deckCardsIds ?? []} />
   </div>
 );

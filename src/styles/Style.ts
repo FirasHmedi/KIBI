@@ -9,6 +9,7 @@ export const waterColor = '#2980b9';
 export const fireColor = '#c0392b';
 export const airColor = '#2ecc71';
 export const earthColor = '#f39c12';
+export const neutralColor = '#bdc3c7';
 
 export const flexRowStyle: React.CSSProperties = {
   display: 'flex',

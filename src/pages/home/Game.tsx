@@ -4,40 +4,45 @@ import { AnimalsSelection } from '../../components/AnimalsSelection';
 import { Board } from '../../components/Board';
 import { CurrentPView, OpponentPView } from '../../components/Players';
 import { centerStyle, flexColumnStyle } from '../../styles/Style';
-import { GeneralTestData, TestDeck } from '../../utils/data';
+import { GeneralTestData, Player, PlayerType } from '../../utils/data';
 import { setItem, subscribeToItems } from '../../utils/db';
 
 function Game() {
   const location = useLocation();
-  const { roomId, playerName, playerType, playerId } = location.state ?? GeneralTestData;
+  const { roomId, playerName, playerType } = location.state ?? GeneralTestData;
   const [data, setData] = useState<any>();
   const [board, setBoard] = useState<Board>();
+  const [currentPlayer, setCurrentPlayer] = useState<Player>();
+  const [opponentPlayer, setOpponentPlayer] = useState<Player>();
   const [game, setGame] = useState({
-    running: true,
+    running: false,
   });
-  const player = {
-    playerName,
-    playerType,
-    playerId,
-  };
 
-  async function subscribeToRoom() {
+  const subscribeToRoom = async () => {
     await subscribeToItems('rooms/' + roomId, setData);
-  }
+  };
 
   useEffect(() => {
     subscribeToRoom();
   }, []);
 
   useEffect(() => {
-    if (data?.one?.status === 'ready' || data?.two?.status === 'ready') {
+    if (data?.one?.status === 'ready' && data?.two?.status === 'ready') {
       setGame({
         running: true,
       });
       setItem('rooms/' + roomId, { status: 'running' });
     }
+
     if (data?.status === 'running') {
       setBoard(data.board);
+      if (playerType === PlayerType.ONE) {
+        setCurrentPlayer(data[PlayerType.ONE]);
+        setOpponentPlayer(data[PlayerType.TWO]);
+      } else {
+        setCurrentPlayer(data[PlayerType.TWO]);
+        setOpponentPlayer(data[PlayerType.ONE]);
+      }
     }
   }, [data]);
 
@@ -51,7 +56,7 @@ function Game() {
         height: '100vh',
         width: '100vw',
       }}>
-      {game.running && (
+      {game.running && !!board && !!opponentPlayer && !!currentPlayer && (
         <div
           style={{
             ...flexColumnStyle,
@@ -59,15 +64,15 @@ function Game() {
             height: '100vh',
             justifyContent: 'space-between',
           }}>
-          <OpponentPView player={player} deck={TestDeck} />
+          <OpponentPView player={opponentPlayer} />
           <Board board={board} />
-          <CurrentPView player={player} deck={TestDeck} />
+          <CurrentPView player={currentPlayer} />
         </div>
       )}
 
       {!game.running && (
         <div style={{ width: '100vw' }}>
-          <AnimalsSelection playerType={playerType} playerId={playerId} roomId={roomId} />
+          <AnimalsSelection playerType={playerType} roomId={roomId} />
           <h5>
             {playerName} : {playerType}
           </h5>

@@ -4,17 +4,15 @@ import { ANIMALS_CARDS, AnimalCard, CLANS, PlayerType } from '../utils/data';
 import { setItem } from '../utils/db';
 
 interface Props {
-  playerId: string;
   playerType: PlayerType;
   roomId: string;
 }
 
-export const AnimalsSelection = ({ playerType, playerId, roomId }: Props) => {
+export const AnimalsSelection = ({ playerType, roomId }: Props) => {
   const [idsSelected, setIdsSelected] = useState<Set<string>>(new Set());
   const [disabledBtn, setDisabledBtn] = useState(true);
 
   useEffect(() => {
-    console.log(playerId, playerType);
     setDisabledBtn(idsSelected.size === 0);
   }, [idsSelected.size]);
 

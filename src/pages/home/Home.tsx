@@ -14,20 +14,21 @@ function Home() {
     const roomId = uuidv4();
     await setItem('rooms/' + roomId, {
       board: {
-        one: [1, 2, 3],
-        two: [1, 2, 3],
-        envCard: 'unknown',
+        one: ['empty', 'empty', 'empty'],
+        two: ['empty', 'empty', 'empty'],
+        envCard: 'neutral',
       },
-      mainDeck: [1, 2],
-      animalsGY: [1],
-      powersGY: [1],
+      mainDeck: [],
+      animalsGY: [],
+      powersGY: [],
       status: 'prepare',
       one: {
         hp: 8,
-        deckCardsIds: [1],
-        playerName: 'player2',
+        deckCardsIds: [],
+        playerName: 'player1',
         canPlayAnimals: true,
         canPlayPowers: true,
+        status: 'prepare',
       },
     });
 
@@ -47,6 +48,9 @@ function Home() {
       hp: 8,
       deckCardsIds: [],
       playerName: 'player2',
+      canPlayAnimals: true,
+      canPlayPowers: true,
+      status: 'prepare',
     });
     setDisabledButton(true);
     navigate('game/' + roomId, {

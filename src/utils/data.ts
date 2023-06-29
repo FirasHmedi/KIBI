@@ -1,24 +1,43 @@
 import animalsCardsJson from '../assets/animal-cards.json';
-import { airColor, earthColor, fireColor, waterColor } from '../styles/Style';
-
-export interface Card {
-  id: string;
-  content: string;
-}
+import powerCardsJson from '../assets/power-cards.json';
+import { AllCards } from '../components/Slots';
+import { airColor, earthColor, fireColor, neutralColor, waterColor } from '../styles/Style';
 
 export const SINGUP_PATH = '/signup';
 export const SIGNIN_PATH = '/signin';
 export const HOME_PATH = '/';
 export const GAME_PATH = '/game/:id';
 
+export interface Card {
+  id: string;
+  ability?: string;
+  description?: string;
+  name?: string;
+}
+
+export interface AnimalCard extends Card {
+  clan: ClanName;
+  role: string;
+}
+
 export enum PlayerType {
   ONE = 'one',
   TWO = 'two',
 }
 
-export const ClansNames = ['water', 'earth', 'fire', 'air'];
+export interface Player {
+  playerType: PlayerType;
+  deckCardsIds: string[];
+  hp: number;
+  status: string;
+  playerName?: string;
+  canPlayPowers: boolean;
+  canPlayAnimals: boolean;
+}
 
-export type ClanName = 'air' | 'earth' | 'fire' | 'water';
+export const ClansNames = ['water', 'earth', 'fire', 'air', 'neutral'];
+
+export type ClanName = 'air' | 'earth' | 'fire' | 'water' | 'neutral';
 
 export const CLANS = {
   water: {
@@ -33,19 +52,10 @@ export const CLANS = {
   air: {
     color: airColor,
   },
+  neutral: {
+    color: neutralColor,
+  },
 };
-
-export interface Card {
-  id: string;
-  ability?: string;
-  description: string;
-  name?: string;
-}
-
-export interface AnimalCard extends Card {
-  clan: ClanName;
-  role: string;
-}
 
 export const TestDeck = [
   {
@@ -83,5 +93,11 @@ const getArrayFromJson = (file: any) => {
   return Object.keys(object).map(id => ({ id, ...object[id] }));
 };
 
+export const ALL_CARDS: Record<string, AllCards> = {
+  ...JSON.parse(JSON.stringify(animalsCardsJson)),
+  ...JSON.parse(JSON.stringify(powerCardsJson)),
+};
 export const ANIMALS_CARDS: AnimalCard[] = getArrayFromJson(animalsCardsJson);
-export const POWER_CARDS: Card[] = getArrayFromJson(animalsCardsJson);
+export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.stringify(animalsCardsJson));
+export const POWER_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.stringify(animalsCardsJson));
+export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
