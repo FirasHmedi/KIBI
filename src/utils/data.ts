@@ -93,11 +93,11 @@ const getArrayFromJson = (file: any) => {
   return Object.keys(object).map(id => ({ id, ...object[id] }));
 };
 
-export const ALL_CARDS: Record<string, AllCards> = {
+export const ALL_CARDS_OBJECT: Record<string, AllCards> = {
   ...JSON.parse(JSON.stringify(animalsCardsJson)),
   ...JSON.parse(JSON.stringify(powerCardsJson)),
 };
 export const ANIMALS_CARDS: AnimalCard[] = getArrayFromJson(animalsCardsJson);
 export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.stringify(animalsCardsJson));
-export const POWER_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.stringify(animalsCardsJson));
+export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(animalsCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
