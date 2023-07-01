@@ -5,8 +5,8 @@ export const attackOwner = (roomId: string, playerType: string, animal1Id: strin
 };
 // ----------------------attacker--------------------
 export const removeOpponentAnimal = (roomId: string, playerType: string, animal1Id: string) => {
-    // removePlayerAnimalFromBoard (unit action)
-    // addAnimalToGraveYard (unit action)
+  // removePlayerAnimalFromBoard (unit action)
+  // addAnimalToGraveYard (unit action)
 };
 // ----------------------tank-----------------------
 export const returnTankToDeck = (roomId: string, playerType: string, animal1Id: string) => {
@@ -14,7 +14,7 @@ export const returnTankToDeck = (roomId: string, playerType: string, animal1Id: 
 };
 // ----------------------Snake -----------------------
 export const add1Hp = (roomId: string, playerType: string) => {
-    // addHpToPlayer (1hp) (unit action)
+  // addHpToPlayer (1hp) (unit action)
 };
 // ----------------------jellyfish-----------------------
 export const drawOneCard = (roomId: string, playerType: string) => {
@@ -22,11 +22,11 @@ export const drawOneCard = (roomId: string, playerType: string) => {
 };
 // ----------------------Crow-----------------------
 export const minus1Hp = (roomId: string, playerType: string) => {
-    // removeHpFromPlayer (1hp) (unit action)
+  // removeHpFromPlayer (1hp) (unit action)
 };
 // ----------------------Fox-----------------------
 export const ReviveLastAnimalToDeck = (roomId: string, playerType: string) => {
-    // getAnimalCardFromGraveYardByIndex (length-1)  (unit action)
-    // deleteAnimalCardFromGraveYardByIndex (length-1) (unit action)
-    // addCardToPlayerDeck (unit action)
+  // getAnimalCardFromGraveYardByIndex (length-1)  (unit action)
+  // deleteAnimalCardFromGraveYardByIndex (length-1) (unit action)
+  // addCardToPlayerDeck (unit action)
 };
