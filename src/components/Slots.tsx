@@ -1,4 +1,4 @@
-import { centerStyle, violet } from '../styles/Style';
+import { centerStyle, flexColumnStyle, violet } from '../styles/Style';
 import { ANIMAL_CARDS_OBJECT, AnimalCard, CLANS, Card } from '../utils/data';
 
 export const SlotBack = ({ id }: { id: number }) => (
@@ -25,31 +25,40 @@ interface SlotProps {
 }
 
 export const Slot = ({ cardId }: SlotProps) => {
-  const card = cardId ? ANIMAL_CARDS_OBJECT[cardId] : null;
-  return (
+  const card = cardId ? ANIMAL_CARDS_OBJECT[cardId.substring(4)] : null;
+  return !!card && !!card?.clan ? (
     <div
       style={{
+        ...flexColumnStyle,
         borderRadius: 5,
-        backgroundColor: card?.clan ? CLANS[card?.clan as keyof typeof CLANS]?.color : '#95a5a6',
+        backgroundColor: CLANS[card?.clan]?.color,
         color: 'white',
-        fontSize: 24,
-        margin: 10,
-        padding: 1,
-        ...centerStyle,
-        flexDirection: 'column',
+        fontSize: 14,
+        padding: 2,
         height: '16vh',
         width: '6vw',
+        justifyContent: 'space-between',
+        flexShrink: 0,
       }}>
-      {card ? (
-        <div>
-          <h5>{card?.name}</h5>
-          <h5>{card?.ability}</h5>
-          <h5>{card?.role}</h5>
-          <h5>{card?.clan}</h5>
-        </div>
-      ) : (
-        <h5>Empty</h5>
-      )}
+      <h4 style={{ paddingTop: 15 }}>{card?.name?.toUpperCase()}</h4>
+      <h5 style={{}}>{card?.role}</h5>
+      <h5 style={{ paddingBottom: 15 }}>{card?.ability}</h5>
+    </div>
+  ) : (
+    <div
+      style={{
+        ...flexColumnStyle,
+        borderRadius: 5,
+        backgroundColor: '#95a5a6',
+        color: 'white',
+        fontSize: 22,
+        margin: 10,
+        padding: 1,
+        height: '16vh',
+        width: '6vw',
+        justifyContent: 'center',
+      }}>
+      <h5>EMPTY</h5>
     </div>
   );
 };

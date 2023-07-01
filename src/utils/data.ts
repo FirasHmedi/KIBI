@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import animalsCardsJson from '../assets/animal-cards.json';
 import powerCardsJson from '../assets/power-cards.json';
 import { AllCards } from '../components/Slots';
@@ -93,11 +94,19 @@ const getArrayFromJson = (file: any) => {
   return Object.keys(object).map(id => ({ id, ...object[id] }));
 };
 
+const getKeysArrayFromJson = (file: any) => Object.keys(JSON.parse(JSON.stringify(file)));
+
 export const ALL_CARDS_OBJECT: Record<string, AllCards> = {
   ...JSON.parse(JSON.stringify(animalsCardsJson)),
   ...JSON.parse(JSON.stringify(powerCardsJson)),
 };
+
+export const ANIMALS_CARDS_IDS: string[] = getKeysArrayFromJson(animalsCardsJson);
+export const POWERS_CARDS_IDS: string[] = getKeysArrayFromJson(powerCardsJson);
 export const ANIMALS_CARDS: AnimalCard[] = getArrayFromJson(animalsCardsJson);
 export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.stringify(animalsCardsJson));
-export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(animalsCardsJson));
+export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
+
+export const getRandomMainDeck = () =>
+  _.shuffle([...POWERS_CARDS_IDS.map(id => 'one-' + id), ...POWERS_CARDS_IDS.map(id => 'two-' + id)]);

@@ -1,4 +1,4 @@
-import { flexRowStyle } from '../styles/Style';
+import { flexRowStyle, violet } from '../styles/Style';
 import { Player } from '../utils/data';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 
@@ -6,35 +6,44 @@ interface Props {
   player: Player;
 }
 
-export const CurrentPView = ({ player }: Props) => (
-  <div
-    style={{
-      ...flexRowStyle,
-      height: '20vh',
-      alignItems: 'center',
-    }}>
-    <div style={{ width: '7vw', position: 'absolute', left: 10, top: 10 }}>
-      <h5>
-        {player.playerName} : {player.playerType} : {player.hp} hp
-      </h5>
-      <h5>{player.deckCardsIds?.length ?? 0} cards in Deck</h5>
+export const CurrentPView = ({ player }: Props) => {
+  const deckCardsIds = player.deckCardsIds ?? [];
+  return (
+    <div
+      style={{
+        ...flexRowStyle,
+        height: '20vh',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <div style={{ color: violet, position: 'absolute', left: 30 }}>
+        <h2>
+          {player.playerType?.toUpperCase()} : {player.hp} HP
+        </h2>
+        <h3>{deckCardsIds.length} cards</h3>
+      </div>
+      <CurrentPDeck deckCardsIds={deckCardsIds} />
     </div>
-    <CurrentPDeck deckCardsIds={player.deckCardsIds ?? []} />
-  </div>
-);
+  );
+};
 
-export const OpponentPView = ({ player }: Props) => (
-  <div
-    style={{
-      ...flexRowStyle,
-      height: '20vh',
-    }}>
-    <div style={{ width: '7vw', position: 'absolute', left: 10, bottom: 10 }}>
-      <h5>
-        {player.playerName} : {player.playerType} : {player.hp} hp
-      </h5>
-      <h5>Deck: {player.deckCardsIds?.length ?? 0} cards</h5>
+export const OpponentPView = ({ player }: Props) => {
+  const deckCardsIds = player.deckCardsIds ?? [];
+  return (
+    <div
+      style={{
+        ...flexRowStyle,
+        height: '20vh',
+        alignItems: 'center',
+        padding: 5,
+      }}>
+      <div style={{ color: violet, position: 'absolute', left: 30 }}>
+        <h2>
+          {player.playerType?.toUpperCase()} : {player.hp} HP
+        </h2>
+        <h3>{deckCardsIds.length} cards</h3>
+      </div>
+      <OpponentPDeck deckCardsIds={deckCardsIds} />
     </div>
-    <OpponentPDeck deckCardsIds={player.deckCardsIds ?? []} />
-  </div>
-);
+  );
+};

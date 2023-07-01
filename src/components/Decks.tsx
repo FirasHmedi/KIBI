@@ -10,8 +10,9 @@ export const CurrentPDeck = ({ deckCardsIds }: Props = { deckCardsIds: [] }) => 
     <div
       style={{
         ...flexRowStyle,
-        flex: 1,
-        justifyContent: 'center',
+        width: '70vw',
+        justifyContent: 'space-evenly',
+        overflowY: 'auto',
       }}>
       {deckCardsIds.map((cardId, index) => (
         <Slot key={index} cardId={cardId} />

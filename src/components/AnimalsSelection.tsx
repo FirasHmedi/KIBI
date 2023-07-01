@@ -27,7 +27,7 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
   const submitAnimalCards = async () => {
     setDisabledBtn(true);
     await setItem('rooms/' + roomId + `/${playerType}`, {
-      deckCardsId: [...idsSelected].map(id => `${playerType}-${id}`),
+      deckCardsIds: [...idsSelected].map(id => `${playerType}-${id}`),
       status: 'ready',
     });
   };

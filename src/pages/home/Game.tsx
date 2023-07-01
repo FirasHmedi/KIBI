@@ -4,7 +4,7 @@ import { AnimalsSelection } from '../../components/AnimalsSelection';
 import { Board } from '../../components/Board';
 import { CurrentPView, OpponentPView } from '../../components/Players';
 import { centerStyle, flexColumnStyle } from '../../styles/Style';
-import { GeneralTestData, Player, PlayerType } from '../../utils/data';
+import { GeneralTestData, Player, PlayerType, getRandomMainDeck } from '../../utils/data';
 import { setItem, subscribeToItems } from '../../utils/db';
 
 function Game() {
@@ -27,21 +27,23 @@ function Game() {
   }, []);
 
   useEffect(() => {
-    if (data?.one?.status === 'ready' && data?.two?.status === 'ready') {
+    if (data?.one?.status === 'ready' && data?.two?.status === 'ready' && !game.running) {
       setGame({
         running: true,
       });
-      setItem('rooms/' + roomId, { status: 'running' });
+      setItem('rooms/' + roomId, { status: 'running', board: { mainDeck: getRandomMainDeck() } });
     }
 
     if (data?.status === 'running') {
       setBoard(data.board);
+      const player1 = { ...data[PlayerType.ONE], playerType: PlayerType.ONE };
+      const player2 = { ...data[PlayerType.TWO], playerType: PlayerType.TWO };
       if (playerType === PlayerType.ONE) {
-        setCurrentPlayer(data[PlayerType.ONE]);
-        setOpponentPlayer(data[PlayerType.TWO]);
+        setCurrentPlayer(player1);
+        setOpponentPlayer(player2);
       } else {
-        setCurrentPlayer(data[PlayerType.TWO]);
-        setOpponentPlayer(data[PlayerType.ONE]);
+        setCurrentPlayer(player2);
+        setOpponentPlayer(player1);
       }
     }
   }, [data]);
