@@ -59,7 +59,7 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
             key={id}
             style={{
               ...flexColumnStyle,
-              border: 'solid 5px #95a5a6',
+              border: 'solid 4px #95a5a6',
               borderRadius: 5,
               borderColor: idsSelected.has(id) ? selectedColor : '#95a5a6',
               backgroundColor: CLANS[clan].color,

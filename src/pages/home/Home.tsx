@@ -17,15 +17,15 @@ function Home() {
       board: {
         one: ['empty', 'empty', 'empty'],
         two: ['empty', 'empty', 'empty'],
-        envCard: 'neutral',
+        envCard: {
+          id: '0',
+          name: 'Neutral',
+          ability: 'neutral',
+        },
       },
-      mainDeck: [],
-      animalsGY: [],
-      powersGY: [],
       status: PREPARE,
       one: {
         hp: 8,
-        deckCardsIds: [],
         playerName: 'player1',
         canPlayAnimals: true,
         canPlayPowers: true,
@@ -47,7 +47,6 @@ function Home() {
     if (roomId.length === 0) return;
     await setItem(ROOMS_PATH + roomId + '/two', {
       hp: 8,
-      deckCardsIds: [],
       playerName: 'player2',
       canPlayAnimals: true,
       canPlayPowers: true,

@@ -4,7 +4,7 @@ import { Seperator } from './Elements';
 import { EnvSlot, SlotBack, Slots } from './Slots';
 
 interface Props {
-  board?: Board;
+  board: Board;
   selectOpponentSlot: (slotNb?: number, cardId?: string) => void;
   selectCurrentSlot: (slotNb?: number, cardId?: string) => void;
   selectedCurrentPSlotNb?: number;
@@ -13,27 +13,12 @@ interface Props {
 
 export interface Board {
   mainDeck: string[];
-  opponentPSlots: string[];
   currentPSlots: string[];
+  opponentPSlots: string[];
   animalsGY: string[];
   powersGY: string[];
-  envCard?: Card;
+  envCard: Card;
 }
-
-export const NeutralEnvCard: Card = {
-  id: '0',
-  name: 'Neutral',
-  ability: 'neutral',
-};
-
-const DefaultBoard = {
-  mainDeck: [],
-  opponentPSlots: [],
-  currentPSlots: [],
-  animalsGY: [],
-  powersGY: [],
-  envCard: NeutralEnvCard,
-};
 
 export const Board = ({
   board,
@@ -42,10 +27,8 @@ export const Board = ({
   selectedCurrentPSlotNb,
   selectedOpponentPSlotNb,
 }: Props) => {
-  const { mainDeck, opponentPSlots, currentPSlots, animalsGY, powersGY, envCard } = {
-    ...DefaultBoard,
-    ...board,
-  };
+  const { mainDeck, currentPSlots, opponentPSlots, animalsGY, powersGY, envCard } = board;
+
   return (
     <div
       style={{
@@ -62,7 +45,9 @@ export const Board = ({
           selectSlot={selectOpponentSlot}
           selectedSlotNb={selectedOpponentPSlotNb}
         />
+
         <EnvSlot envCard={envCard} />
+
         <Slots
           slots={currentPSlots}
           selectSlot={selectCurrentSlot}

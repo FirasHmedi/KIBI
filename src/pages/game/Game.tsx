@@ -3,9 +3,16 @@ import { useLocation } from 'react-router-dom';
 import { AnimalsSelection } from '../../components/AnimalsSelection';
 import GameView from '../../components/GameView';
 import { centerStyle, flexColumnStyle } from '../../styles/Style';
-import { GeneralTestData, PlayerType, READY, ROOMS_PATH, RUNNING, getRandomMainDeck } from '../../utils/data';
+import {
+  GeneralTestData,
+  PlayerType,
+  READY,
+  ROOMS_PATH,
+  RUNNING,
+  getRandomMainDeck,
+} from '../../utils/data';
 import { setItem, subscribeToItems } from '../../utils/db';
-import { isGameRunning } from '../../utils/helpers';
+import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 
 function Game() {
   const location = useLocation();
@@ -21,7 +28,11 @@ function Game() {
   }, []);
 
   useEffect(() => {
-    if (game?.one?.status === READY && game?.two?.status === READY && !isGameRunning(game?.status)) {
+    if (
+      game?.one?.status === READY &&
+      game?.two?.status === READY &&
+      !isGameRunning(game?.status)
+    ) {
       setItem(ROOMS_PATH + roomId, {
         status: RUNNING,
         board: { mainDeck: getRandomMainDeck() },
@@ -45,7 +56,7 @@ function Game() {
       }}>
       {isGameRunning(game?.status) && <GameView game={game} playerType={playerType} />}
 
-      {!isGameRunning(game?.status) && (
+      {isGameInPreparation(game?.status) && (
         <div style={{ width: '100vw' }}>
           <AnimalsSelection playerType={playerType} roomId={roomId} />
           <h5>

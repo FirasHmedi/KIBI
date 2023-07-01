@@ -26,6 +26,21 @@ export interface AnimalCard extends Card {
   role: string;
 }
 
+export const NeutralEnvCard: Card = {
+  id: '0',
+  name: 'Neutral',
+  ability: 'neutral',
+};
+
+export const DefaultBoard = {
+  mainDeck: [],
+  currentPSlots: [],
+  opponentPSlots: [],
+  animalsGY: [],
+  powersGY: [],
+  envCard: NeutralEnvCard,
+};
+
 export enum PlayerType {
   ONE = 'one',
   TWO = 'two',

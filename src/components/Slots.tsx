@@ -32,6 +32,7 @@ const commonStyle: React.CSSProperties = {
   height: '17vh',
   width: '7vw',
   flexShrink: 0,
+  border: 'solid 4px #95a5a6',
 };
 
 export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
@@ -46,7 +47,7 @@ export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
         ...commonStyle,
         backgroundColor: CLANS[card?.clan]?.color,
         justifyContent: 'space-between',
-        border: selected ? `solid 4px ${selectedColor}` : '',
+        borderColor: selected ? selectedColor : CLANS[card?.clan]?.color,
       }}
       onClick={() => selectSlotPolished()}>
       <h4>{card?.name?.toUpperCase()}</h4>
@@ -59,7 +60,7 @@ export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
         ...commonStyle,
         backgroundColor: '#95a5a6',
         justifyContent: 'center',
-        border: selected ? `solid 4px ${selectedColor}` : '',
+        borderColor: selected ? selectedColor : '#95a5a6',
       }}
       onClick={() => selectSlotPolished()}>
       <h5>EMPTY</h5>
@@ -72,7 +73,7 @@ export const EnvSlot = ({ envCard }: { envCard?: Card }) => (
     style={{
       ...centerStyle,
       borderRadius: 5,
-      backgroundColor: CLANS[(envCard?.ability ?? 'neutral') as keyof typeof CLANS]?.color,
+      backgroundColor: CLANS[envCard?.ability as keyof typeof CLANS]?.color,
       color: 'white',
       fontSize: '1em',
       flexDirection: 'column',
@@ -82,7 +83,7 @@ export const EnvSlot = ({ envCard }: { envCard?: Card }) => (
       justifyContent: 'center',
       flexShrink: 0,
     }}>
-    <h5 style={{ transform: 'rotate(-90deg)' }}>{envCard?.name ?? 'Neutral'}</h5>
+    <h5 style={{ transform: 'rotate(-90deg)' }}>{envCard?.name?.toUpperCase()}</h5>
   </div>
 );
 
@@ -106,7 +107,13 @@ export const Slots = ({
         justifyContent: 'space-evenly',
       }}>
       {compoundSlots.map((slot, index) => (
-        <Slot nb={index} selectSlot={selectSlot} key={index} cardId={slot} selected={selectedSlotNb === index} />
+        <Slot
+          nb={index}
+          selectSlot={selectSlot}
+          key={index}
+          cardId={slot}
+          selected={selectedSlotNb === index}
+        />
       ))}
     </div>
   );
