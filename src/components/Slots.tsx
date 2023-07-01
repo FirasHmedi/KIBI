@@ -1,4 +1,4 @@
-import { centerStyle, flexColumnStyle, violet } from '../styles/Style';
+import { centerStyle, flexColumnStyle, selectedColor, violet } from '../styles/Style';
 import { ANIMAL_CARDS_OBJECT, AnimalCard, CLANS, Card } from '../utils/data';
 
 export const SlotBack = () => (
@@ -17,21 +17,38 @@ export const SlotBack = () => (
   </div>
 );
 
-export const Slot = ({ cardId }: { cardId?: string }) => {
+interface SlotProps {
+  cardId?: string;
+  selected?: boolean;
+  selectSlot?: (slotNb?: number, cardId?: string) => void;
+  nb?: number;
+}
+
+const commonStyle: React.CSSProperties = {
+  ...flexColumnStyle,
+  borderRadius: 5,
+  color: 'white',
+  fontSize: '1em',
+  height: '17vh',
+  width: '7vw',
+  flexShrink: 0,
+};
+
+export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
   const card = cardId ? ANIMAL_CARDS_OBJECT[cardId.substring(4)] : null;
+  const selectSlotPolished = () => {
+    if (!!selectSlot) selectSlot(nb, cardId);
+  };
+
   return !!card && !!card?.clan ? (
     <div
       style={{
-        ...flexColumnStyle,
-        borderRadius: 5,
+        ...commonStyle,
         backgroundColor: CLANS[card?.clan]?.color,
-        color: 'white',
-        fontSize: '1em',
-        height: '17vh',
-        width: '7vw',
         justifyContent: 'space-between',
-        flexShrink: 0,
-      }}>
+        border: selected ? `solid 4px ${selectedColor}` : '',
+      }}
+      onClick={() => selectSlotPolished()}>
       <h4>{card?.name?.toUpperCase()}</h4>
       <h5>{card?.ability}</h5>
       <h5>{card?.role?.toUpperCase()}</h5>
@@ -39,16 +56,12 @@ export const Slot = ({ cardId }: { cardId?: string }) => {
   ) : (
     <div
       style={{
-        ...flexColumnStyle,
-        borderRadius: 5,
+        ...commonStyle,
         backgroundColor: '#95a5a6',
-        color: 'white',
-        fontSize: '1em',
-        height: '17vh',
-        width: '7vw',
         justifyContent: 'center',
-        flexShrink: 0,
-      }}>
+        border: selected ? `solid 4px ${selectedColor}` : '',
+      }}
+      onClick={() => selectSlotPolished()}>
       <h5>EMPTY</h5>
     </div>
   );
@@ -75,19 +88,26 @@ export const EnvSlot = ({ envCard }: { envCard?: Card }) => (
 
 export type AllCards = AnimalCard | Card | undefined;
 
-export const OpponentPSlots = ({ opponentPSlots }: { opponentPSlots: string[] }) => <Slots slots={opponentPSlots} />;
-
-export const CurrentPSlots = ({ currentPSlots }: { currentPSlots: string[] }) => <Slots slots={currentPSlots} />;
-
-const Slots = ({ slots }: { slots: string[] }) => (
-  <div
-    style={{
-      ...centerStyle,
-      width: '24vw',
-      justifyContent: 'space-evenly',
-    }}>
-    <Slot cardId={slots[0]} />
-    <Slot cardId={slots[1]} />
-    <Slot cardId={slots[2]} />
-  </div>
-);
+export const Slots = ({
+  slots,
+  selectedSlotNb,
+  selectSlot,
+}: {
+  slots: string[];
+  selectedSlotNb?: number;
+  selectSlot: (slotNb?: number, cardId?: string) => void;
+}) => {
+  const compoundSlots = [slots[0], slots[1], slots[2]];
+  return (
+    <div
+      style={{
+        ...centerStyle,
+        width: '24vw',
+        justifyContent: 'space-evenly',
+      }}>
+      {compoundSlots.map((slot, index) => (
+        <Slot nb={index} selectSlot={selectSlot} key={index} cardId={slot} selected={selectedSlotNb === index} />
+      ))}
+    </div>
+  );
+};

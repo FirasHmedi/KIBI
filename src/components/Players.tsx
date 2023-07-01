@@ -1,17 +1,25 @@
 import { useState } from 'react';
 import { buttonStyle, flexRowStyle, primaryBlue, violet } from '../styles/Style';
 import { Player } from '../utils/data';
+import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 
-interface Props {
+export const CurrentPView = ({
+  player,
+  round,
+  playCard,
+}: {
   player: Player;
-}
-
-export const CurrentPView = ({ player }: Props) => {
+  round: any;
+  playCard: (cardId?: string) => void;
+}) => {
   const deckCardsIds = player.deckCardsIds ?? [];
   const [selectedId, setSelectedId] = useState<string>();
-  const disabledButton = !selectedId;
-  const playCard = () => {};
+
+  const isPlayButtonEnabled =
+    !!selectedId &&
+    round?.player === player?.playerType &&
+    ((player?.canPlayAnimals && isAnimalCard(selectedId)) || (player?.canPlayPowers && isPowerCard(selectedId)));
 
   return (
     <div
@@ -27,13 +35,13 @@ export const CurrentPView = ({ player }: Props) => {
           fontSize: '0.8em',
           position: 'absolute',
           left: '12vw',
-          backgroundColor: disabledButton ? '#95a5a6' : primaryBlue,
+          backgroundColor: !isPlayButtonEnabled ? '#95a5a6' : primaryBlue,
         }}
-        disabled={disabledButton}
-        onClick={() => playCard()}>
+        disabled={!isPlayButtonEnabled}
+        onClick={() => playCard(selectedId)}>
         Play card
       </button>
-      <div style={{ color: violet, position: 'absolute', left: '2vw' }}>
+      <div style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.2em' }}>
         <h4>
           {player.playerType?.toUpperCase()} : {player.hp} HP
         </h4>
@@ -44,7 +52,7 @@ export const CurrentPView = ({ player }: Props) => {
   );
 };
 
-export const OpponentPView = ({ player }: Props) => {
+export const OpponentPView = ({ player }: { player: Player }) => {
   const deckCardsIds = player.deckCardsIds ?? [];
   return (
     <div
@@ -54,7 +62,7 @@ export const OpponentPView = ({ player }: Props) => {
         alignItems: 'center',
         padding: 5,
       }}>
-      <div style={{ color: violet, position: 'absolute', left: '2vw' }}>
+      <div style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.2em' }}>
         <h4>
           {player.playerType?.toUpperCase()} : {player.hp} HP
         </h4>

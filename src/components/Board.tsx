@@ -1,10 +1,14 @@
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { ALL_CARDS_OBJECT, Card } from '../utils/data';
 import { Seperator } from './Elements';
-import { CurrentPSlots, EnvSlot, OpponentPSlots, SlotBack } from './Slots';
+import { EnvSlot, SlotBack, Slots } from './Slots';
 
 interface Props {
   board?: Board;
+  selectOpponentSlot: (slotNb?: number, cardId?: string) => void;
+  selectCurrentSlot: (slotNb?: number, cardId?: string) => void;
+  selectedCurrentPSlotNb?: number;
+  selectedOpponentPSlotNb?: number;
 }
 
 export interface Board {
@@ -31,8 +35,17 @@ const DefaultBoard = {
   envCard: NeutralEnvCard,
 };
 
-export const Board = ({ board }: Props) => {
-  const { mainDeck, opponentPSlots, currentPSlots, animalsGY, powersGY, envCard } = { ...DefaultBoard, ...board };
+export const Board = ({
+  board,
+  selectCurrentSlot,
+  selectOpponentSlot,
+  selectedCurrentPSlotNb,
+  selectedOpponentPSlotNb,
+}: Props) => {
+  const { mainDeck, opponentPSlots, currentPSlots, animalsGY, powersGY, envCard } = {
+    ...DefaultBoard,
+    ...board,
+  };
   return (
     <div
       style={{
@@ -44,9 +57,17 @@ export const Board = ({ board }: Props) => {
       <MainDeck nbCards={mainDeck.length} />
 
       <div style={{ ...centerStyle, ...flexColumnStyle }}>
-        <OpponentPSlots opponentPSlots={opponentPSlots} />
+        <Slots
+          slots={opponentPSlots}
+          selectSlot={selectOpponentSlot}
+          selectedSlotNb={selectedOpponentPSlotNb}
+        />
         <EnvSlot envCard={envCard} />
-        <CurrentPSlots currentPSlots={currentPSlots} />
+        <Slots
+          slots={currentPSlots}
+          selectSlot={selectCurrentSlot}
+          selectedSlotNb={selectedCurrentPSlotNb}
+        />
       </div>
 
       <div style={{ width: '15vw' }}>

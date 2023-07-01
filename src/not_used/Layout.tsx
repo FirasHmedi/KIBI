@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { appStyle, headerStyle, primaryBlue } from '../styles/Style';
+import { headerStyle, primaryBlue } from '../styles/Style';
 import { HOME_PATH } from '../utils/data';
 import { getCurrentPathName } from '../utils/helpers';
 
@@ -22,12 +21,4 @@ export const Header = ({ loading }: { loading: boolean }) => {
       </Link>
     </div>
   );
-};
-
-export const Layout = ({ children }: any) => {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {}, []);
-
-  return <div style={appStyle}>{React.cloneElement(children)}</div>;
 };

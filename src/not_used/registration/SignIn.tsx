@@ -1,15 +1,7 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import {
-  black,
-  centerStyle,
-  primary,
-  signinContainerStyle,
-  softGrey,
-} from '../../styles/Style';
-import { loginWithEmailPsw, loginWithGoogle } from '../../utils/auth';
-import { SINGUP_PATH } from '../../utils/data';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { isNotEmpty } from '../../utils/helpers';
+import { loginWithEmailPsw, loginWithGoogle } from '../auth';
 
 const inputStyle = {
   height: '3vh',

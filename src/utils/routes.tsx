@@ -1,7 +1,12 @@
-import { Layout } from '../components/Layout';
-import Game from '../pages/home/Game';
+import React from 'react';
+import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
+import { appStyle } from '../styles/Style';
 import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
+
+const Layout = ({ children }: any) => {
+  return <div style={appStyle}>{React.cloneElement(children)}</div>;
+};
 
 export const routes = [
   {

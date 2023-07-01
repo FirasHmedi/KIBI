@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { buttonStyle } from '../../styles/Style';
-import { PlayerType } from '../../utils/data';
+import { placeAnimalOnBoard } from '../../utils/actions';
+import { PREPARE, PlayerType, ROOMS_PATH } from '../../utils/data';
 import { setItem } from '../../utils/db';
-import {attackOwner, placeAnimalOnBoard, playerDrawCard} from "../../utils/actions";
 
 function Home() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ function Home() {
 
   const createRoom = async () => {
     const roomId = uuidv4();
-    await setItem('rooms/' + roomId, {
+    await setItem(ROOMS_PATH + roomId, {
       board: {
         one: ['empty', 'empty', 'empty'],
         two: ['empty', 'empty', 'empty'],
@@ -22,14 +22,14 @@ function Home() {
       mainDeck: [],
       animalsGY: [],
       powersGY: [],
-      status: 'prepare',
+      status: PREPARE,
       one: {
         hp: 8,
         deckCardsIds: [],
         playerName: 'player1',
         canPlayAnimals: true,
         canPlayPowers: true,
-        status: 'prepare',
+        status: PREPARE,
       },
     });
 
@@ -45,13 +45,13 @@ function Home() {
 
   const joinRoom = async () => {
     if (roomId.length === 0) return;
-    await setItem('rooms/' + roomId + '/two', {
+    await setItem(ROOMS_PATH + roomId + '/two', {
       hp: 8,
       deckCardsIds: [],
       playerName: 'player2',
       canPlayAnimals: true,
       canPlayPowers: true,
-      status: 'prepare',
+      status: PREPARE,
     });
     setDisabledButton(true);
     navigate('game/' + roomId, {
@@ -65,8 +65,8 @@ function Home() {
   const test = async () => {
     //await attackOwner("test-room","one","1-a")
     //await playerDrawCard("test-room","one")
-    await placeAnimalOnBoard("test-room","one",1,"1-a")
-  }
+    await placeAnimalOnBoard('test-room', 'one', 1, '1-a');
+  };
   return (
     <div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100vh' }}>
       <div
@@ -97,8 +97,8 @@ function Home() {
         </div>
       </div>
       <div>
-        <button style={buttonStyle}  onClick={() => test()}>
-         test function
+        <button style={buttonStyle} onClick={() => test()}>
+          test function
         </button>
       </div>
     </div>

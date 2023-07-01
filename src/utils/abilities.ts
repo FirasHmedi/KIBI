@@ -7,19 +7,33 @@ export const reviveLastPower = (roomId: string, playerType: string) => {
   // deletePowerCardFromGraveYardByIndex (length-1) (unit action)
   // addCardToPlayerDeck (unit action)
 };
-export const sacrifice2HpToRevive = (roomId: string, playerType: string, animalId: string, slotNumber: string) => {
+export const sacrifice2HpToRevive = (
+  roomId: string,
+  playerType: string,
+  animalId: string,
+  slotNumber: string,
+) => {
   // removeHpFromPlayer (2hp) (unit action)
   // deleteAnimalCardFromGraveYardById (unit action)
   // addAnimalToBoard (unit action)
   // changeCanAttackVarOfSlot (true) (unit action)
 };
-export const sacrifice3HpToSteal = (roomId: string, playerType: string, animalId: string, slotNumber: string) => {
+export const sacrifice3HpToSteal = (
+  roomId: string,
+  playerType: string,
+  animalId: string,
+  slotNumber: string,
+) => {
   // removeHpFromPlayer (3hp) (unit action)
   // removePlayerAnimalFromBoard (unit action)
   // addAnimalToBoard (unit action)
   // changeCanAttackVarOfSlot (true) (unit action)
 };
-export const sacrifice1HpReviveLastAnimal = (roomId: string, playerType: string, slotNumber: string) => {
+export const sacrifice1HpReviveLastAnimal = (
+  roomId: string,
+  playerType: string,
+  slotNumber: string,
+) => {
   // removeHpFromPlayer (1hp) (unit action)
   // getAnimalCardFromGraveYardByIndex (length-1)  (unit action)
   // deleteAnimalCardFromGraveYardByIndex (length-1) (unit action)
@@ -54,7 +68,12 @@ export const shieldOwnerPlus3Hp = (roomId: string, playerType: string) => {
 export const draw2Cards = (roomId: string, playerType: string) => {
   // playerDrawCard (Complex action) * 2
 };
-export const sacrifice1HpToReturn2animals = (roomId: string, playerType: string, animal1Id: string, animal2Id: string) => {
+export const sacrifice1HpToReturn2animals = (
+  roomId: string,
+  playerType: string,
+  animal1Id: string,
+  animal2Id: string,
+) => {
   // addHpToPlayer (1hp) (unit action)
   // deleteAnimalCardFromGraveYardById (animal1Id) (unit action)
   // addCardToPlayerDeck (animal1Id) (unit action)

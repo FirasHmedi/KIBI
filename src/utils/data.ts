@@ -9,6 +9,11 @@ export const SIGNIN_PATH = '/signin';
 export const HOME_PATH = '/';
 export const GAME_PATH = '/game/:id';
 
+export const RUNNING = 'running';
+export const READY = 'ready';
+export const PREPARE = 'prepare';
+export const ROOMS_PATH = 'rooms/';
+
 export interface Card {
   id: string;
   ability?: string;
@@ -102,7 +107,12 @@ export const ANIMALS_POINTS = {
     hp: 1,
   },
 };
-export const GeneralTestData = { roomId: 'test', playerName: 'test', playerType: 'one', playerId: 'testId' };
+export const GeneralTestData = {
+  roomId: 'test',
+  playerName: 'test',
+  playerType: 'one',
+  playerId: 'testId',
+};
 export const AnimalsGY = [];
 export const PowersGY = [];
 
@@ -121,9 +131,14 @@ export const ALL_CARDS_OBJECT: Record<string, AllCards> = {
 export const ANIMALS_CARDS_IDS: string[] = getKeysArrayFromJson(animalsCardsJson);
 export const POWERS_CARDS_IDS: string[] = getKeysArrayFromJson(powerCardsJson);
 export const ANIMALS_CARDS: AnimalCard[] = getArrayFromJson(animalsCardsJson);
-export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.stringify(animalsCardsJson));
+export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(
+  JSON.stringify(animalsCardsJson),
+);
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
 
 export const getRandomMainDeck = () =>
-  _.shuffle([...POWERS_CARDS_IDS.map(id => 'one-' + id), ...POWERS_CARDS_IDS.map(id => 'two-' + id)]);
+  _.shuffle([
+    ...POWERS_CARDS_IDS.map(id => 'one-' + id),
+    ...POWERS_CARDS_IDS.map(id => 'two-' + id),
+  ]);

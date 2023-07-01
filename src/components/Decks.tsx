@@ -1,4 +1,4 @@
-import { flexRowStyle, selectedColor } from '../styles/Style';
+import { flexRowStyle } from '../styles/Style';
 import { Slot, SlotBack } from './Slots';
 
 interface CurrentPDeckProps {
@@ -8,7 +8,8 @@ interface CurrentPDeckProps {
 }
 
 export const CurrentPDeck = ({ deckCardsIds, setSelectedId, selectedId }: CurrentPDeckProps) => {
-  const selectCard = (cardId: string) => (cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId));
+  const selectCard = (cardId: string) =>
+    cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId);
   return (
     <div
       style={{
@@ -21,10 +22,10 @@ export const CurrentPDeck = ({ deckCardsIds, setSelectedId, selectedId }: Curren
           style={{
             marginRight: 15,
             borderRadius: 5,
-            border: selectedId === cardId ? `solid 4px ${selectedColor}` : '',
           }}
+          key={index}
           onClick={() => selectCard(cardId)}>
-          <Slot key={index} cardId={cardId} />
+          <Slot cardId={cardId} selected={selectedId === cardId} />
         </div>
       ))}
     </div>
@@ -39,8 +40,8 @@ export const OpponentPDeck = ({ deckCardsIds }: { deckCardsIds: string[] }) => (
       overflowY: 'auto',
     }}>
     {deckCardsIds.map((_, index) => (
-      <div style={{ marginRight: 15 }}>
-        <SlotBack key={index} />
+      <div key={index} style={{ marginRight: 15 }}>
+        <SlotBack />
       </div>
     ))}
   </div>

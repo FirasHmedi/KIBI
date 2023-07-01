@@ -20,16 +20,29 @@ export const playerDrawCard = async (roomId: string, playerType: string) => {
   // addCardToPlayerDeck (unit action)
   await addCardToPlayerDeck(roomId, playerType, powerCardId);
 };
-export const placeAnimalOnBoard = async (roomId: string, playerType: string, slotNumber: number, animalId: string) => {
+export const placeAnimalOnBoard = async (
+  roomId: string,
+  playerType: string,
+  slotNumber: number,
+  animalId: string,
+) => {
   // addInfoToLog (unit action)
   let animal = ANIMAL_CARDS_OBJECT[animalId];
-  await addInfoToLog(roomId, 'player ' + playerType + ' placed a' + animal + ' in slot ' + slotNumber);
+  await addInfoToLog(
+    roomId,
+    'player ' + playerType + ' placed a' + animal + ' in slot ' + slotNumber,
+  );
   // addAnimalToBoard (unit action)
   await addAnimalToBoard(roomId, playerType, slotNumber, animalId);
   // removeCardFromPlayerDeck (unit action)
   await removeCardFromPlayerDeck(roomId, playerType, animalId);
 };
-export const placeKingOnBoard = (roomId: string, playerType: string, kingId: string, sacrificedAnimalId: string) => {
+export const placeKingOnBoard = (
+  roomId: string,
+  playerType: string,
+  kingId: string,
+  sacrificedAnimalId: string,
+) => {
   // addInfoToLog (unit action)
   // removePlayerAnimalFromBoard (sacrificedAnimal) (unit action)
   // addAnimalToGraveYard (sacrificedAnimal) (unit action)
@@ -42,7 +55,12 @@ export const placePowerCard = (roomId: string, playerId: string, powerCardId: st
   // use the abilities (abilities)
   // addPowerToGraveYard (unit action)
 };
-export const attackAnimal = (roomId: string, playerType: string, animal1Id: string, animal2Id: string) => {
+export const attackAnimal = (
+  roomId: string,
+  playerType: string,
+  animal1Id: string,
+  animal2Id: string,
+) => {
   // addInfoToLog (unit action)
   // removePlayerAnimalFromBoard (unit action)
   // addAnimalToGraveYard (unit action)

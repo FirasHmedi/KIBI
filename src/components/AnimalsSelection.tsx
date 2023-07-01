@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
-import { buttonStyle, centerStyle, flexColumnStyle, primaryBlue, selectedColor } from '../styles/Style';
-import { ANIMALS_CARDS, AnimalCard, CLANS, PlayerType } from '../utils/data';
+import {
+  buttonStyle,
+  centerStyle,
+  flexColumnStyle,
+  primaryBlue,
+  selectedColor,
+} from '../styles/Style';
+import { ANIMALS_CARDS, AnimalCard, CLANS, PlayerType, READY, ROOMS_PATH } from '../utils/data';
 import { setItem } from '../utils/db';
 
 interface Props {
@@ -26,9 +32,9 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
 
   const submitAnimalCards = async () => {
     setDisabledBtn(true);
-    await setItem('rooms/' + roomId + `/${playerType}`, {
+    await setItem(ROOMS_PATH + roomId + `/${playerType}`, {
       deckCardsIds: [...idsSelected].map(id => `${playerType}-${id}`),
-      status: 'ready',
+      status: READY,
     });
   };
 
@@ -59,8 +65,8 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
               backgroundColor: CLANS[clan].color,
               color: 'white',
               fontSize: '1.2em',
-              height: '24vh',
-              width: '9vw',
+              height: '20vh',
+              width: '8vw',
               flexShrink: 0,
               justifyContent: 'space-around',
               marginRight: 10,

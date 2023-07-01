@@ -1,7 +1,12 @@
 // ---------------------------unit action-----------------
 import { getItemsOnce, setItem } from './db';
 
-export const addAnimalToBoard = async (roomId: string, playerType: string, slotNumber: number, animalId: string) => {
+export const addAnimalToBoard = async (
+  roomId: string,
+  playerType: string,
+  slotNumber: number,
+  animalId: string,
+) => {
   // add to the player board (rooms${roomId}->boards->player${playerType}->slotNumber${slotNumber$}->${animalId})
   await setItem('rooms/' + roomId + '/board/' + playerType, { [`${slotNumber}`]: animalId });
 };
@@ -11,7 +16,11 @@ export const addCardToPlayerDeck = async (roomId: string, playerType: string, ca
   let index = cards ? cards.length : 0;
   await setItem('rooms/' + roomId + '/' + playerType + '/cards', { [`${index}`]: cardId });
 };
-export const removeCardFromPlayerDeck = async (roomId: string, playerType: string, cardId: string) => {
+export const removeCardFromPlayerDeck = async (
+  roomId: string,
+  playerType: string,
+  cardId: string,
+) => {
   // remove Card From Player Deck (rooms${roomId}->player${playerType}->cards)
   let cards = await getItemsOnce('rooms/' + roomId + '/' + playerType + '/cards');
   cards = cards.filter((card: string) => card != cardId);
@@ -23,7 +32,11 @@ export const addAnimalToGraveYard = (roomId: string, animalId: string) => {
 export const addPowerToGraveYard = (roomId: string, animalId: string) => {
   // add  power to graveYard (rooms${roomId}->powerGraveYard)
 };
-export const removePlayerAnimalFromBoard = (roomId: string, playerType: string, slotNumber: string) => {
+export const removePlayerAnimalFromBoard = (
+  roomId: string,
+  playerType: string,
+  slotNumber: string,
+) => {
   // remove Animal From Player Board (rooms${roomId}->boards->player${playerType}->slot${animalId})
 };
 export const addHpToPlayer = async (roomId: string, playerType: string, hp: number) => {
@@ -65,10 +78,20 @@ export const removeCardFromMainDeck = async (roomId: string) => {
 export const changeCanAttackVar = (roomId: string, playerType: string, value: boolean) => {
   // change can attack value (rooms${roomId}->player${playerType}->canAttack)
 };
-export const changeCanAttackVarOfSlot = (roomId: string, playerType: string, slotNumber: string, value: boolean) => {
+export const changeCanAttackVarOfSlot = (
+  roomId: string,
+  playerType: string,
+  slotNumber: string,
+  value: boolean,
+) => {
   // change can attack value (rooms${roomId}->boards->player${playerType}->slotNumber${slotNumber$}->canAttack)
 };
-export const changeUsingPowerCardsVar = (roomId: string, playerType: string, slotNumber: string, value: boolean) => {
+export const changeUsingPowerCardsVar = (
+  roomId: string,
+  playerType: string,
+  slotNumber: string,
+  value: boolean,
+) => {
   // change  using power card var (rooms${roomId}->player${playerType}->UsingPowerCards)
 };
 export const getPowerCardFromGraveYardById = (roomId: string, powerId: string) => {
