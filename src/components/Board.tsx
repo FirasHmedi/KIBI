@@ -1,5 +1,6 @@
 import { centerStyle, flexColumnStyle } from '../styles/Style';
-import { ANIMAL_CARDS_OBJECT, Card, POWER_CARDS_OBJECT } from '../utils/data';
+import { ALL_CARDS_OBJECT, Card } from '../utils/data';
+import { Seperator } from './Elements';
 import { CurrentPSlots, EnvSlot, OpponentPSlots, SlotBack } from './Slots';
 
 interface Props {
@@ -38,32 +39,45 @@ export const Board = ({ board }: Props) => {
         ...centerStyle,
         flexDirection: 'row',
         width: '100vw',
-        height: '50vh',
         justifyContent: 'space-around',
       }}>
-      <div style={{ width: '15vw', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div>Main Deck</div>
-        <SlotBack id={1} />
-        <div>{mainDeck?.length ?? 0} cards</div>
-      </div>
+      <MainDeck nbCards={mainDeck.length} />
+
       <div style={{ ...centerStyle, ...flexColumnStyle }}>
         <OpponentPSlots opponentPSlots={opponentPSlots} />
         <EnvSlot envCard={envCard} />
         <CurrentPSlots currentPSlots={currentPSlots} />
       </div>
-      <div style={{ width: '15vw', backgroundColor: 'pink' }}>
-        <div style={{ minHeight: '5vh' }}>
-          <h4>Animals graveyard ({animalsGY.length} cards)</h4>
-          {animalsGY?.map((cardId, index) => (
-            <h5 key={index}>{ANIMAL_CARDS_OBJECT[cardId]?.description}</h5>
-          ))}
-        </div>
-        <div style={{ minHeight: '5vh' }}>
-          <h4>Power graveyard ({powersGY.length} cards)</h4>
-          {powersGY?.map((cardId, index) => (
-            <h5 key={index}>{POWER_CARDS_OBJECT[cardId]?.description}</h5>
-          ))}
-        </div>
+
+      <div style={{ width: '15vw' }}>
+        <Graveyard name='Animal' cardsIds={animalsGY} />
+        <Seperator />
+        <Graveyard name='Power' cardsIds={powersGY} />
+      </div>
+    </div>
+  );
+};
+
+const MainDeck = ({ nbCards }: { nbCards: number }) => {
+  return (
+    <div style={{ width: '15vw', ...flexColumnStyle }}>
+      <h5>Main Deck</h5>
+      <SlotBack />
+      <h5>{nbCards} cards</h5>
+    </div>
+  );
+};
+
+const Graveyard = ({ name, cardsIds }: { name: string; cardsIds: string[] }) => {
+  return (
+    <div style={{ minHeight: '5vh' }}>
+      <h4>
+        {name} graveyard ({cardsIds.length})
+      </h4>
+      <div style={{ maxHeight: '15vh', overflowY: 'auto' }}>
+        {cardsIds?.map((cardId, index) => (
+          <h5 key={index}>{ALL_CARDS_OBJECT[cardId.substring(4)]?.name?.toUpperCase()}</h5>
+        ))}
       </div>
     </div>
   );

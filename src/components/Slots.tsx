@@ -1,30 +1,23 @@
 import { centerStyle, flexColumnStyle, violet } from '../styles/Style';
 import { ANIMAL_CARDS_OBJECT, AnimalCard, CLANS, Card } from '../utils/data';
 
-export const SlotBack = ({ id }: { id: number }) => (
+export const SlotBack = () => (
   <div
     style={{
       borderRadius: 5,
       backgroundColor: violet,
       color: 'white',
-      fontSize: 24,
-      margin: 10,
-      padding: 1,
+      fontSize: '1em',
+      margin: 4,
       ...centerStyle,
-      flexDirection: 'column',
-      height: '16vh',
-      width: '6vw',
-      fontWeight: 'bold',
+      height: '14vh',
+      width: '5vw',
     }}>
-    KIBI
+    <h5>KIBI</h5>
   </div>
 );
 
-interface SlotProps {
-  cardId?: string;
-}
-
-export const Slot = ({ cardId }: SlotProps) => {
+export const Slot = ({ cardId }: { cardId?: string }) => {
   const card = cardId ? ANIMAL_CARDS_OBJECT[cardId.substring(4)] : null;
   return !!card && !!card?.clan ? (
     <div
@@ -33,16 +26,15 @@ export const Slot = ({ cardId }: SlotProps) => {
         borderRadius: 5,
         backgroundColor: CLANS[card?.clan]?.color,
         color: 'white',
-        fontSize: 14,
-        padding: 2,
-        height: '16vh',
-        width: '6vw',
+        fontSize: '1em',
+        height: '17vh',
+        width: '7vw',
         justifyContent: 'space-between',
         flexShrink: 0,
       }}>
-      <h4 style={{ paddingTop: 15 }}>{card?.name?.toUpperCase()}</h4>
-      <h5 style={{}}>{card?.role}</h5>
-      <h5 style={{ paddingBottom: 15 }}>{card?.ability}</h5>
+      <h4>{card?.name?.toUpperCase()}</h4>
+      <h5>{card?.ability}</h5>
+      <h5>{card?.role?.toUpperCase()}</h5>
     </div>
   ) : (
     <div
@@ -51,70 +43,51 @@ export const Slot = ({ cardId }: SlotProps) => {
         borderRadius: 5,
         backgroundColor: '#95a5a6',
         color: 'white',
-        fontSize: 22,
-        margin: 10,
-        padding: 1,
-        height: '16vh',
-        width: '6vw',
+        fontSize: '1em',
+        height: '17vh',
+        width: '7vw',
         justifyContent: 'center',
+        flexShrink: 0,
       }}>
       <h5>EMPTY</h5>
     </div>
   );
 };
 
-export type AllCards = AnimalCard | Card | undefined;
-
-export const OpponentPSlots = ({ opponentPSlots }: { opponentPSlots: string[] } = { opponentPSlots: ['0', '1', '2'] }) => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-      }}>
-      <Slot cardId={opponentPSlots[0]} />
-      <Slot cardId={opponentPSlots[1]} />
-      <Slot cardId={opponentPSlots[2]} />
-    </div>
-  );
-};
-
-export const CurrentPSlots = ({ currentPSlots }: { currentPSlots: string[] } = { currentPSlots: ['0', '1', '2'] }) => (
-  <div
-    style={{
-      display: 'flex',
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-    }}>
-    <Slot cardId={currentPSlots[0]} />
-    <Slot cardId={currentPSlots[1]} />
-    <Slot cardId={currentPSlots[2]} />
-  </div>
-);
-
-// name={'Water'} color={CLANS.water.color}
-
-interface Props {
-  envCard?: Card;
-}
-
-export const EnvSlot = ({ envCard }: Props) => (
+export const EnvSlot = ({ envCard }: { envCard?: Card }) => (
   <div
     style={{
       ...centerStyle,
       borderRadius: 5,
-      backgroundColor: CLANS[envCard?.ability as keyof typeof CLANS]?.color ?? '#95a5a6',
+      backgroundColor: CLANS[(envCard?.ability ?? 'neutral') as keyof typeof CLANS]?.color,
       color: 'white',
-      fontSize: 24,
-      margin: 10,
-      padding: 1,
+      fontSize: '1em',
       flexDirection: 'column',
-      width: '16vh',
-      height: '6vw',
+      height: '17vh',
+      width: '7vw',
+      transform: 'rotate(90deg)',
+      justifyContent: 'center',
+      flexShrink: 0,
     }}>
-    <h5>{envCard?.name ?? 'Neutral'}</h5>
+    <h5 style={{ transform: 'rotate(-90deg)' }}>{envCard?.name ?? 'Neutral'}</h5>
+  </div>
+);
+
+export type AllCards = AnimalCard | Card | undefined;
+
+export const OpponentPSlots = ({ opponentPSlots }: { opponentPSlots: string[] }) => <Slots slots={opponentPSlots} />;
+
+export const CurrentPSlots = ({ currentPSlots }: { currentPSlots: string[] }) => <Slots slots={currentPSlots} />;
+
+const Slots = ({ slots }: { slots: string[] }) => (
+  <div
+    style={{
+      ...centerStyle,
+      width: '24vw',
+      justifyContent: 'space-evenly',
+    }}>
+    <Slot cardId={slots[0]} />
+    <Slot cardId={slots[1]} />
+    <Slot cardId={slots[2]} />
   </div>
 );

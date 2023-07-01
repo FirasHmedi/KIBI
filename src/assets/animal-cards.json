@@ -1,20 +1,20 @@
 {
   "1-a": {
-    "ability": "-2hp of opponent",
+    "ability": "Attacks opponent",
     "clan": "earth",
     "description": "king of earth clan",
     "name": "lion",
     "role": "king"
   },
   "10-a": {
-    "ability": "the animal that kill him, we'll die with him",
+    "ability": "Kills who kills him",
     "clan": "air",
     "description": "attacker of air clan",
-    "name": "bumblebee",
+    "name": "bee",
     "role": "attacker"
   },
   "11-a": {
-    "ability": "return to deck when it dies",
+    "ability": "To deck when it dies",
     "clan": "air",
     "description": "tank of air clan",
     "name": "ostrich",
@@ -28,21 +28,21 @@
     "role": "joker"
   },
   "13-a": {
-    "ability": "-2hp of opponent",
+    "ability": "Attacks opponent",
     "clan": "fire",
     "description": "king of fire clan",
     "name": "Dragon",
     "role": "king"
   },
   "14-a": {
-    "ability": "the animal that kill him, we'll die with him",
+    "ability": "Kills who kills him",
     "clan": "fire",
     "description": "attacker of fire clan",
     "name": "phoenix",
     "role": "attacker"
   },
   "15-a": {
-    "ability": "return to deck when it dies",
+    "ability": "To deck when it dies",
     "clan": "fire",
     "description": "tank of fire clan",
     "name": "bear",
@@ -56,14 +56,14 @@
     "role": "joker"
   },
   "2-a": {
-    "ability": "the animal that kill him, we'll die with him",
+    "ability": "Kills who kills him",
     "clan": "earth",
     "description": "attacker of earth clan",
-    "name": "honey badger",
+    "name": "badger",
     "role": "attacker"
   },
   "3-a": {
-    "ability": "return to deck when it dies",
+    "ability": "To deck when it dies",
     "clan": "earth",
     "description": "tank of earth clan",
     "name": "Elephant",
@@ -77,21 +77,21 @@
     "role": "joker"
   },
   "5-a": {
-    "ability": "-2hp of opponent",
+    "ability": "Attacks opponent",
     "clan": "water",
     "description": "king of water clan",
     "name": "orca",
     "role": "king"
   },
   "6-a": {
-    "ability": "the animal that kill him, we'll die with him",
+    "ability": "Kills who kills him",
     "clan": "water",
     "description": "attacker of water clan",
     "name": "Shark",
     "role": "attacker"
   },
   "7-a": {
-    "ability": "return to deck when it dies",
+    "ability": "To deck when it dies",
     "clan": "water",
     "description": "tank of water clan",
     "name": "Whale",
@@ -105,7 +105,7 @@
     "role": "joker"
   },
   "9-a": {
-    "ability": "-2hp of opponent",
+    "ability": "Attacks opponent",
     "clan": "air",
     "description": "king of air clan",
     "name": "Eagle",

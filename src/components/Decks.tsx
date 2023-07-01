@@ -1,35 +1,47 @@
-import { flexRowStyle } from '../styles/Style';
+import { flexRowStyle, selectedColor } from '../styles/Style';
 import { Slot, SlotBack } from './Slots';
 
-interface Props {
+interface CurrentPDeckProps {
   deckCardsIds: string[];
+  setSelectedId: (id?: string) => void;
+  selectedId?: string;
 }
 
-export const CurrentPDeck = ({ deckCardsIds }: Props = { deckCardsIds: [] }) => {
+export const CurrentPDeck = ({ deckCardsIds, setSelectedId, selectedId }: CurrentPDeckProps) => {
+  const selectCard = (cardId: string) => (cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId));
   return (
     <div
       style={{
         ...flexRowStyle,
-        width: '70vw',
-        justifyContent: 'space-evenly',
+        width: '50vw',
         overflowY: 'auto',
       }}>
       {deckCardsIds.map((cardId, index) => (
-        <Slot key={index} cardId={cardId} />
+        <div
+          style={{
+            marginRight: 15,
+            borderRadius: 5,
+            border: selectedId === cardId ? `solid 4px ${selectedColor}` : '',
+          }}
+          onClick={() => selectCard(cardId)}>
+          <Slot key={index} cardId={cardId} />
+        </div>
       ))}
     </div>
   );
 };
 
-export const OpponentPDeck = ({ deckCardsIds }: Props = { deckCardsIds: [] }) => (
+export const OpponentPDeck = ({ deckCardsIds }: { deckCardsIds: string[] }) => (
   <div
     style={{
       ...flexRowStyle,
-      flex: 1,
-      justifyContent: 'center',
+      width: '50vw',
+      overflowY: 'auto',
     }}>
-    {deckCardsIds.map((cardId, index) => (
-      <SlotBack key={index} id={index} />
+    {deckCardsIds.map((_, index) => (
+      <div style={{ marginRight: 15 }}>
+        <SlotBack key={index} />
+      </div>
     ))}
   </div>
 );

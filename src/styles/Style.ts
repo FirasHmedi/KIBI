@@ -9,7 +9,8 @@ export const waterColor = '#2980b9';
 export const fireColor = '#c0392b';
 export const airColor = '#2ecc71';
 export const earthColor = '#f39c12';
-export const neutralColor = '#bdc3c7';
+export const neutralColor = '#34495e';
+export const selectedColor = '#34495e';
 
 export const flexRowStyle: React.CSSProperties = {
   display: 'flex',
@@ -21,8 +22,8 @@ export const flexRowStyle: React.CSSProperties = {
 export const flexColumnStyle: React.CSSProperties = {
   display: 'flex',
   textAlign: 'center',
-  width: 'auto',
   flexDirection: 'column',
+  alignItems: 'center',
 };
 
 export const centerStyle: React.CSSProperties = {
