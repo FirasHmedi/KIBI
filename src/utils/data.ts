@@ -83,7 +83,24 @@ export const TestDeck = [
     id: '8',
   },
 ];
-
+export const ANIMALS_POINTS = {
+  king:{
+    ap:2,
+    hp:2
+  },
+  tank:{
+    ap:1,
+    hp:2
+  },
+  attacker:{
+    ap:2,
+    hp:1
+  },
+  joker:{
+    ap:1,
+    hp:1
+  }
+}
 export const GeneralTestData = { roomId: 'test', playerName: 'test', playerType: 'one', playerId: 'testId' };
 export const AnimalsGY = [];
 export const PowersGY = [];

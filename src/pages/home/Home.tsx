@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { buttonStyle } from '../../styles/Style';
 import { PlayerType } from '../../utils/data';
 import { setItem } from '../../utils/db';
+import {attackOwner, placeAnimalOnBoard, playerDrawCard} from "../../utils/actions";
 
 function Home() {
   const navigate = useNavigate();
@@ -61,7 +62,11 @@ function Home() {
       },
     });
   };
-
+  const test = async () => {
+    //await attackOwner("test-room","one","1-a")
+    //await playerDrawCard("test-room","one")
+    await placeAnimalOnBoard("test-room","one",1,"1-a")
+  }
   return (
     <div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100vh' }}>
       <div
@@ -90,6 +95,11 @@ function Home() {
             Join a room
           </button>
         </div>
+      </div>
+      <div>
+        <button style={buttonStyle}  onClick={() => test()}>
+         test function
+        </button>
       </div>
     </div>
   );
