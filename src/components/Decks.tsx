@@ -2,12 +2,12 @@ import { flexRowStyle } from '../styles/Style';
 import { Slot, SlotBack } from './Slots';
 
 interface CurrentPDeckProps {
-  deckCardsIds: string[];
+  cardsIds: string[];
   setSelectedId: (id?: string) => void;
   selectedId?: string;
 }
 
-export const CurrentPDeck = ({ deckCardsIds, setSelectedId, selectedId }: CurrentPDeckProps) => {
+export const CurrentPDeck = ({ cardsIds, setSelectedId, selectedId }: CurrentPDeckProps) => {
   const selectCard = (cardId: string) =>
     cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId);
   return (
@@ -17,7 +17,7 @@ export const CurrentPDeck = ({ deckCardsIds, setSelectedId, selectedId }: Curren
         width: '50vw',
         overflowY: 'auto',
       }}>
-      {deckCardsIds.map((cardId, index) => (
+      {cardsIds.map((cardId, index) => (
         <div
           style={{
             marginRight: 15,
@@ -32,14 +32,14 @@ export const CurrentPDeck = ({ deckCardsIds, setSelectedId, selectedId }: Curren
   );
 };
 
-export const OpponentPDeck = ({ deckCardsIds }: { deckCardsIds: string[] }) => (
+export const OpponentPDeck = ({ cardsIds }: { cardsIds: string[] }) => (
   <div
     style={{
       ...flexRowStyle,
       width: '50vw',
       overflowY: 'auto',
     }}>
-    {deckCardsIds.map((_, index) => (
+    {cardsIds.map((_, index) => (
       <div key={index} style={{ marginRight: 15 }}>
         <SlotBack />
       </div>

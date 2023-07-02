@@ -39,6 +39,7 @@ export const DefaultBoard = {
   animalsGY: [],
   powersGY: [],
   envCard: NeutralEnvCard,
+  activeCardId: null,
 };
 
 export enum PlayerType {
@@ -48,7 +49,7 @@ export enum PlayerType {
 
 export interface Player {
   playerType: PlayerType;
-  deckCardsIds: string[];
+  cardsIds: string[];
   hp: number;
   status: string;
   playerName?: string;

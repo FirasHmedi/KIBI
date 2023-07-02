@@ -8,7 +8,10 @@ export const addAnimalToBoard = async (
   animalId: string,
 ) => {
   // add to the player board (rooms${roomId}->boards->player${playerType}->slotNumber${slotNumber$}->${animalId})
-  await setItem('rooms/' + roomId + '/board/' + playerType, { [`${slotNumber}`]: animalId });
+  const slots = (await getItemsOnce('rooms/' + roomId + '/board/' + playerType)) ?? [];
+  const updatedSlots = [slots[0] ?? 'empty', slots[1] ?? 'empty', slots[2] ?? 'empty'];
+  updatedSlots[slotNumber] = animalId;
+  await setItem('rooms/' + roomId + '/board/', { [`${playerType}`]: updatedSlots });
 };
 export const addCardToPlayerDeck = async (roomId: string, playerType: string, cardId: string) => {
   // add to player cards (rooms${roomId}->player${playerType}->cards)
@@ -21,10 +24,10 @@ export const removeCardFromPlayerDeck = async (
   playerType: string,
   cardId: string,
 ) => {
-  // remove Card From Player Deck (rooms${roomId}->player${playerType}->cards)
-  let cards = await getItemsOnce('rooms/' + roomId + '/' + playerType + '/cards');
-  cards = cards.filter((card: string) => card != cardId);
-  await setItem('rooms/' + roomId + '/' + playerType, { cards: cards });
+  let cardsIds = await getItemsOnce('rooms/' + roomId + '/' + playerType + '/cardsIds');
+  cardsIds = cardsIds.filter((id: string) => id != cardId);
+  console.log(cardsIds);
+  await setItem('rooms/' + roomId + '/' + playerType, { cardsIds });
 };
 export const addAnimalToGraveYard = (roomId: string, animalId: string) => {
   // add  animal to graveYard (rooms${roomId}->animalGraveYard)
@@ -59,6 +62,7 @@ export const addInfoToLog = async (roomId: string, text: string) => {
   // write the log (rooms${roomId}->log)
   let log = await getItemsOnce('rooms/' + roomId + '/log');
   let index = log ? log.length : 0;
+  console.log('index ', index, text);
   await setItem('rooms/' + roomId + '/log', { [`${index}`]: text });
 };
 export const changeEnv = (roomId: string, env: string) => {

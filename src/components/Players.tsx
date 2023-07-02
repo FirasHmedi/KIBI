@@ -13,13 +13,14 @@ export const CurrentPView = ({
   round: any;
   playCard: (cardId?: string) => void;
 }) => {
-  const deckCardsIds = player.deckCardsIds ?? [];
+  const cardsIds = player.cardsIds ?? [];
   const [selectedId, setSelectedId] = useState<string>();
 
   const isPlayButtonEnabled =
     !!selectedId &&
     round?.player === player?.playerType &&
-    ((player?.canPlayAnimals && isAnimalCard(selectedId)) || (player?.canPlayPowers && isPowerCard(selectedId)));
+    ((player?.canPlayAnimals && isAnimalCard(selectedId)) ||
+      (player?.canPlayPowers && isPowerCard(selectedId)));
 
   return (
     <div
@@ -45,15 +46,15 @@ export const CurrentPView = ({
         <h4>
           {player.playerType?.toUpperCase()} : {player.hp} HP
         </h4>
-        <h5>{deckCardsIds.length} cards</h5>
+        <h5>{cardsIds.length} cards</h5>
       </div>
-      <CurrentPDeck deckCardsIds={deckCardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
+      <CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
     </div>
   );
 };
 
 export const OpponentPView = ({ player }: { player: Player }) => {
-  const deckCardsIds = player.deckCardsIds ?? [];
+  const cardsIds = player.cardsIds ?? [];
   return (
     <div
       style={{
@@ -66,9 +67,9 @@ export const OpponentPView = ({ player }: { player: Player }) => {
         <h4>
           {player.playerType?.toUpperCase()} : {player.hp} HP
         </h4>
-        <h5>{deckCardsIds.length} cards</h5>
+        <h5>{cardsIds.length} cards</h5>
       </div>
-      <OpponentPDeck deckCardsIds={deckCardsIds} />
+      <OpponentPDeck cardsIds={cardsIds} />
     </div>
   );
 };

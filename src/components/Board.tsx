@@ -1,7 +1,7 @@
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { ALL_CARDS_OBJECT, Card } from '../utils/data';
 import { Seperator } from './Elements';
-import { EnvSlot, SlotBack, Slots } from './Slots';
+import { EnvSlot, Slot, SlotBack, Slots } from './Slots';
 
 interface Props {
   board: Board;
@@ -18,6 +18,7 @@ export interface Board {
   animalsGY: string[];
   powersGY: string[];
   envCard: Card;
+  activeCardId?: string;
 }
 
 export const Board = ({
@@ -27,7 +28,8 @@ export const Board = ({
   selectedCurrentPSlotNb,
   selectedOpponentPSlotNb,
 }: Props) => {
-  const { mainDeck, currentPSlots, opponentPSlots, animalsGY, powersGY, envCard } = board;
+  const { mainDeck, currentPSlots, opponentPSlots, animalsGY, powersGY, envCard, activeCardId } =
+    board;
 
   return (
     <div
@@ -38,6 +40,12 @@ export const Board = ({
         justifyContent: 'space-around',
       }}>
       <MainDeck nbCards={mainDeck.length} />
+
+      {!!activeCardId && (
+        <div style={{ position: 'absolute', left: '25vw' }}>
+          <Slot cardId={activeCardId} />
+        </div>
+      )}
 
       <div style={{ ...centerStyle, ...flexColumnStyle }}>
         <Slots

@@ -54,7 +54,9 @@ function Game() {
         height: '100vh',
         width: '100vw',
       }}>
-      {isGameRunning(game?.status) && <GameView game={game} playerType={playerType} />}
+      {isGameRunning(game?.status) && (
+        <GameView game={game} roomId={roomId} playerType={playerType} />
+      )}
 
       {isGameInPreparation(game?.status) && (
         <div style={{ width: '100vw' }}>

@@ -26,16 +26,13 @@ export const placeAnimalOnBoard = async (
   slotNumber: number,
   animalId: string,
 ) => {
-  // addInfoToLog (unit action)
-  let animal = ANIMAL_CARDS_OBJECT[animalId];
+  const animal = ANIMAL_CARDS_OBJECT[animalId];
   await addInfoToLog(
     roomId,
     'player ' + playerType + ' placed a' + animal + ' in slot ' + slotNumber,
   );
-  // addAnimalToBoard (unit action)
-  await addAnimalToBoard(roomId, playerType, slotNumber, animalId);
-  // removeCardFromPlayerDeck (unit action)
   await removeCardFromPlayerDeck(roomId, playerType, animalId);
+  await addAnimalToBoard(roomId, playerType, slotNumber, animalId);
 };
 export const placeKingOnBoard = (
   roomId: string,

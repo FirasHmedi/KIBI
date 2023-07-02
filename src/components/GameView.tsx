@@ -1,11 +1,20 @@
 import { useEffect, useState } from 'react';
 import { flexColumnStyle } from '../styles/Style';
+import { placeAnimalOnBoard } from '../utils/actions';
 import { DefaultBoard, Player, PlayerType } from '../utils/data';
 import { isAnimalCard, isGameRunning, isPowerCard } from '../utils/helpers';
 import { Board } from './Board';
 import { CurrentPView, OpponentPView } from './Players';
 
-function GameView({ game, playerType }: { game: any; playerType: PlayerType }) {
+function GameView({
+  game,
+  playerType,
+  roomId,
+}: {
+  game: any;
+  playerType: PlayerType;
+  roomId: string;
+}) {
   const [board, setBoard] = useState<Board>();
   const [round, setRound] = useState();
   const [currentPlayer, setCurrentPlayer] = useState<Player>();
@@ -18,11 +27,13 @@ function GameView({ game, playerType }: { game: any; playerType: PlayerType }) {
       return;
     }
 
+    const gameBoard = game.board;
     const partOfBoard: Board = {
-      mainDeck: game.board?.mainDeck ?? DefaultBoard.mainDeck,
-      animalsGY: game.board?.animalsGY ?? DefaultBoard.animalsGY,
-      powersGY: game.board?.powersGY ?? DefaultBoard.powersGY,
-      envCard: game.board?.envCard ?? DefaultBoard.envCard,
+      mainDeck: gameBoard?.mainDeck ?? DefaultBoard.mainDeck,
+      animalsGY: gameBoard?.animalsGY ?? DefaultBoard.animalsGY,
+      powersGY: gameBoard?.powersGY ?? DefaultBoard.powersGY,
+      envCard: gameBoard?.envCard ?? DefaultBoard.envCard,
+      activeCardId: gameBoard?.activeCardId ?? DefaultBoard.activeCardId,
       currentPSlots: [],
       opponentPSlots: [],
     };
@@ -34,16 +45,16 @@ function GameView({ game, playerType }: { game: any; playerType: PlayerType }) {
       setOpponentPlayer(player2);
       setBoard({
         ...partOfBoard,
-        currentPSlots: game.one,
-        opponentPSlots: game.two,
+        currentPSlots: gameBoard.one ?? [],
+        opponentPSlots: gameBoard.two ?? [],
       });
     } else {
       setCurrentPlayer(player2);
       setOpponentPlayer(player1);
       setBoard({
         ...partOfBoard,
-        currentPSlots: game.two,
-        opponentPSlots: game.one,
+        currentPSlots: gameBoard.two ?? [],
+        opponentPSlots: gameBoard.one ?? [],
       });
     }
 
@@ -61,8 +72,10 @@ function GameView({ game, playerType }: { game: any; playerType: PlayerType }) {
       : setSelectedCurrentPSlotNb(undefined);
   };
 
-  const playCard = (cardId?: string) => {
-    if (isAnimalCard(cardId)) {
+  const playCard = async (cardId?: string) => {
+    console.log(cardId, isAnimalCard(cardId), selectedCurrentPSlotNb);
+    if (isAnimalCard(cardId) && selectedCurrentPSlotNb != null) {
+      await placeAnimalOnBoard(roomId, playerType, selectedCurrentPSlotNb, cardId!);
     }
 
     if (isPowerCard(cardId)) {
