@@ -145,7 +145,7 @@ export const placePowerCard = async (roomId: string, playerType: string, powerCa
   // removeCardFromPlayerDeck (unit action)
   await removeCardFromPlayerDeck(roomId, playerType, powerCardId);
   // use the abilities (abilities)
-  switch (power.name) {
+  switch (power.id) {
     case "1-p":
       await cancelAttacks(roomId,playerType)
       break;
