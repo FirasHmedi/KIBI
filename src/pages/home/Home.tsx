@@ -2,9 +2,20 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { buttonStyle } from '../../styles/Style';
-import { placeAnimalOnBoard } from '../../utils/actions';
+import {placeAnimalOnBoard, placeKingOnBoard, playerDrawCard} from '../../utils/actions';
 import { PREPARE, PlayerType, ROOMS_PATH } from '../../utils/data';
 import { setItem } from '../../utils/db';
+import {changeEnv, reviveLastPower} from "../../utils/abilities";
+import {
+  changeCanAttackVar,
+  changeCanAttackVarOfSlot, changePLayerCards,
+  changePLayerHealth,
+  changeUsingPowerCardsVar,
+  deleteAnimalCardFromGraveYardByIndex,
+  deletePowerCardFromGraveYardById,
+  getPLayerCards,
+  getPLayerHealth,
+} from "../../utils/unitActions";
 
 function Home() {
   const navigate = useNavigate();
@@ -61,10 +72,14 @@ function Home() {
       },
     });
   };
+
   const test = async () => {
     //await attackOwner("test-room","one","1-a")
     //await playerDrawCard("test-room","one")
-    await placeAnimalOnBoard('test-room', 'one', 1, '1-a');
+    //await placeAnimalOnBoard('test-room', 'one', 1, '2-a');
+    //await placeKingOnBoard('test-room', 'one', '1-a', '2-a',1);
+    //await changePLayerHealth('test-room', 'one', 5)
+    //await reviveLastPower('test-room','one')
   };
   return (
     <div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100vh' }}>
@@ -95,11 +110,7 @@ function Home() {
           </button>
         </div>
       </div>
-      <div>
-        <button style={buttonStyle} onClick={() => test()}>
-          test function
-        </button>
-      </div>
+
     </div>
   );
 }
