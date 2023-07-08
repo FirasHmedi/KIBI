@@ -78,15 +78,17 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
           </div>
         ))}
       </div>
-      <h5>{idsSelected.size} cards</h5>
+      <h4>{idsSelected.size} cards</h4>
       <button
         style={{
           ...buttonStyle,
           backgroundColor: disabledBtn ? '#95a5a6' : primaryBlue,
+          padding: 15,
+          fontSize: 26,
         }}
         disabled={disabledBtn}
         onClick={() => submitAnimalCards()}>
-        Go
+        GO
       </button>
     </div>
   );

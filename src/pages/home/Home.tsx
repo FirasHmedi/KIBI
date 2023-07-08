@@ -1,21 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { buttonStyle } from '../../styles/Style';
-import {placeAnimalOnBoard, placeKingOnBoard, playerDrawCard} from '../../utils/actions';
+import { buttonStyle, centerStyle } from '../../styles/Style';
 import { PREPARE, PlayerType, ROOMS_PATH } from '../../utils/data';
 import { setItem } from '../../utils/db';
-import {changeEnv, reviveLastPower} from "../../utils/abilities";
-import {
-  changeCanAttackVar,
-  changeCanAttackVarOfSlot, changePLayerCards,
-  changePLayerHealth,
-  changeUsingPowerCardsVar,
-  deleteAnimalCardFromGraveYardByIndex,
-  deletePowerCardFromGraveYardById,
-  getPLayerCards,
-  getPLayerHealth,
-} from "../../utils/unitActions";
 
 function Home() {
   const navigate = useNavigate();
@@ -82,7 +70,7 @@ function Home() {
     //await reviveLastPower('test-room','one')
   };
   return (
-    <div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100vh' }}>
+    <div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100vh', ...centerStyle }}>
       <div
         style={{
           display: 'flex',
@@ -91,26 +79,38 @@ function Home() {
           alignItems: 'center',
           flexDirection: 'column',
         }}>
-        <button style={buttonStyle} disabled={false} onClick={() => createRoom()}>
+        <button
+          style={{ ...buttonStyle, fontSize: 26, padding: 20 }}
+          disabled={false}
+          onClick={() => createRoom()}>
           Create a room
         </button>
 
-        <div>
+        <div style={centerStyle}>
           <input
             type='text'
             placeholder='Room Id'
             required
-            style={{ padding: 5, margin: 10 }}
+            style={{
+              padding: 5,
+              margin: 10,
+              width: '30vw',
+              height: '4vh',
+              borderRadius: 5,
+              borderWidth: 0,
+            }}
             value={roomId}
             disabled={disabledButton}
             onChange={e => setRoomId(e.target.value)}
           />
-          <button style={buttonStyle} disabled={disabledButton} onClick={() => joinRoom()}>
+          <button
+            style={{ ...buttonStyle, fontSize: 26, padding: 20 }}
+            disabled={disabledButton}
+            onClick={() => joinRoom()}>
             Join a room
           </button>
         </div>
       </div>
-
     </div>
   );
 }

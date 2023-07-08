@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import { centerStyle, flexColumnStyle, selectedColor, violet } from '../styles/Style';
-import { ANIMAL_CARDS_OBJECT, AnimalCard, CLANS, Card } from '../utils/data';
+import { AnimalCard, CLANS, Card, getAnimalCard } from '../utils/data';
 
 export const SlotBack = () => (
   <div
@@ -36,11 +37,12 @@ const commonStyle: React.CSSProperties = {
 };
 
 export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
-  const card = cardId ? ANIMAL_CARDS_OBJECT[cardId.substring(4)] : null;
+  // @ts-ignore
+  const extractedCardId = !_.isNil(nb) ? cardId?.cardId : cardId;
+  const card = !!extractedCardId ? getAnimalCard(extractedCardId) : null;
   const selectSlotPolished = () => {
-    if (!!selectSlot) selectSlot(nb, cardId);
+    if (!!selectSlot) selectSlot(nb, extractedCardId);
   };
-
   return !!card && !!card?.clan ? (
     <div
       style={{

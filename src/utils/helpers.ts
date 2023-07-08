@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import { useLocation } from 'react-router-dom';
-import { ANIMAL_CARDS_OBJECT, POWER_CARDS_OBJECT, PREPARE, RUNNING } from './data';
+import { POWER_CARDS_OBJECT, PREPARE, RUNNING, getAnimalCard } from './data';
 
 export const isNotEmpty = (input: string | Array<any>, minLength = 0) => input.length > minLength;
 
@@ -9,7 +10,7 @@ export const getCurrentPathName = () => {
 };
 
 export const isAnimalCard = (cardId?: string): boolean =>
-  !!cardId && ANIMAL_CARDS_OBJECT.hasOwnProperty(cardId.substring(4));
+  !!cardId && !_.isEmpty(getAnimalCard(cardId));
 export const isPowerCard = (cardId?: string): boolean =>
   !!cardId && POWER_CARDS_OBJECT.hasOwnProperty(cardId.substring(4));
 

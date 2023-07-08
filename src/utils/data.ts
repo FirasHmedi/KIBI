@@ -150,6 +150,10 @@ export const ANIMALS_CARDS: AnimalCard[] = getArrayFromJson(animalsCardsJson);
 export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(
   JSON.stringify(animalsCardsJson),
 );
+export const getAnimalCard = (cardId: string): AnimalCard | undefined => {
+  if (!cardId || cardId.length < 4) return;
+  return ANIMAL_CARDS_OBJECT[cardId.toString().substring(4)];
+};
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
 
