@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { flexColumnStyle } from '../styles/Style';
+import { flexColumnStyle, violet } from '../styles/Style';
 import { placeAnimalOnBoard } from '../utils/actions';
 import { DefaultBoard, Player, PlayerType } from '../utils/data';
-import { isAnimalCard, isGameRunning, isPowerCard } from '../utils/helpers';
+import { getItemsOnce, setItem } from '../utils/db';
+import { getOpponentId, isAnimalCard, isGameRunning, isPowerCard } from '../utils/helpers';
 import { Board } from './Board';
 import { CurrentPView, OpponentPView } from './Players';
 
@@ -82,6 +83,14 @@ function GameView({
     }
   };
 
+  const finishRound = async () => {
+    const round = await getItemsOnce('rooms/' + roomId + '/round');
+    round.player = getOpponentId(playerType);
+    round.nb += 1;
+    console.log('round ', round);
+    await setItem('rooms/' + roomId + '/round', round);
+  };
+
   if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer) {
     return <></>;
   }
@@ -95,6 +104,17 @@ function GameView({
         justifyContent: 'space-between',
       }}>
       <OpponentPView player={opponentPlayer} />
+      <div
+        style={{
+          position: 'absolute',
+          left: '2%',
+          top: '50%',
+          fontSize: '1.2em',
+          fontWeight: 'bold',
+          color: violet,
+        }}>
+        Round {game.round.nb}
+      </div>
       <Board
         board={board}
         selectedCurrentPSlotNb={selectedCurrentPSlotNb}
@@ -102,7 +122,12 @@ function GameView({
         selectOpponentSlot={selectOpponentSlot}
         selectCurrentSlot={selectCurrentSlot}
       />
-      <CurrentPView player={currentPlayer} round={round} playCard={playCard} />
+      <CurrentPView
+        player={currentPlayer}
+        round={round}
+        playCard={playCard}
+        finishRound={finishRound}
+      />
     </div>
   );
 }

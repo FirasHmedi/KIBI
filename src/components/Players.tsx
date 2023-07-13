@@ -8,10 +8,12 @@ export const CurrentPView = ({
   player,
   round,
   playCard,
+  finishRound,
 }: {
   player: Player;
   round: any;
   playCard: (cardId?: string) => void;
+  finishRound: () => void;
 }) => {
   const cardsIds = player.cardsIds ?? [];
   const [selectedId, setSelectedId] = useState<string>();
@@ -21,6 +23,8 @@ export const CurrentPView = ({
     round?.player === player?.playerType &&
     ((player?.canPlayAnimals && isAnimalCard(selectedId)) ||
       (player?.canPlayPowers && isPowerCard(selectedId)));
+
+  const isFinishRoundButtonEnabled = round?.player === player?.playerType;
 
   return (
     <div
@@ -35,7 +39,19 @@ export const CurrentPView = ({
           ...buttonStyle,
           fontSize: '0.8em',
           position: 'absolute',
-          left: '12vw',
+          left: '9vw',
+          backgroundColor: !isFinishRoundButtonEnabled ? '#95a5a6' : primaryBlue,
+        }}
+        disabled={!isFinishRoundButtonEnabled}
+        onClick={() => finishRound()}>
+        Finish
+      </button>
+      <button
+        style={{
+          ...buttonStyle,
+          fontSize: '0.8em',
+          position: 'absolute',
+          left: '14vw',
           backgroundColor: !isPlayButtonEnabled ? '#95a5a6' : primaryBlue,
         }}
         disabled={!isPlayButtonEnabled}
