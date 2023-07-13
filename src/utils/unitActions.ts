@@ -27,14 +27,14 @@ export const removeCardFromPlayerDeck = async (
   await setItem('rooms/' + roomId + '/' + playerType, { cardsIds:cardsIds });
 };
 export const addAnimalToGraveYard = async (roomId: string, animalId: string) => {
-   const animalGraveYard = await getItemsOnce('rooms/' + roomId + '/board/animalGraveYard');
-  const index = animalGraveYard ? animalGraveYard.length : 0;
-  await setItem('rooms/' + roomId +  '/board/animalGraveYard', { [`${index}`]: animalId });
+   const animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
+  const index = animalGY ? animalGY.length : 0;
+  await setItem('rooms/' + roomId +  '/board/animalGY', { [`${index}`]: animalId });
 };
 export const addPowerToGraveYard = async (roomId: string, powerId: string) => {
-  const powerGraveYard = await getItemsOnce('rooms/' + roomId + '/board/powerGraveYard');
-  const index = powerGraveYard ? powerGraveYard.length : 0;
-  await setItem('rooms/' + roomId +  '/board/powerGraveYard', { [`${index}`]: powerId });
+  const powerGY = await getItemsOnce('rooms/' + roomId + '/board/powerGY');
+  const index = powerGY ? powerGY.length : 0;
+  await setItem('rooms/' + roomId +  '/board/powerGY', { [`${index}`]: powerId });
 };
 export const removePlayerAnimalFromBoard = async (
   roomId: string,
@@ -101,33 +101,33 @@ export const changeUsingPowerCardsVar = async (
 };
 
 export const getPowerCardFromGraveYardByIndex = async (roomId: string, index: number) => {
-  let powerGraveYard = await getItemsOnce('rooms/' + roomId + '/board/powerGraveYard');
-  return powerGraveYard[index]
+  let powerGY = await getItemsOnce('rooms/' + roomId + '/board/powerGY');
+  return powerGY[index]
 };
 export const deletePowerCardFromGraveYardById = async (roomId: string, powerId: string) => {
-  let powerCardsId = await getItemsOnce('rooms/' + roomId + '/board/powerGraveYard');
+  let powerCardsId = await getItemsOnce('rooms/' + roomId + '/board/powerGY');
   powerCardsId = powerCardsId.filter((id: string) => id != powerId);
-  await setItem('rooms/' + roomId  , { powerGraveYard:powerCardsId });
+  await setItem('rooms/' + roomId  , { powerGY:powerCardsId });
 };
 export const deletePowerCardFromGraveYardByIndex = async (roomId: string, index: number) => {
-  let powerCardsId = await getItemsOnce('rooms/' + roomId + '/board/powerGraveYard');
+  let powerCardsId = await getItemsOnce('rooms/' + roomId + '/board/powerGY');
   powerCardsId.splice(index,1);
-  await setItem('rooms/' + roomId  , { powerGraveYard:powerCardsId });
+  await setItem('rooms/' + roomId  , { powerGY:powerCardsId });
 };
 
 export const deleteAnimalCardFromGraveYardById = async (roomId: string, animalId: string) => {
-  let animalGraveYard = await getItemsOnce('rooms/' + roomId + '/board/animalGraveYard');
-  animalGraveYard = animalGraveYard.filter((id: string) => id != animalId);
-  await setItem('rooms/' + roomId  , { animalGraveYard:animalGraveYard });
+  let animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
+  animalGY = animalGY.filter((id: string) => id != animalId);
+  await setItem('rooms/' + roomId  , { animalGY:animalGY });
 };
 export const getAnimalCardFromGraveYardByIndex = async (roomId: string, index: number) => {
-  const animalGraveYard = await getItemsOnce('rooms/' + roomId + '/board/animalGraveYard');
-  return animalGraveYard[index]
+  const animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
+  return animalGY[index]
 };
 export const deleteAnimalCardFromGraveYardByIndex = async (roomId: string, index: number) => {
-  const animalGraveYard = await getItemsOnce('rooms/' + roomId + '/board/animalGraveYard');
-  animalGraveYard.splice(index,1);
-  await setItem('rooms/' + roomId  , { animalGraveYard:animalGraveYard });
+  const animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
+  animalGY.splice(index,1);
+  await setItem('rooms/' + roomId  , { animalGY:animalGY });
 };
 export const getPLayerHealth = async (roomId: string, playerType: string) => {
   return  await getItemsOnce('rooms/' + roomId +'/'+playerType +'/hp');

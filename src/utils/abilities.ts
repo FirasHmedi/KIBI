@@ -25,9 +25,9 @@ export const cancelAttacks = async (roomId: string, playerType: string) => {
     await changeCanAttackVar(roomId,playerType,false)
 };
 export const reviveLastPower = async (roomId: string, playerType: string) => {
-   const powerGraveYard = await getItemsOnce('rooms/' + roomId + '/board/powerGraveYard')
-   if(powerGraveYard){
-       const lastPowerCardId = powerGraveYard[powerGraveYard.length-1]
+   const powerGY = await getItemsOnce('rooms/' + roomId + '/board/powerGY')
+   if(powerGY){
+       const lastPowerCardId = powerGY[powerGY.length-1]
        await deletePowerCardFromGraveYardById(roomId,lastPowerCardId)
        await  addCardToPlayerDeck(roomId,playerType,lastPowerCardId)
    }
@@ -60,9 +60,9 @@ export const sacrifice1HpReviveLastAnimal = async (
   slotNumber: number,
 ) => {
     await removeHpFromPlayer(roomId,playerType,3)
-    const animalGraveYard = await getItemsOnce('rooms/' + roomId + '/board/animalGraveYard')
-    if(animalGraveYard){
-        const lastAnimalCardId = animalGraveYard[animalGraveYard.length-1]
+    const animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY')
+    if(animalGY){
+        const lastAnimalCardId = animalGY[animalGY.length-1]
         await deleteAnimalCardFromGraveYardById(roomId,lastAnimalCardId)
         await  addAnimalToBoard(roomId,playerType,slotNumber,lastAnimalCardId)
     }

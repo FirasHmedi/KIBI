@@ -40,9 +40,9 @@ export const minus1Hp = async (roomId: string, playerType: string) => {
 };
 // ----------------------Fox-----------------------
 export const ReviveLastAnimalToDeck = async (roomId: string, playerType: string) => {
-  let animalGraveYard = await getItemsOnce('rooms/' + roomId + '/animalGraveYard');
-  if (animalGraveYard) {
-    let lastAnimalCardId = animalGraveYard[animalGraveYard.length - 1];
+  let animalGY = await getItemsOnce('rooms/' + roomId + '/animalGY');
+  if (animalGY) {
+    let lastAnimalCardId = animalGY[animalGY.length - 1];
     await deleteAnimalCardFromGraveYardById(roomId, lastAnimalCardId);
     await addCardToPlayerDeck(roomId, playerType, lastAnimalCardId);
   }
