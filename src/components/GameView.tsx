@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { flexColumnStyle, violet } from '../styles/Style';
-import { placeAnimalOnBoard } from '../utils/actions';
-import { DefaultBoard, Player, PlayerType } from '../utils/data';
+import {placeAnimalOnBoard, playerDrawCard} from '../utils/actions';
+import {DefaultBoard, Player, PlayerType, Round} from '../utils/data';
 import { getItemsOnce, setItem } from '../utils/db';
 import { getOpponentId, isAnimalCard, isGameRunning, isPowerCard } from '../utils/helpers';
 import { Board } from './Board';
 import { CurrentPView, OpponentPView } from './Players';
+import {addOneRound} from "../utils/unitActions";
 
 function GameView({
   game,
@@ -17,7 +18,7 @@ function GameView({
   roomId: string;
 }) {
   const [board, setBoard] = useState<Board>();
-  const [round, setRound] = useState();
+  const [round, setRound] = useState<Round>();
   const [currentPlayer, setCurrentPlayer] = useState<Player>();
   const [opponentPlayer, setOpponentPlayer] = useState<Player>();
   const [selectedCurrentPSlotNb, setSelectedCurrentPSlotNb] = useState<number>();
@@ -58,7 +59,11 @@ function GameView({
         opponentPSlots: gameBoard.one ?? [],
       });
     }
-
+    if(round) {
+      if (game.round.nb > round?.nb && !!round.nb && game.round.player != round.player && game.round.player === playerType) {
+        playerDrawCard(roomId,playerType).then()
+      }
+    }
     setRound(game.round);
   }, [game]);
 
@@ -84,11 +89,7 @@ function GameView({
   };
 
   const finishRound = async () => {
-    const round = await getItemsOnce('rooms/' + roomId + '/round');
-    round.player = getOpponentId(playerType);
-    round.nb += 1;
-    console.log('round ', round);
-    await setItem('rooms/' + roomId + '/round', round);
+    await addOneRound(roomId,playerType)
   };
 
   if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer) {

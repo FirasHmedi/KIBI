@@ -1,4 +1,5 @@
 import { getItemsOnce, setItem } from './db';
+import {getOpponentId} from "./helpers";
 
 export const addAnimalToBoard = async (
   roomId: string,
@@ -142,3 +143,9 @@ export const getPLayerCards = async (roomId: string, playerType: string) => {
 export const changePLayerCards = async (roomId: string, playerType: string, cards: string[]) => {
   await setItem('rooms/' + roomId + '/' + playerType, { cardsIds:cards });
 };
+export const addOneRound = async (roomId: string,playerType:string) => {
+  const round = await getItemsOnce('rooms/' + roomId + '/round');
+  round.player = playerType;
+  round.nb += 1;
+  await setItem('rooms/' + roomId + '/round', round);
+}

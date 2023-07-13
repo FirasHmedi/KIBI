@@ -14,7 +14,10 @@ export const RUNNING = 'running';
 export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const ROOMS_PATH = 'rooms/';
-
+export interface Round{
+  nb:number,
+  player:PlayerType;
+}
 export interface Card {
   id: string;
   ability?: string;
