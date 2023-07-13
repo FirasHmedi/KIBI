@@ -27,7 +27,7 @@ export interface Card {
 
 export interface AnimalCard extends Card {
   clan: ClanName;
-  role: string;
+  role: RoleName;
 }
 
 export const NeutralEnvCard: Card = {
@@ -64,6 +64,7 @@ export interface Player {
 export const ClansNames = ['water', 'earth', 'fire', 'air', 'neutral'];
 
 export type ClanName = 'air' | 'earth' | 'fire' | 'water' | 'neutral';
+export type RoleName = 'tank' | 'attacker' | 'king' | 'joker';
 
 export const CLANS = {
   water: {

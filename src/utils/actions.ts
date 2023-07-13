@@ -20,9 +20,10 @@ import {
   add1Hp,
   drawOneCard,
   minus1Hp,
-  returnTankToDeck, removePlayerAnimalFromBoardAndAddToGraveYard,
+  removePlayerAnimalFromBoardAndAddToGraveYard,
+  returnTankToDeck,
 } from './animalsAbilities';
-import { ANIMALS_POINTS, POWER_CARDS_OBJECT, getAnimalCard } from './data';
+import { ANIMALS_POINTS, POWER_CARDS_OBJECT, PlayerType, getAnimalCard } from './data';
 import { getItemsOnce } from './db';
 import {
   addAnimalToBoard,
@@ -79,8 +80,8 @@ export const placeKingOnBoard = async (
 };
 export const attackAnimal = async (
   roomId: string,
-  playerAType: string,
-  playerDType: string,
+  playerAType: PlayerType,
+  playerDType: PlayerType,
   animalAId: string,
   animalDId: string,
   slotANumber: number,
@@ -89,6 +90,7 @@ export const attackAnimal = async (
   const animalA = getAnimalCard(animalAId);
   const animalD = getAnimalCard(animalDId);
   if (!animalA || !animalD) return;
+  if (ANIMALS_POINTS[animalA.role] < ANIMALS_POINTS[animalD.role]) return;
 
   await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name);
   await removePlayerAnimalFromBoard(roomId, playerDType, slotDNumber);
@@ -96,9 +98,13 @@ export const attackAnimal = async (
   const env = await getItemsOnce('rooms/' + roomId + '/env');
   if (env == animalD.clan) {
     if (animalD.role == 'attacker') {
-      await removePlayerAnimalFromBoardAndAddToGraveYard(roomId, playerAType, slotANumber, animalAId);
-    }
-    else if (animalD.role == 'tank') {
+      await removePlayerAnimalFromBoardAndAddToGraveYard(
+        roomId,
+        playerAType,
+        slotANumber,
+        animalAId,
+      );
+    } else if (animalD.role == 'tank') {
       await returnTankToDeck(roomId, playerDType, animalDId);
     }
   }

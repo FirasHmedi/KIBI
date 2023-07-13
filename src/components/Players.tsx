@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { buttonStyle, flexRowStyle, primaryBlue, violet } from '../styles/Style';
+import { buttonStyle, flexColumnStyle, flexRowStyle, primaryBlue, violet } from '../styles/Style';
 import { Player } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
@@ -9,11 +9,13 @@ export const CurrentPView = ({
   round,
   playCard,
   finishRound,
+  attackOpponentAnimal,
 }: {
   player: Player;
   round: any;
   playCard: (cardId?: string) => void;
   finishRound: () => void;
+  attackOpponentAnimal: () => void;
 }) => {
   const cardsIds = player.cardsIds ?? [];
   const [selectedId, setSelectedId] = useState<string>();
@@ -34,30 +36,39 @@ export const CurrentPView = ({
         alignItems: 'center',
         padding: 5,
       }}>
-      <button
-        style={{
-          ...buttonStyle,
-          fontSize: '0.8em',
-          position: 'absolute',
-          left: '9vw',
-          backgroundColor: !isFinishRoundButtonEnabled ? '#95a5a6' : primaryBlue,
-        }}
-        disabled={!isFinishRoundButtonEnabled}
-        onClick={() => finishRound()}>
-        Finish
-      </button>
-      <button
-        style={{
-          ...buttonStyle,
-          fontSize: '0.8em',
-          position: 'absolute',
-          left: '14vw',
-          backgroundColor: !isPlayButtonEnabled ? '#95a5a6' : primaryBlue,
-        }}
-        disabled={!isPlayButtonEnabled}
-        onClick={() => playCard(selectedId)}>
-        Play card
-      </button>
+      <div style={{ ...flexColumnStyle, position: 'absolute', left: '12vw' }}>
+        <button
+          style={{
+            ...buttonStyle,
+            fontSize: '0.8em',
+            backgroundColor: !isFinishRoundButtonEnabled ? '#95a5a6' : primaryBlue,
+          }}
+          disabled={!isFinishRoundButtonEnabled}
+          onClick={() => finishRound()}>
+          Finish
+        </button>
+        <button
+          style={{
+            ...buttonStyle,
+            fontSize: '0.8em',
+            backgroundColor: !isPlayButtonEnabled ? '#95a5a6' : primaryBlue,
+          }}
+          disabled={!isPlayButtonEnabled}
+          onClick={() => playCard(selectedId)}>
+          Play card
+        </button>
+        <button
+          style={{
+            ...buttonStyle,
+            fontSize: '0.8em',
+            backgroundColor: !isFinishRoundButtonEnabled ? '#95a5a6' : primaryBlue,
+          }}
+          disabled={!isFinishRoundButtonEnabled}
+          onClick={() => attackOpponentAnimal()}>
+          Attack animal
+        </button>
+      </div>
+
       <div style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.2em' }}>
         <h4>
           {player.playerType?.toUpperCase()} : {player.hp} HP

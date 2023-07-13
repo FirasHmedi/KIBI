@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { flexColumnStyle, violet } from '../styles/Style';
-import {placeAnimalOnBoard, playerDrawCard} from '../utils/actions';
-import {DefaultBoard, Player, PlayerType, Round} from '../utils/data';
-import { getItemsOnce, setItem } from '../utils/db';
+import { attackAnimal, placeAnimalOnBoard, playerDrawCard } from '../utils/actions';
+import { DefaultBoard, Player, PlayerType, Round } from '../utils/data';
 import { getOpponentId, isAnimalCard, isGameRunning, isPowerCard } from '../utils/helpers';
+import { addOneRound } from '../utils/unitActions';
 import { Board } from './Board';
 import { CurrentPView, OpponentPView } from './Players';
-import {addOneRound} from "../utils/unitActions";
 
 function GameView({
   game,
@@ -59,9 +58,14 @@ function GameView({
         opponentPSlots: gameBoard.one ?? [],
       });
     }
-    if(round) {
-      if (game.round.nb > round?.nb && !!round.nb && game.round.player != round.player && game.round.player === playerType) {
-        playerDrawCard(roomId,playerType).then()
+    if (round) {
+      if (
+        game.round.nb > round?.nb &&
+        !!round.nb &&
+        game.round.player != round.player &&
+        game.round.player === playerType
+      ) {
+        playerDrawCard(roomId, playerType).then();
       }
     }
     setRound(game.round);
@@ -79,7 +83,6 @@ function GameView({
   };
 
   const playCard = async (cardId?: string) => {
-    console.log(cardId, isAnimalCard(cardId), selectedCurrentPSlotNb);
     if (isAnimalCard(cardId) && selectedCurrentPSlotNb != null) {
       await placeAnimalOnBoard(roomId, playerType, selectedCurrentPSlotNb, cardId!);
     }
@@ -89,7 +92,28 @@ function GameView({
   };
 
   const finishRound = async () => {
-    await addOneRound(roomId,playerType)
+    await addOneRound(roomId, playerType);
+  };
+
+  const attackOpponentAnimal = async () => {
+    if (selectedCurrentPSlotNb == null || selectedOpponentPSlotNb == null) {
+      return;
+    }
+    const animalAId = board?.currentPSlots[selectedCurrentPSlotNb!];
+    const animalDId = board?.opponentPSlots[selectedOpponentPSlotNb!];
+    if (!animalDId || !animalAId) {
+      return;
+    }
+
+    await attackAnimal(
+      roomId,
+      playerType,
+      getOpponentId(playerType),
+      animalAId.cardId!,
+      animalDId.cardId!,
+      selectedCurrentPSlotNb,
+      selectedOpponentPSlotNb,
+    );
   };
 
   if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer) {
@@ -128,6 +152,7 @@ function GameView({
         round={round}
         playCard={playCard}
         finishRound={finishRound}
+        attackOpponentAnimal={attackOpponentAnimal}
       />
     </div>
   );

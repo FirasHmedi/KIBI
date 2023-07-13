@@ -1,4 +1,4 @@
-import { centerStyle, flexColumnStyle } from '../styles/Style';
+import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { ALL_CARDS_OBJECT, Card } from '../utils/data';
 import { Seperator } from './Elements';
 import { EnvSlot, Slot, SlotBack, Slots } from './Slots';
@@ -13,8 +13,8 @@ interface Props {
 
 export interface Board {
   mainDeck: string[];
-  currentPSlots: string[];
-  opponentPSlots: string[];
+  currentPSlots: Slot[];
+  opponentPSlots: Slot[];
   animalsGY: string[];
   powersGY: string[];
   envCard: Card;
@@ -30,7 +30,6 @@ export const Board = ({
 }: Props) => {
   const { mainDeck, currentPSlots, opponentPSlots, animalsGY, powersGY, envCard, activeCardId } =
     board;
-
   return (
     <div
       style={{
@@ -84,13 +83,17 @@ const MainDeck = ({ nbCards }: { nbCards: number }) => {
 
 const Graveyard = ({ name, cardsIds }: { name: string; cardsIds: string[] }) => {
   return (
-    <div style={{ minHeight: '5vh' }}>
-      <h4>
+    <div style={{ minHeight: '5vh', padding: 5 }}>
+      <h3 style={{ color: violet }}>
         {name} graveyard ({cardsIds.length})
-      </h4>
+      </h3>
       <div style={{ maxHeight: '15vh', overflowY: 'auto' }}>
         {cardsIds?.map((cardId, index) => (
-          <h5 key={index}>{ALL_CARDS_OBJECT[cardId.substring(4)]?.name?.toUpperCase()}</h5>
+          <div key={index} style={flexRowStyle}>
+            <h4>{ALL_CARDS_OBJECT[cardId.substring(4)]?.name?.toUpperCase()}</h4>
+            <div> ---- </div>
+            <h5>({ALL_CARDS_OBJECT[cardId.substring(4)]?.ability?.toUpperCase()})</h5>
+          </div>
         ))}
       </div>
     </div>

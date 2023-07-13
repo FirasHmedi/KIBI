@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { centerStyle, flexColumnStyle, selectedColor, violet } from '../styles/Style';
 import { AnimalCard, CLANS, Card, getAnimalCard } from '../utils/data';
 
@@ -25,6 +24,11 @@ interface SlotProps {
   nb?: number;
 }
 
+export interface Slot {
+  cardId: string;
+  canAttack: boolean;
+}
+
 const commonStyle: React.CSSProperties = {
   ...flexColumnStyle,
   borderRadius: 5,
@@ -37,11 +41,9 @@ const commonStyle: React.CSSProperties = {
 };
 
 export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
-  // @ts-ignore
-  const extractedCardId = !_.isNil(nb) ? cardId?.cardId : cardId;
-  const card = !!extractedCardId ? getAnimalCard(extractedCardId) : null;
+  const card = getAnimalCard(cardId ?? '');
   const selectSlotPolished = () => {
-    if (!!selectSlot) selectSlot(nb, extractedCardId);
+    if (!!selectSlot) selectSlot(nb, cardId);
   };
   return !!card && !!card?.clan ? (
     <div
@@ -96,7 +98,7 @@ export const Slots = ({
   selectedSlotNb,
   selectSlot,
 }: {
-  slots: string[];
+  slots: Slot[];
   selectedSlotNb?: number;
   selectSlot: (slotNb?: number, cardId?: string) => void;
 }) => {
@@ -113,7 +115,7 @@ export const Slots = ({
           nb={index}
           selectSlot={selectSlot}
           key={index}
-          cardId={slot}
+          cardId={slot.cardId}
           selected={selectedSlotNb === index}
         />
       ))}
