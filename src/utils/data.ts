@@ -146,16 +146,23 @@ export const ALL_CARDS_OBJECT: Record<string, AllCards> = {
 
 export const ANIMALS_CARDS_IDS: string[] = getKeysArrayFromJson(animalsCardsJson);
 export const POWERS_CARDS_IDS: string[] = getKeysArrayFromJson(powerCardsJson);
+
 export const ANIMALS_CARDS: AnimalCard[] = getArrayFromJson(animalsCardsJson);
 export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(
   JSON.stringify(animalsCardsJson),
 );
+
 export const getAnimalCard = (cardId: string): AnimalCard | undefined => {
   if (!cardId || cardId.length < 4) return;
   return ANIMAL_CARDS_OBJECT[cardId.toString().substring(4)];
 };
+
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
+export const getPowerCard = (cardId: string): Card | undefined => {
+  if (!cardId || cardId.length < 4) return;
+  return POWER_CARDS_OBJECT[cardId.toString().substring(4)];
+};
 
 export const getRandomMainDeck = () =>
   _.shuffle([
