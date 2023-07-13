@@ -83,19 +83,20 @@ export const attackAnimal = async (
   playerDType: string,
   animalAId: string,
   animalDId: string,
-  slotNumber: number,
+  slotANumber: number,
+  slotDNumber: number,
 ) => {
   const animalA = getAnimalCard(animalAId);
   const animalD = getAnimalCard(animalDId);
   if (!animalA || !animalD) return;
 
   await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name);
-  await removePlayerAnimalFromBoard(roomId, playerDType, slotNumber);
+  await removePlayerAnimalFromBoard(roomId, playerDType, slotDNumber);
   await addAnimalToGraveYard(roomId, animalDId);
   const env = await getItemsOnce('rooms/' + roomId + '/env');
   if (env == animalD.clan) {
     if (animalD.role == 'attacker') {
-      await removePlayerAnimalFromBoardAndAddToGraveYard(roomId, playerAType, slotNumber, animalAId);
+      await removePlayerAnimalFromBoardAndAddToGraveYard(roomId, playerAType, slotANumber, animalAId);
     }
     else if (animalD.role == 'tank') {
       await returnTankToDeck(roomId, playerDType, animalDId);
