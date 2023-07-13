@@ -1,3 +1,4 @@
+// @ts-ignore
 import _ from 'lodash';
 import animalsCardsJson from '../assets/animal-cards.json';
 import powerCardsJson from '../assets/power-cards.json';

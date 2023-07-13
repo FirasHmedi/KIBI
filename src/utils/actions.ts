@@ -1,4 +1,3 @@
-// ---------------------------Complex Action-----------------
 import {
   cancelAttacks,
   cancelUsingPowerCards,
@@ -21,8 +20,7 @@ import {
   add1Hp,
   drawOneCard,
   minus1Hp,
-  removeOpponentAnimal,
-  returnTankToDeck,
+  returnTankToDeck, removePlayerAnimalFromBoardAndAddToGraveYard,
 } from './animalsAbilities';
 import { ANIMALS_POINTS, POWER_CARDS_OBJECT, getAnimalCard } from './data';
 import { getItemsOnce } from './db';
@@ -40,13 +38,9 @@ import {
 } from './unitActions';
 
 export const playerDrawCard = async (roomId: string, playerType: string) => {
-  // addInfoToLog (unit action)
   await addInfoToLog(roomId, 'player ' + playerType + ' draw a card');
-  // getCardFromMainDeck (unit action)
-  let powerCardId = await getCardFromMainDeck(roomId);
-  // removeCardFromMainDeck (unit action)
+  const powerCardId = await getCardFromMainDeck(roomId);
   await removeCardFromMainDeck(roomId);
-  // addCardToPlayerDeck (unit action)
   await addCardToPlayerDeck(roomId, playerType, powerCardId);
 };
 export const placeAnimalOnBoard = async (
@@ -56,7 +50,6 @@ export const placeAnimalOnBoard = async (
   animalId: string,
 ) => {
   const animal = getAnimalCard(animalId);
-  console.log('animal ', animal);
   await addInfoToLog(
     roomId,
     'player ' + playerType + ' placed a ' + animal?.name + ' in slot ' + slotNumber,
@@ -71,7 +64,6 @@ export const placeKingOnBoard = async (
   sacrificedAnimalId: string,
   slotNumber: number,
 ) => {
-  // addInfoToLog (unit action)
   const king = getAnimalCard(kingId);
   const sacrificedAnimal = getAnimalCard(sacrificedAnimalId);
   await addInfoToLog(
@@ -98,17 +90,13 @@ export const attackAnimal = async (
   if (!animalA || !animalD) return;
 
   await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name);
-  // removePlayerAnimalFromBoard (unit action)
   await removePlayerAnimalFromBoard(roomId, playerDType, slotNumber);
-  // addAnimalToGraveYard (unit action)
   await addAnimalToGraveYard(roomId, animalDId);
   const env = await getItemsOnce('rooms/' + roomId + '/env');
   if (env == animalD.clan) {
-    // check if the animal killed is an attacker in his env so activate (removeOpponentAnimal ability)
     if (animalD.role == 'attacker') {
-      await removeOpponentAnimal(roomId, playerAType, slotNumber, animalAId);
+      await removePlayerAnimalFromBoardAndAddToGraveYard(roomId, playerAType, slotNumber, animalAId);
     }
-    // check if the animal killed is a tank in his env so activate (returnTankToDeck ability)
     else if (animalD.role == 'tank') {
       await returnTankToDeck(roomId, playerDType, animalDId);
     }
@@ -151,12 +139,9 @@ export const placePowerCard = async (
   slotNumber: number,
   animalId2: string,
 ) => {
-  // addInfoToLog (unit action)
-  let power = POWER_CARDS_OBJECT[powerCardId];
+  const power = POWER_CARDS_OBJECT[powerCardId];
   await addInfoToLog(roomId, 'player ' + playerType + ' placed a ' + power.name);
-  // removeCardFromPlayerDeck (unit action)
   await removeCardFromPlayerDeck(roomId, playerType, powerCardId);
-  // use the abilities (abilities)
   switch (power.id) {
     case '1-p':
       await cancelAttacks(roomId, playerType);
@@ -213,6 +198,5 @@ export const placePowerCard = async (
       await returnOneAnimal(roomId, playerType, animalId);
       break;
   }
-  // addPowerToGraveYard (unit action)
   await addPowerToGraveYard(roomId, powerCardId);
 };
