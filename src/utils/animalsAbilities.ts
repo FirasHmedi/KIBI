@@ -24,7 +24,7 @@ export const removePlayerAnimalFromBoardAndAddToGraveYard = async (
 // ----------------------tank-----------------------
 export const returnTankToDeck = async (roomId: string, playerType: string, animalId: string) => {
   await addCardToPlayerDeck(roomId, playerType, animalId);
-  await deleteAnimalCardFromGraveYardById(roomId,animalId)
+  await deleteAnimalCardFromGraveYardById(roomId, animalId);
 };
 // ----------------------Snake -----------------------
 export const add1Hp = async (roomId: string, playerType: string) => {

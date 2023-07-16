@@ -14,9 +14,9 @@ export const RUNNING = 'running';
 export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const ROOMS_PATH = 'rooms/';
-export interface Round{
-  nb:number,
-  player:PlayerType;
+export interface Round {
+  nb: number;
+  player: PlayerType;
 }
 export interface Card {
   id: string;
@@ -40,8 +40,8 @@ export const DefaultBoard = {
   mainDeck: [],
   currentPSlots: [],
   opponentPSlots: [],
-  animalsGY: [],
-  powersGY: [],
+  animalGY: [],
+  powerGY: [],
   envCard: NeutralEnvCard,
   activeCardId: null,
 };
@@ -157,7 +157,7 @@ export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(
   JSON.stringify(animalsCardsJson),
 );
 
-export const getAnimalCard = (cardId: string): AnimalCard | undefined => {
+export const getAnimalCard = (cardId: string = ''): AnimalCard | undefined => {
   if (!cardId || cardId.length < 4) return;
   return ANIMAL_CARDS_OBJECT[cardId.toString().substring(4)];
 };

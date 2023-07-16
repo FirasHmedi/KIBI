@@ -70,12 +70,13 @@ export const CurrentPView = ({
       </div>
 
       <div style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.2em' }}>
-        <h4>
-          {player.playerType?.toUpperCase()} : {player.hp} HP
-        </h4>
-        <h5>{cardsIds.length} cards</h5>
+        <h4>{player.playerType?.toUpperCase()}</h4>
       </div>
       <CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
+      <div style={{ color: violet, position: 'absolute', right: '2vw', fontSize: '1.2em' }}>
+        <h4>{player.hp} HP</h4>
+        <h5>{cardsIds.length} cards</h5>
+      </div>
     </div>
   );
 };
@@ -91,12 +92,13 @@ export const OpponentPView = ({ player }: { player: Player }) => {
         padding: 5,
       }}>
       <div style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.2em' }}>
-        <h4>
-          {player.playerType?.toUpperCase()} : {player.hp} HP
-        </h4>
-        <h5>{cardsIds.length} cards</h5>
+        <h4>{player.playerType?.toUpperCase()}</h4>
       </div>
       <OpponentPDeck cardsIds={cardsIds} />
+      <div style={{ color: violet, position: 'absolute', right: '2vw', fontSize: '1.2em' }}>
+        <h4>{player.hp} HP</h4>
+        <h5>{cardsIds.length} cards</h5>
+      </div>
     </div>
   );
 };

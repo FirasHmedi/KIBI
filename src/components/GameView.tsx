@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react';
 import { flexColumnStyle, violet } from '../styles/Style';
 import { attackAnimal, placeAnimalOnBoard, playerDrawCard } from '../utils/actions';
 import { DefaultBoard, Player, PlayerType, Round } from '../utils/data';
-import { getOpponentId, isAnimalCard, isGameRunning, isPowerCard } from '../utils/helpers';
+import {
+  getOpponentIdFromCurrentId,
+  isAnimalCard,
+  isGameRunning,
+  isPowerCard,
+} from '../utils/helpers';
 import { addOneRound } from '../utils/unitActions';
 import { Board } from './Board';
 import { CurrentPView, OpponentPView } from './Players';
@@ -31,8 +36,8 @@ function GameView({
     const gameBoard = game.board;
     const partOfBoard: Board = {
       mainDeck: gameBoard?.mainDeck ?? DefaultBoard.mainDeck,
-      animalsGY: gameBoard?.animalsGY ?? DefaultBoard.animalsGY,
-      powersGY: gameBoard?.powersGY ?? DefaultBoard.powersGY,
+      animalGY: gameBoard?.animalGY ?? DefaultBoard.animalGY,
+      powerGY: gameBoard?.powerGY ?? DefaultBoard.powerGY,
       envCard: gameBoard?.envCard ?? DefaultBoard.envCard,
       activeCardId: gameBoard?.activeCardId ?? DefaultBoard.activeCardId,
       currentPSlots: [],
@@ -92,7 +97,7 @@ function GameView({
   };
 
   const finishRound = async () => {
-    await addOneRound(roomId, playerType);
+    await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
   };
 
   const attackOpponentAnimal = async () => {
@@ -108,7 +113,7 @@ function GameView({
     await attackAnimal(
       roomId,
       playerType,
-      getOpponentId(playerType),
+      getOpponentIdFromCurrentId(playerType),
       animalAId.cardId!,
       animalDId.cardId!,
       selectedCurrentPSlotNb,

@@ -90,7 +90,7 @@ export const attackAnimal = async (
   const animalA = getAnimalCard(animalAId);
   const animalD = getAnimalCard(animalDId);
   if (!animalA || !animalD) return;
-  if (ANIMALS_POINTS[animalA.role] < ANIMALS_POINTS[animalD.role]) return;
+  if (ANIMALS_POINTS[animalA.role].ap < ANIMALS_POINTS[animalD.role].hp) return;
 
   await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name);
   await removePlayerAnimalFromBoard(roomId, playerDType, slotDNumber);

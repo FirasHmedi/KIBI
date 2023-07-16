@@ -41,22 +41,22 @@ const commonStyle: React.CSSProperties = {
 };
 
 export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
-  const card = getAnimalCard(cardId ?? '');
+  const { clan, name, ability, role } = getAnimalCard(cardId) ?? {};
   const selectSlotPolished = () => {
     if (!!selectSlot) selectSlot(nb, cardId);
   };
-  return !!card && !!card?.clan ? (
+  return !!clan ? (
     <div
       style={{
         ...commonStyle,
-        backgroundColor: CLANS[card?.clan]?.color,
+        backgroundColor: CLANS[clan]?.color,
         justifyContent: 'space-between',
-        borderColor: selected ? selectedColor : CLANS[card?.clan]?.color,
+        borderColor: selected ? selectedColor : CLANS[clan]?.color,
       }}
       onClick={() => selectSlotPolished()}>
-      <h4>{card?.name?.toUpperCase()}</h4>
-      <h5>{card?.ability}</h5>
-      <h5>{card?.role?.toUpperCase()}</h5>
+      <h4>{name?.toUpperCase()}</h4>
+      <h5>{ability}</h5>
+      <h5>{role?.toUpperCase()}</h5>
     </div>
   ) : (
     <div
@@ -115,7 +115,7 @@ export const Slots = ({
           nb={index}
           selectSlot={selectSlot}
           key={index}
-          cardId={slot.cardId}
+          cardId={slot?.cardId}
           selected={selectedSlotNb === index}
         />
       ))}

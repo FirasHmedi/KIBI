@@ -1,5 +1,5 @@
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
-import { ALL_CARDS_OBJECT, Card } from '../utils/data';
+import { ALL_CARDS_OBJECT, AnimalCard, Card } from '../utils/data';
 import { Seperator } from './Elements';
 import { EnvSlot, Slot, SlotBack, Slots } from './Slots';
 
@@ -15,8 +15,8 @@ export interface Board {
   mainDeck: string[];
   currentPSlots: Slot[];
   opponentPSlots: Slot[];
-  animalsGY: string[];
-  powersGY: string[];
+  animalGY: string[];
+  powerGY: string[];
   envCard: Card;
   activeCardId?: string;
 }
@@ -28,7 +28,7 @@ export const Board = ({
   selectedCurrentPSlotNb,
   selectedOpponentPSlotNb,
 }: Props) => {
-  const { mainDeck, currentPSlots, opponentPSlots, animalsGY, powersGY, envCard, activeCardId } =
+  const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, envCard, activeCardId } =
     board;
   return (
     <div
@@ -63,9 +63,9 @@ export const Board = ({
       </div>
 
       <div style={{ width: '15vw' }}>
-        <Graveyard name='Animal' cardsIds={animalsGY} />
+        <Graveyard name='Animal' cardsIds={animalGY} />
         <Seperator />
-        <Graveyard name='Power' cardsIds={powersGY} />
+        <Graveyard name='Power' cardsIds={powerGY} />
       </div>
     </div>
   );
@@ -81,21 +81,26 @@ const MainDeck = ({ nbCards }: { nbCards: number }) => {
   );
 };
 
-const Graveyard = ({ name, cardsIds }: { name: string; cardsIds: string[] }) => {
-  return (
-    <div style={{ minHeight: '5vh', padding: 5 }}>
-      <h3 style={{ color: violet }}>
-        {name} graveyard ({cardsIds.length})
-      </h3>
-      <div style={{ maxHeight: '15vh', overflowY: 'auto' }}>
-        {cardsIds?.map((cardId, index) => (
-          <div key={index} style={flexRowStyle}>
-            <h4>{ALL_CARDS_OBJECT[cardId.substring(4)]?.name?.toUpperCase()}</h4>
-            <div> ---- </div>
-            <h5>({ALL_CARDS_OBJECT[cardId.substring(4)]?.ability?.toUpperCase()})</h5>
+const Graveyard = ({ name, cardsIds }: { name: string; cardsIds: string[] }) => (
+  <div style={{ minHeight: '5vh', padding: 5 }}>
+    <h3 style={{ color: violet }}>
+      {name} graveyard ({cardsIds.length})
+    </h3>
+    <div style={{ maxHeight: '15vh', overflowY: 'auto' }}>
+      {cardsIds?.map((cardId, index) => {
+        const card = ALL_CARDS_OBJECT[cardId.substring(4)] ?? ({} as AnimalCard);
+        return (
+          <div key={index} style={{ ...flexRowStyle, ...centerStyle }}>
+            <h4>{card?.name?.toUpperCase()}</h4>
+            <div> --- </div>
+            {'role' in card ? (
+              <h5>{(card as AnimalCard)?.role?.toUpperCase()}</h5>
+            ) : (
+              <h5>{card?.description?.toUpperCase()}</h5>
+            )}
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
-  );
-};
+  </div>
+);
