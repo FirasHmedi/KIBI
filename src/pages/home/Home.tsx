@@ -21,7 +21,7 @@ function Home() {
       one: {
         hp: 8,
         playerName: 'player1',
-        canPlayAnimals: true,
+        canAttack: true,
         canPlayPowers: true,
         status: PREPARE,
       },
@@ -42,7 +42,7 @@ function Home() {
     await setItem(ROOMS_PATH + roomId + '/two', {
       hp: 8,
       playerName: 'player2',
-      canPlayAnimals: true,
+      canAttack: true,
       canPlayPowers: true,
       status: PREPARE,
     });

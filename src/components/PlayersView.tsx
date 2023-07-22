@@ -17,15 +17,17 @@ export const CurrentPView = ({
   finishRound: () => void;
   attackOpponentAnimal: () => void;
 }) => {
-  const { hp, playerType, canPlayAnimals, canPlayPowers } = player;
+  const { hp, playerType, canAttack, canPlayPowers } = player;
   const cardsIds = player.cardsIds ?? [];
   const [selectedId, setSelectedId] = useState<string>();
   const isMyRound = round?.player === playerType;
 
-  const isPlayButtonEnabled =
+  const isPlayCardEnabled =
     !!selectedId &&
     isMyRound &&
-    ((canPlayAnimals && isAnimalCard(selectedId)) || (canPlayPowers && isPowerCard(selectedId)));
+    (isAnimalCard(selectedId) || (canPlayPowers && isPowerCard(selectedId)));
+
+  const isAttackAnimalEnabled = !!selectedId && isMyRound && canAttack && isAnimalCard(selectedId);
 
   return (
     <div
@@ -44,26 +46,28 @@ export const CurrentPView = ({
           onClick={() => finishRound()}>
           Finish
         </button>
-        <button
-          style={{
-            ...buttonStyle,
-            fontSize: '0.8em',
-            backgroundColor: !isPlayButtonEnabled ? '#95a5a6' : primaryBlue,
-          }}
-          disabled={!isPlayButtonEnabled}
-          onClick={() => playCard(selectedId)}>
-          Play card
-        </button>
-        <button
-          style={{
-            ...buttonStyle,
-            fontSize: '0.8em',
-            backgroundColor: !isMyRound ? '#95a5a6' : primaryBlue,
-          }}
-          disabled={!isMyRound}
-          onClick={() => attackOpponentAnimal()}>
-          Attack animal
-        </button>
+        {isPlayCardEnabled && (
+          <button
+            style={{
+              ...buttonStyle,
+              fontSize: '0.8em',
+              backgroundColor: primaryBlue,
+            }}
+            onClick={() => playCard(selectedId)}>
+            Play card
+          </button>
+        )}
+        {isAttackAnimalEnabled && (
+          <button
+            style={{
+              ...buttonStyle,
+              fontSize: '0.8em',
+              backgroundColor: primaryBlue,
+            }}
+            onClick={() => attackOpponentAnimal()}>
+            Attack animal
+          </button>
+        )}
       </div>
       <PlayerNameView name={playerType} />
       <CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />

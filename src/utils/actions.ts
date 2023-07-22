@@ -117,11 +117,11 @@ export const attackOwner = async (roomId: string, playerDType: string, animalId:
   // @ts-ignore
   await removeHpFromPlayer(roomId, playerDType, ANIMALS_POINTS[animal.role].ap);
 };
-export const jokerAbilities = async (roomId: string, jokerId: string, playerType: string) => {
+export const activateJokerAbility = async (roomId: string, jokerId: string, playerType: string) => {
   const joker = getAnimalCard(jokerId);
   if (!joker) return;
-  const env = await getItemsOnce('rooms/' + roomId + '/env');
-  if (env != joker.clan) return;
+  const envType = await getItemsOnce('rooms/' + roomId + '/board/envType');
+  if (envType != joker.clan) return;
   await addInfoToLog(roomId, joker.name + ' has activated his ability');
   switch (joker.name) {
     case 'Crow':
@@ -160,7 +160,7 @@ export const placePowerCard = async (
 
   await setActivePowerCard(roomId, cardId);
 
-  await waitFor(4000);
+  await waitFor(2000);
 
   await setActivePowerCard(roomId, '');
 

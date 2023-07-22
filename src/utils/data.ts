@@ -59,7 +59,7 @@ export interface Player {
   status: string;
   playerName?: string;
   canPlayPowers: boolean;
-  canPlayAnimals: boolean;
+  canAttack: boolean;
 }
 
 export const ClansNames = ['water', 'earth', 'fire', 'air', 'neutral'];

@@ -98,9 +98,7 @@ const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
         const card = getPowerCard(cardId);
         return (
           <div key={index} style={{ ...flexRowStyle, ...centerStyle, maxWidth: '15vw' }}>
-            <h5>
-              {card?.name?.toUpperCase()} - {card?.description?.slice(0, 30)}
-            </h5>
+            <h5>{card?.name?.toUpperCase()}</h5>
           </div>
         );
       })}
