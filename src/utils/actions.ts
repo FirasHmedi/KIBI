@@ -2,7 +2,6 @@ import _ from 'lodash';
 import {
   cancelAttacks,
   cancelUsingPowerCards,
-  changeEnv,
   draw2Cards,
   returnOneAnimal,
   reviveLastPower,
@@ -188,7 +187,6 @@ export const placePowerCard = async (
       await switchDeck(roomId);
       break;
     case '8-p':
-      await changeEnv(roomId, cardId);
       break;
     case '9-p':
       await sacrificeAnimalToGet3Hp(roomId, cardId, animalId);
@@ -206,13 +204,10 @@ export const placePowerCard = async (
       await sacrifice1HpToReturn2animals(roomId, playerType, animalId, animalId2);
       break;
     case '14-p':
-      await changeEnv(roomId, cardId);
       break;
     case '15-p':
-      await changeEnv(roomId, cardId);
       break;
     case '16-p':
-      await changeEnv(roomId, cardId);
       break;
     case '17-p':
       await cancelUsingPowerCards(roomId, playerType);

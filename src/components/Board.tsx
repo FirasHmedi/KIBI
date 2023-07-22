@@ -1,5 +1,5 @@
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
-import { AnimalCard, CLANS, EnvCard, getAnimalCard, getPowerCard } from '../utils/data';
+import { AnimalCard, ClanName, getAnimalCard, getPowerCard } from '../utils/data';
 import { isPowerCard } from '../utils/helpers';
 import { Seperator } from './Elements';
 import { EnvSlot, Slot, SlotBack, Slots } from './Slots';
@@ -20,8 +20,7 @@ export interface Board {
   two?: Slot[];
   animalGY: string[];
   powerGY: string[];
-  envCardId?: string;
-  envCard: EnvCard;
+  envType?: ClanName;
   activeCardId?: string;
 }
 
@@ -32,15 +31,14 @@ export const BoardView = ({
   selectedCurrentPSlotNb,
   selectedOpponentPSlotNb,
 }: Props) => {
-  const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, envCard, activeCardId } =
+  const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, envType, activeCardId } =
     board;
-  console.log('env card', envCard);
   return (
     <div
       style={{
         ...centerStyle,
         flexDirection: 'row',
-        width: '100vw',
+        width: '90vw',
         justifyContent: 'space-around',
       }}>
       <MainDeck nbCards={mainDeck.length} />
@@ -51,8 +49,6 @@ export const BoardView = ({
         style={{
           ...centerStyle,
           ...flexColumnStyle,
-          backgroundColor:
-            envCard?.ability! !== 'neutral' ? CLANS[envCard?.ability!]?.color : 'transparent',
         }}>
         <Slots
           slots={opponentPSlots}
@@ -60,7 +56,7 @@ export const BoardView = ({
           selectedSlotNb={selectedOpponentPSlotNb}
         />
         <Seperator />
-        <EnvSlot envCard={envCard} />
+        <EnvSlot envType={envType} />
         <Seperator />
         <Slots
           slots={currentPSlots}
@@ -101,10 +97,10 @@ const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
       {cardsIds?.map((cardId, index) => {
         const card = getPowerCard(cardId);
         return (
-          <div key={index} style={{ ...flexRowStyle, ...centerStyle }}>
-            <h5>{card?.name?.toUpperCase()}</h5>
-            <div> - </div>
-            <h5>{card?.description?.slice(0, 30)}</h5>
+          <div key={index} style={{ ...flexRowStyle, ...centerStyle, maxWidth: '15vw' }}>
+            <h5>
+              {card?.name?.toUpperCase()} - {card?.description?.slice(0, 30)}
+            </h5>
           </div>
         );
       })}
@@ -120,9 +116,9 @@ const AnimalGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
         const card = getAnimalCard(cardId);
         return (
           <div key={index} style={{ ...flexRowStyle, ...centerStyle }}>
-            <h5>{card?.name?.toUpperCase()}</h5>
-            <div> - </div>
-            <h5>{(card as AnimalCard)?.role?.toUpperCase()}</h5>
+            <h5>
+              {card?.name?.toUpperCase()}-{(card as AnimalCard)?.role?.toUpperCase()}
+            </h5>
           </div>
         );
       })}

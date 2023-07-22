@@ -1,4 +1,5 @@
 import { drawCardFromMainDeck } from './actions';
+import { ClanName } from './data';
 import { getItemsOnce } from './db';
 import {
   addAnimalToBoard,
@@ -81,8 +82,8 @@ export const switchDeck = async (roomId: string) => {
   await changePLayerCards(roomId, 'one', twoCards);
   await changePLayerCards(roomId, 'two', oneCards);
 };
-export const changeEnv = async (roomId: string, env: string) => {
-  await changeEnvUnitAction(roomId, env);
+export const changeEnv = async (roomId: string, envType: ClanName) => {
+  await changeEnvUnitAction(roomId, envType);
 };
 export const sacrificeAnimalToGet3Hp = async (
   roomId: string,

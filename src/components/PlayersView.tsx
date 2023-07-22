@@ -17,7 +17,8 @@ export const CurrentPView = ({
   finishRound: () => void;
   attackOpponentAnimal: () => void;
 }) => {
-  const { cardsIds, hp, playerType, canPlayAnimals, canPlayPowers } = player;
+  const { hp, playerType, canPlayAnimals, canPlayPowers } = player;
+  const cardsIds = player.cardsIds ?? [];
   const [selectedId, setSelectedId] = useState<string>();
   const isMyRound = round?.player === playerType;
 
@@ -72,7 +73,8 @@ export const CurrentPView = ({
 };
 
 export const OpponentPView = ({ player }: { player: Player }) => {
-  const { cardsIds, hp, playerType } = player;
+  const { hp, playerType } = player;
+  const cardsIds = player.cardsIds ?? [];
   return (
     <div
       style={{
@@ -80,7 +82,7 @@ export const OpponentPView = ({ player }: { player: Player }) => {
         alignItems: 'center',
       }}>
       <PlayerNameView name={playerType} />
-      <OpponentPDeck cardsIds={cardsIds ?? []} />
+      <OpponentPDeck cardsIds={cardsIds} />
       <HealthAndCardsNbView hp={hp} cardsNb={cardsIds.length} />
     </div>
   );
@@ -93,7 +95,7 @@ const PlayerNameView = ({ name }: { name?: string }) => (
 );
 
 const HealthAndCardsNbView = ({ hp, cardsNb }: { hp: number; cardsNb: number }) => (
-  <div style={{ color: violet, position: 'absolute', right: '6vw', fontSize: '1.2em' }}>
+  <div style={{ color: violet, position: 'absolute', right: '8vw', fontSize: '1.2em' }}>
     <h4>{hp} HP</h4>
     <h5>{cardsNb} cards</h5>
   </div>

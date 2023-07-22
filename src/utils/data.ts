@@ -37,19 +37,13 @@ export interface EnvCard {
   name: string;
 }
 
-export const NeutralEnvCard: EnvCard = {
-  id: '0',
-  name: 'Neutral',
-  ability: 'neutral',
-};
-
 export const DefaultBoard = {
   mainDeck: [],
   currentPSlots: [],
   opponentPSlots: [],
   animalGY: [],
   powerGY: [],
-  envCard: NeutralEnvCard,
+  envType: 'neutral' as ClanName,
   activeCardId: undefined,
 };
 
@@ -90,6 +84,8 @@ export const CLANS = {
     color: neutralColor,
   },
 };
+
+export const envCardsIds = ['8-p', '14-p', '15-p', '16-p'];
 
 export const TestDeck = [
   {

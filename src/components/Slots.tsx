@@ -1,5 +1,5 @@
 import { centerStyle, selectedColor, slotStyle, violet } from '../styles/Style';
-import { AnimalCard, CLANS, Card, EnvCard, getAnimalCard, getPowerCard } from '../utils/data';
+import { AnimalCard, CLANS, Card, ClanName, getAnimalCard, getPowerCard } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 
 export const SlotBack = () => (
@@ -8,8 +8,6 @@ export const SlotBack = () => (
       borderRadius: 5,
       backgroundColor: violet,
       color: 'white',
-      fontSize: '1em',
-      margin: 2,
       ...centerStyle,
       height: '13vh',
       width: '4vw',
@@ -108,21 +106,21 @@ export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
   );
 };
 
-export const EnvSlot = ({ envCard }: { envCard?: EnvCard }) => (
+export const EnvSlot = ({ envType }: { envType?: ClanName }) => (
   <div
     style={{
       ...centerStyle,
       borderRadius: 5,
-      backgroundColor: CLANS[envCard?.ability!]?.color,
+      backgroundColor: CLANS[envType!]?.color,
       color: 'white',
       flexDirection: 'column',
-      height: '5vw',
-      width: '5vw',
+      height: '4vw',
+      width: '4vw',
       transform: 'rotate(90deg)',
       justifyContent: 'center',
       flexShrink: 0,
     }}>
-    <h6 style={{ transform: 'rotate(-90deg)' }}>{envCard?.name?.toUpperCase()}</h6>
+    <h6 style={{ transform: 'rotate(-90deg)' }}>{envType?.toUpperCase()}</h6>
   </div>
 );
 
@@ -142,7 +140,7 @@ export const Slots = ({
     <div
       style={{
         ...centerStyle,
-        width: '24vw',
+        width: '22vw',
         justifyContent: 'space-evenly',
       }}>
       {compoundSlots.map((slot, index) => (

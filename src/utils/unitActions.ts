@@ -1,3 +1,4 @@
+import { ClanName } from './data';
 import { getItemsOnce, setItem } from './db';
 
 export const setActivePowerCard = async (roomId: string, cardId?: string) => {
@@ -76,9 +77,8 @@ export const addInfoToLog = async (roomId: string, text: string) => {
   const index = log ? log.length : 0;
   await setItem('rooms/' + roomId + '/log', { [`${index}`]: text });
 };
-export const changeEnvUnitAction = async (roomId: string, envCardId: string) => {
-  console.log(roomId, envCardId);
-  await setItem('rooms/' + roomId + '/board/', { envCardId: envCardId });
+export const changeEnvUnitAction = async (roomId: string, envType: ClanName) => {
+  await setItem('rooms/' + roomId + '/board/', { envType });
 };
 export const getCardFromMainDeck = async (roomId: string): Promise<string> => {
   const mainDeck = (await getItemsOnce('rooms/' + roomId + '/board/mainDeck')) as string[];

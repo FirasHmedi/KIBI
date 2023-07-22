@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Game } from '../pages/game/Game';
 import { flexColumnStyle, violet } from '../styles/Style';
+import { changeEnv } from '../utils/abilities';
 import {
   attackAnimal,
   drawCardFromMainDeck,
   placeAnimalOnBoard,
   placePowerCard,
 } from '../utils/actions';
-import { DefaultBoard, EnvCard, Player, PlayerType, Round, getPowerCard } from '../utils/data';
+import {
+  ClanName,
+  DefaultBoard,
+  Player,
+  PlayerType,
+  Round,
+  envCardsIds,
+  getOriginalCardId,
+} from '../utils/data';
 import {
   getOpponentIdFromCurrentId,
   isAnimalCard,
@@ -16,6 +25,7 @@ import {
 } from '../utils/helpers';
 import { addOneRound } from '../utils/unitActions';
 import { Board, BoardView } from './Board';
+import { EnvPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 
 export function GameView({
@@ -33,6 +43,7 @@ export function GameView({
   const [opponentPlayer, setOppPlayer] = useState<Player>();
   const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
   const [selectedOppPSlotNb, setSelectedOppPSlotNb] = useState<number>();
+  const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isGameRunning(game.status)) {
@@ -44,7 +55,7 @@ export function GameView({
       mainDeck: gameBoard?.mainDeck ?? DefaultBoard.mainDeck,
       animalGY: gameBoard?.animalGY ?? DefaultBoard.animalGY,
       powerGY: gameBoard?.powerGY ?? DefaultBoard.powerGY,
-      envCard: (getPowerCard(gameBoard?.envCardId) as EnvCard) ?? DefaultBoard.envCard,
+      envType: gameBoard?.envType ?? DefaultBoard.envType,
       activeCardId: gameBoard?.activeCardId ?? DefaultBoard.activeCardId,
       currentPSlots: [],
       opponentPSlots: [],
@@ -82,12 +93,12 @@ export function GameView({
     }
   };
 
-  const selectOppSlot = (nbSlot?: number, cardId?: string) => {
+  const selectOppSlot = (nbSlot?: number, _cardId?: string) => {
     nbSlot !== selectedOppPSlotNb
       ? setSelectedOppPSlotNb(nbSlot)
       : setSelectedOppPSlotNb(undefined);
   };
-  const selectCurrSlot = (nbSlot?: number, cardId?: string) => {
+  const selectCurrSlot = (nbSlot?: number, _cardId?: string) => {
     nbSlot !== selectedCurrPSlotNb
       ? setSelectedCurrPSlotNb(nbSlot)
       : setSelectedCurrPSlotNb(undefined);
@@ -100,7 +111,15 @@ export function GameView({
 
     if (isPowerCard(cardId)) {
       await placePowerCard(roomId, playerType, cardId!);
+      if (envCardsIds.includes(getOriginalCardId(cardId!))) {
+        setShowEnvPopup(true);
+      }
     }
+  };
+
+  const changeEnvWithPopup = async (envType: ClanName) => {
+    await changeEnv(roomId, envType);
+    setShowEnvPopup(false);
   };
 
   const finishRound = async () => {
@@ -137,14 +156,16 @@ export function GameView({
       style={{
         ...flexColumnStyle,
         width: '100vw',
-        height: '100vh',
+        height: '94vh',
         justifyContent: 'space-between',
-        paddingTop: 5,
-        paddingBottom: 5,
+        paddingTop: '3vh',
+        paddingBottom: '3vh',
       }}>
       <OpponentPView player={opponentPlayer} />
 
       <RoundView nb={game.round.nb} />
+
+      {showEnvPopup && <EnvPopup changeEnv={changeEnvWithPopup} />}
 
       <BoardView
         board={board}
