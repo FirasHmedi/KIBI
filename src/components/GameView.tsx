@@ -18,7 +18,7 @@ import { addOneRound } from '../utils/unitActions';
 import { Board, BoardView } from './Board';
 import { CurrentPView, OpponentPView } from './PlayersView';
 
-function GameView({
+export function GameView({
   game,
   playerType,
   roomId,
@@ -139,6 +139,8 @@ function GameView({
         width: '100vw',
         height: '100vh',
         justifyContent: 'space-between',
+        paddingTop: 5,
+        paddingBottom: 5,
       }}>
       <OpponentPView player={opponentPlayer} />
 
@@ -176,5 +178,3 @@ const RoundView = ({ nb }: { nb: number }) => (
     Round {nb}
   </div>
 );
-
-export default GameView;

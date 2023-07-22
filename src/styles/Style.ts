@@ -52,22 +52,22 @@ export const headerStyle: React.CSSProperties = {
 export const buttonStyle: React.CSSProperties = {
   backgroundColor: primaryBlue,
   color: 'white',
-  padding: 7,
+  padding: 3,
   borderRadius: 5,
   fontWeight: 'bold',
   paddingLeft: 13,
   paddingRight: 13,
   maxWidth: 150,
-  margin: 10,
+  margin: 4,
 };
 
-export const commonStyle: React.CSSProperties = {
+export const slotStyle: React.CSSProperties = {
   ...flexColumnStyle,
   borderRadius: 5,
   color: 'white',
   fontSize: '1em',
-  height: '17vh',
-  width: '7vw',
+  height: '18vh',
+  width: '6vw',
   flexShrink: 0,
   border: 'solid 4px #95a5a6',
 };

@@ -17,23 +17,20 @@ export const CurrentPView = ({
   finishRound: () => void;
   attackOpponentAnimal: () => void;
 }) => {
-  const cardsIds = player.cardsIds ?? [];
+  const { cardsIds, hp, playerType, canPlayAnimals, canPlayPowers } = player;
   const [selectedId, setSelectedId] = useState<string>();
-  const isMyRound = round?.player === player?.playerType;
+  const isMyRound = round?.player === playerType;
 
   const isPlayButtonEnabled =
     !!selectedId &&
     isMyRound &&
-    ((player?.canPlayAnimals && isAnimalCard(selectedId)) ||
-      (player?.canPlayPowers && isPowerCard(selectedId)));
+    ((canPlayAnimals && isAnimalCard(selectedId)) || (canPlayPowers && isPowerCard(selectedId)));
 
   return (
     <div
       style={{
         ...flexRowStyle,
-        height: '20vh',
         alignItems: 'center',
-        padding: 5,
       }}>
       <div style={{ ...flexColumnStyle, position: 'absolute', left: '12vw' }}>
         <button
@@ -67,36 +64,37 @@ export const CurrentPView = ({
           Attack animal
         </button>
       </div>
-      <h4 style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.1em' }}>
-        Player {player.playerType?.toUpperCase()}
-      </h4>
+      <PlayerNameView name={playerType} />
       <CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
-      <div style={{ color: violet, position: 'absolute', right: '2vw', fontSize: '1.2em' }}>
-        <h4>{player.hp} HP</h4>
-        <h5>{cardsIds.length} cards</h5>
-      </div>
+      <HealthAndCardsNbView hp={hp} cardsNb={cardsIds.length} />
     </div>
   );
 };
 
 export const OpponentPView = ({ player }: { player: Player }) => {
-  const cardsIds = player.cardsIds ?? [];
+  const { cardsIds, hp, playerType } = player;
   return (
     <div
       style={{
         ...flexRowStyle,
-        height: '20vh',
         alignItems: 'center',
-        padding: 5,
       }}>
-      <h4 style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.1em' }}>
-        Player {player.playerType?.toUpperCase()}
-      </h4>
-      <OpponentPDeck cardsIds={cardsIds} />
-      <div style={{ color: violet, position: 'absolute', right: '2vw', fontSize: '1.2em' }}>
-        <h4>{player.hp} HP</h4>
-        <h5>{cardsIds.length} cards</h5>
-      </div>
+      <PlayerNameView name={playerType} />
+      <OpponentPDeck cardsIds={cardsIds ?? []} />
+      <HealthAndCardsNbView hp={hp} cardsNb={cardsIds.length} />
     </div>
   );
 };
+
+const PlayerNameView = ({ name }: { name?: string }) => (
+  <h4 style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.1em' }}>
+    Player {name?.toUpperCase()}
+  </h4>
+);
+
+const HealthAndCardsNbView = ({ hp, cardsNb }: { hp: number; cardsNb: number }) => (
+  <div style={{ color: violet, position: 'absolute', right: '6vw', fontSize: '1.2em' }}>
+    <h4>{hp} HP</h4>
+    <h5>{cardsNb} cards</h5>
+  </div>
+);

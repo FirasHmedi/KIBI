@@ -59,9 +59,9 @@ export const BoardView = ({
           selectSlot={selectOpponentSlot}
           selectedSlotNb={selectedOpponentPSlotNb}
         />
-
+        <Seperator />
         <EnvSlot envCard={envCard} />
-
+        <Seperator />
         <Slots
           slots={currentPSlots}
           selectSlot={selectCurrentSlot}

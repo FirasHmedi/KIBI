@@ -1,4 +1,4 @@
-import { centerStyle, commonStyle, selectedColor, violet } from '../styles/Style';
+import { centerStyle, selectedColor, slotStyle, violet } from '../styles/Style';
 import { AnimalCard, CLANS, Card, EnvCard, getAnimalCard, getPowerCard } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 
@@ -9,10 +9,10 @@ export const SlotBack = () => (
       backgroundColor: violet,
       color: 'white',
       fontSize: '1em',
-      margin: 4,
+      margin: 2,
       ...centerStyle,
-      height: '14vh',
-      width: '5vw',
+      height: '13vh',
+      width: '4vw',
     }}>
     <h5>KIBI</h5>
   </div>
@@ -43,14 +43,14 @@ export const PowerSlot = ({
   return (
     <div
       style={{
-        ...commonStyle,
+        ...slotStyle,
         backgroundColor: violet,
         justifyContent: 'flex-start',
         borderColor: selected ? selectedColor : violet,
       }}
       onClick={() => select()}>
-      <h4>{name?.toUpperCase()}</h4>
-      <h5>{ability}</h5>
+      <h5>{name?.toUpperCase()}</h5>
+      <h6>{ability}</h6>
     </div>
   );
 };
@@ -68,15 +68,15 @@ export const AnimalSlot = ({
   return (
     <div
       style={{
-        ...commonStyle,
+        ...slotStyle,
         backgroundColor: CLANS[clan!]?.color,
         justifyContent: 'space-between',
         borderColor: selected ? selectedColor : CLANS[clan!]?.color,
       }}
       onClick={() => select()}>
-      <h4>{name?.toUpperCase()}</h4>
-      <h5>{ability}</h5>
-      <h5>{role?.toUpperCase()}</h5>
+      <h5>{name?.toUpperCase()}</h5>
+      <h6>{ability}</h6>
+      <h6>{role?.toUpperCase()}</h6>
     </div>
   );
 };
@@ -97,7 +97,7 @@ export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
   return (
     <div
       style={{
-        ...commonStyle,
+        ...slotStyle,
         backgroundColor: '#95a5a6',
         justifyContent: 'center',
         borderColor: selected ? selectedColor : '#95a5a6',
@@ -115,15 +115,14 @@ export const EnvSlot = ({ envCard }: { envCard?: EnvCard }) => (
       borderRadius: 5,
       backgroundColor: CLANS[envCard?.ability!]?.color,
       color: 'white',
-      fontSize: '1em',
       flexDirection: 'column',
-      height: '17vh',
-      width: '7vw',
+      height: '5vw',
+      width: '5vw',
       transform: 'rotate(90deg)',
       justifyContent: 'center',
       flexShrink: 0,
     }}>
-    <h5 style={{ transform: 'rotate(-90deg)' }}>{envCard?.name?.toUpperCase()}</h5>
+    <h6 style={{ transform: 'rotate(-90deg)' }}>{envCard?.name?.toUpperCase()}</h6>
   </div>
 );
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AnimalsSelection } from '../../components/AnimalsSelection';
 import { Board } from '../../components/Board';
-import GameView from '../../components/GameView';
+import { GameView } from '../../components/GameView';
 import { centerStyle, flexColumnStyle } from '../../styles/Style';
 import {
   GeneralTestData,
