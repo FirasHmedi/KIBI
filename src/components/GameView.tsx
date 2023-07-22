@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
+import { Game } from '../pages/game/Game';
 import { flexColumnStyle, violet } from '../styles/Style';
-import { attackAnimal, placeAnimalOnBoard, playerDrawCard } from '../utils/actions';
-import { DefaultBoard, Player, PlayerType, Round } from '../utils/data';
+import {
+  attackAnimal,
+  drawCardFromMainDeck,
+  placeAnimalOnBoard,
+  placePowerCard,
+} from '../utils/actions';
+import { DefaultBoard, EnvCard, Player, PlayerType, Round, getPowerCard } from '../utils/data';
 import {
   getOpponentIdFromCurrentId,
   isAnimalCard,
@@ -9,24 +15,24 @@ import {
   isPowerCard,
 } from '../utils/helpers';
 import { addOneRound } from '../utils/unitActions';
-import { Board } from './Board';
-import { CurrentPView, OpponentPView } from './Players';
+import { Board, BoardView } from './Board';
+import { CurrentPView, OpponentPView } from './PlayersView';
 
 function GameView({
   game,
   playerType,
   roomId,
 }: {
-  game: any;
+  game: Game;
   playerType: PlayerType;
   roomId: string;
 }) {
   const [board, setBoard] = useState<Board>();
   const [round, setRound] = useState<Round>();
-  const [currentPlayer, setCurrentPlayer] = useState<Player>();
-  const [opponentPlayer, setOpponentPlayer] = useState<Player>();
-  const [selectedCurrentPSlotNb, setSelectedCurrentPSlotNb] = useState<number>();
-  const [selectedOpponentPSlotNb, setSelectedOpponentPSlotNb] = useState<number>();
+  const [currentPlayer, setCurrPlayer] = useState<Player>();
+  const [opponentPlayer, setOppPlayer] = useState<Player>();
+  const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
+  const [selectedOppPSlotNb, setSelectedOppPSlotNb] = useState<number>();
 
   useEffect(() => {
     if (!isGameRunning(game.status)) {
@@ -38,61 +44,62 @@ function GameView({
       mainDeck: gameBoard?.mainDeck ?? DefaultBoard.mainDeck,
       animalGY: gameBoard?.animalGY ?? DefaultBoard.animalGY,
       powerGY: gameBoard?.powerGY ?? DefaultBoard.powerGY,
-      envCard: gameBoard?.envCard ?? DefaultBoard.envCard,
+      envCard: (getPowerCard(gameBoard?.envCardId) as EnvCard) ?? DefaultBoard.envCard,
       activeCardId: gameBoard?.activeCardId ?? DefaultBoard.activeCardId,
       currentPSlots: [],
       opponentPSlots: [],
     };
-    const player1 = { ...game[PlayerType.ONE], playerType: PlayerType.ONE };
-    const player2 = { ...game[PlayerType.TWO], playerType: PlayerType.TWO };
+    const p1 = { ...game[PlayerType.ONE], playerType: PlayerType.ONE };
+    const p2 = { ...game[PlayerType.TWO], playerType: PlayerType.TWO };
 
     if (playerType === PlayerType.ONE) {
-      setCurrentPlayer(player1);
-      setOpponentPlayer(player2);
+      setCurrPlayer(p1);
+      setOppPlayer(p2);
       setBoard({
         ...partOfBoard,
         currentPSlots: gameBoard.one ?? [],
         opponentPSlots: gameBoard.two ?? [],
       });
     } else {
-      setCurrentPlayer(player2);
-      setOpponentPlayer(player1);
+      setCurrPlayer(p2);
+      setOppPlayer(p1);
       setBoard({
         ...partOfBoard,
         currentPSlots: gameBoard.two ?? [],
         opponentPSlots: gameBoard.one ?? [],
       });
     }
+    const newRound = game.round;
     if (round) {
-      if (
-        game.round.nb > round?.nb &&
-        !!round.nb &&
-        game.round.player != round.player &&
-        game.round.player === playerType
-      ) {
-        playerDrawCard(roomId, playerType).then();
-      }
+      checkAndDrawCardFromMainDeck(newRound);
     }
-    setRound(game.round);
+    setRound(newRound);
   }, [game]);
 
-  const selectOpponentSlot = (nbSlot?: number, cardId?: string) => {
-    nbSlot !== selectedOpponentPSlotNb
-      ? setSelectedOpponentPSlotNb(nbSlot)
-      : setSelectedOpponentPSlotNb(undefined);
+  const checkAndDrawCardFromMainDeck = ({ player, nb }: Round) => {
+    if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {
+      drawCardFromMainDeck(roomId, playerType).then();
+    }
   };
-  const selectCurrentSlot = (nbSlot?: number, cardId?: string) => {
-    nbSlot !== selectedCurrentPSlotNb
-      ? setSelectedCurrentPSlotNb(nbSlot)
-      : setSelectedCurrentPSlotNb(undefined);
+
+  const selectOppSlot = (nbSlot?: number, cardId?: string) => {
+    nbSlot !== selectedOppPSlotNb
+      ? setSelectedOppPSlotNb(nbSlot)
+      : setSelectedOppPSlotNb(undefined);
+  };
+  const selectCurrSlot = (nbSlot?: number, cardId?: string) => {
+    nbSlot !== selectedCurrPSlotNb
+      ? setSelectedCurrPSlotNb(nbSlot)
+      : setSelectedCurrPSlotNb(undefined);
   };
 
   const playCard = async (cardId?: string) => {
-    if (isAnimalCard(cardId) && selectedCurrentPSlotNb != null) {
-      await placeAnimalOnBoard(roomId, playerType, selectedCurrentPSlotNb, cardId!);
+    if (isAnimalCard(cardId) && selectedCurrPSlotNb != null) {
+      await placeAnimalOnBoard(roomId, playerType, selectedCurrPSlotNb, cardId!);
     }
 
     if (isPowerCard(cardId)) {
+      await placePowerCard(roomId, playerType, cardId!);
     }
   };
 
@@ -100,12 +107,12 @@ function GameView({
     await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
   };
 
-  const attackOpponentAnimal = async () => {
-    if (selectedCurrentPSlotNb == null || selectedOpponentPSlotNb == null) {
+  const attackOppAnimal = async () => {
+    if (selectedCurrPSlotNb == null || selectedOppPSlotNb == null) {
       return;
     }
-    const animalAId = board?.currentPSlots[selectedCurrentPSlotNb!];
-    const animalDId = board?.opponentPSlots[selectedOpponentPSlotNb!];
+    const animalAId = board?.currentPSlots[selectedCurrPSlotNb!];
+    const animalDId = board?.opponentPSlots[selectedOppPSlotNb!];
     if (!animalDId || !animalAId) {
       return;
     }
@@ -116,12 +123,12 @@ function GameView({
       getOpponentIdFromCurrentId(playerType),
       animalAId.cardId!,
       animalDId.cardId!,
-      selectedCurrentPSlotNb,
-      selectedOpponentPSlotNb,
+      selectedCurrPSlotNb,
+      selectedOppPSlotNb,
     );
   };
 
-  if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer) {
+  if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer || !round) {
     return <></>;
   }
 
@@ -134,33 +141,40 @@ function GameView({
         justifyContent: 'space-between',
       }}>
       <OpponentPView player={opponentPlayer} />
-      <div
-        style={{
-          position: 'absolute',
-          left: '2%',
-          top: '50%',
-          fontSize: '1.2em',
-          fontWeight: 'bold',
-          color: violet,
-        }}>
-        Round {game.round.nb}
-      </div>
-      <Board
+
+      <RoundView nb={game.round.nb} />
+
+      <BoardView
         board={board}
-        selectedCurrentPSlotNb={selectedCurrentPSlotNb}
-        selectedOpponentPSlotNb={selectedOpponentPSlotNb}
-        selectOpponentSlot={selectOpponentSlot}
-        selectCurrentSlot={selectCurrentSlot}
+        selectedCurrentPSlotNb={selectedCurrPSlotNb}
+        selectCurrentSlot={selectCurrSlot}
+        selectedOpponentPSlotNb={selectedOppPSlotNb}
+        selectOpponentSlot={selectOppSlot}
       />
+
       <CurrentPView
         player={currentPlayer}
         round={round}
         playCard={playCard}
         finishRound={finishRound}
-        attackOpponentAnimal={attackOpponentAnimal}
+        attackOpponentAnimal={attackOppAnimal}
       />
     </div>
   );
 }
+
+const RoundView = ({ nb }: { nb: number }) => (
+  <div
+    style={{
+      position: 'absolute',
+      left: '2%',
+      top: '50%',
+      fontSize: '1.1em',
+      fontWeight: 'bold',
+      color: violet,
+    }}>
+    Round {nb}
+  </div>
+);
 
 export default GameView;

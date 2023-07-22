@@ -1,5 +1,9 @@
 import { getItemsOnce, setItem } from './db';
 
+export const setActivePowerCard = async (roomId: string, cardId?: string) => {
+  await setItem('rooms/' + roomId + '/board/', { activeCardId: cardId });
+};
+
 export const addAnimalToBoard = async (
   roomId: string,
   playerType: string,
@@ -72,17 +76,18 @@ export const addInfoToLog = async (roomId: string, text: string) => {
   const index = log ? log.length : 0;
   await setItem('rooms/' + roomId + '/log', { [`${index}`]: text });
 };
-export const changeEnvUnitAction = async (roomId: string, env: string) => {
-  await setItem('rooms/' + roomId, { env: env });
+export const changeEnvUnitAction = async (roomId: string, envCardId: string) => {
+  console.log(roomId, envCardId);
+  await setItem('rooms/' + roomId + '/board/', { envCardId: envCardId });
 };
-export const getCardFromMainDeck = async (roomId: string) => {
-  const mainDeck = await getItemsOnce('rooms/' + roomId + '/board/mainDeck');
+export const getCardFromMainDeck = async (roomId: string): Promise<string> => {
+  const mainDeck = (await getItemsOnce('rooms/' + roomId + '/board/mainDeck')) as string[];
   return mainDeck[mainDeck.length - 1];
 };
 export const removeCardFromMainDeck = async (roomId: string) => {
-  const mainDeck = await getItemsOnce('rooms/' + roomId + '/board/mainDeck');
+  const mainDeck = (await getItemsOnce('rooms/' + roomId + '/board/mainDeck')) as string[];
   mainDeck.pop();
-  await setItem('rooms/' + roomId, { mainDeck: mainDeck });
+  await setItem('rooms/' + roomId + '/board/', { mainDeck: mainDeck });
 };
 export const changeCanAttackVar = async (roomId: string, playerType: string, value: boolean) => {
   await setItem('rooms/' + roomId + '/' + playerType, { canAttack: value });

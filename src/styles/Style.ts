@@ -61,6 +61,17 @@ export const buttonStyle: React.CSSProperties = {
   margin: 10,
 };
 
+export const commonStyle: React.CSSProperties = {
+  ...flexColumnStyle,
+  borderRadius: 5,
+  color: 'white',
+  fontSize: '1em',
+  height: '17vh',
+  width: '7vw',
+  flexShrink: 0,
+  border: 'solid 4px #95a5a6',
+};
+
 export const signupContainerStyle: React.CSSProperties = {
   ...centerStyle,
   backgroundColor: primary,

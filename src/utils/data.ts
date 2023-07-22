@@ -30,7 +30,14 @@ export interface AnimalCard extends Card {
   role: RoleName;
 }
 
-export const NeutralEnvCard: Card = {
+export interface EnvCard {
+  id: string;
+  ability: ClanName;
+  description?: string;
+  name: string;
+}
+
+export const NeutralEnvCard: EnvCard = {
   id: '0',
   name: 'Neutral',
   ability: 'neutral',
@@ -43,7 +50,7 @@ export const DefaultBoard = {
   animalGY: [],
   powerGY: [],
   envCard: NeutralEnvCard,
-  activeCardId: null,
+  activeCardId: undefined,
 };
 
 export enum PlayerType {
@@ -52,7 +59,7 @@ export enum PlayerType {
 }
 
 export interface Player {
-  playerType: PlayerType;
+  playerType?: PlayerType;
   cardsIds: string[];
   hp: number;
   status: string;
@@ -157,17 +164,20 @@ export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(
   JSON.stringify(animalsCardsJson),
 );
 
-export const getAnimalCard = (cardId: string = ''): AnimalCard | undefined => {
+export const getAnimalCard = (cardId?: string): AnimalCard | undefined => {
   if (!cardId || cardId.length < 4) return;
-  return ANIMAL_CARDS_OBJECT[cardId.toString().substring(4)];
+  return ANIMAL_CARDS_OBJECT[getOriginalCardId(cardId)];
 };
 
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
-export const getPowerCard = (cardId: string): Card | undefined => {
+
+export const getPowerCard = (cardId?: string): Card | undefined => {
   if (!cardId || cardId.length < 4) return;
-  return POWER_CARDS_OBJECT[cardId.toString().substring(4)];
+  return POWER_CARDS_OBJECT[getOriginalCardId(cardId)];
 };
+
+export const getOriginalCardId = (cardId: string) => cardId.substring(4);
 
 export const getRandomMainDeck = () =>
   _.shuffle([

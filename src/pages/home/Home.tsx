@@ -16,11 +16,6 @@ function Home() {
       board: {
         one: ['empty', 'empty', 'empty'],
         two: ['empty', 'empty', 'empty'],
-        envCard: {
-          id: '0',
-          name: 'Neutral',
-          ability: 'neutral',
-        },
       },
       status: PREPARE,
       one: {
@@ -63,7 +58,7 @@ function Home() {
 
   const test = async () => {
     //await attackOwner("test-room","one","1-a")
-    //await playerDrawCard("test-room","one")
+    //await drawCardFromMainDeck("test-room","one")
     //await placeAnimalOnBoard('test-room', 'one', 1, '2-a');
     //await placeKingOnBoard('test-room', 'one', '1-a', '2-a',1);
     //await changePLayerHealth('test-room', 'one', 5)

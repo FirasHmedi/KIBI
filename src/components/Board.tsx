@@ -1,5 +1,6 @@
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
-import { ALL_CARDS_OBJECT, AnimalCard, Card } from '../utils/data';
+import { AnimalCard, CLANS, EnvCard, getAnimalCard, getPowerCard } from '../utils/data';
+import { isPowerCard } from '../utils/helpers';
 import { Seperator } from './Elements';
 import { EnvSlot, Slot, SlotBack, Slots } from './Slots';
 
@@ -15,13 +16,16 @@ export interface Board {
   mainDeck: string[];
   currentPSlots: Slot[];
   opponentPSlots: Slot[];
+  one?: Slot[];
+  two?: Slot[];
   animalGY: string[];
   powerGY: string[];
-  envCard: Card;
+  envCardId?: string;
+  envCard: EnvCard;
   activeCardId?: string;
 }
 
-export const Board = ({
+export const BoardView = ({
   board,
   selectCurrentSlot,
   selectOpponentSlot,
@@ -30,6 +34,7 @@ export const Board = ({
 }: Props) => {
   const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, envCard, activeCardId } =
     board;
+  console.log('env card', envCard);
   return (
     <div
       style={{
@@ -40,13 +45,15 @@ export const Board = ({
       }}>
       <MainDeck nbCards={mainDeck.length} />
 
-      {!!activeCardId && (
-        <div style={{ position: 'absolute', left: '25vw' }}>
-          <Slot cardId={activeCardId} />
-        </div>
-      )}
+      {isPowerCard(activeCardId) && <ActiveCardSlot cardId={activeCardId!} />}
 
-      <div style={{ ...centerStyle, ...flexColumnStyle }}>
+      <div
+        style={{
+          ...centerStyle,
+          ...flexColumnStyle,
+          backgroundColor:
+            envCard?.ability! !== 'neutral' ? CLANS[envCard?.ability!]?.color : 'transparent',
+        }}>
         <Slots
           slots={opponentPSlots}
           selectSlot={selectOpponentSlot}
@@ -63,13 +70,19 @@ export const Board = ({
       </div>
 
       <div style={{ width: '15vw' }}>
-        <Graveyard name='Animal' cardsIds={animalGY} />
+        <AnimalGraveyard cardsIds={animalGY} />
         <Seperator />
-        <Graveyard name='Power' cardsIds={powerGY} />
+        <PowerGraveyard cardsIds={powerGY} />
       </div>
     </div>
   );
 };
+
+const ActiveCardSlot = ({ cardId }: { cardId: string }) => (
+  <div style={{ position: 'absolute', left: '25vw' }}>
+    <Slot cardId={cardId} />
+  </div>
+);
 
 const MainDeck = ({ nbCards }: { nbCards: number }) => {
   return (
@@ -81,23 +94,35 @@ const MainDeck = ({ nbCards }: { nbCards: number }) => {
   );
 };
 
-const Graveyard = ({ name, cardsIds }: { name: string; cardsIds: string[] }) => (
+const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
   <div style={{ minHeight: '5vh', padding: 5 }}>
-    <h3 style={{ color: violet }}>
-      {name} graveyard ({cardsIds.length})
-    </h3>
+    <h4 style={{ color: violet }}>Power graveyard ({cardsIds.length})</h4>
     <div style={{ maxHeight: '15vh', overflowY: 'auto' }}>
       {cardsIds?.map((cardId, index) => {
-        const card = ALL_CARDS_OBJECT[cardId.substring(4)] ?? ({} as AnimalCard);
+        const card = getPowerCard(cardId);
         return (
           <div key={index} style={{ ...flexRowStyle, ...centerStyle }}>
-            <h4>{card?.name?.toUpperCase()}</h4>
-            <div> --- </div>
-            {'role' in card ? (
-              <h5>{(card as AnimalCard)?.role?.toUpperCase()}</h5>
-            ) : (
-              <h5>{card?.description?.toUpperCase()}</h5>
-            )}
+            <h5>{card?.name?.toUpperCase()}</h5>
+            <div> - </div>
+            <h5>{card?.description?.slice(0, 30)}</h5>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+);
+
+const AnimalGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
+  <div style={{ minHeight: '5vh', padding: 5 }}>
+    <h4 style={{ color: violet }}>Power graveyard ({cardsIds.length})</h4>
+    <div style={{ maxHeight: '15vh', overflowY: 'auto' }}>
+      {cardsIds?.map((cardId, index) => {
+        const card = getAnimalCard(cardId);
+        return (
+          <div key={index} style={{ ...flexRowStyle, ...centerStyle }}>
+            <h5>{card?.name?.toUpperCase()}</h5>
+            <div> - </div>
+            <h5>{(card as AnimalCard)?.role?.toUpperCase()}</h5>
           </div>
         );
       })}

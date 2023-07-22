@@ -4,6 +4,8 @@ import { POWER_CARDS_OBJECT, PREPARE, PlayerType, RUNNING, getAnimalCard } from 
 
 export const isNotEmpty = (input: string | Array<any>, minLength = 0) => input.length > minLength;
 
+export const waitFor = (delay: number) => new Promise(resolve => setTimeout(resolve, delay));
+
 export const getCurrentPathName = () => {
   const location = useLocation();
   return location.pathname;

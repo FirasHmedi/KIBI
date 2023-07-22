@@ -1,6 +1,6 @@
 // ******************************animal abilities**********************************************
 // ----------------------king------------------
-import { playerDrawCard } from './actions';
+import { drawCardFromMainDeck } from './actions';
 import { getItemsOnce } from './db';
 import {
   addAnimalToGraveYard,
@@ -32,7 +32,7 @@ export const add1Hp = async (roomId: string, playerType: string) => {
 };
 // ----------------------jellyfish-----------------------
 export const drawOneCard = async (roomId: string, playerType: string) => {
-  await playerDrawCard(roomId, playerType);
+  await drawCardFromMainDeck(roomId, playerType);
 };
 // ----------------------Crow-----------------------
 export const minus1Hp = async (roomId: string, playerType: string) => {

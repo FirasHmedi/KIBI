@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { buttonStyle, flexColumnStyle, flexRowStyle, primaryBlue, violet } from '../styles/Style';
-import { Player } from '../utils/data';
+import { Player, Round } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 
@@ -12,21 +12,20 @@ export const CurrentPView = ({
   attackOpponentAnimal,
 }: {
   player: Player;
-  round: any;
+  round: Round;
   playCard: (cardId?: string) => void;
   finishRound: () => void;
   attackOpponentAnimal: () => void;
 }) => {
   const cardsIds = player.cardsIds ?? [];
   const [selectedId, setSelectedId] = useState<string>();
+  const isMyRound = round?.player === player?.playerType;
 
   const isPlayButtonEnabled =
     !!selectedId &&
-    round?.player === player?.playerType &&
+    isMyRound &&
     ((player?.canPlayAnimals && isAnimalCard(selectedId)) ||
       (player?.canPlayPowers && isPowerCard(selectedId)));
-
-  const isFinishRoundButtonEnabled = round?.player === player?.playerType;
 
   return (
     <div
@@ -41,9 +40,9 @@ export const CurrentPView = ({
           style={{
             ...buttonStyle,
             fontSize: '0.8em',
-            backgroundColor: !isFinishRoundButtonEnabled ? '#95a5a6' : primaryBlue,
+            backgroundColor: !isMyRound ? '#95a5a6' : primaryBlue,
           }}
-          disabled={!isFinishRoundButtonEnabled}
+          disabled={!isMyRound}
           onClick={() => finishRound()}>
           Finish
         </button>
@@ -61,17 +60,16 @@ export const CurrentPView = ({
           style={{
             ...buttonStyle,
             fontSize: '0.8em',
-            backgroundColor: !isFinishRoundButtonEnabled ? '#95a5a6' : primaryBlue,
+            backgroundColor: !isMyRound ? '#95a5a6' : primaryBlue,
           }}
-          disabled={!isFinishRoundButtonEnabled}
+          disabled={!isMyRound}
           onClick={() => attackOpponentAnimal()}>
           Attack animal
         </button>
       </div>
-
-      <div style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.2em' }}>
-        <h4>{player.playerType?.toUpperCase()}</h4>
-      </div>
+      <h4 style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.1em' }}>
+        Player {player.playerType?.toUpperCase()}
+      </h4>
       <CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
       <div style={{ color: violet, position: 'absolute', right: '2vw', fontSize: '1.2em' }}>
         <h4>{player.hp} HP</h4>
@@ -91,9 +89,9 @@ export const OpponentPView = ({ player }: { player: Player }) => {
         alignItems: 'center',
         padding: 5,
       }}>
-      <div style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.2em' }}>
-        <h4>{player.playerType?.toUpperCase()}</h4>
-      </div>
+      <h4 style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.1em' }}>
+        Player {player.playerType?.toUpperCase()}
+      </h4>
       <OpponentPDeck cardsIds={cardsIds} />
       <div style={{ color: violet, position: 'absolute', right: '2vw', fontSize: '1.2em' }}>
         <h4>{player.hp} HP</h4>
