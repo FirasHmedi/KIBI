@@ -25,7 +25,7 @@ import {
 } from './animalsAbilities';
 import { ANIMALS_POINTS, PlayerType, getAnimalCard, getOriginalCardId, getPowerCard } from './data';
 import { getItemsOnce } from './db';
-import { waitFor } from './helpers';
+import { getOpponentIdFromCurrentId, waitFor } from './helpers';
 import {
   addAnimalToBoard,
   addAnimalToGraveYard,
@@ -141,7 +141,7 @@ export const activateJokerAbility = async (roomId: string, jokerId: string, play
 
 export const placePowerCard = async (
   roomId: string,
-  playerType: string,
+  playerType: PlayerType,
   cardId: string,
   animalId?: string,
   animalId2?: string,
@@ -166,7 +166,7 @@ export const placePowerCard = async (
 
   switch (getOriginalCardId(cardId)) {
     case '1-p':
-      await cancelAttacks(roomId, playerType);
+      await cancelAttacks(roomId, getOpponentIdFromCurrentId(playerType));
       break;
     case '2-p':
       await reviveLastPower(roomId, playerType);
@@ -210,7 +210,7 @@ export const placePowerCard = async (
     case '16-p':
       break;
     case '17-p':
-      await cancelUsingPowerCards(roomId, playerType);
+      await cancelUsingPowerCards(roomId, getOpponentIdFromCurrentId(playerType));
       break;
     case '18-p':
       await returnOneAnimal(roomId, playerType, animalId);

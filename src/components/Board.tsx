@@ -1,8 +1,9 @@
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { AnimalCard, ClanName, getAnimalCard, getPowerCard } from '../utils/data';
 import { isPowerCard } from '../utils/helpers';
+import { MainDeck } from './Decks';
 import { Seperator } from './Elements';
-import { EnvSlot, Slot, SlotBack, Slots } from './Slots';
+import { EnvSlot, Slot, Slots } from './Slots';
 
 interface Props {
   board: Board;
@@ -80,16 +81,6 @@ const ActiveCardSlot = ({ cardId }: { cardId: string }) => (
   </div>
 );
 
-const MainDeck = ({ nbCards }: { nbCards: number }) => {
-  return (
-    <div style={{ width: '15vw', ...flexColumnStyle }}>
-      <h5>Main Deck</h5>
-      <SlotBack />
-      <h5>{nbCards} cards</h5>
-    </div>
-  );
-};
-
 const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
   <div style={{ minHeight: '5vh', padding: 5 }}>
     <h4 style={{ color: violet }}>Power graveyard ({cardsIds.length})</h4>
@@ -108,7 +99,7 @@ const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
 
 const AnimalGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
   <div style={{ minHeight: '5vh', padding: 5 }}>
-    <h4 style={{ color: violet }}>Power graveyard ({cardsIds.length})</h4>
+    <h4 style={{ color: violet }}>Animal graveyard ({cardsIds.length})</h4>
     <div style={{ maxHeight: '15vh', overflowY: 'auto' }}>
       {cardsIds?.map((cardId, index) => {
         const card = getAnimalCard(cardId);

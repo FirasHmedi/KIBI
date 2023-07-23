@@ -35,7 +35,7 @@ export const CurrentPView = ({
         ...flexRowStyle,
         alignItems: 'center',
       }}>
-      <div style={{ ...flexColumnStyle, position: 'absolute', left: '12vw' }}>
+      <div style={{ ...flexColumnStyle, position: 'absolute', right: '12vw' }}>
         <button
           style={{
             ...buttonStyle,
@@ -69,9 +69,8 @@ export const CurrentPView = ({
           </button>
         )}
       </div>
-      <PlayerNameView name={playerType} />
+      <PlayerDataView name={playerType} hp={hp} />
       <CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
-      <HealthAndCardsNbView hp={hp} cardsNb={cardsIds.length} />
     </div>
   );
 };
@@ -85,22 +84,15 @@ export const OpponentPView = ({ player }: { player: Player }) => {
         ...flexRowStyle,
         alignItems: 'center',
       }}>
-      <PlayerNameView name={playerType} />
+      <PlayerDataView name={playerType} hp={hp} />
       <OpponentPDeck cardsIds={cardsIds} />
-      <HealthAndCardsNbView hp={hp} cardsNb={cardsIds.length} />
     </div>
   );
 };
 
-const PlayerNameView = ({ name }: { name?: string }) => (
-  <h4 style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '1.1em' }}>
-    Player {name?.toUpperCase()}
-  </h4>
-);
-
-const HealthAndCardsNbView = ({ hp, cardsNb }: { hp: number; cardsNb: number }) => (
-  <div style={{ color: violet, position: 'absolute', right: '8vw', fontSize: '1.2em' }}>
-    <h4>{hp} HP</h4>
-    <h5>{cardsNb} cards</h5>
+const PlayerDataView = ({ name, hp }: { name?: string; hp: number }) => (
+  <div style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '0.9em' }}>
+    <h4>Player {name?.toUpperCase()}</h4>
+    <h4 style={{ fontSize: '1em' }}>{hp} HP</h4>
   </div>
 );

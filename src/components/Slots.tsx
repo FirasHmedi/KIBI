@@ -1,5 +1,13 @@
 import { centerStyle, selectedColor, slotStyle, violet } from '../styles/Style';
-import { AnimalCard, CLANS, Card, ClanName, getAnimalCard, getPowerCard } from '../utils/data';
+import {
+  ANIMALS_POINTS,
+  AnimalCard,
+  CLANS,
+  Card,
+  ClanName,
+  getAnimalCard,
+  getPowerCard,
+} from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 
 export const SlotBack = () => (
@@ -9,10 +17,10 @@ export const SlotBack = () => (
       backgroundColor: violet,
       color: 'white',
       ...centerStyle,
-      height: '13vh',
+      height: '12vh',
       width: '4vw',
     }}>
-    <h5>KIBI</h5>
+    <h6>KIBI</h6>
   </div>
 );
 
@@ -37,18 +45,17 @@ export const PowerSlot = ({
   select: () => void;
   selected?: boolean;
 }) => {
-  const { name, ability } = getPowerCard(cardId) ?? {};
+  const { name } = getPowerCard(cardId) ?? {};
   return (
     <div
       style={{
         ...slotStyle,
         backgroundColor: violet,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         borderColor: selected ? selectedColor : violet,
       }}
       onClick={() => select()}>
-      <h5>{name?.toUpperCase()}</h5>
-      <h6>{ability}</h6>
+      <h6>{name?.toUpperCase()}</h6>
     </div>
   );
 };
@@ -62,7 +69,8 @@ export const AnimalSlot = ({
   select: () => void;
   selected?: boolean;
 }) => {
-  const { clan, name, ability, role } = getAnimalCard(cardId) ?? {};
+  const { clan, name, ability, role } = getAnimalCard(cardId)!;
+  const { hp, ap } = ANIMALS_POINTS[role];
   return (
     <div
       style={{
@@ -74,7 +82,9 @@ export const AnimalSlot = ({
       onClick={() => select()}>
       <h5>{name?.toUpperCase()}</h5>
       <h6>{ability}</h6>
-      <h6>{role?.toUpperCase()}</h6>
+      <h6 style={{ fontSize: '0.6em' }}>
+        {role?.toUpperCase()} ({ap},{hp})
+      </h6>
     </div>
   );
 };
@@ -119,6 +129,7 @@ export const EnvSlot = ({ envType }: { envType?: ClanName }) => (
       transform: 'rotate(90deg)',
       justifyContent: 'center',
       flexShrink: 0,
+      fontSize: '0.8em',
     }}>
     <h6 style={{ transform: 'rotate(-90deg)' }}>{envType?.toUpperCase()}</h6>
   </div>

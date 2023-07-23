@@ -2,47 +2,47 @@
   "1-p": {
     "ability": "Cancel attacks for next turn",
     "description": "Cancel attacks for next turn (all animal attacks)",
-    "name": "Cancel attacks"
+    "name": "Cancel attacks for next turns"
   },
   "10-p": {
-    "ability": "+2 hp",
+    "ability": "+2 hp to owner",
     "description": "give the owner +2 hp",
-    "name": "+2 hp"
+    "name": "+2hp to player"
   },
   "11-p": {
-    "ability": "+3 hp",
+    "ability": "+3 hp to owner",
     "description": "give the owner +3 hp",
-    "name": "+3 hp"
+    "name": "+3hp to player"
   },
   "12-p": {
     "ability": "Draw 2 cards from the main deck",
     "description": "Draw 2 cards from the main deck",
-    "name": "Draw 2 cards"
+    "name": "Draw 2 cards from main deck"
   },
   "13-p": {
     "ability": "- 1hp to return 2 animals to deck",
     "description": "Sacrifice 1hp to return 2 animals to deck from animal graveyard",
-    "name": "- 1hp to return 2 animals to deck"
+    "name": "-1hp to return 2 animals to deck"
   },
   "14-p": {
     "ability": "Choose an env",
     "description": "player choose any env",
-    "name": "Env"
+    "name": "Choose an environment"
   },
   "15-p": {
     "ability": "Choose an env",
     "description": "player choose any env",
-    "name": "Env"
+    "name": "Choose an environment"
   },
   "16-p": {
     "ability": "Choose an env",
     "description": "player choose any env",
-    "name": "Env"
+    "name": "Choose an environment"
   },
   "17-p": {
     "ability": "Block opponent from using power cards",
     "description": "Block opponent from using power cards",
-    "name": "Cancel using power cards"
+    "name": "Cancel using power cards for next turn"
   },
   "18-p": {
     "ability": "Return 1 animal to deck",
@@ -57,36 +57,36 @@
   "3-p": {
     "ability": "- 2 hp to revive any animal",
     "description": "Sacrifice 2 hp to revive any animal, can attack",
-    "name": "- 2 hp to revive any animal"
+    "name": "-2hp to revive any animal"
   },
   "4-p": {
     "ability": "- 3 hp to steal an opponent animal",
     "description": "Sacrifice 3 hp to switch side of an opponent animal",
-    "name": "- 3 hp to steal animal"
+    "name": "-3hp to steal animal opponent"
   },
   "5-p": {
     "ability": "- 1hp to Revive last animal card",
     "description": "Sacrifice 1hp to Revive last animal card (can attack)",
-    "name": "- 1 hp to Revive last animal card"
+    "name": "-1hp to revive last animal"
   },
   "6-p": {
     "ability": "Switch health with opponent",
     "description": "Switch health with opponent",
-    "name": "Switch health"
+    "name": "Switch health of players"
   },
   "7-p": {
     "ability": "Switch deck with opponent",
     "description": "Switch deck with opponent",
-    "name": "Switch deck"
+    "name": "Switch deck of players"
   },
   "8-p": {
     "ability": "Choose an env",
     "description": "player choose any env",
-    "name": "Env"
+    "name": "Choose an environment"
   },
   "9-p": {
     "ability": "Sacrifice an animal to get 3hp",
     "description": "Sacrifice an animal to get 3hp",
-    "name": "Sacrifice an animal"
+    "name": "Sacrifice an animal for 3hp"
   }
 }

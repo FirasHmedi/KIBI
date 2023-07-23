@@ -55,18 +55,17 @@ export const buttonStyle: React.CSSProperties = {
   padding: 3,
   borderRadius: 5,
   fontWeight: 'bold',
-  paddingLeft: 13,
-  paddingRight: 13,
+  paddingLeft: 8,
+  paddingRight: 8,
   maxWidth: 150,
-  margin: 4,
 };
 
 export const slotStyle: React.CSSProperties = {
   ...flexColumnStyle,
   borderRadius: 5,
   color: 'white',
-  fontSize: '1em',
-  height: '18vh',
+  fontSize: '0.9em',
+  height: '17vh',
   width: '6vw',
   flexShrink: 0,
   border: 'solid 4px #95a5a6',

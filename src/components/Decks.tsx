@@ -1,4 +1,4 @@
-import { flexRowStyle } from '../styles/Style';
+import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { Slot, SlotBack } from './Slots';
 
 interface CurrentPDeckProps {
@@ -16,15 +16,12 @@ export const CurrentPDeck = ({ cardsIds, setSelectedId, selectedId }: CurrentPDe
         ...flexRowStyle,
         width: '50vw',
         overflowY: 'auto',
+        justifyContent: 'center',
+        paddingLeft: 8,
+        paddingRight: 8,
       }}>
       {cardsIds.map((cardId, index) => (
-        <div
-          style={{
-            marginRight: 15,
-            borderRadius: 5,
-          }}
-          key={index}
-          onClick={() => selectCard(cardId)}>
+        <div style={{ marginRight: 8 }} key={index} onClick={() => selectCard(cardId)}>
           <Slot cardId={cardId} selected={selectedId === cardId} />
         </div>
       ))}
@@ -38,11 +35,24 @@ export const OpponentPDeck = ({ cardsIds }: { cardsIds: string[] }) => (
       ...flexRowStyle,
       width: '50vw',
       overflowY: 'auto',
+      justifyContent: 'center',
+      paddingLeft: 8,
+      paddingRight: 8,
     }}>
     {cardsIds.map((_, index) => (
-      <div key={index} style={{ marginRight: 15 }}>
+      <div key={index} style={{ marginRight: 8 }}>
         <SlotBack />
       </div>
     ))}
   </div>
 );
+
+export const MainDeck = ({ nbCards }: { nbCards: number }) => {
+  return (
+    <div style={{ width: '15vw', ...flexColumnStyle, color: violet }}>
+      <h5>Main Deck</h5>
+      <SlotBack />
+      <h5>{nbCards} cards</h5>
+    </div>
+  );
+};

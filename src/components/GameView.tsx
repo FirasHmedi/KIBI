@@ -156,10 +156,10 @@ export function GameView({
       style={{
         ...flexColumnStyle,
         width: '100vw',
-        height: '94vh',
+        height: '92vh',
         justifyContent: 'space-between',
-        paddingTop: '3vh',
-        paddingBottom: '3vh',
+        paddingTop: '4vh',
+        paddingBottom: '4vh',
       }}>
       <OpponentPView player={opponentPlayer} />
 
@@ -191,8 +191,11 @@ const RoundView = ({ nb }: { nb: number }) => (
     style={{
       position: 'absolute',
       left: '2%',
-      top: '50%',
-      fontSize: '1.1em',
+      top: 0,
+      bottom: 0,
+      margin: 'auto',
+      height: '4vh',
+      fontSize: '1em',
       fontWeight: 'bold',
       color: violet,
     }}>
