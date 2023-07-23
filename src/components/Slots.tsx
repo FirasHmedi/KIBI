@@ -27,7 +27,7 @@ export const SlotBack = () => (
 interface SlotProps {
   cardId?: string;
   selected?: boolean;
-  selectSlot?: (slotNb?: number, cardId?: string) => void;
+  selectSlot?: (slotNb?: number) => void;
   nb?: number;
 }
 
@@ -91,7 +91,9 @@ export const AnimalSlot = ({
 
 export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
   const selectSlotPolished = () => {
-    if (!!selectSlot) selectSlot(nb, cardId);
+    if (!!selectSlot) {
+      selected ? selectSlot(undefined) : selectSlot(nb);
+    }
   };
 
   if (cardId && isAnimalCard(cardId)) {
@@ -144,7 +146,7 @@ export const Slots = ({
 }: {
   slots: Slot[];
   selectedSlotNb?: number;
-  selectSlot: (slotNb?: number, cardId?: string) => void;
+  selectSlot: (slotNb?: number) => void;
 }) => {
   const compoundSlots = [slots[0], slots[1], slots[2]];
   return (

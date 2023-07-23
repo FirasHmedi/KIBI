@@ -16,9 +16,6 @@ export const CurrentPDeck = ({ cardsIds, setSelectedId, selectedId }: CurrentPDe
         ...flexRowStyle,
         width: '50vw',
         overflowY: 'auto',
-        justifyContent: 'center',
-        paddingLeft: 8,
-        paddingRight: 8,
       }}>
       {cardsIds.map((cardId, index) => (
         <div style={{ marginRight: 8 }} key={index} onClick={() => selectCard(cardId)}>
@@ -33,11 +30,8 @@ export const OpponentPDeck = ({ cardsIds }: { cardsIds: string[] }) => (
   <div
     style={{
       ...flexRowStyle,
-      width: '50vw',
+      width: '40vw',
       overflowY: 'auto',
-      justifyContent: 'center',
-      paddingLeft: 8,
-      paddingRight: 8,
     }}>
     {cardsIds.map((_, index) => (
       <div key={index} style={{ marginRight: 8 }}>
@@ -49,7 +43,7 @@ export const OpponentPDeck = ({ cardsIds }: { cardsIds: string[] }) => (
 
 export const MainDeck = ({ nbCards }: { nbCards: number }) => {
   return (
-    <div style={{ width: '15vw', ...flexColumnStyle, color: violet }}>
+    <div style={{ width: '10vw', ...flexColumnStyle, color: violet }}>
       <h5>Main Deck</h5>
       <SlotBack />
       <h5>{nbCards} cards</h5>

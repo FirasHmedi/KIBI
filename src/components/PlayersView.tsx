@@ -10,12 +10,14 @@ export const CurrentPView = ({
   playCard,
   finishRound,
   attackOpponentAnimal,
+  isAttackAnimalEnabled,
 }: {
   player: Player;
   round: Round;
   playCard: (cardId?: string) => void;
   finishRound: () => void;
   attackOpponentAnimal: () => void;
+  isAttackAnimalEnabled: boolean;
 }) => {
   const { hp, playerType, canAttack, canPlayPowers } = player;
   const cardsIds = player.cardsIds ?? [];
@@ -27,15 +29,21 @@ export const CurrentPView = ({
     isMyRound &&
     (isAnimalCard(selectedId) || (canPlayPowers && isPowerCard(selectedId)));
 
-  const isAttackAnimalEnabled = !!selectedId && isMyRound && canAttack && isAnimalCard(selectedId);
-
   return (
     <div
       style={{
         ...flexRowStyle,
         alignItems: 'center',
       }}>
-      <div style={{ ...flexColumnStyle, position: 'absolute', right: '12vw' }}>
+      <div
+        style={{
+          ...flexColumnStyle,
+          position: 'absolute',
+          right: '12vw',
+          justifyContent: 'space-evenly',
+          height: '10vh',
+          width: '10vw',
+        }}>
         <button
           style={{
             ...buttonStyle,

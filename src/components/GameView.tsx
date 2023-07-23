@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Game } from '../pages/game/Game';
-import { flexColumnStyle, violet } from '../styles/Style';
+import { flexColumnStyle } from '../styles/Style';
 import { changeEnv } from '../utils/abilities';
 import {
   attackAnimal,
@@ -25,7 +25,7 @@ import {
 } from '../utils/helpers';
 import { addOneRound } from '../utils/unitActions';
 import { Board, BoardView } from './Board';
-import { EnvPopup } from './Elements';
+import { EnvPopup, RoundView } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 
 export function GameView({
@@ -44,6 +44,9 @@ export function GameView({
   const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
   const [selectedOppPSlotNb, setSelectedOppPSlotNb] = useState<number>();
   const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
+
+  const isAttackAnimalEnabled =
+    round?.player === playerType && selectedCurrPSlotNb != null && selectedOppPSlotNb != null;
 
   useEffect(() => {
     if (!isGameRunning(game.status)) {
@@ -91,17 +94,6 @@ export function GameView({
     if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {
       drawCardFromMainDeck(roomId, playerType).then();
     }
-  };
-
-  const selectOppSlot = (nbSlot?: number, _cardId?: string) => {
-    nbSlot !== selectedOppPSlotNb
-      ? setSelectedOppPSlotNb(nbSlot)
-      : setSelectedOppPSlotNb(undefined);
-  };
-  const selectCurrSlot = (nbSlot?: number, _cardId?: string) => {
-    nbSlot !== selectedCurrPSlotNb
-      ? setSelectedCurrPSlotNb(nbSlot)
-      : setSelectedCurrPSlotNb(undefined);
   };
 
   const playCard = async (cardId?: string) => {
@@ -170,9 +162,9 @@ export function GameView({
       <BoardView
         board={board}
         selectedCurrentPSlotNb={selectedCurrPSlotNb}
-        selectCurrentSlot={selectCurrSlot}
+        selectCurrentSlot={setSelectedCurrPSlotNb}
         selectedOpponentPSlotNb={selectedOppPSlotNb}
-        selectOpponentSlot={selectOppSlot}
+        selectOpponentSlot={setSelectedOppPSlotNb}
       />
 
       <CurrentPView
@@ -181,24 +173,8 @@ export function GameView({
         playCard={playCard}
         finishRound={finishRound}
         attackOpponentAnimal={attackOppAnimal}
+        isAttackAnimalEnabled={isAttackAnimalEnabled}
       />
     </div>
   );
 }
-
-const RoundView = ({ nb }: { nb: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: '2%',
-      top: 0,
-      bottom: 0,
-      margin: 'auto',
-      height: '4vh',
-      fontSize: '1em',
-      fontWeight: 'bold',
-      color: violet,
-    }}>
-    Round {nb}
-  </div>
-);

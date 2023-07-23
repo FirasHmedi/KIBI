@@ -1,14 +1,16 @@
-import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
-import { AnimalCard, ClanName, getAnimalCard, getPowerCard } from '../utils/data';
+import { useState } from 'react';
+import { centerStyle, flexColumnStyle } from '../styles/Style';
+import { ClanName } from '../utils/data';
 import { isPowerCard } from '../utils/helpers';
 import { MainDeck } from './Decks';
 import { Seperator } from './Elements';
+import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
 import { EnvSlot, Slot, Slots } from './Slots';
 
 interface Props {
   board: Board;
-  selectOpponentSlot: (slotNb?: number, cardId?: string) => void;
-  selectCurrentSlot: (slotNb?: number, cardId?: string) => void;
+  selectOpponentSlot: (slotNb?: number) => void;
+  selectCurrentSlot: (slotNb?: number) => void;
   selectedCurrentPSlotNb?: number;
   selectedOpponentPSlotNb?: number;
 }
@@ -34,6 +36,8 @@ export const BoardView = ({
 }: Props) => {
   const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, envType, activeCardId } =
     board;
+  const [selectedGYPower, selectGYPower] = useState<string>();
+  const [selectedGYAnimal, selectGYAnimal] = useState<string>();
   return (
     <div
       style={{
@@ -66,10 +70,18 @@ export const BoardView = ({
         />
       </div>
 
-      <div style={{ width: '15vw' }}>
-        <AnimalGraveyard cardsIds={animalGY} />
+      <div>
+        <AnimalGraveyard
+          cardsIds={animalGY}
+          selectCard={selectGYAnimal}
+          selectedId={selectedGYAnimal}
+        />
         <Seperator />
-        <PowerGraveyard cardsIds={powerGY} />
+        <PowerGraveyard
+          cardsIds={powerGY}
+          selectCard={selectGYPower}
+          selectedId={selectedGYPower}
+        />
       </div>
     </div>
   );
@@ -78,39 +90,5 @@ export const BoardView = ({
 const ActiveCardSlot = ({ cardId }: { cardId: string }) => (
   <div style={{ position: 'absolute', left: '25vw' }}>
     <Slot cardId={cardId} />
-  </div>
-);
-
-const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
-  <div style={{ minHeight: '5vh', padding: 5 }}>
-    <h4 style={{ color: violet }}>Power graveyard ({cardsIds.length})</h4>
-    <div style={{ maxHeight: '15vh', overflowY: 'auto' }}>
-      {cardsIds?.map((cardId, index) => {
-        const card = getPowerCard(cardId);
-        return (
-          <div key={index} style={{ ...flexRowStyle, ...centerStyle, maxWidth: '15vw' }}>
-            <h5>{card?.name?.toUpperCase()}</h5>
-          </div>
-        );
-      })}
-    </div>
-  </div>
-);
-
-const AnimalGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
-  <div style={{ minHeight: '5vh', padding: 5 }}>
-    <h4 style={{ color: violet }}>Animal graveyard ({cardsIds.length})</h4>
-    <div style={{ maxHeight: '15vh', overflowY: 'auto' }}>
-      {cardsIds?.map((cardId, index) => {
-        const card = getAnimalCard(cardId);
-        return (
-          <div key={index} style={{ ...flexRowStyle, ...centerStyle }}>
-            <h5>
-              {card?.name?.toUpperCase()}-{(card as AnimalCard)?.role?.toUpperCase()}
-            </h5>
-          </div>
-        );
-      })}
-    </div>
   </div>
 );

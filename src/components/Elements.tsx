@@ -1,4 +1,4 @@
-import { airColor, earthColor, fireColor, waterColor } from '../styles/Style';
+import { airColor, earthColor, fireColor, violet, waterColor } from '../styles/Style';
 import { ClanName } from '../utils/data';
 
 export const Seperator = ({ h }: { h?: string }) => {
@@ -50,5 +50,22 @@ export const EnvPopup = ({ changeEnv }: { changeEnv: (envType: ClanName) => void
         />
       </div>
     </div>
+  </div>
+);
+
+export const RoundView = ({ nb }: { nb: number }) => (
+  <div
+    style={{
+      position: 'absolute',
+      left: '2%',
+      top: 0,
+      bottom: 0,
+      margin: 'auto',
+      height: '4vh',
+      fontSize: '1em',
+      fontWeight: 'bold',
+      color: violet,
+    }}>
+    Round {nb}
   </div>
 );
