@@ -174,7 +174,7 @@ export const getPowerCard = (cardId?: string): Card | undefined => {
   return POWER_CARDS_OBJECT[getOriginalCardId(cardId)];
 };
 
-export const getOriginalCardId = (cardId: string) => cardId.substring(4);
+export const getOriginalCardId = (cardId: string = '') => new String(cardId).substring(4);
 
 export const getRandomMainDeck = () =>
   _.shuffle([

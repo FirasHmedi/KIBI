@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { ClanName } from '../utils/data';
 import { isPowerCard } from '../utils/helpers';
@@ -13,6 +12,8 @@ interface Props {
   selectCurrentSlot: (slotNb?: number) => void;
   selectedCurrentPSlotNb?: number;
   selectedOpponentPSlotNb?: number;
+  selectedGYAnimals?: string[];
+  setSelectedGYAnimals?: React.Dispatch<React.SetStateAction<string[] | undefined>>;
 }
 
 export interface Board {
@@ -33,11 +34,11 @@ export const BoardView = ({
   selectOpponentSlot,
   selectedCurrentPSlotNb,
   selectedOpponentPSlotNb,
+  selectedGYAnimals,
+  setSelectedGYAnimals,
 }: Props) => {
   const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, envType, activeCardId } =
     board;
-  const [selectedGYPower, selectGYPower] = useState<string>();
-  const [selectedGYAnimal, selectGYAnimal] = useState<string>();
   return (
     <div
       style={{
@@ -73,15 +74,11 @@ export const BoardView = ({
       <div>
         <AnimalGraveyard
           cardsIds={animalGY}
-          selectCard={selectGYAnimal}
-          selectedId={selectedGYAnimal}
+          selectCards={setSelectedGYAnimals}
+          selectedIds={selectedGYAnimals}
         />
         <Seperator />
-        <PowerGraveyard
-          cardsIds={powerGY}
-          selectCard={selectGYPower}
-          selectedId={selectedGYPower}
-        />
+        <PowerGraveyard cardsIds={powerGY} />
       </div>
     </div>
   );

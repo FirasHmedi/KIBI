@@ -60,7 +60,7 @@ export function GameView({
   const [opponentPlayer, setOppPlayer] = useState<Player>();
   const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
   const [selectedOppPSlotNb, setSelectedOppPSlotNb] = useState<number>();
-  const [selectedGYAnimls, setSelectedGYAnimals] = useState<string[]>();
+  const [selectedGYAnimals, setSelectedGYAnimals] = useState<string[]>();
   const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
 
   const isAttackAnimalEnabled =
@@ -167,7 +167,7 @@ export function GameView({
         await draw2Cards(roomId, playerType);
         break;
       case '13-p':
-        await sacrifice1HpToAdd2animalsFromGYToDeck(roomId, playerType, selectedGYAnimls);
+        await sacrifice1HpToAdd2animalsFromGYToDeck(roomId, playerType, selectedGYAnimals);
         break;
       case '14-p':
         break;
@@ -179,8 +179,8 @@ export function GameView({
         await cancelUsingPowerCards(roomId, getOpponentIdFromCurrentId(playerType));
         break;
       case '18-p':
-        if (!selectedGYAnimls || selectedGYAnimls?.length != 1) return;
-        await returnOneAnimalFromGYToDeck(roomId, playerType, selectedGYAnimls[0]);
+        if (!selectedGYAnimals || selectedGYAnimals?.length != 1) return;
+        await returnOneAnimalFromGYToDeck(roomId, playerType, selectedGYAnimals[0]);
         break;
     }
 
@@ -243,6 +243,8 @@ export function GameView({
         selectCurrentSlot={setSelectedCurrPSlotNb}
         selectedOpponentPSlotNb={selectedOppPSlotNb}
         selectOpponentSlot={setSelectedOppPSlotNb}
+        selectedGYAnimals={selectedGYAnimals}
+        setSelectedGYAnimals={setSelectedGYAnimals}
       />
 
       <CurrentPView
