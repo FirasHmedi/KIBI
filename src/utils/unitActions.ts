@@ -5,6 +5,13 @@ export const setActivePowerCard = async (roomId: string, cardId?: string) => {
   await setItem('rooms/' + roomId + '/board/', { activeCardId: cardId });
 };
 
+export const checkIfAnimalExistAddItToGraveYard= async (roomId: string, playerType: string, slotNumber: number) =>{
+  const cardId = await getItemsOnce('rooms/' + roomId + '/board/' + playerType + '/' + slotNumber);
+  if (cardId) {
+    await addAnimalToGraveYard(roomId,cardId)
+  }
+}
+
 export const addAnimalToBoard = async (
   roomId: string,
   playerType: string,
@@ -12,6 +19,7 @@ export const addAnimalToBoard = async (
   animalId: string,
   canAttack: boolean = false,
 ) => {
+  await checkIfAnimalExistAddItToGraveYard(roomId,playerType,slotNumber)
   const slots = (await getItemsOnce('rooms/' + roomId + '/board/' + playerType)) ?? [];
   const updatedSlots = [
     slots[0] ?? { cardId: 'empty', canAttack: false },

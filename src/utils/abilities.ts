@@ -96,10 +96,12 @@ export const changeEnv = async (roomId: string, envType: ClanName) => {
 export const sacrificeAnimalToGet3Hp = async (
   roomId: string,
   playerType: string,
-  animalId?: string,
+  animalId: string,
+  slotNumber:number
 ) => {
   if (!animalId) return;
   // remove animal from board
+  await removePlayerAnimalFromBoard(roomId,playerType,slotNumber)
   await addAnimalToGraveYard(roomId, animalId);
   await addHpToPlayer(roomId, playerType, 3);
 };

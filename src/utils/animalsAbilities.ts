@@ -4,7 +4,7 @@ import { drawCardFromMainDeck } from './actions';
 import { getItemsOnce } from './db';
 import {
   addAnimalToGraveYard,
-  addCardToPlayerDeck,
+  addCardsToPlayerDeck,
   addHpToPlayer,
   deleteAnimalCardFromGraveYardById,
   removeHpFromPlayer,
@@ -23,7 +23,7 @@ export const removePlayerAnimalFromBoardAndAddToGraveYard = async (
 };
 // ----------------------tank-----------------------
 export const returnTankToDeck = async (roomId: string, playerType: string, animalId: string) => {
-  await addCardToPlayerDeck(roomId, playerType, animalId);
+  await addCardsToPlayerDeck(roomId, playerType, [animalId]);
   await deleteAnimalCardFromGraveYardById(roomId, animalId);
 };
 // ----------------------Snake -----------------------
@@ -44,6 +44,6 @@ export const ReviveLastAnimalToDeck = async (roomId: string, playerType: string)
   if (animalGY) {
     let lastAnimalCardId = animalGY[animalGY.length - 1];
     await deleteAnimalCardFromGraveYardById(roomId, lastAnimalCardId);
-    await addCardToPlayerDeck(roomId, playerType, lastAnimalCardId);
+    await addCardsToPlayerDeck(roomId, playerType, [lastAnimalCardId]);
   }
 };
