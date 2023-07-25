@@ -1,12 +1,27 @@
+import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { Game } from '../pages/game/Game';
 import { flexColumnStyle } from '../styles/Style';
-import { changeEnv } from '../utils/abilities';
+import {
+  cancelAttacks,
+  cancelUsingPowerCards,
+  changeEnv,
+  draw2Cards,
+  returnOneAnimalFromGYToDeck,
+  reviveLastPower,
+  sacrifice1HpToAdd2animalsFromGYToDeck,
+  sacrifice1HpToReviveLastAnimal,
+  shieldOwnerPlus2Hp,
+  shieldOwnerPlus3Hp,
+  switchDeck,
+  switchHealth,
+} from '../utils/abilities';
 import {
   attackAnimal,
   drawCardFromMainDeck,
+  enableAttackingAndPlayingPowerCards,
   placeAnimalOnBoard,
-  placePowerCard,
+  setPowerCardAsActive,
 } from '../utils/actions';
 import {
   ClanName,
@@ -14,8 +29,10 @@ import {
   Player,
   PlayerType,
   Round,
+  cardsWithSlotSelection,
   envCardsIds,
   getOriginalCardId,
+  getPowerCard,
 } from '../utils/data';
 import {
   getOpponentIdFromCurrentId,
@@ -23,7 +40,7 @@ import {
   isGameRunning,
   isPowerCard,
 } from '../utils/helpers';
-import { addOneRound } from '../utils/unitActions';
+import { addOneRound, addPowerToGraveYard } from '../utils/unitActions';
 import { Board, BoardView } from './Board';
 import { EnvPopup, RoundView } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
@@ -43,6 +60,7 @@ export function GameView({
   const [opponentPlayer, setOppPlayer] = useState<Player>();
   const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
   const [selectedOppPSlotNb, setSelectedOppPSlotNb] = useState<number>();
+  const [selectedGYAnimls, setSelectedGYAnimals] = useState<string[]>();
   const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
 
   const isAttackAnimalEnabled =
@@ -97,15 +115,79 @@ export function GameView({
   };
 
   const playCard = async (cardId?: string) => {
+    if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
+
     if (isAnimalCard(cardId) && selectedCurrPSlotNb != null) {
       await placeAnimalOnBoard(roomId, playerType, selectedCurrPSlotNb, cardId!);
     }
 
-    if (isPowerCard(cardId)) {
-      await placePowerCard(roomId, playerType, cardId!);
-      if (envCardsIds.includes(getOriginalCardId(cardId!))) {
-        setShowEnvPopup(true);
-      }
+    if (!isPowerCard(cardId)) return;
+
+    if (cardsWithSlotSelection.includes(getOriginalCardId(cardId!)) && _.isNil(selectedCurrPSlotNb))
+      return;
+
+    const { name } = getPowerCard(cardId)!;
+
+    await setPowerCardAsActive(roomId, playerType, cardId!, name!);
+
+    switch (getOriginalCardId(cardId!)) {
+      case '1-p':
+        await cancelAttacks(roomId, getOpponentIdFromCurrentId(playerType));
+        break;
+      case '2-p':
+        await reviveLastPower(roomId, playerType);
+        break;
+      case '3-p':
+        // await sacrifice2HpToRevive(roomId, playerType, animalId, slotNb);
+        break;
+      case '4-p':
+        // await sacrifice3HpToSteal(roomId, playerType, animalId, slotNb);
+        break;
+      case '5-p':
+        await sacrifice1HpToReviveLastAnimal(roomId, playerType, selectedCurrPSlotNb);
+        break;
+      case '6-p':
+        await switchHealth(roomId);
+        break;
+      case '7-p':
+        await switchDeck(roomId);
+        break;
+      case '8-p':
+        break;
+      case '9-p':
+        // await sacrificeAnimalToGet3Hp(roomId, playerType, animalId);
+        break;
+      case '10-p':
+        await shieldOwnerPlus2Hp(roomId, playerType);
+        break;
+      case '11-p':
+        await shieldOwnerPlus3Hp(roomId, playerType);
+        break;
+      case '12-p':
+        await draw2Cards(roomId, playerType);
+        break;
+      case '13-p':
+        await sacrifice1HpToAdd2animalsFromGYToDeck(roomId, playerType, selectedGYAnimls);
+        break;
+      case '14-p':
+        break;
+      case '15-p':
+        break;
+      case '16-p':
+        break;
+      case '17-p':
+        await cancelUsingPowerCards(roomId, getOpponentIdFromCurrentId(playerType));
+        break;
+      case '18-p':
+        if (!selectedGYAnimls || selectedGYAnimls?.length != 1) return;
+        await returnOneAnimalFromGYToDeck(roomId, playerType, selectedGYAnimls[0]);
+        break;
+    }
+
+    await addPowerToGraveYard(roomId, cardId!);
+
+    if (envCardsIds.includes(getOriginalCardId(cardId!))) {
+      setShowEnvPopup(true);
     }
   };
 
@@ -115,18 +197,15 @@ export function GameView({
   };
 
   const finishRound = async () => {
+    await enableAttackingAndPlayingPowerCards(roomId, playerType);
     await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
   };
 
   const attackOppAnimal = async () => {
-    if (selectedCurrPSlotNb == null || selectedOppPSlotNb == null) {
-      return;
-    }
+    if (selectedCurrPSlotNb == null || selectedOppPSlotNb == null) return;
     const animalAId = board?.currentPSlots[selectedCurrPSlotNb!];
     const animalDId = board?.opponentPSlots[selectedOppPSlotNb!];
-    if (!animalDId || !animalAId) {
-      return;
-    }
+    if (!animalDId || !animalAId) return;
 
     await attackAnimal(
       roomId,
@@ -139,9 +218,8 @@ export function GameView({
     );
   };
 
-  if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer || !round) {
+  if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer || !round)
     return <></>;
-  }
 
   return (
     <div

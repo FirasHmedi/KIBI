@@ -86,6 +86,7 @@ export const CLANS = {
 };
 
 export const envCardsIds = ['8-p', '14-p', '15-p', '16-p'];
+export const cardsWithSlotSelection = ['3-p', '4-p', '5-p'];
 
 export const TestDeck = [
   {

@@ -49,7 +49,7 @@ export const Graveyard = ({
   const selectCardPolished = (cardId: string) =>
     cardId === selectedId ? selectCard(undefined) : selectCard(cardId);
   return (
-    <div style={{ minHeight: '5vh', maxWidth: '10vw' }}>
+    <div style={{ minHeight: '5vh', maxWidth: '12vw' }}>
       <h5 style={{ color: violet, marginBottom: 4 }}>
         {name} ({cardsIds.length})
       </h5>
