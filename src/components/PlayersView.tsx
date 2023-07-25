@@ -77,30 +77,60 @@ export const CurrentPView = ({
           </button>
         )}
       </div>
-      <PlayerDataView name={playerType} hp={hp} />
+      <PlayerDataView
+        name={playerType}
+        hp={hp}
+        canAttack={canAttack}
+        canPlayPowers={canPlayPowers}
+      />
       <CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
     </div>
   );
 };
 
 export const OpponentPView = ({ player }: { player: Player }) => {
-  const { hp, playerType } = player;
-  const cardsIds = player.cardsIds ?? [];
+  const { hp, playerType, canAttack, canPlayPowers, cardsIds } = player;
   return (
     <div
       style={{
         ...flexRowStyle,
         alignItems: 'center',
       }}>
-      <PlayerDataView name={playerType} hp={hp} />
+      <PlayerDataView
+        name={playerType}
+        hp={hp}
+        canAttack={canAttack}
+        canPlayPowers={canPlayPowers}
+      />
       <OpponentPDeck cardsIds={cardsIds} />
     </div>
   );
 };
 
-const PlayerDataView = ({ name, hp }: { name?: string; hp: number }) => (
-  <div style={{ color: violet, position: 'absolute', left: '2vw', fontSize: '0.9em' }}>
-    <h4>Player {name?.toUpperCase()}</h4>
-    <h4 style={{ fontSize: '1em' }}>{hp} HP</h4>
+const PlayerDataView = ({
+  name,
+  hp,
+  canAttack = false,
+  canPlayPowers = false,
+}: {
+  name?: string;
+  hp: number;
+  canAttack: boolean;
+  canPlayPowers: boolean;
+}) => (
+  <div
+    style={{
+      color: violet,
+      position: 'absolute',
+      left: '2vw',
+      fontSize: '0.9em',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+    }}>
+    <h5>Player {name?.toUpperCase()}</h5>
+    <h4 style={{ fontSize: '0.9em' }}>{hp} HP</h4>
+    {canAttack === false && <h5>Can't attack</h5>}
+    {canPlayPowers === false && <h5>Can't play power cards</h5>}
   </div>
 );

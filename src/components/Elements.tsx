@@ -62,7 +62,7 @@ export const RoundView = ({ nb }: { nb: number }) => (
       bottom: 0,
       margin: 'auto',
       height: '4vh',
-      fontSize: '1em',
+      fontSize: '0.9em',
       fontWeight: 'bold',
       color: violet,
     }}>

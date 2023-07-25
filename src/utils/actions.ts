@@ -61,6 +61,7 @@ export const placeKingOnBoard = async (
     roomId,
     'player ' + playerType + ' sacrificed a ' + sacrificedAnimal?.name + ' to play ' + king?.name,
   );
+  if (!king || !sacrificedAnimal) return;
   const isRemoved = await removePlayerAnimalFromBoard(roomId, playerType, slotNb);
   if (isRemoved) {
     await addAnimalToGraveYard(roomId, sacrificedAnimalId);
@@ -86,7 +87,7 @@ export const attackAnimal = async (
   await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name);
   await removePlayerAnimalFromBoard(roomId, playerDType, slotDNumber);
   await addAnimalToGraveYard(roomId, animalDId);
-  const env = await getItemsOnce('rooms/' + roomId + '/env');
+  const env = await getItemsOnce('rooms/' + roomId + '/envType');
   if (env == animalD.clan) {
     if (animalD.role == 'attacker') {
       await removePlayerAnimalFromBoardAndAddToGraveYard(

@@ -11,6 +11,9 @@ import {
   reviveLastPower,
   sacrifice1HpToAdd2animalsFromGYToDeck,
   sacrifice1HpToReviveLastAnimal,
+  sacrifice2HpToReviveAnyAnimal,
+  sacrifice3HpToSteal,
+  sacrificeAnimalToGet3Hp,
   shieldOwnerPlus2Hp,
   shieldOwnerPlus3Hp,
   switchDeck,
@@ -138,10 +141,25 @@ export function GameView({
         await reviveLastPower(roomId, playerType);
         break;
       case '3-p':
-        // await sacrifice2HpToRevive(roomId, playerType, animalId, slotNb);
+        if (selectedGYAnimals?.length != 1 || _.isNil(selectedCurrPSlotNb)) return;
+        await sacrifice2HpToReviveAnyAnimal(
+          roomId,
+          playerType,
+          selectedGYAnimals[0],
+          selectedCurrPSlotNb,
+        );
         break;
       case '4-p':
-        // await sacrifice3HpToSteal(roomId, playerType, animalId, slotNb);
+        if (_.isNil(selectedCurrPSlotNb) || _.isNil(selectedOppPSlotNb)) return;
+        const animalIdToSteal = board?.opponentPSlots[selectedOppPSlotNb].cardId;
+        if (!animalIdToSteal || animalIdToSteal === 'empty') return;
+        await sacrifice3HpToSteal(
+          roomId,
+          playerType,
+          animalIdToSteal,
+          selectedOppPSlotNb,
+          selectedCurrPSlotNb,
+        );
         break;
       case '5-p':
         await sacrifice1HpToReviveLastAnimal(roomId, playerType, selectedCurrPSlotNb);
@@ -155,7 +173,10 @@ export function GameView({
       case '8-p':
         break;
       case '9-p':
-        // await sacrificeAnimalToGet3Hp(roomId, playerType, animalId);
+        if (_.isNil(selectedCurrPSlotNb)) return;
+        const animalIdToSacrifice = board?.currentPSlots[selectedCurrPSlotNb].cardId;
+        if (animalIdToSacrifice === 'empty') return;
+        await sacrificeAnimalToGet3Hp(roomId, playerType, animalIdToSacrifice, selectedCurrPSlotNb);
         break;
       case '10-p':
         await shieldOwnerPlus2Hp(roomId, playerType);
@@ -203,16 +224,16 @@ export function GameView({
 
   const attackOppAnimal = async () => {
     if (selectedCurrPSlotNb == null || selectedOppPSlotNb == null) return;
-    const animalAId = board?.currentPSlots[selectedCurrPSlotNb!];
-    const animalDId = board?.opponentPSlots[selectedOppPSlotNb!];
+    const animalAId = board?.currentPSlots[selectedCurrPSlotNb!].cardId;
+    const animalDId = board?.opponentPSlots[selectedOppPSlotNb!].cardId;
     if (!animalDId || !animalAId) return;
 
     await attackAnimal(
       roomId,
       playerType,
       getOpponentIdFromCurrentId(playerType),
-      animalAId.cardId!,
-      animalDId.cardId!,
+      animalAId,
+      animalDId,
       selectedCurrPSlotNb,
       selectedOppPSlotNb,
     );

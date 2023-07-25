@@ -7,7 +7,7 @@ interface CurrentPDeckProps {
   selectedId?: string;
 }
 
-export const CurrentPDeck = ({ cardsIds, setSelectedId, selectedId }: CurrentPDeckProps) => {
+export const CurrentPDeck = ({ cardsIds = [], setSelectedId, selectedId }: CurrentPDeckProps) => {
   const selectCard = (cardId: string) =>
     cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId);
   return (
@@ -26,7 +26,7 @@ export const CurrentPDeck = ({ cardsIds, setSelectedId, selectedId }: CurrentPDe
   );
 };
 
-export const OpponentPDeck = ({ cardsIds }: { cardsIds: string[] }) => (
+export const OpponentPDeck = ({ cardsIds = [] }: { cardsIds: string[] }) => (
   <div
     style={{
       ...flexRowStyle,
@@ -41,7 +41,7 @@ export const OpponentPDeck = ({ cardsIds }: { cardsIds: string[] }) => (
   </div>
 );
 
-export const MainDeck = ({ nbCards }: { nbCards: number }) => {
+export const MainDeck = ({ nbCards = 0 }: { nbCards: number }) => {
   return (
     <div style={{ width: '10vw', ...flexColumnStyle, color: violet }}>
       <h5>Main Deck</h5>

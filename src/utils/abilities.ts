@@ -1,13 +1,14 @@
+import _ from 'lodash';
 import { drawCardFromMainDeck } from './actions';
-import { ClanName } from './data';
+import { ClanName, PlayerType } from './data';
 import { getItemsOnce } from './db';
+import { getOpponentIdFromCurrentId } from './helpers';
 import {
   addAnimalToBoard,
   addAnimalToGraveYard,
   addCardsToPlayerDeck,
   addHpToPlayer,
   changeCanAttackVar,
-  changeCanAttackVarOfSlot,
   changeEnvUnitAction,
   changePLayerCards,
   changePLayerHealth,
@@ -21,11 +22,11 @@ import {
   removePlayerAnimalFromBoard,
 } from './unitActions';
 
-export const cancelAttacks = async (roomId: string, playerType: string) => {
+export const cancelAttacks = async (roomId: string, playerType: PlayerType) => {
   await changeCanAttackVar(roomId, playerType, false);
 };
 
-export const reviveLastPower = async (roomId: string, playerType: string) => {
+export const reviveLastPower = async (roomId: string, playerType: PlayerType) => {
   const powerGY: string[] = await getItemsOnce('rooms/' + roomId + '/board/powerGY');
   if (powerGY) {
     const lastPowerCardId = powerGY[powerGY.length - 1];
@@ -34,44 +35,43 @@ export const reviveLastPower = async (roomId: string, playerType: string) => {
   }
 };
 
-export const sacrifice2HpToRevive = async (
+export const sacrifice2HpToReviveAnyAnimal = async (
   roomId: string,
-  playerType: string,
+  playerType: PlayerType,
   animalId?: string,
-  slotNumber?: number,
+  slotNb?: number,
 ) => {
-  if (!animalId || !slotNumber) return;
+  if (!animalId || _.isNil(slotNb)) return;
   await removeHpFromPlayer(roomId, playerType, 2);
   await deleteAnimalCardFromGraveYardById(roomId, animalId);
-  await addAnimalToBoard(roomId, playerType, slotNumber, animalId);
-  await changeCanAttackVarOfSlot(roomId, playerType, slotNumber, true);
+  await addAnimalToBoard(roomId, playerType, slotNb, animalId, true);
 };
 
 export const sacrifice3HpToSteal = async (
   roomId: string,
-  playerType: string,
-  animalId?: string,
-  slotNumber?: number,
+  playerType: PlayerType,
+  animalId: string,
+  oppSlotNb: number,
+  mySlotNb: number,
 ) => {
-  if (!animalId || !slotNumber) return;
+  if (!animalId || _.isNil(mySlotNb) || _.isNil(oppSlotNb)) return;
   await removeHpFromPlayer(roomId, playerType, 3);
-  await removePlayerAnimalFromBoard(roomId, playerType, slotNumber);
-  await addAnimalToBoard(roomId, playerType, slotNumber, animalId);
-  await changeCanAttackVarOfSlot(roomId, playerType, slotNumber, true);
+  await removePlayerAnimalFromBoard(roomId, getOpponentIdFromCurrentId(playerType), oppSlotNb);
+  await addAnimalToBoard(roomId, playerType, mySlotNb, animalId, true);
 };
 
 export const sacrifice1HpToReviveLastAnimal = async (
   roomId: string,
-  playerType: string,
-  slotNumber?: number,
+  playerType: PlayerType,
+  slotNb?: number,
 ) => {
-  if (!slotNumber || !playerType) return;
+  if (_.isNil(slotNb) || !playerType) return;
   await removeHpFromPlayer(roomId, playerType, 1);
   const animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
   if (animalGY) {
     const lastAnimalCardId = animalGY[animalGY.length - 1];
     await deleteAnimalCardFromGraveYardById(roomId, lastAnimalCardId);
-    await addAnimalToBoard(roomId, playerType, slotNumber, lastAnimalCardId, true);
+    await addAnimalToBoard(roomId, playerType, slotNb, lastAnimalCardId, true);
   }
 };
 
@@ -95,48 +95,49 @@ export const changeEnv = async (roomId: string, envType: ClanName) => {
 
 export const sacrificeAnimalToGet3Hp = async (
   roomId: string,
-  playerType: string,
-  animalId: string,
-  slotNumber:number
+  playerType: PlayerType,
+  animalId?: string,
+  slotNb?: number,
 ) => {
-  if (!animalId) return;
-  // remove animal from board
-  await removePlayerAnimalFromBoard(roomId,playerType,slotNumber)
-  await addAnimalToGraveYard(roomId, animalId);
-  await addHpToPlayer(roomId, playerType, 3);
+  if (!animalId || _.isNil(slotNb)) return;
+  const isRemoved = await removePlayerAnimalFromBoard(roomId, playerType, slotNb);
+  if (isRemoved) {
+    await addAnimalToGraveYard(roomId, animalId);
+    await addHpToPlayer(roomId, playerType, 3);
+  }
 };
 
-export const shieldOwnerPlus2Hp = async (roomId: string, playerType: string) => {
+export const shieldOwnerPlus2Hp = async (roomId: string, playerType: PlayerType) => {
   await addHpToPlayer(roomId, playerType, 2);
 };
 
-export const shieldOwnerPlus3Hp = async (roomId: string, playerType: string) => {
+export const shieldOwnerPlus3Hp = async (roomId: string, playerType: PlayerType) => {
   await addHpToPlayer(roomId, playerType, 3);
 };
 
-export const draw2Cards = async (roomId: string, playerType: string) => {
+export const draw2Cards = async (roomId: string, playerType: PlayerType) => {
   await drawCardFromMainDeck(roomId, playerType);
   await drawCardFromMainDeck(roomId, playerType);
 };
 
 export const sacrifice1HpToAdd2animalsFromGYToDeck = async (
   roomId: string,
-  playerType: string,
+  playerType: PlayerType,
   animalsIds: string[] = [],
 ) => {
-  if (animalsIds.length < 2) return;
+  if (animalsIds.length != 2 && animalsIds.length != 1) return;
   await removeHpFromPlayer(roomId, playerType, 1);
   await deleteAnimalCardsFromGraveYardByIds(roomId, animalsIds);
   await addCardsToPlayerDeck(roomId, playerType, animalsIds);
 };
 
-export const cancelUsingPowerCards = async (roomId: string, playerType: string) => {
+export const cancelUsingPowerCards = async (roomId: string, playerType: PlayerType) => {
   await changeUsingPowerCardsVar(roomId, playerType, false);
 };
 
 export const returnOneAnimalFromGYToDeck = async (
   roomId: string,
-  playerType: string,
+  playerType: PlayerType,
   animalId?: string,
 ) => {
   if (!animalId) return;

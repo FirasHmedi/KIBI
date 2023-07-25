@@ -24,7 +24,7 @@ export const AnimalGraveyard = ({
 
 export const Graveyard = ({
   name,
-  cardsIds,
+  cardsIds = [],
   selectCards,
   selectedIds = [],
 }: {

@@ -1,32 +1,37 @@
 import { ClanName } from './data';
 import { getItemsOnce, setItem } from './db';
+import { isAnimalCard, isPowerCard } from './helpers';
 
 export const setActivePowerCard = async (roomId: string, cardId?: string) => {
   await setItem('rooms/' + roomId + '/board/', { activeCardId: cardId });
 };
 
-export const checkIfAnimalExistAddItToGraveYard= async (roomId: string, playerType: string, slotNumber: number) =>{
-  const cardId = await getItemsOnce('rooms/' + roomId + '/board/' + playerType + '/' + slotNumber);
-  if (cardId) {
-    await addAnimalToGraveYard(roomId,cardId)
+export const checkIfAnimalExistAddItToGraveYard = async (
+  roomId: string,
+  playerType: string,
+  slotNb: number,
+) => {
+  const slot = await getItemsOnce('rooms/' + roomId + '/board/' + playerType + '/' + slotNb);
+  if (slot && isAnimalCard(slot.cardId)) {
+    await addAnimalToGraveYard(roomId, slot.cardId);
   }
-}
+};
 
 export const addAnimalToBoard = async (
   roomId: string,
   playerType: string,
-  slotNumber: number,
+  slotNb: number,
   animalId: string,
   canAttack: boolean = false,
 ) => {
-  await checkIfAnimalExistAddItToGraveYard(roomId,playerType,slotNumber)
+  await checkIfAnimalExistAddItToGraveYard(roomId, playerType, slotNb);
   const slots = (await getItemsOnce('rooms/' + roomId + '/board/' + playerType)) ?? [];
   const updatedSlots = [
     slots[0] ?? { cardId: 'empty', canAttack: false },
     slots[1] ?? { cardId: 'empty', canAttack: false },
     slots[2] ?? { cardId: 'empty', canAttack: false },
   ];
-  updatedSlots[slotNumber] = { cardId: animalId, canAttack };
+  updatedSlots[slotNb] = { cardId: animalId, canAttack };
   await setItem('rooms/' + roomId + '/board/', { [`${playerType}`]: updatedSlots });
 };
 
@@ -52,12 +57,14 @@ export const removeCardFromPlayerDeck = async (
 };
 
 export const addAnimalToGraveYard = async (roomId: string, animalId: string) => {
+  if (!isAnimalCard(animalId)) return;
   const animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
-  const index = animalGY ? animalGY.length : 0;
+  const index = !!animalGY ? animalGY.length : 0;
   await setItem('rooms/' + roomId + '/board/animalGY', { [`${index}`]: animalId });
 };
 
 export const addPowerToGraveYard = async (roomId: string, powerId: string) => {
+  if (!isPowerCard(powerId)) return;
   const powerGY = await getItemsOnce('rooms/' + roomId + '/board/powerGY');
   const index = powerGY ? powerGY.length : 0;
   await setItem('rooms/' + roomId + '/board/powerGY', { [`${index}`]: powerId });
@@ -68,8 +75,8 @@ export const removePlayerAnimalFromBoard = async (
   playerType: string,
   slotNumber: number,
 ): Promise<boolean> => {
-  const cardId = await getItemsOnce('rooms/' + roomId + '/board/' + playerType + '/' + slotNumber);
-  if (cardId) {
+  const slot = await getItemsOnce('rooms/' + roomId + '/board/' + playerType + '/' + slotNumber);
+  if (slot) {
     await setItem('rooms/' + roomId + '/board/' + playerType, {
       [`${slotNumber}`]: { cardId: 'empty', canAttack: false },
     });
@@ -152,13 +159,13 @@ export const deletePowerCardFromGraveYardById = async (roomId: string, powerId: 
 export const deletePowerCardFromGraveYardByIndex = async (roomId: string, index: number) => {
   let powerCardsId = await getItemsOnce('rooms/' + roomId + '/board/powerGY');
   powerCardsId.splice(index, 1);
-  await setItem('rooms/' + roomId, { powerGY: powerCardsId });
+  await setItem('rooms/' + roomId + '/board/', { powerGY: powerCardsId });
 };
 
 export const deleteAnimalCardFromGraveYardById = async (roomId: string, animalId: string) => {
   let animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
   animalGY = (animalGY ?? []).filter((id: string) => id != animalId);
-  await setItem('rooms/' + roomId, { animalGY: animalGY });
+  await setItem('rooms/' + roomId + '/board/', { animalGY: animalGY });
 };
 
 export const deleteAnimalCardsFromGraveYardByIds = async (
@@ -167,7 +174,7 @@ export const deleteAnimalCardsFromGraveYardByIds = async (
 ) => {
   let animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
   animalGY = (animalGY ?? []).filter((id: string) => !animalsIds.includes(id));
-  await setItem('rooms/' + roomId, { animalGY: animalGY });
+  await setItem('rooms/' + roomId + '/board/', { animalGY: animalGY });
 };
 
 export const getAnimalCardFromGraveYardByIndex = async (roomId: string, index: number) => {
@@ -178,7 +185,7 @@ export const getAnimalCardFromGraveYardByIndex = async (roomId: string, index: n
 export const deleteAnimalCardFromGraveYardByIndex = async (roomId: string, index: number) => {
   const animalGY: string[] = (await getItemsOnce('rooms/' + roomId + '/board/animalGY')) ?? [];
   animalGY.splice(index, 1);
-  await setItem('rooms/' + roomId, { animalGY: animalGY });
+  await setItem('rooms/' + roomId + '/board/', { animalGY: animalGY });
 };
 
 export const getPLayerHealth = async (roomId: string, playerType: string) => {
