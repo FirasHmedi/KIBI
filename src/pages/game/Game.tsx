@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AnimalsSelection } from '../../components/AnimalsSelection';
 import { GameContainer } from '../../components/GameContainer';
-import { centerStyle, flexColumnStyle } from '../../styles/Style';
+import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
 import { READY, ROOMS_PATH, RUNNING, getRandomMainDeck } from '../../utils/data';
 import { setItem, subscribeToItems } from '../../utils/db';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
@@ -53,11 +53,12 @@ function GamePage() {
       )}
 
       {isGameInPreparation(game?.status) && (
-        <div style={{ width: '100vw' }}>
+        <div style={{ width: '100vw', color: violet }}>
           <AnimalsSelection playerType={playerType} roomId={roomId} />
-          <h5>
+          <h4 style={{ padding: 10 }}>
             {playerName} : {playerType}
-          </h5>
+          </h4>
+          <h4>Room ID: {roomId}</h4>
         </div>
       )}
     </div>
