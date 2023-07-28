@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { buttonStyle, centerStyle } from '../../styles/Style';
-import { PREPARE, PlayerType, ROOMS_PATH } from '../../utils/data';
+import { PREPARE, ROOMS_PATH } from '../../utils/data';
 import { setItem } from '../../utils/db';
+import { PlayerType } from '../../utils/interface';
 
 function Home() {
   const navigate = useNavigate();
@@ -13,10 +14,6 @@ function Home() {
   const createRoom = async () => {
     const roomId = uuidv4();
     await setItem(ROOMS_PATH + roomId, {
-      board: {
-        one: ['empty', 'empty', 'empty'],
-        two: ['empty', 'empty', 'empty'],
-      },
       status: PREPARE,
       one: {
         hp: 8,

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { useLocation } from 'react-router-dom';
-import { POWER_CARDS_OBJECT, PREPARE, PlayerType, RUNNING, getAnimalCard } from './data';
+import { POWER_CARDS_OBJECT, PREPARE, RUNNING, getAnimalCard } from './data';
+import { PlayerType } from './interface';
 
 export const isNotEmpty = (input: string | Array<any>, minLength = 0) => input.length > minLength;
 

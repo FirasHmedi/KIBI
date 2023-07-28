@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import { drawCardFromMainDeck } from './actions';
-import { ClanName, PlayerType } from './data';
+import { ClanName } from './data';
 import { getItemsOnce } from './db';
 import { getOpponentIdFromCurrentId } from './helpers';
+import { PlayerType } from './interface';
 import {
   addAnimalToBoard,
   addAnimalToGraveYard,
@@ -28,7 +29,7 @@ export const cancelAttacks = async (roomId: string, playerType: PlayerType) => {
 
 export const reviveLastPower = async (roomId: string, playerType: PlayerType) => {
   const powerGY: string[] = await getItemsOnce('rooms/' + roomId + '/board/powerGY');
-  if (powerGY) {
+  if (!_.isEmpty(powerGY)) {
     const lastPowerCardId = powerGY[powerGY.length - 1];
     await deletePowerCardFromGraveYardById(roomId, lastPowerCardId);
     await addCardsToPlayerDeck(roomId, playerType, [lastPowerCardId]);

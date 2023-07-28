@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { buttonStyle, flexColumnStyle, flexRowStyle, primaryBlue, violet } from '../styles/Style';
-import { Player, Round } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
+import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 
 export const CurrentPView = ({
@@ -10,14 +10,18 @@ export const CurrentPView = ({
   playCard,
   finishRound,
   attackOpponentAnimal,
+  attackOppHp,
   isAttackAnimalEnabled,
+  isAttackOwnerEnabled,
 }: {
   player: Player;
   round: Round;
   playCard: (cardId?: string) => void;
   finishRound: () => void;
   attackOpponentAnimal: () => void;
+  attackOppHp: () => void;
   isAttackAnimalEnabled: boolean;
+  isAttackOwnerEnabled: boolean;
 }) => {
   const { hp, playerType, canAttack, canPlayPowers } = player;
   const cardsIds = player.cardsIds ?? [];
@@ -41,7 +45,7 @@ export const CurrentPView = ({
           position: 'absolute',
           right: '12vw',
           justifyContent: 'space-evenly',
-          height: '10vh',
+          height: '18vh',
           width: '10vw',
         }}>
         <button
@@ -74,6 +78,17 @@ export const CurrentPView = ({
             }}
             onClick={() => attackOpponentAnimal()}>
             Attack animal
+          </button>
+        )}
+        {isAttackOwnerEnabled && (
+          <button
+            style={{
+              ...buttonStyle,
+              fontSize: '0.8em',
+              backgroundColor: primaryBlue,
+            }}
+            onClick={() => attackOppHp()}>
+            Attack Opponent
           </button>
         )}
       </div>

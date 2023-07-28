@@ -1,6 +1,6 @@
 import { centerStyle, flexColumnStyle } from '../styles/Style';
-import { ClanName } from '../utils/data';
 import { isPowerCard } from '../utils/helpers';
+import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
@@ -14,18 +14,6 @@ interface Props {
   selectedOpponentPSlotNb?: number;
   selectedGYAnimals?: string[];
   setSelectedGYAnimals?: React.Dispatch<React.SetStateAction<string[] | undefined>>;
-}
-
-export interface Board {
-  mainDeck: string[];
-  currentPSlots: Slot[];
-  opponentPSlots: Slot[];
-  one?: Slot[];
-  two?: Slot[];
-  animalGY: string[];
-  powerGY: string[];
-  envType?: ClanName;
-  activeCardId?: string;
 }
 
 export const BoardView = ({

@@ -1,6 +1,5 @@
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
-import { Game } from '../pages/game/Game';
+import { useState } from 'react';
 import { flexColumnStyle } from '../styles/Style';
 import {
   cancelAttacks,
@@ -21,106 +20,83 @@ import {
 } from '../utils/abilities';
 import {
   attackAnimal,
-  drawCardFromMainDeck,
+  attackOwner,
   enableAttackingAndPlayingPowerCards,
   placeAnimalOnBoard,
+  placeKingOnBoard,
   setPowerCardAsActive,
 } from '../utils/actions';
 import {
   ClanName,
-  DefaultBoard,
-  Player,
-  PlayerType,
-  Round,
+  EMPTY,
+  KING,
   cardsWithSlotSelection,
   envCardsIds,
+  getAnimalCard,
   getOriginalCardId,
   getPowerCard,
 } from '../utils/data';
-import {
-  getOpponentIdFromCurrentId,
-  isAnimalCard,
-  isGameRunning,
-  isPowerCard,
-} from '../utils/helpers';
+import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard } from '../utils/helpers';
+import { Board, Player, Round } from '../utils/interface';
 import { addOneRound, addPowerToGraveYard } from '../utils/unitActions';
-import { Board, BoardView } from './Board';
+import { BoardView } from './Board';
 import { EnvPopup, RoundView } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 
 export function GameView({
-  game,
-  playerType,
+  round,
   roomId,
+  board,
+  opponentPlayer,
+  currentPlayer,
 }: {
-  game: Game;
-  playerType: PlayerType;
+  round: Round;
   roomId: string;
+  board: Board;
+  opponentPlayer: Player;
+  currentPlayer: Player;
 }) {
-  const [board, setBoard] = useState<Board>();
-  const [round, setRound] = useState<Round>();
-  const [currentPlayer, setCurrPlayer] = useState<Player>();
-  const [opponentPlayer, setOppPlayer] = useState<Player>();
   const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
   const [selectedOppPSlotNb, setSelectedOppPSlotNb] = useState<number>();
   const [selectedGYAnimals, setSelectedGYAnimals] = useState<string[]>();
   const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
+  const playerType = currentPlayer.playerType!;
+  const animalIdInOppPSlot = board?.opponentPSlots[selectedOppPSlotNb ?? 3]?.cardId;
+  const animalIdInCurrPSlot = board?.currentPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
 
   const isAttackAnimalEnabled =
-    round?.player === playerType && selectedCurrPSlotNb != null && selectedOppPSlotNb != null;
+    round.player === playerType &&
+    !_.isNil(selectedCurrPSlotNb) &&
+    !_.isNil(selectedOppPSlotNb) &&
+    board?.currentPSlots[selectedCurrPSlotNb]?.canAttack;
 
-  useEffect(() => {
-    if (!isGameRunning(game.status)) {
-      return;
-    }
-
-    const gameBoard = game.board;
-    const partOfBoard: Board = {
-      mainDeck: gameBoard?.mainDeck ?? DefaultBoard.mainDeck,
-      animalGY: gameBoard?.animalGY ?? DefaultBoard.animalGY,
-      powerGY: gameBoard?.powerGY ?? DefaultBoard.powerGY,
-      envType: gameBoard?.envType ?? DefaultBoard.envType,
-      activeCardId: gameBoard?.activeCardId ?? DefaultBoard.activeCardId,
-      currentPSlots: [],
-      opponentPSlots: [],
-    };
-    const p1 = { ...game[PlayerType.ONE], playerType: PlayerType.ONE };
-    const p2 = { ...game[PlayerType.TWO], playerType: PlayerType.TWO };
-
-    if (playerType === PlayerType.ONE) {
-      setCurrPlayer(p1);
-      setOppPlayer(p2);
-      setBoard({
-        ...partOfBoard,
-        currentPSlots: gameBoard.one ?? [],
-        opponentPSlots: gameBoard.two ?? [],
-      });
-    } else {
-      setCurrPlayer(p2);
-      setOppPlayer(p1);
-      setBoard({
-        ...partOfBoard,
-        currentPSlots: gameBoard.two ?? [],
-        opponentPSlots: gameBoard.one ?? [],
-      });
-    }
-    const newRound = game.round;
-    if (round) {
-      checkAndDrawCardFromMainDeck(newRound);
-    }
-    setRound(newRound);
-  }, [game]);
-
-  const checkAndDrawCardFromMainDeck = ({ player, nb }: Round) => {
-    if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {
-      drawCardFromMainDeck(roomId, playerType).then();
-    }
-  };
+  const isAttackOwnerEnabled =
+    !!animalIdInCurrPSlot &&
+    isAnimalCard(animalIdInCurrPSlot) &&
+    ((getAnimalCard(animalIdInCurrPSlot)?.role === KING &&
+      board.envType === getAnimalCard(animalIdInCurrPSlot)?.clan) ||
+      (!isAnimalCard(board?.opponentPSlots[0]?.cardId) &&
+        !isAnimalCard(board?.opponentPSlots[1]?.cardId) &&
+        !isAnimalCard(board?.opponentPSlots[2]?.cardId)));
 
   const playCard = async (cardId?: string) => {
     if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
 
     if (isAnimalCard(cardId) && selectedCurrPSlotNb != null) {
+      const { role } = getAnimalCard(cardId)!;
+      if (role === KING) {
+        if (isAnimalCard(animalIdInCurrPSlot)) {
+          await placeKingOnBoard(
+            roomId,
+            playerType,
+            cardId!,
+            animalIdInCurrPSlot,
+            selectedCurrPSlotNb,
+          );
+        }
+        return;
+      }
+
       await placeAnimalOnBoard(roomId, playerType, selectedCurrPSlotNb, cardId!);
     }
 
@@ -150,13 +126,17 @@ export function GameView({
         );
         break;
       case '4-p':
-        if (_.isNil(selectedCurrPSlotNb) || _.isNil(selectedOppPSlotNb)) return;
-        const animalIdToSteal = board?.opponentPSlots[selectedOppPSlotNb].cardId;
-        if (!animalIdToSteal || animalIdToSteal === 'empty') return;
+        if (
+          _.isNil(selectedCurrPSlotNb) ||
+          _.isNil(selectedOppPSlotNb) ||
+          !animalIdInOppPSlot ||
+          animalIdInOppPSlot === EMPTY
+        )
+          return;
         await sacrifice3HpToSteal(
           roomId,
           playerType,
-          animalIdToSteal,
+          animalIdInOppPSlot,
           selectedOppPSlotNb,
           selectedCurrPSlotNb,
         );
@@ -170,13 +150,11 @@ export function GameView({
       case '7-p':
         await switchDeck(roomId);
         break;
-      case '8-p':
+      case '8-p': // env
         break;
       case '9-p':
-        if (_.isNil(selectedCurrPSlotNb)) return;
-        const animalIdToSacrifice = board?.currentPSlots[selectedCurrPSlotNb].cardId;
-        if (animalIdToSacrifice === 'empty') return;
-        await sacrificeAnimalToGet3Hp(roomId, playerType, animalIdToSacrifice, selectedCurrPSlotNb);
+        if (_.isNil(selectedCurrPSlotNb) || animalIdInCurrPSlot === EMPTY) return;
+        await sacrificeAnimalToGet3Hp(roomId, playerType, animalIdInCurrPSlot, selectedCurrPSlotNb);
         break;
       case '10-p':
         await shieldOwnerPlus2Hp(roomId, playerType);
@@ -190,11 +168,11 @@ export function GameView({
       case '13-p':
         await sacrifice1HpToAdd2animalsFromGYToDeck(roomId, playerType, selectedGYAnimals);
         break;
-      case '14-p':
+      case '14-p': // env
         break;
-      case '15-p':
+      case '15-p': // env
         break;
-      case '16-p':
+      case '16-p': // env
         break;
       case '17-p':
         await cancelUsingPowerCards(roomId, getOpponentIdFromCurrentId(playerType));
@@ -223,24 +201,29 @@ export function GameView({
   };
 
   const attackOppAnimal = async () => {
-    if (selectedCurrPSlotNb == null || selectedOppPSlotNb == null) return;
-    const animalAId = board?.currentPSlots[selectedCurrPSlotNb!].cardId;
-    const animalDId = board?.opponentPSlots[selectedOppPSlotNb!].cardId;
-    if (!animalDId || !animalAId) return;
+    if (
+      selectedCurrPSlotNb == null ||
+      selectedOppPSlotNb == null ||
+      !animalIdInCurrPSlot ||
+      !animalIdInOppPSlot ||
+      !board?.currentPSlots[selectedCurrPSlotNb]?.canAttack
+    )
+      return;
 
     await attackAnimal(
       roomId,
       playerType,
       getOpponentIdFromCurrentId(playerType),
-      animalAId,
-      animalDId,
+      animalIdInCurrPSlot,
+      animalIdInOppPSlot,
       selectedCurrPSlotNb,
       selectedOppPSlotNb,
     );
   };
 
-  if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer || !round)
-    return <></>;
+  const attackOppHp = async () => {
+    await attackOwner(roomId, getOpponentIdFromCurrentId(playerType), animalIdInCurrPSlot);
+  };
 
   return (
     <div
@@ -254,7 +237,7 @@ export function GameView({
       }}>
       <OpponentPView player={opponentPlayer} />
 
-      <RoundView nb={game.round.nb} />
+      <RoundView nb={round.nb} />
 
       {showEnvPopup && <EnvPopup changeEnv={changeEnvWithPopup} />}
 
@@ -274,7 +257,9 @@ export function GameView({
         playCard={playCard}
         finishRound={finishRound}
         attackOpponentAnimal={attackOppAnimal}
+        attackOppHp={attackOppHp}
         isAttackAnimalEnabled={isAttackAnimalEnabled}
+        isAttackOwnerEnabled={isAttackOwnerEnabled}
       />
     </div>
   );

@@ -2,8 +2,8 @@
 import _ from 'lodash';
 import animalsCardsJson from '../assets/animal-cards.json';
 import powerCardsJson from '../assets/power-cards.json';
-import { AllCards } from '../components/Slots';
 import { airColor, earthColor, fireColor, neutralColor, waterColor } from '../styles/Style';
+import { AllCards, AnimalCard, Card } from './interface';
 
 export const SINGUP_PATH = '/signup';
 export const SIGNIN_PATH = '/signin';
@@ -14,55 +14,21 @@ export const RUNNING = 'running';
 export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const ROOMS_PATH = 'rooms/';
-export interface Round {
-  nb: number;
-  player: PlayerType;
-}
-export interface Card {
-  id: string;
-  ability?: string;
-  description?: string;
-  name?: string;
-}
 
-export interface AnimalCard extends Card {
-  clan: ClanName;
-  role: RoleName;
-}
+export const EMPTY = 'empty';
 
-export interface EnvCard {
-  id: string;
-  ability: ClanName;
-  description?: string;
-  name: string;
-}
-
-export const DefaultBoard = {
-  mainDeck: [],
-  currentPSlots: [],
-  opponentPSlots: [],
-  animalGY: [],
-  powerGY: [],
-  envType: 'neutral' as ClanName,
-  activeCardId: undefined,
-};
-
-export enum PlayerType {
-  ONE = 'one',
-  TWO = 'two',
-}
-
-export interface Player {
-  playerType?: PlayerType;
-  cardsIds: string[];
-  hp: number;
-  status: string;
-  playerName?: string;
-  canPlayPowers: boolean;
-  canAttack: boolean;
-}
+export const WATER = 'water';
+export const AIR = 'air';
+export const FIRE = 'fire';
+export const EARTH = 'earth';
+export const NEUTRAL = 'neutral';
 
 export const ClansNames = ['water', 'earth', 'fire', 'air', 'neutral'];
+
+export const KING = 'king';
+export const ATTACKER = 'attacker';
+export const TANK = 'tank';
+export const JOKER = 'joker';
 
 export type ClanName = 'air' | 'earth' | 'fire' | 'water' | 'neutral';
 export type RoleName = 'tank' | 'attacker' | 'king' | 'joker';
@@ -88,32 +54,6 @@ export const CLANS = {
 export const envCardsIds = ['8-p', '14-p', '15-p', '16-p'];
 export const cardsWithSlotSelection = ['3-p', '4-p', '5-p'];
 
-export const TestDeck = [
-  {
-    id: '1',
-  },
-  {
-    id: '2',
-  },
-  {
-    id: '3',
-  },
-  {
-    id: '4',
-  },
-  {
-    id: '5',
-  },
-  {
-    id: '6',
-  },
-  {
-    id: '7',
-  },
-  {
-    id: '8',
-  },
-];
 export const ANIMALS_POINTS = {
   king: {
     ap: 2,
@@ -132,14 +72,6 @@ export const ANIMALS_POINTS = {
     hp: 1,
   },
 };
-export const GeneralTestData = {
-  roomId: 'test',
-  playerName: 'test',
-  playerType: 'one',
-  playerId: 'testId',
-};
-export const AnimalsGY = [];
-export const PowersGY = [];
 
 const getArrayFromJson = (file: any) => {
   const object = JSON.parse(JSON.stringify(file));

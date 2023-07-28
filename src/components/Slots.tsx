@@ -1,14 +1,7 @@
 import { centerStyle, selectedColor, slotStyle, violet } from '../styles/Style';
-import {
-  ANIMALS_POINTS,
-  AnimalCard,
-  CLANS,
-  Card,
-  ClanName,
-  getAnimalCard,
-  getPowerCard,
-} from '../utils/data';
+import { ANIMALS_POINTS, CLANS, ClanName, getAnimalCard, getPowerCard } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
+import { SlotType } from '../utils/interface';
 
 export const SlotBack = () => (
   <div
@@ -29,11 +22,6 @@ interface SlotProps {
   selected?: boolean;
   selectSlot?: (slotNb?: number) => void;
   nb?: number;
-}
-
-export interface Slot {
-  cardId: string;
-  canAttack: boolean;
 }
 
 export const PowerSlot = ({
@@ -137,14 +125,12 @@ export const EnvSlot = ({ envType }: { envType?: ClanName }) => (
   </div>
 );
 
-export type AllCards = AnimalCard | Card;
-
 export const Slots = ({
   slots,
   selectedSlotNb,
   selectSlot,
 }: {
-  slots: Slot[];
+  slots: SlotType[];
   selectedSlotNb?: number;
   selectSlot: (slotNb?: number) => void;
 }) => {
