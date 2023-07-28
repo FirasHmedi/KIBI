@@ -27,7 +27,6 @@ export const subscribeToItems = async (path: string, setItemsState: (item: any) 
   try {
     onValue(ref(db, path), snapshot => {
       const data = snapshot.val();
-      console.log(data);
       setItemsState(data);
     });
   } catch (e) {

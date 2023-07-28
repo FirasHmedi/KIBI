@@ -10,8 +10,8 @@ export const SlotBack = () => (
       backgroundColor: violet,
       color: 'white',
       ...centerStyle,
-      height: '12vh',
-      width: '4vw',
+      height: '10vh',
+      width: '3vw',
     }}>
     <h6>KIBI</h6>
   </div>

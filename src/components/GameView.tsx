@@ -75,6 +75,7 @@ export function GameView({
     board?.currentPSlots[selectedCurrPSlotNb]?.canAttack;
 
   const isAttackOwnerEnabled =
+    round.player === playerType &&
     !!animalIdInCurrPSlot &&
     isAnimalCard(animalIdInCurrPSlot) &&
     ((getAnimalCard(animalIdInCurrPSlot)?.role === KING &&

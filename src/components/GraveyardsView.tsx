@@ -41,7 +41,7 @@ export const Graveyard = ({
   };
 
   return (
-    <div style={{ minHeight: '5vh', maxWidth: '12vw' }}>
+    <div style={{ minHeight: '5vh', maxWidth: '20vw' }}>
       <h5 style={{ color: violet, marginBottom: 4 }}>
         {name} ({cardsIds.length})
       </h5>

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { ClanName } from './data';
 import { getItemsOnce, setItem } from './db';
 import { isAnimalCard, isPowerCard } from './helpers';
@@ -87,8 +88,8 @@ export const removePlayerAnimalFromBoard = async (
 
 export const addHpToPlayer = async (roomId: string, playerType: string, hp: number) => {
   const oldHp = await getItemsOnce('rooms/' + roomId + '/' + playerType + '/hp');
-  if (oldHp) {
-    const newHp = oldHp + hp;
+  if (!_.isNil(oldHp)) {
+    const newHp = (oldHp ?? 0) + hp;
     await setItem('rooms/' + roomId + '/' + playerType, { hp: newHp });
   }
 };
@@ -102,9 +103,9 @@ export const removeHpFromPlayer = async (roomId: string, playerType: string, hp:
 };
 
 export const addInfoToLog = async (roomId: string, text: string) => {
-  const log = await getItemsOnce('rooms/' + roomId + '/log');
-  const index = log ? log.length : 0;
-  await setItem('rooms/' + roomId + '/log', { [`${index}`]: text });
+  const log = await getItemsOnce('logs/' + roomId + '/log');
+  const index = !!log ? log.length : 0;
+  await setItem('logs/' + roomId + '/log', { [`${index}`]: text });
 };
 
 export const changeEnvUnitAction = async (roomId: string, envType: ClanName) => {
@@ -153,7 +154,7 @@ export const getPowerCardFromGraveYardByIndex = async (roomId: string, index: nu
 export const deletePowerCardFromGraveYardById = async (roomId: string, powerId: string) => {
   let powerCardsId = await getItemsOnce('rooms/' + roomId + '/board/powerGY');
   powerCardsId = (powerCardsId ?? []).filter((id: string) => id != powerId);
-  await setItem('rooms/' + roomId, { powerGY: powerCardsId });
+  await setItem('rooms/' + roomId + '/board/', { powerGY: powerCardsId });
 };
 
 export const deletePowerCardFromGraveYardByIndex = async (roomId: string, index: number) => {

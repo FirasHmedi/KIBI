@@ -68,7 +68,7 @@ export const placeKingOnBoard = async (
   if (isRemoved) {
     await addAnimalToGraveYard(roomId, sacrificedAnimalId);
     await removeCardFromPlayerDeck(roomId, playerType, kingId);
-    await addAnimalToBoard(roomId, playerType, slotNb, kingId);
+    await addAnimalToBoard(roomId, playerType, slotNb, kingId, true);
   }
 };
 
@@ -115,7 +115,7 @@ export const activateJokerAbility = async (
   const joker = getAnimalCard(jokerId);
   if (!joker || joker.role != JOKER) return;
   const envType = await getItemsOnce('rooms/' + roomId + '/board/envType');
-  console.log(envType, joker);
+
   if (envType != joker.clan) return;
   await addInfoToLog(roomId, joker.name + ' has activated his ability');
   switch (joker.name) {
