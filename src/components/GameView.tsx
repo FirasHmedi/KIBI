@@ -21,6 +21,7 @@ import {
 import {
   attackAnimal,
   attackOwner,
+  enableAttackForOpponentAnimals,
   enableAttackingAndPlayingPowerCards,
   placeAnimalOnBoard,
   placeKingOnBoard,
@@ -198,12 +199,17 @@ export function GameView({
   const finishRound = async () => {
     await enableAttackingAndPlayingPowerCards(roomId, playerType);
     await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
+    await enableAttackForOpponentAnimals(
+      roomId,
+      getOpponentIdFromCurrentId(playerType),
+      board.opponentPSlots,
+    );
   };
 
   const attackOppAnimal = async () => {
     if (
-      selectedCurrPSlotNb == null ||
-      selectedOppPSlotNb == null ||
+      _.isNil(selectedCurrPSlotNb) ||
+      _.isNil(selectedOppPSlotNb) ||
       !animalIdInCurrPSlot ||
       !animalIdInOppPSlot ||
       !board?.currentPSlots[selectedCurrPSlotNb]?.canAttack

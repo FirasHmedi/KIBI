@@ -9,12 +9,13 @@ import {
 import { ANIMALS_POINTS, ATTACKER, TANK, getAnimalCard } from './data';
 import { getItemsOnce, setItem } from './db';
 import { isAnimalCard, waitFor } from './helpers';
-import { PlayerType } from './interface';
+import { PlayerType, SlotType } from './interface';
 import {
   addAnimalToBoard,
   addAnimalToGraveYard,
   addCardsToPlayerDeck,
   addInfoToLog,
+  changeCanAttackVarOfSlot,
   getCardFromMainDeck,
   removeCardFromMainDeck,
   removeCardFromPlayerDeck,
@@ -139,4 +140,16 @@ export const setPowerCardAsActive = async (
   await setActivePowerCard(roomId, cardId);
   await waitFor(1200);
   await setActivePowerCard(roomId, '');
+};
+
+export const enableAttackForOpponentAnimals = async (
+  roomId: string,
+  playerDType: PlayerType,
+  oppSlots: SlotType[] = [],
+) => {
+  for (let i = 0; i < oppSlots.length; i++) {
+    if (isAnimalCard(oppSlots[i].cardId)) {
+      await changeCanAttackVarOfSlot(roomId, playerDType, i, true);
+    }
+  }
 };

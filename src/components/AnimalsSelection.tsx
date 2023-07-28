@@ -6,8 +6,9 @@ import {
   primaryBlue,
   selectedColor,
 } from '../styles/Style';
-import { ANIMALS_CARDS, AnimalCard, CLANS, PlayerType, READY, ROOMS_PATH } from '../utils/data';
+import { ANIMALS_CARDS, CLANS, READY, ROOMS_PATH } from '../utils/data';
 import { setItem } from '../utils/db';
+import { AnimalCard, PlayerType } from '../utils/interface';
 
 interface Props {
   playerType: PlayerType;
