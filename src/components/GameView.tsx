@@ -19,6 +19,8 @@ import {
   switchHealth,
 } from '../utils/abilities';
 import {
+  activateJokerAbility,
+  activateJokersAbilities,
   attackAnimal,
   attackOwner,
   enableAttackForOpponentAnimals,
@@ -30,6 +32,7 @@ import {
 import {
   ClanName,
   EMPTY,
+  JOKER,
   KING,
   cardsWithSlotSelection,
   envCardsIds,
@@ -80,29 +83,30 @@ export function GameView({
         !isAnimalCard(board?.opponentPSlots[1]?.cardId) &&
         !isAnimalCard(board?.opponentPSlots[2]?.cardId)));
 
-  const playCard = async (cardId?: string) => {
-    if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
+  const playAnimalCard = async (cardId: string) => {
+    const { role, clan } = getAnimalCard(cardId)!;
 
-    if (isAnimalCard(cardId) && selectedCurrPSlotNb != null) {
-      const { role } = getAnimalCard(cardId)!;
-      if (role === KING) {
-        if (isAnimalCard(animalIdInCurrPSlot)) {
-          await placeKingOnBoard(
-            roomId,
-            playerType,
-            cardId!,
-            animalIdInCurrPSlot,
-            selectedCurrPSlotNb,
-          );
-        }
-        return;
+    if (role === KING) {
+      if (isAnimalCard(animalIdInCurrPSlot)) {
+        await placeKingOnBoard(
+          roomId,
+          playerType,
+          cardId,
+          animalIdInCurrPSlot,
+          selectedCurrPSlotNb!,
+        );
       }
-
-      await placeAnimalOnBoard(roomId, playerType, selectedCurrPSlotNb, cardId!);
+      return;
     }
 
-    if (!isPowerCard(cardId)) return;
+    await placeAnimalOnBoard(roomId, playerType, selectedCurrPSlotNb!, cardId);
 
+    if (role === JOKER && clan === board.envType) {
+      await activateJokerAbility(roomId, cardId, playerType);
+    }
+  };
+
+  const playPowerCard = async (cardId: string) => {
     if (cardsWithSlotSelection.includes(getOriginalCardId(cardId!)) && _.isNil(selectedCurrPSlotNb))
       return;
 
@@ -191,15 +195,33 @@ export function GameView({
     }
   };
 
+  const playCard = async (cardId?: string) => {
+    if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
+
+    if (isAnimalCard(cardId) && selectedCurrPSlotNb != null) {
+      await playAnimalCard(cardId!);
+    }
+
+    if (isPowerCard(cardId)) {
+      await playPowerCard(cardId!);
+    }
+  };
+
   const changeEnvWithPopup = async (envType: ClanName) => {
     await changeEnv(roomId, envType);
     setShowEnvPopup(false);
+    await activateJokersAbilities(roomId, playerType, board.currentPSlots);
   };
 
   const finishRound = async () => {
     await enableAttackingAndPlayingPowerCards(roomId, playerType);
     await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
     await enableAttackForOpponentAnimals(
+      roomId,
+      getOpponentIdFromCurrentId(playerType),
+      board.opponentPSlots,
+    );
+    await activateJokersAbilities(
       roomId,
       getOpponentIdFromCurrentId(playerType),
       board.opponentPSlots,

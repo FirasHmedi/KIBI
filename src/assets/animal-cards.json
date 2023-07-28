@@ -3,21 +3,21 @@
     "ability": "Attacks opponent",
     "clan": "earth",
     "description": "king of earth clan",
-    "name": "lion",
+    "name": "Lion",
     "role": "king"
   },
   "10-a": {
     "ability": "Kills who kills him",
     "clan": "air",
     "description": "attacker of air clan",
-    "name": "bee",
+    "name": "Bee",
     "role": "attacker"
   },
   "11-a": {
     "ability": "To deck when it dies",
     "clan": "air",
     "description": "tank of air clan",
-    "name": "ostrich",
+    "name": "Ostrich",
     "role": "tank"
   },
   "12-a": {
@@ -38,20 +38,20 @@
     "ability": "Kills who kills him",
     "clan": "fire",
     "description": "attacker of fire clan",
-    "name": "phoenix",
+    "name": "Phoenix",
     "role": "attacker"
   },
   "15-a": {
     "ability": "To deck when it dies",
     "clan": "fire",
     "description": "tank of fire clan",
-    "name": "bear",
+    "name": "Bear",
     "role": "tank"
   },
   "16-a": {
     "ability": "Return last animal card to deck",
     "clan": "fire",
-    "description": "joker of water clan",
+    "description": "joker of fire clan",
     "name": "Fox",
     "role": "joker"
   },
@@ -59,7 +59,7 @@
     "ability": "Kills who kills him",
     "clan": "earth",
     "description": "attacker of earth clan",
-    "name": "badger",
+    "name": "Badger",
     "role": "attacker"
   },
   "3-a": {
@@ -80,7 +80,7 @@
     "ability": "Attacks opponent",
     "clan": "water",
     "description": "king of water clan",
-    "name": "orca",
+    "name": "Orca",
     "role": "king"
   },
   "6-a": {
@@ -101,7 +101,7 @@
     "ability": "Draw 1 card",
     "clan": "water",
     "description": "joker of water clan",
-    "name": "jellyfish",
+    "name": "Jellyfish",
     "role": "joker"
   },
   "9-a": {

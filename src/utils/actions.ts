@@ -1,14 +1,14 @@
 import {
-  ReviveLastAnimalToDeck,
   add1Hp,
+  addLastAnimalToDeck,
   drawOneCard,
   minus1Hp,
   removePlayerAnimalFromBoardAndAddToGraveYard,
   returnTankToDeck,
 } from './animalsAbilities';
-import { ANIMALS_POINTS, ATTACKER, TANK, getAnimalCard } from './data';
+import { ANIMALS_POINTS, ATTACKER, JOKER, TANK, getAnimalCard } from './data';
 import { getItemsOnce, setItem } from './db';
-import { isAnimalCard, waitFor } from './helpers';
+import { getOpponentIdFromCurrentId, isAnimalCard, waitFor } from './helpers';
 import { PlayerType, SlotType } from './interface';
 import {
   addAnimalToBoard,
@@ -100,30 +100,35 @@ export const attackAnimal = async (
   }
 };
 
-export const attackOwner = async (roomId: string, playerDType: string, animalId: string) => {
+export const attackOwner = async (roomId: string, playerDType: PlayerType, animalId: string) => {
   if (!isAnimalCard(animalId)) return;
   const { name, role } = getAnimalCard(animalId)!;
   await addInfoToLog(roomId, name + ' has attacked ' + playerDType + ' directly');
   await removeHpFromPlayer(roomId, playerDType, ANIMALS_POINTS[role].ap);
 };
 
-export const activateJokerAbility = async (roomId: string, jokerId: string, playerType: string) => {
+export const activateJokerAbility = async (
+  roomId: string,
+  jokerId: string,
+  playerType: PlayerType,
+) => {
   const joker = getAnimalCard(jokerId);
-  if (!joker) return;
+  if (!joker || joker.role != JOKER) return;
   const envType = await getItemsOnce('rooms/' + roomId + '/board/envType');
+  console.log(envType, joker);
   if (envType != joker.clan) return;
   await addInfoToLog(roomId, joker.name + ' has activated his ability');
   switch (joker.name) {
     case 'Crow':
-      await minus1Hp(roomId, playerType);
+      await minus1Hp(roomId, getOpponentIdFromCurrentId(playerType));
       break;
     case 'Fox':
-      await ReviveLastAnimalToDeck(roomId, playerType);
+      await addLastAnimalToDeck(roomId, playerType);
       break;
     case 'Snake':
       await add1Hp(roomId, playerType);
       break;
-    case 'jellyfish':
+    case 'Jellyfish':
       await drawOneCard(roomId, playerType);
       break;
   }
@@ -150,6 +155,19 @@ export const enableAttackForOpponentAnimals = async (
   for (let i = 0; i < oppSlots.length; i++) {
     if (isAnimalCard(oppSlots[i].cardId)) {
       await changeCanAttackVarOfSlot(roomId, playerDType, i, true);
+    }
+  }
+};
+
+export const activateJokersAbilities = async (
+  roomId: string,
+  playerDType: PlayerType,
+  oppSlots: SlotType[] = [],
+) => {
+  for (let i = 0; i < oppSlots.length; i++) {
+    const cardId = oppSlots[i]?.cardId;
+    if (!!cardId && isAnimalCard(cardId)) {
+      await activateJokerAbility(roomId, cardId, playerDType);
     }
   }
 };

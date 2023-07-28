@@ -1,5 +1,6 @@
 // ******************************animal abilities**********************************************
 // ----------------------king------------------
+import _ from 'lodash';
 import { drawCardFromMainDeck } from './actions';
 import { getItemsOnce } from './db';
 import {
@@ -39,10 +40,10 @@ export const minus1Hp = async (roomId: string, playerType: string) => {
   await removeHpFromPlayer(roomId, playerType, 1);
 };
 // ----------------------Fox-----------------------
-export const ReviveLastAnimalToDeck = async (roomId: string, playerType: string) => {
-  let animalGY = await getItemsOnce('rooms/' + roomId + '/animalGY');
-  if (animalGY) {
-    let lastAnimalCardId = animalGY[animalGY.length - 1];
+export const addLastAnimalToDeck = async (roomId: string, playerType: string) => {
+  const animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
+  if (!_.isEmpty(animalGY)) {
+    const lastAnimalCardId = animalGY[animalGY.length - 1];
     await deleteAnimalCardFromGraveYardById(roomId, lastAnimalCardId);
     await addCardsToPlayerDeck(roomId, playerType, [lastAnimalCardId]);
   }
