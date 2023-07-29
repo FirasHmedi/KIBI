@@ -6,8 +6,8 @@ import {
   removePlayerAnimalFromBoardAndAddToGraveYard,
   returnTankToDeck,
 } from './animalsAbilities';
-import { ANIMALS_POINTS, ATTACKER, JOKER, TANK, getAnimalCard } from './data';
-import { getItemsOnce, setItem } from './db';
+import { ANIMALS_POINTS, ATTACKER, ClanName, JOKER, TANK, getAnimalCard } from './data';
+import { getBoardPath, getItemsOnce, setItem } from './db';
 import { getOpponentIdFromCurrentId, isAnimalCard, waitFor } from './helpers';
 import { PlayerType, SlotType } from './interface';
 import {
@@ -90,8 +90,8 @@ export const attackAnimal = async (
   await removePlayerAnimalFromBoard(roomId, playerDType, slotDNumber);
   await addAnimalToGraveYard(roomId, animalDId);
 
-  const env = await getItemsOnce('rooms/' + roomId + '/envType');
-  if (env != animalD.clan) return;
+  const envType = await getEnvType(roomId);
+  if (envType != animalD.clan) return;
 
   if (animalD.role == ATTACKER) {
     await removePlayerAnimalFromBoardAndAddToGraveYard(roomId, playerAType, slotANumber, animalAId);
@@ -114,10 +114,12 @@ export const activateJokerAbility = async (
 ) => {
   const joker = getAnimalCard(jokerId);
   if (!joker || joker.role != JOKER) return;
-  const envType = await getItemsOnce('rooms/' + roomId + '/board/envType');
 
+  const envType = await getEnvType(roomId);
   if (envType != joker.clan) return;
+
   await addInfoToLog(roomId, joker.name + ' has activated his ability');
+
   switch (joker.name) {
     case 'Crow':
       await minus1Hp(roomId, getOpponentIdFromCurrentId(playerType));
@@ -170,4 +172,8 @@ export const activateJokersAbilities = async (
       await activateJokerAbility(roomId, cardId, playerDType);
     }
   }
+};
+
+export const getEnvType = async (roomId: string): Promise<ClanName> => {
+  return await getItemsOnce(getBoardPath(roomId) + 'envType');
 };

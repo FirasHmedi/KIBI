@@ -2,7 +2,7 @@
 // ----------------------king------------------
 import _ from 'lodash';
 import { drawCardFromMainDeck } from './actions';
-import { getItemsOnce } from './db';
+import { getBoardPath, getItemsOnce } from './db';
 import {
   addAnimalToGraveYard,
   addCardsToPlayerDeck,
@@ -41,7 +41,7 @@ export const minus1Hp = async (roomId: string, playerType: string) => {
 };
 // ----------------------Fox-----------------------
 export const addLastAnimalToDeck = async (roomId: string, playerType: string) => {
-  const animalGY = await getItemsOnce('rooms/' + roomId + '/board/animalGY');
+  const animalGY = await getItemsOnce(getBoardPath(roomId) + 'animalGY');
   if (!_.isEmpty(animalGY)) {
     const lastAnimalCardId = animalGY[animalGY.length - 1];
     await deleteAnimalCardFromGraveYardById(roomId, lastAnimalCardId);

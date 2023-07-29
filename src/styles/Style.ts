@@ -64,9 +64,9 @@ export const slotStyle: React.CSSProperties = {
   ...flexColumnStyle,
   borderRadius: 5,
   color: 'white',
-  fontSize: '0.9em',
-  height: '16.5vh',
-  width: '6vw',
+  fontSize: '0.85em',
+  height: '14vh',
+  width: '5.5vw',
   flexShrink: 0,
   border: 'solid 4px #95a5a6',
 };

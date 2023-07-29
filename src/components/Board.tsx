@@ -33,7 +33,7 @@ export const BoardView = ({
         ...centerStyle,
         flexDirection: 'row',
         width: '90vw',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
       }}>
       <MainDeck nbCards={mainDeck.length} />
 

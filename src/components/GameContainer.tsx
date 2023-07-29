@@ -61,7 +61,11 @@ export function GameContainer({
     }
     setRound(newRound);
 
-    if (gameBoard.mainDeck.length === 0 && round?.player === playerType) {
+    if (
+      _.isEmpty(gameBoard?.mainDeck) &&
+      round?.player === playerType &&
+      !_.isEmpty(gameBoard?.powerGY)
+    ) {
       revertMainDeck();
     }
   }, [game]);

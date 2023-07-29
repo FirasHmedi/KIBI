@@ -6,8 +6,8 @@ import {
   primaryBlue,
   selectedColor,
 } from '../styles/Style';
-import { ANIMALS_CARDS, CLANS, READY, ROOMS_PATH } from '../utils/data';
-import { setItem } from '../utils/db';
+import { ANIMALS_CARDS, CLANS, READY } from '../utils/data';
+import { getRoomPath, setItem } from '../utils/db';
 import { AnimalCard, PlayerType } from '../utils/interface';
 
 interface Props {
@@ -33,7 +33,7 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
 
   const submitAnimalCards = async () => {
     setDisabledBtn(true);
-    await setItem(ROOMS_PATH + roomId + `/${playerType}`, {
+    await setItem(getRoomPath(roomId) + `${playerType}`, {
       cardsIds: [...idsSelected].map(id => `${playerType}-${id}`),
       status: READY,
     });
@@ -55,7 +55,7 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
           width: '85vw',
           overflowX: 'auto',
         }}>
-        {ANIMALS_CARDS.map(({ id, name, clan, description, role, ability }: AnimalCard) => (
+        {ANIMALS_CARDS.map(({ id, name, clan, role, ability }: AnimalCard) => (
           <div
             key={id}
             style={{

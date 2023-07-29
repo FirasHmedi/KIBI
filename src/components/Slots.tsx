@@ -10,7 +10,7 @@ export const SlotBack = () => (
       backgroundColor: violet,
       color: 'white',
       ...centerStyle,
-      height: '10vh',
+      height: '9vh',
       width: '3vw',
     }}>
     <h6>KIBI</h6>
@@ -68,7 +68,7 @@ export const AnimalSlot = ({
         borderColor: selected ? selectedColor : CLANS[clan!]?.color,
       }}
       onClick={() => select()}>
-      <h5>{name?.toUpperCase()}</h5>
+      <h5 style={{ fontSize: '0.8em' }}>{name?.toUpperCase()}</h5>
       <h6>{ability}</h6>
       <h6 style={{ fontSize: '0.6em' }}>
         {role?.toUpperCase()} ({ap},{hp})
@@ -101,7 +101,7 @@ export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
         borderColor: selected ? selectedColor : '#95a5a6',
       }}
       onClick={() => selectSlotPolished()}>
-      <h5>EMPTY</h5>
+      <h6>EMPTY</h6>
     </div>
   );
 };
@@ -114,8 +114,8 @@ export const EnvSlot = ({ envType }: { envType?: ClanName }) => (
       backgroundColor: CLANS[envType!]?.color,
       color: 'white',
       flexDirection: 'column',
-      height: '4vw',
-      width: '4vw',
+      height: '3vw',
+      width: '3vw',
       transform: 'rotate(90deg)',
       justifyContent: 'center',
       flexShrink: 0,
@@ -143,13 +143,16 @@ export const Slots = ({
         justifyContent: 'space-evenly',
       }}>
       {compoundSlots.map((slot, index) => (
-        <Slot
-          nb={index}
-          selectSlot={selectSlot}
-          key={index}
-          cardId={slot?.cardId}
-          selected={selectedSlotNb === index}
-        />
+        <div
+          style={{ border: 'solid', borderRadius: 5, color: index === 1 ? 'grey' : 'transparent' }}>
+          <Slot
+            nb={index}
+            selectSlot={selectSlot}
+            key={index}
+            cardId={slot?.cardId}
+            selected={selectedSlotNb === index}
+          />
+        </div>
       ))}
     </div>
   );

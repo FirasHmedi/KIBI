@@ -1,6 +1,9 @@
 import { get, onValue, ref, update } from 'firebase/database';
 import { db } from '../firebase';
 
+export const getBoardPath = (roomId: string) => 'rooms/' + roomId + '/board/';
+export const getRoomPath = (roomId: string) => 'rooms/' + roomId + '/';
+
 export const setItem = async (path: string, item: any) => {
   try {
     const result = await update(ref(db, path), item);

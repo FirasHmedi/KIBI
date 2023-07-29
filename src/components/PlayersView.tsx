@@ -141,7 +141,8 @@ const PlayerDataView = ({
       fontSize: '0.9em',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'flex-start',
+      alignItems: 'center',
+      justifyContent: 'center',
     }}>
     <h5>Player {name?.toUpperCase()}</h5>
     <h4 style={{ fontSize: '0.9em' }}>{hp} HP</h4>

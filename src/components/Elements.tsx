@@ -53,19 +53,19 @@ export const EnvPopup = ({ changeEnv }: { changeEnv: (envType: ClanName) => void
   </div>
 );
 
-export const RoundView = ({ nb }: { nb: number }) => (
+export const RoundView = ({ nb = 1 }: { nb: number }) => (
   <div
     style={{
       position: 'absolute',
-      left: '2%',
+      left: '2vw',
       top: 0,
       bottom: 0,
       margin: 'auto',
       height: '4vh',
-      fontSize: '0.9em',
+      fontSize: '0.8em',
       fontWeight: 'bold',
       color: violet,
     }}>
-    Round {nb}
+    Round <br /> {Math.floor(nb / 2)}
   </div>
 );

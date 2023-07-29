@@ -111,6 +111,26 @@ export function GameView({
     if (cardsWithSlotSelection.includes(getOriginalCardId(cardId!)) && _.isNil(selectedCurrPSlotNb))
       return;
 
+    switch (getOriginalCardId(cardId!)) {
+      case '3-p':
+        if (selectedGYAnimals?.length != 1 || _.isNil(selectedCurrPSlotNb)) return;
+      case '4-p':
+        if (
+          _.isNil(selectedCurrPSlotNb) ||
+          _.isNil(selectedOppPSlotNb) ||
+          !animalIdInOppPSlot ||
+          animalIdInOppPSlot === EMPTY
+        )
+          return;
+        break;
+      case '9-p':
+        if (_.isNil(selectedCurrPSlotNb) || animalIdInCurrPSlot === EMPTY) return;
+        break;
+      case '18-p':
+        if (!selectedGYAnimals || selectedGYAnimals?.length != 1) return;
+        break;
+    }
+
     const { name } = getPowerCard(cardId)!;
 
     await setPowerCardAsActive(roomId, playerType, cardId!, name!);
@@ -123,28 +143,20 @@ export function GameView({
         await reviveLastPower(roomId, playerType);
         break;
       case '3-p':
-        if (selectedGYAnimals?.length != 1 || _.isNil(selectedCurrPSlotNb)) return;
         await sacrifice2HpToReviveAnyAnimal(
           roomId,
           playerType,
-          selectedGYAnimals[0],
+          selectedGYAnimals![0],
           selectedCurrPSlotNb,
         );
         break;
       case '4-p':
-        if (
-          _.isNil(selectedCurrPSlotNb) ||
-          _.isNil(selectedOppPSlotNb) ||
-          !animalIdInOppPSlot ||
-          animalIdInOppPSlot === EMPTY
-        )
-          return;
         await sacrifice3HpToSteal(
           roomId,
           playerType,
           animalIdInOppPSlot,
-          selectedOppPSlotNb,
-          selectedCurrPSlotNb,
+          selectedOppPSlotNb!,
+          selectedCurrPSlotNb!,
         );
         break;
       case '5-p':
@@ -159,7 +171,6 @@ export function GameView({
       case '8-p': // env
         break;
       case '9-p':
-        if (_.isNil(selectedCurrPSlotNb) || animalIdInCurrPSlot === EMPTY) return;
         await sacrificeAnimalToGet3Hp(roomId, playerType, animalIdInCurrPSlot, selectedCurrPSlotNb);
         break;
       case '10-p':
@@ -184,8 +195,7 @@ export function GameView({
         await cancelUsingPowerCards(roomId, getOpponentIdFromCurrentId(playerType));
         break;
       case '18-p':
-        if (!selectedGYAnimals || selectedGYAnimals?.length != 1) return;
-        await returnOneAnimalFromGYToDeck(roomId, playerType, selectedGYAnimals[0]);
+        await returnOneAnimalFromGYToDeck(roomId, playerType, selectedGYAnimals![0]);
         break;
     }
 
