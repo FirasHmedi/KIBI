@@ -204,6 +204,10 @@ export function GameView({
     if (envCardsIds.includes(getOriginalCardId(cardId!))) {
       setShowEnvPopup(true);
     }
+
+    setSelectedGYAnimals([]);
+    setSelectedCurrPSlotNb(undefined);
+    setSelectedCurrPSlotNb(undefined);
   };
 
   const playCard = async (cardId?: string) => {

@@ -103,9 +103,12 @@ export const removeHpFromPlayer = async (roomId: string, playerType: string, hp:
 };
 
 export const addInfoToLog = async (roomId: string, text: string) => {
-  const log = await getItemsOnce('logs/' + roomId + '/log');
-  const index = !!log ? log.length : 0;
-  await setItem('logs/' + roomId + '/log', { [`${index}`]: text });
+  await setItem('logs/' + roomId + '/log', {
+    [`${new Date().getTime()}`]: {
+      action: text,
+      time: new Date().toTimeString(),
+    },
+  });
 };
 
 export const changeEnvUnitAction = async (roomId: string, envType: ClanName) => {
