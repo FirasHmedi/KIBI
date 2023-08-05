@@ -49,6 +49,21 @@
     "description": "Return 1 animal to deck from animal graveyard",
     "name": "Return 1 animal to deck"
   },
+  "19-p": {
+    "ability": "Return all board animals to players decks",
+    "description": "Return all board animals to players decks",
+    "name": "Return all animals to decks"
+  },
+  "20-p": {
+    "ability": "Place an active king on board",
+    "description": "Place an active king on board",
+    "name": "Place an active king on board"
+  },
+  "21-p": {
+    "ability": "Double king ability in its env",
+    "description": "Double king ability in its env",
+    "name": "Double king ability in its env"
+  },
   "2-p": {
     "ability": "Revive last power card",
     "description": "Revive last power card (activate directly)",

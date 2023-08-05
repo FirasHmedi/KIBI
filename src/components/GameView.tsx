@@ -6,6 +6,7 @@ import {
   cancelUsingPowerCards,
   changeEnv,
   draw2Cards,
+  returnAllBoardAnimalsToDecks,
   returnOneAnimalFromGYToDeck,
   reviveLastPower,
   sacrifice1HpToAdd2animalsFromGYToDeck,
@@ -27,6 +28,7 @@ import {
   enableAttackingAndPlayingPowerCards,
   placeAnimalOnBoard,
   placeKingOnBoard,
+  placeKingWithoutSacrifice,
   setPowerCardAsActive,
 } from '../utils/actions';
 import {
@@ -64,6 +66,8 @@ export function GameView({
   const [selectedOppPSlotNb, setSelectedOppPSlotNb] = useState<number>();
   const [selectedGYAnimals, setSelectedGYAnimals] = useState<string[]>();
   const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
+  const [doubleAP, setDoubleAP] = useState<boolean>(false);
+  const [canPlaceKingWithoutSacrifice, setCanPlaceKingWithoutSacrifice] = useState<boolean>(false);
   const playerType = currentPlayer.playerType!;
   const animalIdInOppPSlot = board?.opponentPSlots[selectedOppPSlotNb ?? 3]?.cardId;
   const animalIdInCurrPSlot = board?.currentPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
@@ -84,11 +88,15 @@ export function GameView({
         !isAnimalCard(board?.opponentPSlots[1]?.cardId) &&
         !isAnimalCard(board?.opponentPSlots[2]?.cardId)));
 
-  const playAnimalCard = async (cardId: string) => {
+  const playAnimalCard = async (cardId: string, canPlaceKingWithoutSacrifice: boolean = false) => {
     const { role, clan } = getAnimalCard(cardId)!;
 
     if (role === KING) {
       if (isAnimalCard(animalIdInCurrPSlot)) {
+        if (canPlaceKingWithoutSacrifice) {
+          await placeKingWithoutSacrifice(roomId, playerType, cardId, selectedCurrPSlotNb!);
+          return;
+        }
         await placeKingOnBoard(
           roomId,
           playerType,
@@ -197,6 +205,20 @@ export function GameView({
       case '18-p':
         await returnOneAnimalFromGYToDeck(roomId, playerType, selectedGYAnimals![0]);
         break;
+      case '19-p':
+        await returnAllBoardAnimalsToDecks(
+          roomId,
+          playerType,
+          board.currentPSlots,
+          board.opponentPSlots,
+        );
+        break;
+      case '20-p':
+        setCanPlaceKingWithoutSacrifice(true);
+        break;
+      case '21-p':
+        setDoubleAP(true);
+        break;
     }
 
     await addPowerToGraveYard(roomId, cardId!);
@@ -214,7 +236,7 @@ export function GameView({
     if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
 
     if (isAnimalCard(cardId) && selectedCurrPSlotNb != null) {
-      await playAnimalCard(cardId!);
+      await playAnimalCard(cardId!, canPlaceKingWithoutSacrifice);
     }
 
     if (isPowerCard(cardId)) {
@@ -229,6 +251,7 @@ export function GameView({
   };
 
   const finishRound = async () => {
+    setDoubleAP(false);
     await enableAttackingAndPlayingPowerCards(roomId, playerType);
     await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
     await enableAttackForOpponentAnimals(
@@ -259,13 +282,17 @@ export function GameView({
       getOpponentIdFromCurrentId(playerType),
       animalIdInCurrPSlot,
       animalIdInOppPSlot,
-      selectedCurrPSlotNb,
       selectedOppPSlotNb,
     );
   };
 
   const attackOppHp = async () => {
-    await attackOwner(roomId, getOpponentIdFromCurrentId(playerType), animalIdInCurrPSlot);
+    await attackOwner(
+      roomId,
+      getOpponentIdFromCurrentId(playerType),
+      animalIdInCurrPSlot,
+      doubleAP,
+    );
   };
 
   return (

@@ -3,7 +3,7 @@ import { drawCardFromMainDeck } from './actions';
 import { ClanName } from './data';
 import { getBoardPath, getItemsOnce } from './db';
 import { getOpponentIdFromCurrentId } from './helpers';
-import { PlayerType } from './interface';
+import { PlayerType, SlotType } from './interface';
 import {
   addAnimalToBoard,
   addAnimalToGraveYard,
@@ -145,4 +145,24 @@ export const returnOneAnimalFromGYToDeck = async (
   if (!animalId) return;
   await deleteAnimalCardFromGraveYardById(roomId, animalId);
   await addCardsToPlayerDeck(roomId, playerType, [animalId]);
+};
+
+export const returnAllBoardAnimalsToDecks = async (
+  roomId: string,
+  playerType: PlayerType,
+  currentPSlots: SlotType[],
+  opponentPSlots: SlotType[],
+) => {
+  for (let i = 0; i < 3; i++) {
+    await removePlayerAnimalFromBoard(roomId, playerType, i);
+    if (!_.isEmpty(currentPSlots[i].cardId)) {
+      await addCardsToPlayerDeck(roomId, playerType, [currentPSlots[i].cardId]);
+    }
+  }
+  for (let i = 0; i < 3; i++) {
+    await removePlayerAnimalFromBoard(roomId, playerType, i);
+    if (!_.isEmpty(currentPSlots[i].cardId)) {
+      await addCardsToPlayerDeck(roomId, playerType, [opponentPSlots[i].cardId]);
+    }
+  }
 };

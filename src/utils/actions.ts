@@ -3,10 +3,9 @@ import {
   addLastAnimalToDeck,
   drawOneCard,
   minus1Hp,
-  removePlayerAnimalFromBoardAndAddToGraveYard,
-  returnTankToDeck,
+  returnAnimalToDeck,
 } from './animalsAbilities';
-import { ANIMALS_POINTS, ATTACKER, ClanName, JOKER, TANK, getAnimalCard } from './data';
+import { ANIMALS_POINTS, ClanName, JOKER, KING, getAnimalCard } from './data';
 import { getBoardPath, getItemsOnce, setItem } from './db';
 import { getOpponentIdFromCurrentId, isAnimalCard, waitFor } from './helpers';
 import { PlayerType, SlotType } from './interface';
@@ -63,7 +62,7 @@ export const placeKingOnBoard = async (
     roomId,
     'player ' + playerType + ' sacrificed a ' + sacrificedAnimal?.name + ' to play ' + king?.name,
   );
-  if (!king || !sacrificedAnimal) return;
+  if (!king || !sacrificedAnimal || king.clan !== sacrificedAnimal.clan) return;
   const isRemoved = await removePlayerAnimalFromBoard(roomId, playerType, slotNb);
   if (isRemoved) {
     await addAnimalToGraveYard(roomId, sacrificedAnimalId);
@@ -78,7 +77,6 @@ export const attackAnimal = async (
   playerDType: PlayerType,
   animalAId: string,
   animalDId: string,
-  slotANumber: number,
   slotDNumber: number,
 ) => {
   const animalA = getAnimalCard(animalAId);
@@ -93,18 +91,20 @@ export const attackAnimal = async (
   const envType = await getEnvType(roomId);
   if (envType != animalD.clan) return;
 
-  if (animalD.role == ATTACKER) {
-    await removePlayerAnimalFromBoardAndAddToGraveYard(roomId, playerAType, slotANumber, animalAId);
-  } else if (animalD.role == TANK) {
-    await returnTankToDeck(roomId, playerDType, animalDId);
-  }
+  await returnAnimalToDeck(roomId, playerDType, animalDId);
 };
 
-export const attackOwner = async (roomId: string, playerDType: PlayerType, animalId: string) => {
+export const attackOwner = async (
+  roomId: string,
+  playerDType: PlayerType,
+  animalId: string,
+  double: boolean = false,
+) => {
   if (!isAnimalCard(animalId)) return;
   const { name, role } = getAnimalCard(animalId)!;
   await addInfoToLog(roomId, name + ' has attacked ' + playerDType + ' directly');
-  await removeHpFromPlayer(roomId, playerDType, ANIMALS_POINTS[role].ap);
+  const ap = double && role === KING ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
+  await removeHpFromPlayer(roomId, playerDType, ap);
 };
 
 export const activateJokerAbility = async (
@@ -176,4 +176,14 @@ export const activateJokersAbilities = async (
 
 export const getEnvType = async (roomId: string): Promise<ClanName> => {
   return await getItemsOnce(getBoardPath(roomId) + 'envType');
+};
+
+export const placeKingWithoutSacrifice = async (
+  roomId: string,
+  playerType: PlayerType,
+  kingId: string,
+  slotNb: number,
+) => {
+  await removeCardFromPlayerDeck(roomId, playerType, kingId);
+  await addAnimalToBoard(roomId, playerType, slotNb, kingId, true);
 };

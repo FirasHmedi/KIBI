@@ -129,10 +129,14 @@ export const Slots = ({
   slots,
   selectedSlotNb,
   selectSlot,
+  opponent,
+  current,
 }: {
   slots: SlotType[];
   selectedSlotNb?: number;
   selectSlot: (slotNb?: number) => void;
+  opponent?: boolean;
+  current?: boolean;
 }) => {
   const compoundSlots = [slots[0], slots[1], slots[2]];
   return (
@@ -144,7 +148,10 @@ export const Slots = ({
       }}>
       {compoundSlots.map((slot, index) => (
         <div
-          style={{ border: 'solid', borderRadius: 5, color: index === 1 ? 'grey' : 'transparent' }}>
+          style={{
+            marginTop: index === 1 && opponent ? 50 : 0,
+            marginBottom: index === 1 && current ? 50 : 0,
+          }}>
           <Slot
             nb={index}
             selectSlot={selectSlot}

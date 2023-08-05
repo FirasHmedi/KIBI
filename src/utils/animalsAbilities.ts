@@ -12,6 +12,11 @@ import {
   removePlayerAnimalFromBoard,
 } from './unitActions';
 
+export const returnAnimalToDeck = async (roomId: string, playerType: string, animalId: string) => {
+  await addCardsToPlayerDeck(roomId, playerType, [animalId]);
+  await deleteAnimalCardFromGraveYardById(roomId, animalId);
+};
+
 // ----------------------attacker--------------------
 export const removePlayerAnimalFromBoardAndAddToGraveYard = async (
   roomId: string,
@@ -23,10 +28,7 @@ export const removePlayerAnimalFromBoardAndAddToGraveYard = async (
   await addAnimalToGraveYard(roomId, animalId);
 };
 // ----------------------tank-----------------------
-export const returnTankToDeck = async (roomId: string, playerType: string, animalId: string) => {
-  await addCardsToPlayerDeck(roomId, playerType, [animalId]);
-  await deleteAnimalCardFromGraveYardById(roomId, animalId);
-};
+export const returnTankToDeck = returnAnimalToDeck;
 // ----------------------Snake -----------------------
 export const add1Hp = async (roomId: string, playerType: string) => {
   await addHpToPlayer(roomId, playerType, 1);
