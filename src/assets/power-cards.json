@@ -2,7 +2,7 @@
   "1-p": {
     "ability": "Cancel attacks for next turn",
     "description": "Cancel attacks for next turn (all animal attacks)",
-    "name": "Cancel attacks for next turns"
+    "name": "Cancel all attacks for 1 turn"
   },
   "10-p": {
     "ability": "+2 hp to owner",
@@ -22,7 +22,7 @@
   "13-p": {
     "ability": "- 1hp to return 2 animals to deck",
     "description": "Sacrifice 1hp to return 2 animals to deck from animal graveyard",
-    "name": "-1hp to return 2 animals to deck"
+    "name": "Return 2 dead animals to deck for 2HP"
   },
   "14-p": {
     "ability": "Choose an env",
@@ -42,12 +42,12 @@
   "17-p": {
     "ability": "Block opponent from using power cards",
     "description": "Block opponent from using power cards",
-    "name": "Cancel using power cards for next turn"
+    "name": "Cancel using power cards for 1 turn"
   },
   "18-p": {
     "ability": "Return 1 animal to deck",
     "description": "Return 1 animal to deck from animal graveyard",
-    "name": "Return 1 animal to deck"
+    "name": "Return 1 dead animal to deck"
   },
   "19-p": {
     "ability": "Return all board animals to players decks",
@@ -57,7 +57,7 @@
   "20-p": {
     "ability": "Place an active king on board",
     "description": "Place an active king on board",
-    "name": "Place an active king on board"
+    "name": "Place a king on board"
   },
   "21-p": {
     "ability": "Double king ability in its env",
@@ -72,17 +72,17 @@
   "3-p": {
     "ability": "- 2 hp to revive any animal",
     "description": "Sacrifice 2 hp to revive any animal, can attack",
-    "name": "-2hp to revive any animal"
+    "name": "Revive any animal for 2HP"
   },
   "4-p": {
     "ability": "- 3 hp to steal an opponent animal",
     "description": "Sacrifice 3 hp to switch side of an opponent animal",
-    "name": "-3hp to steal animal opponent"
+    "name": "Steal animal opponent for 3hp"
   },
   "5-p": {
     "ability": "- 1hp to Revive last animal card",
     "description": "Sacrifice 1hp to Revive last animal card (can attack)",
-    "name": "-1hp to revive last animal"
+    "name": "Revive last animal for 1HP"
   },
   "6-p": {
     "ability": "Switch health with opponent",

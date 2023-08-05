@@ -65,8 +65,8 @@ export const slotStyle: React.CSSProperties = {
   borderRadius: 5,
   color: 'white',
   fontSize: '0.85em',
-  height: '14vh',
-  width: '5.5vw',
+  height: '15vh',
+  width: '5.8vw',
   flexShrink: 0,
   border: 'solid 4px #95a5a6',
 };

@@ -1,4 +1,4 @@
-import { centerStyle, selectedColor, slotStyle, violet } from '../styles/Style';
+import { centerStyle, flexRowStyle, selectedColor, slotStyle, violet } from '../styles/Style';
 import { ANIMALS_POINTS, CLANS, ClanName, getAnimalCard, getPowerCard } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
@@ -68,11 +68,18 @@ export const AnimalSlot = ({
         borderColor: selected ? selectedColor : CLANS[clan!]?.color,
       }}
       onClick={() => select()}>
-      <h5 style={{ fontSize: '0.8em' }}>{name?.toUpperCase()}</h5>
-      <h6>{ability}</h6>
-      <h6 style={{ fontSize: '0.6em' }}>
-        {role?.toUpperCase()} ({ap},{hp})
-      </h6>
+      <h6 style={{ fontSize: '0.85em' }}>{name?.toUpperCase()}</h6>
+      {ability && <h6 style={{ fontSize: '0.6em' }}>{ability}</h6>}
+      <div
+        style={{
+          ...flexRowStyle,
+          width: '100%',
+          justifyContent: 'space-between',
+        }}>
+        <h6>{ap}AP</h6>
+        <h6>{role?.toUpperCase()}</h6>
+        <h6>{hp}HP</h6>
+      </div>
     </div>
   );
 };
@@ -143,7 +150,7 @@ export const Slots = ({
     <div
       style={{
         ...centerStyle,
-        width: '22vw',
+        width: '25vw',
         justifyContent: 'space-evenly',
       }}>
       {compoundSlots.map((slot, index) => (

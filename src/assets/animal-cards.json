@@ -8,9 +8,9 @@
   },
   "10-a": {
     "clan": "air",
-    "description": "attacker of air clan",
+    "description": "atakr of air clan",
     "name": "Bee",
-    "role": "attacker"
+    "role": "atakr"
   },
   "11-a": {
     "clan": "air",
@@ -34,9 +34,9 @@
   },
   "14-a": {
     "clan": "fire",
-    "description": "attacker of fire clan",
+    "description": "atakr of fire clan",
     "name": "Phoenix",
-    "role": "attacker"
+    "role": "atakr"
   },
   "15-a": {
     "clan": "fire",
@@ -53,9 +53,9 @@
   },
   "2-a": {
     "clan": "earth",
-    "description": "attacker of earth clan",
+    "description": "atakr of earth clan",
     "name": "Badger",
-    "role": "attacker"
+    "role": "atakr"
   },
   "3-a": {
     "clan": "earth",
@@ -79,9 +79,9 @@
   },
   "6-a": {
     "clan": "water",
-    "description": "attacker of water clan",
+    "description": "atakr of water clan",
     "name": "Shark",
-    "role": "attacker"
+    "role": "atakr"
   },
   "7-a": {
     "clan": "water",
