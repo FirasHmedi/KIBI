@@ -109,7 +109,9 @@ export const getPowerCard = (cardId?: string): Card | undefined => {
 export const getOriginalCardId = (cardId: string = '') => new String(cardId).substring(4);
 
 export const getRandomMainDeck = () =>
-  _.shuffle([
-    ...POWERS_CARDS_IDS.map(id => 'one-' + id),
-    ...POWERS_CARDS_IDS.map(id => 'two-' + id),
-  ]);
+  _.shuffle(
+    _.shuffle([
+      ...POWERS_CARDS_IDS.map(id => 'one-' + id),
+      ...POWERS_CARDS_IDS.map(id => 'two-' + id),
+    ]),
+  );

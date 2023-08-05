@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { drawCardFromMainDeck } from '../utils/actions';
-import { getItemsOnce, setItem } from '../utils/db';
+import { drawCardFromMainDeck, revertMainDeck } from '../utils/actions';
 import { isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
@@ -66,15 +65,9 @@ export function GameContainer({
       round?.player === playerType &&
       !_.isEmpty(gameBoard?.powerGY)
     ) {
-      revertMainDeck();
+      revertMainDeck(roomId);
     }
   }, [game]);
-
-  const revertMainDeck = async () => {
-    const powerGY = (await getItemsOnce('rooms/' + roomId + '/board/powerGY')) as string[];
-    await setItem('rooms/' + roomId + '/board/', { powerGY: [] });
-    await setItem('rooms/' + roomId + '/board/', { mainDeck: _.shuffle(powerGY) });
-  };
 
   const checkAndDrawCardFromMainDeck = ({ player, nb }: Round) => {
     if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {

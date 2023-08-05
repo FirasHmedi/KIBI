@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   add1Hp,
   addLastAnimalToDeck,
@@ -22,6 +23,12 @@ import {
   removePlayerAnimalFromBoard,
   setActivePowerCard,
 } from './unitActions';
+
+export const revertMainDeck = async (roomId: string) => {
+  const powerGY = (await getItemsOnce('rooms/' + roomId + '/board/powerGY')) as string[];
+  await setItem('rooms/' + roomId + '/board/', { powerGY: [] });
+  await setItem('rooms/' + roomId + '/board/', { mainDeck: _.shuffle(powerGY) });
+};
 
 export const enableAttackingAndPlayingPowerCards = async (roomId: string, playerType: string) => {
   await setItem('rooms/' + roomId + '/' + playerType, { canAttack: true, canPlayPowers: true });
