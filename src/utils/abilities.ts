@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { drawCardFromMainDeck } from './actions';
-import { ClanName } from './data';
+import { ClanName, EMPTY } from './data';
 import { getBoardPath, getItemsOnce } from './db';
 import { getOpponentIdFromCurrentId } from './helpers';
 import { PlayerType, SlotType } from './interface';
@@ -155,14 +155,16 @@ export const returnAllBoardAnimalsToDecks = async (
 ) => {
   for (let i = 0; i < 3; i++) {
     await removePlayerAnimalFromBoard(roomId, playerType, i);
-    if (!_.isEmpty(currentPSlots[i].cardId)) {
+    if (!_.isEmpty(currentPSlots[i].cardId) && currentPSlots[i].cardId !== EMPTY) {
       await addCardsToPlayerDeck(roomId, playerType, [currentPSlots[i].cardId]);
     }
   }
   for (let i = 0; i < 3; i++) {
     await removePlayerAnimalFromBoard(roomId, playerType, i);
-    if (!_.isEmpty(currentPSlots[i].cardId)) {
-      await addCardsToPlayerDeck(roomId, playerType, [opponentPSlots[i].cardId]);
+    if (!_.isEmpty(opponentPSlots[i].cardId) && opponentPSlots[i].cardId !== EMPTY) {
+      await addCardsToPlayerDeck(roomId, getOpponentIdFromCurrentId(playerType), [
+        opponentPSlots[i].cardId,
+      ]);
     }
   }
 };
