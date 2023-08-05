@@ -13,6 +13,7 @@ export const CurrentPView = ({
   attackOppHp,
   isAttackAnimalEnabled,
   isAttackOwnerEnabled,
+  isDoubleAP = false,
 }: {
   player: Player;
   round: Round;
@@ -22,6 +23,7 @@ export const CurrentPView = ({
   attackOppHp: () => void;
   isAttackAnimalEnabled: boolean;
   isAttackOwnerEnabled: boolean;
+  isDoubleAP: boolean;
 }) => {
   const { hp, playerType, canAttack, canPlayPowers } = player;
   const cardsIds = player.cardsIds ?? [];
@@ -97,6 +99,7 @@ export const CurrentPView = ({
         hp={hp}
         canAttack={canAttack}
         canPlayPowers={canPlayPowers}
+        isDoubleAP={isDoubleAP}
       />
       <CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
     </div>
@@ -127,11 +130,13 @@ const PlayerDataView = ({
   hp,
   canAttack = false,
   canPlayPowers = false,
+  isDoubleAP = false,
 }: {
   name?: string;
   hp: number;
   canAttack: boolean;
   canPlayPowers: boolean;
+  isDoubleAP?: boolean;
 }) => (
   <div
     style={{
@@ -148,5 +153,6 @@ const PlayerDataView = ({
     <h4 style={{ fontSize: '0.9em' }}>{hp} HP</h4>
     {canAttack === false && <h5>Can't attack</h5>}
     {canPlayPowers === false && <h5>Can't play power cards</h5>}
+    {isDoubleAP && <h5>King ability is doubled</h5>}
   </div>
 );

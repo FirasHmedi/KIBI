@@ -160,7 +160,7 @@ export const returnAllBoardAnimalsToDecks = async (
     }
   }
   for (let i = 0; i < 3; i++) {
-    await removePlayerAnimalFromBoard(roomId, playerType, i);
+    await removePlayerAnimalFromBoard(roomId, getOpponentIdFromCurrentId(playerType), i);
     if (!_.isEmpty(opponentPSlots[i].cardId) && opponentPSlots[i].cardId !== EMPTY) {
       await addCardsToPlayerDeck(roomId, getOpponentIdFromCurrentId(playerType), [
         opponentPSlots[i].cardId,
