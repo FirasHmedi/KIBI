@@ -1,5 +1,12 @@
 import { centerStyle, flexRowStyle, selectedColor, slotStyle, violet } from '../styles/Style';
-import { ANIMALS_POINTS, CLANS, ClanName, getAnimalCard, getPowerCard } from '../utils/data';
+import {
+  ANIMALS_POINTS,
+  CLANS,
+  ClanName,
+  getAnimalCard,
+  getPowerCard,
+  rolesIcons,
+} from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 
@@ -68,17 +75,19 @@ export const AnimalSlot = ({
         borderColor: selected ? selectedColor : CLANS[clan!]?.color,
       }}
       onClick={() => select()}>
-      <h6 style={{ fontSize: '0.85em' }}>{name?.toUpperCase()}</h6>
-      {ability && <h6 style={{ fontSize: '0.6em' }}>{ability}</h6>}
+      <h6 style={{ fontSize: '0.85em', paddingTop: 4 }}>{name?.toUpperCase()}</h6>
+      {ability && <h6 style={{ fontSize: '0.65em' }}>{ability}</h6>}
       <div
         style={{
           ...flexRowStyle,
           width: '100%',
-          justifyContent: 'space-between',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          paddingBottom: 4,
         }}>
-        <h6>{ap}AP</h6>
-        <h6>{role?.toUpperCase()}</h6>
-        <h6>{hp}HP</h6>
+        <h6>{ap} AP</h6>
+        <img src={rolesIcons[role]} style={{ width: 22, filter: 'brightness(0) invert(1)' }}></img>
+        <h6>{hp} HP</h6>
       </div>
     </div>
   );

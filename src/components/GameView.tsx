@@ -32,6 +32,7 @@ import {
   setPowerCardAsActive,
 } from '../utils/actions';
 import {
+  ANIMALS_POINTS,
   ClanName,
   EMPTY,
   JOKER,
@@ -71,11 +72,17 @@ export function GameView({
   const playerType = currentPlayer.playerType!;
   const animalIdInOppPSlot = board?.opponentPSlots[selectedOppPSlotNb ?? 3]?.cardId;
   const animalIdInCurrPSlot = board?.currentPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
+  const [nbCardsToPlay, setNbCardsToPlay] = useState(2);
+  const [hasAttacked, setHasAttacked] = useState(false);
 
   const isAttackAnimalEnabled =
     round.player === playerType &&
     !_.isNil(selectedCurrPSlotNb) &&
     !_.isNil(selectedOppPSlotNb) &&
+    !_.isEmpty(animalIdInCurrPSlot) &&
+    animalIdInCurrPSlot !== EMPTY &&
+    !_.isEmpty(animalIdInOppPSlot) &&
+    animalIdInOppPSlot !== EMPTY &&
     board?.currentPSlots[selectedCurrPSlotNb]?.canAttack;
 
   const isAttackOwnerEnabled =
@@ -88,32 +95,33 @@ export function GameView({
         !isAnimalCard(board?.opponentPSlots[1]?.cardId) &&
         !isAnimalCard(board?.opponentPSlots[2]?.cardId)));
 
-  const playAnimalCard = async (cardId: string) => {
+  const handlePlacingKing = async (cardId: string, clan: ClanName): Promise<void> => {
+    if (canPlaceKingWithoutSacrifice) {
+      await placeKingWithoutSacrifice(roomId, playerType, cardId, selectedCurrPSlotNb!);
+      setCanPlaceKingWithoutSacrifice(false);
+    } else {
+      await placeKingOnBoard(roomId, playerType, cardId, animalIdInCurrPSlot, selectedCurrPSlotNb!);
+    }
+  };
+
+  const playAnimalCard = async (cardId: string): Promise<void> => {
     const { role, clan } = getAnimalCard(cardId)!;
 
     if (role === KING) {
-      if (canPlaceKingWithoutSacrifice) {
-        await placeKingWithoutSacrifice(roomId, playerType, cardId, selectedCurrPSlotNb!);
-        setCanPlaceKingWithoutSacrifice(false);
+      const sacrificedAnimal = getAnimalCard(animalIdInCurrPSlot);
+      if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
         return;
       }
-      if (isAnimalCard(animalIdInCurrPSlot)) {
-        await placeKingOnBoard(
-          roomId,
-          playerType,
-          cardId,
-          animalIdInCurrPSlot,
-          selectedCurrPSlotNb!,
-        );
-      }
-      return;
+      await handlePlacingKing(cardId, clan);
+    } else {
+      await placeAnimalOnBoard(roomId, playerType, selectedCurrPSlotNb!, cardId);
     }
-
-    await placeAnimalOnBoard(roomId, playerType, selectedCurrPSlotNb!, cardId);
 
     if (role === JOKER && clan === board.envType) {
       await activateJokerAbility(roomId, cardId, playerType);
     }
+
+    setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
   };
 
   const playPowerCard = async (cardId: string) => {
@@ -150,6 +158,7 @@ export function GameView({
         break;
       case '2-p':
         await reviveLastPower(roomId, playerType);
+        setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
         break;
       case '3-p':
         await sacrifice2HpToReviveAnyAnimal(
@@ -231,6 +240,7 @@ export function GameView({
     setSelectedGYAnimals([]);
     setSelectedCurrPSlotNb(undefined);
     setSelectedCurrPSlotNb(undefined);
+    setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
   };
 
   const playCard = async (cardId?: string) => {
@@ -253,6 +263,8 @@ export function GameView({
 
   const finishRound = async () => {
     setDoubleAP(false);
+    setNbCardsToPlay(2);
+    setHasAttacked(false);
     setCanPlaceKingWithoutSacrifice(false);
     await enableAttackingAndPlayingPowerCards(roomId, playerType);
     await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
@@ -269,13 +281,11 @@ export function GameView({
   };
 
   const attackOppAnimal = async () => {
-    if (
-      _.isNil(selectedCurrPSlotNb) ||
-      _.isNil(selectedOppPSlotNb) ||
-      !animalIdInCurrPSlot ||
-      !animalIdInOppPSlot ||
-      !board?.currentPSlots[selectedCurrPSlotNb]?.canAttack
-    )
+    if (!isAttackAnimalEnabled) return;
+
+    const animalA = getAnimalCard(animalIdInCurrPSlot);
+    const animalD = getAnimalCard(animalIdInOppPSlot);
+    if (!animalA || !animalD || ANIMALS_POINTS[animalA.role].ap < ANIMALS_POINTS[animalD.role].hp)
       return;
 
     await attackAnimal(
@@ -286,6 +296,7 @@ export function GameView({
       animalIdInOppPSlot,
       selectedOppPSlotNb,
     );
+    setHasAttacked(true);
   };
 
   const attackOppHp = async () => {
@@ -295,6 +306,7 @@ export function GameView({
       animalIdInCurrPSlot,
       doubleAP,
     );
+    setHasAttacked(true);
   };
 
   return (
@@ -333,6 +345,7 @@ export function GameView({
         isAttackAnimalEnabled={isAttackAnimalEnabled}
         isAttackOwnerEnabled={isAttackOwnerEnabled}
         isDoubleAP={doubleAP}
+        nbCardsToPlay={nbCardsToPlay}
       />
     </div>
   );

@@ -50,7 +50,7 @@ export const headerStyle: React.CSSProperties = {
 };
 
 export const buttonStyle: React.CSSProperties = {
-  backgroundColor: primaryBlue,
+  backgroundColor: violet,
   color: 'white',
   padding: 3,
   borderRadius: 5,

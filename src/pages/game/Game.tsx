@@ -55,10 +55,10 @@ function GamePage() {
       {isGameInPreparation(game?.status) && (
         <div style={{ width: '100vw', color: violet }}>
           <AnimalsSelection playerType={playerType} roomId={roomId} />
-          <h4 style={{ padding: 10 }}>
+          <h3 style={{ padding: 10 }}>
             {playerName} : {playerType}
-          </h4>
-          <h4>Room ID: {roomId}</h4>
+          </h3>
+          <h3>Room ID: {roomId}</h3>
         </div>
       )}
     </div>

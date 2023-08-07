@@ -66,6 +66,6 @@ export const RoundView = ({ nb = 1 }: { nb: number }) => (
       fontWeight: 'bold',
       color: violet,
     }}>
-    Round <br /> {Math.floor(nb / 2)}
+    Round {Math.floor(nb / 2)}
   </div>
 );

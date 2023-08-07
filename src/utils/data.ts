@@ -26,12 +26,12 @@ export const NEUTRAL = 'neutral';
 export const ClansNames = ['water', 'earth', 'fire', 'air', 'neutral'];
 
 export const KING = 'king';
-export const ATTACKER = 'atakr';
+export const ATTACKER = 'attacker';
 export const TANK = 'tank';
 export const JOKER = 'joker';
 
 export type ClanName = 'air' | 'earth' | 'fire' | 'water' | 'neutral';
-export type RoleName = 'tank' | 'atakr' | 'king' | 'joker';
+export type RoleName = 'tank' | 'attacker' | 'king' | 'joker';
 
 export const CLANS = {
   water: {
@@ -63,7 +63,7 @@ export const ANIMALS_POINTS = {
     ap: 1,
     hp: 2,
   },
-  atakr: {
+  attacker: {
     ap: 2,
     hp: 1,
   },
@@ -71,6 +71,18 @@ export const ANIMALS_POINTS = {
     ap: 1,
     hp: 1,
   },
+};
+
+import attackerIcon from '../assets/icons/attacker.png';
+import jokerIcon from '../assets/icons/joker.png';
+import kingIcon from '../assets/icons/king.png';
+import tankIcon from '../assets/icons/tank.png';
+
+export const rolesIcons = {
+  tank: tankIcon,
+  joker: jokerIcon,
+  king: kingIcon,
+  attacker: attackerIcon,
 };
 
 const getArrayFromJson = (file: any) => {

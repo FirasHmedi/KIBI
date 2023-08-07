@@ -3,10 +3,11 @@ import {
   buttonStyle,
   centerStyle,
   flexColumnStyle,
-  primaryBlue,
+  flexRowStyle,
   selectedColor,
+  violet,
 } from '../styles/Style';
-import { ANIMALS_CARDS, CLANS, READY } from '../utils/data';
+import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, READY, rolesIcons } from '../utils/data';
 import { getRoomPath, setItem } from '../utils/db';
 import { AnimalCard, PlayerType } from '../utils/interface';
 
@@ -24,6 +25,7 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
   }, [idsSelected.size]);
 
   const toggleAnimalSelection = (id: string) => {
+    if (disabledBtn && idsSelected.size > 0) return;
     setIdsSelected(idsSelected => {
       const _idsSelected = new Set(idsSelected);
       _idsSelected.has(id) ? _idsSelected.delete(id) : _idsSelected.add(id);
@@ -44,53 +46,103 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
       style={{
         ...centerStyle,
         position: 'absolute',
-        bottom: 50,
+        top: 100,
         flexDirection: 'column',
         width: '100vw',
+        gap: 12,
       }}>
       <div
         style={{
           ...centerStyle,
           justifyContent: 'space-between',
-          width: '85vw',
-          overflowX: 'auto',
+          gap: 4,
         }}>
-        {ANIMALS_CARDS.map(({ id, name, clan, role, ability }: AnimalCard) => (
-          <div
-            key={id}
-            style={{
-              ...flexColumnStyle,
-              border: 'solid 4px #95a5a6',
-              borderRadius: 5,
-              borderColor: idsSelected.has(id) ? selectedColor : '#95a5a6',
-              backgroundColor: CLANS[clan].color,
-              color: 'white',
-              fontSize: '1.2em',
-              height: '20vh',
-              width: '8vw',
-              flexShrink: 0,
-              justifyContent: 'space-around',
-              marginRight: 10,
-            }}
-            onClick={() => toggleAnimalSelection(id)}>
-            <h4>{name?.toUpperCase()}</h4>
-            <h6>{ability}</h6>
-            <h6>{role?.toUpperCase()}</h6>
-          </div>
+        {ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 5).map((animal: AnimalCard) => (
+          <AnimalSelectionSlot
+            animal={animal}
+            idsSelected={idsSelected}
+            toggleAnimalSelection={toggleAnimalSelection}
+          />
+        ))}
+      </div>
+      <div
+        style={{
+          ...centerStyle,
+          justifyContent: 'space-between',
+          gap: 4,
+        }}>
+        {ANIMALS_CARDS.filter((_, index) => index >= 5 && index < 10).map((animal: AnimalCard) => (
+          <AnimalSelectionSlot
+            animal={animal}
+            idsSelected={idsSelected}
+            toggleAnimalSelection={toggleAnimalSelection}
+          />
+        ))}
+      </div>
+      <div
+        style={{
+          ...centerStyle,
+          justifyContent: 'space-between',
+          gap: 4,
+        }}>
+        {ANIMALS_CARDS.filter((_, index) => index >= 10 && index < 15).map((animal: AnimalCard) => (
+          <AnimalSelectionSlot
+            animal={animal}
+            idsSelected={idsSelected}
+            toggleAnimalSelection={toggleAnimalSelection}
+          />
         ))}
       </div>
       <h4>{idsSelected.size} cards</h4>
       <button
         style={{
           ...buttonStyle,
-          backgroundColor: disabledBtn ? '#95a5a6' : primaryBlue,
-          padding: 15,
+          backgroundColor: disabledBtn ? '#95a5a6' : violet,
+          padding: 12,
           fontSize: 26,
         }}
         disabled={disabledBtn}
         onClick={() => submitAnimalCards()}>
         GO
       </button>
+    </div>
+  );
+};
+
+const AnimalSelectionSlot = ({ animal, idsSelected, toggleAnimalSelection }: any) => {
+  const { id, name, clan, role, ability }: AnimalCard = animal;
+  return (
+    <div
+      key={id}
+      style={{
+        ...flexColumnStyle,
+        border: 'solid 4px #95a5a6',
+        borderRadius: 5,
+        borderColor: idsSelected.has(id) ? selectedColor : '#95a5a6',
+        backgroundColor: CLANS[clan].color,
+        color: 'white',
+        fontSize: '1.2em',
+        height: '20vh',
+        width: '8vw',
+        flexShrink: 0,
+        justifyContent: 'space-between',
+        marginRight: 10,
+      }}
+      onClick={() => toggleAnimalSelection(id)}>
+      <h6>{name?.toUpperCase()}</h6>
+      {ability && <h6 style={{ fontSize: '0.65em' }}>{ability}</h6>}
+      <div
+        style={{
+          ...flexRowStyle,
+          width: '100%',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          paddingBottom: 4,
+        }}>
+        <h6>{ANIMALS_POINTS[role].ap} AP</h6>
+        <img src={rolesIcons[role]} style={{ width: 22, filter: 'brightness(0) invert(1)' }}></img>
+        <h6>{ANIMALS_POINTS[role].hp} HP</h6>
+      </div>
     </div>
   );
 };
