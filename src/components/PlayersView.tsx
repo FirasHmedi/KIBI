@@ -52,6 +52,7 @@ export const CurrentPView = ({
           justifyContent: 'space-evenly',
           height: '18vh',
           width: '10vw',
+          gap: 2,
         }}>
         {!!nbCardsToPlay && isMyRound && (
           <h5 style={{ color: violet }}>Play {nbCardsToPlay} cards</h5>
