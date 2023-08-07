@@ -22,7 +22,7 @@
   "13-p": {
     "ability": "- 1hp to return 2 animals to deck",
     "description": "Sacrifice 1hp to return 2 animals to deck from animal graveyard",
-    "name": "Return 2 dead animals to deck for 2HP"
+    "name": "Return 2 dead animals to deck for 1HP"
   },
   "14-p": {
     "ability": "Choose an env",
