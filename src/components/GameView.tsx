@@ -284,6 +284,7 @@ export function GameView({
 
   const attackOppAnimal = async () => {
     if (!isAttackAnimalEnabled) return;
+    if (isAnimalCard(board?.opponentPSlots[1]?.cardId) && selectedOppPSlotNb !== 1) return;
 
     const animalA = getAnimalCard(animalIdInCurrPSlot);
     const animalD = getAnimalCard(animalIdInOppPSlot);

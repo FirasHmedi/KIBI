@@ -66,26 +66,27 @@ export const CurrentPView = ({
           onClick={() => finishRound()}>
           Finish
         </button>
-        {isPlayCardEnabled && (
-          <button
-            style={{
-              ...buttonStyle,
-              fontSize: '0.8em',
-            }}
-            onClick={() => playCard(selectedId)}>
-            Play card
-          </button>
-        )}
-        {isAttackAnimalEnabled && canAttack && (
-          <button
-            style={{
-              ...buttonStyle,
-              fontSize: '0.8em',
-            }}
-            onClick={() => attackOpponentAnimal()}>
-            Attack animal
-          </button>
-        )}
+        <button
+          style={{
+            ...buttonStyle,
+            fontSize: '0.8em',
+            backgroundColor: !isPlayCardEnabled ? 'grey' : violet,
+          }}
+          disabled={!isPlayCardEnabled}
+          onClick={() => playCard(selectedId)}>
+          Play card
+        </button>
+
+        <button
+          style={{
+            ...buttonStyle,
+            fontSize: '0.8em',
+            backgroundColor: !isAttackAnimalEnabled || !canAttack ? 'grey' : violet,
+          }}
+          disabled={!isAttackAnimalEnabled || !canAttack}
+          onClick={() => attackOpponentAnimal()}>
+          Attack animal
+        </button>
         {isAttackOwnerEnabled && canAttack && (
           <button
             style={{
