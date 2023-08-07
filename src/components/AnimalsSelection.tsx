@@ -57,7 +57,7 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
           justifyContent: 'space-between',
           gap: 4,
         }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 5).map((animal: AnimalCard) => (
+        {ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 4).map((animal: AnimalCard) => (
           <AnimalSelectionSlot
             animal={animal}
             idsSelected={idsSelected}
@@ -71,7 +71,7 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
           justifyContent: 'space-between',
           gap: 4,
         }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 5 && index < 10).map((animal: AnimalCard) => (
+        {ANIMALS_CARDS.filter((_, index) => index >= 4 && index < 8).map((animal: AnimalCard) => (
           <AnimalSelectionSlot
             animal={animal}
             idsSelected={idsSelected}
@@ -85,7 +85,7 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
           justifyContent: 'space-between',
           gap: 4,
         }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 10 && index < 15).map((animal: AnimalCard) => (
+        {ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16).map((animal: AnimalCard) => (
           <AnimalSelectionSlot
             animal={animal}
             idsSelected={idsSelected}

@@ -1,9 +1,9 @@
 {
-  "1-a": {
+  "9-a": {
     "ability": "Attacks opponent",
-    "clan": "earth",
-    "description": "king of earth clan",
-    "name": "Lion",
+    "clan": "air",
+    "description": "king of air clan",
+    "name": "Eagle",
     "role": "king"
   },
   "10-a": {
@@ -51,6 +51,13 @@
     "name": "Fox",
     "role": "joker"
   },
+  "1-a": {
+    "ability": "Attacks opponent",
+    "clan": "earth",
+    "description": "king of earth clan",
+    "name": "Lion",
+    "role": "king"
+  },
   "2-a": {
     "clan": "earth",
     "description": "attacker of earth clan",
@@ -95,12 +102,5 @@
     "description": "joker of water clan",
     "name": "Jellyfish",
     "role": "joker"
-  },
-  "9-a": {
-    "ability": "Attacks opponent",
-    "clan": "air",
-    "description": "king of air clan",
-    "name": "Eagle",
-    "role": "king"
   }
 }
