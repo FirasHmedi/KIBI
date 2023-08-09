@@ -46,6 +46,7 @@ export interface Player {
   playerName?: string;
   canPlayPowers: boolean;
   canAttack: boolean;
+  isDoubleAP?: boolean;
 }
 
 export interface Game {
@@ -71,6 +72,7 @@ export interface Board {
 export interface SlotType {
   cardId: string;
   canAttack: boolean;
+  hasAttacked?: boolean;
 }
 
 export type AllCards = AnimalCard | Card;

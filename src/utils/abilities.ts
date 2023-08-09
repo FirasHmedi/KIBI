@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { drawCardFromMainDeck } from './actions';
 import { ClanName, EMPTY } from './data';
-import { getBoardPath, getItemsOnce } from './db';
+import { getBoardPath, getItemsOnce, getRoomPath, setItem } from './db';
 import { getOpponentIdFromCurrentId } from './helpers';
 import { PlayerType, SlotType } from './interface';
 import {
@@ -167,4 +167,12 @@ export const returnAllBoardAnimalsToDecks = async (
       ]);
     }
   }
+};
+
+export const handleKingAbility = async (
+  roomId: string,
+  playerType: PlayerType,
+  isDoubleAP: boolean,
+) => {
+  await setItem(getRoomPath(roomId) + playerType, { isDoubleAP });
 };

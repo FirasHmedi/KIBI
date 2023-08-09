@@ -1,5 +1,4 @@
 // @ts-ignore
-import _ from 'lodash';
 import animalsCardsJson from '../assets/animal-cards.json';
 import powerCardsJson from '../assets/power-cards.json';
 import { airColor, earthColor, fireColor, neutralColor, waterColor } from '../styles/Style';
@@ -120,10 +119,9 @@ export const getPowerCard = (cardId?: string): Card | undefined => {
 
 export const getOriginalCardId = (cardId: string = '') => new String(cardId).substring(4);
 
-export const getRandomMainDeck = () =>
-  _.shuffle(
-    _.shuffle([
-      ...POWERS_CARDS_IDS.map(id => 'one-' + id),
-      ...POWERS_CARDS_IDS.map(id => 'two-' + id),
-    ]),
-  );
+export const getSortedMainDeck = () => [
+  ...POWERS_CARDS_IDS.map(id => 'one-' + id),
+  ...POWERS_CARDS_IDS.filter(id => !POWERFUL_POWER_CARDS_IDS.includes(id)).map(id => 'two-' + id),
+];
+
+const POWERFUL_POWER_CARDS_IDS = ['6-p', '7-p'];

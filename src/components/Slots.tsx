@@ -1,3 +1,5 @@
+import attIcon from '../assets/icons/att.png';
+import noAttIcon from '../assets/icons/no-att.png';
 import { centerStyle, flexRowStyle, selectedColor, slotStyle, violet } from '../styles/Style';
 import {
   ANIMALS_POINTS,
@@ -9,6 +11,7 @@ import {
 } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
+import './styles.css';
 
 export const SlotBack = () => (
   <div
@@ -141,6 +144,18 @@ export const EnvSlot = ({ envType }: { envType?: ClanName }) => (
   </div>
 );
 
+const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
+  return isAnimalCard(slot?.cardId) ? (
+    slot?.canAttack ? (
+      <img src={attIcon} style={{ width: 30 }}></img>
+    ) : (
+      <img src={noAttIcon} style={{ width: 30 }}></img>
+    )
+  ) : (
+    <div style={{ height: 30 }} />
+  );
+};
+
 export const Slots = ({
   slots,
   selectedSlotNb,
@@ -159,7 +174,7 @@ export const Slots = ({
     <div
       style={{
         ...centerStyle,
-        width: '25vw',
+        width: '21vw',
         justifyContent: 'space-evenly',
       }}>
       {compoundSlots.map((slot, index) => (
@@ -167,7 +182,10 @@ export const Slots = ({
           style={{
             marginTop: index === 1 && opponent ? 50 : 0,
             marginBottom: index === 1 && current ? 50 : 0,
-          }}>
+          }}
+          className={slot.hasAttacked ? 'vertical-shake' : undefined}>
+          {current && <CanAttackIconsView slot={slot} />}
+
           <Slot
             nb={index}
             selectSlot={selectSlot}
@@ -175,6 +193,8 @@ export const Slots = ({
             cardId={slot?.cardId}
             selected={selectedSlotNb === index}
           />
+
+          {opponent && <CanAttackIconsView slot={slot} />}
         </div>
       ))}
     </div>

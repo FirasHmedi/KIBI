@@ -68,7 +68,7 @@ export const slotStyle: React.CSSProperties = {
   height: '15vh',
   width: '5.8vw',
   flexShrink: 0,
-  border: 'solid 4px #95a5a6',
+  border: 'solid 3px #95a5a6',
 };
 
 export const signupContainerStyle: React.CSSProperties = {

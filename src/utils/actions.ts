@@ -199,3 +199,19 @@ export const placeKingWithoutSacrifice = async (
   await removeCardFromPlayerDeck(roomId, playerType, kingId);
   await addAnimalToBoard(roomId, playerType, slotNb, kingId, true);
 };
+
+export const changeHasAttacked = async (
+  roomId: string,
+  playerType: PlayerType,
+  slotNb: number,
+  value: boolean,
+) => {
+  const slots = (await getItemsOnce(getBoardPath(roomId) + playerType)) ?? [];
+  const updatedSlots = [
+    slots[0] ?? { cardId: 'empty', canAttack: false },
+    slots[1] ?? { cardId: 'empty', canAttack: false },
+    slots[2] ?? { cardId: 'empty', canAttack: false },
+  ];
+  updatedSlots[slotNb] = { ...updatedSlots[slotNb], hasAttacked: value };
+  await setItem(getBoardPath(roomId), { [`${playerType}`]: updatedSlots });
+};
