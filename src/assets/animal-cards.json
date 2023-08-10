@@ -45,7 +45,7 @@
     "role": "tank"
   },
   "16-a": {
-    "ability": "Return last animal to deck",
+    "ability": "Return random power card",
     "clan": "fire",
     "description": "joker of fire clan",
     "name": "Fox",
