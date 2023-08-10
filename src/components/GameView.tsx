@@ -225,6 +225,7 @@ export function GameView({
         break;
       case '20-p':
         setCanPlaceKingWithoutSacrifice(true);
+        setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
         break;
       case '21-p':
         await handleKingAbility(roomId, playerType, true);
