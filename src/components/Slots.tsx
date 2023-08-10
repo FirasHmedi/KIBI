@@ -179,6 +179,7 @@ export const Slots = ({
       }}>
       {compoundSlots.map((slot, index) => (
         <div
+          key={index}
           style={{
             marginTop: index === 1 && opponent ? 50 : 0,
             marginBottom: index === 1 && current ? 50 : 0,
@@ -189,7 +190,6 @@ export const Slots = ({
           <Slot
             nb={index}
             selectSlot={selectSlot}
-            key={index}
             cardId={slot?.cardId}
             selected={selectedSlotNb === index}
           />

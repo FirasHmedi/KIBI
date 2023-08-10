@@ -57,13 +57,16 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
           justifyContent: 'space-between',
           gap: 4,
         }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 4).map((animal: AnimalCard) => (
-          <AnimalSelectionSlot
-            animal={animal}
-            idsSelected={idsSelected}
-            toggleAnimalSelection={toggleAnimalSelection}
-          />
-        ))}
+        {ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 4).map(
+          (animal: AnimalCard, index: number) => (
+            <AnimalSelectionSlot
+              key={index}
+              animal={animal}
+              idsSelected={idsSelected}
+              toggleAnimalSelection={toggleAnimalSelection}
+            />
+          ),
+        )}
       </div>
       <div
         style={{
@@ -71,13 +74,16 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
           justifyContent: 'space-between',
           gap: 4,
         }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 4 && index < 8).map((animal: AnimalCard) => (
-          <AnimalSelectionSlot
-            animal={animal}
-            idsSelected={idsSelected}
-            toggleAnimalSelection={toggleAnimalSelection}
-          />
-        ))}
+        {ANIMALS_CARDS.filter((_, index) => index >= 4 && index < 8).map(
+          (animal: AnimalCard, index: number) => (
+            <AnimalSelectionSlot
+              key={index}
+              animal={animal}
+              idsSelected={idsSelected}
+              toggleAnimalSelection={toggleAnimalSelection}
+            />
+          ),
+        )}
       </div>
       <div
         style={{
@@ -85,13 +91,16 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
           justifyContent: 'space-between',
           gap: 4,
         }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16).map((animal: AnimalCard) => (
-          <AnimalSelectionSlot
-            animal={animal}
-            idsSelected={idsSelected}
-            toggleAnimalSelection={toggleAnimalSelection}
-          />
-        ))}
+        {ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16).map(
+          (animal: AnimalCard, index: number) => (
+            <AnimalSelectionSlot
+              key={index}
+              animal={animal}
+              idsSelected={idsSelected}
+              toggleAnimalSelection={toggleAnimalSelection}
+            />
+          ),
+        )}
       </div>
       <h4>{idsSelected.size} cards</h4>
       <button
