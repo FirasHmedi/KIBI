@@ -7,7 +7,7 @@ import {
   addAnimalToGraveYard,
   addCardsToPlayerDeck,
   addHpToPlayer,
-  deleteAnimalCardFromGraveYardById,
+  deleteAnimalCardFromGraveYardById, deletePowerCardFromGraveYardById,
   removeHpFromPlayer,
   removePlayerAnimalFromBoard,
 } from './unitActions';
@@ -42,11 +42,14 @@ export const minus1Hp = async (roomId: string, playerType: string) => {
   await removeHpFromPlayer(roomId, playerType, 1);
 };
 // ----------------------Fox-----------------------
-export const addLastAnimalToDeck = async (roomId: string, playerType: string) => {
-  const animalGY = await getItemsOnce(getBoardPath(roomId) + 'animalGY');
-  if (!_.isEmpty(animalGY)) {
-    const lastAnimalCardId = animalGY[animalGY.length - 1];
-    await deleteAnimalCardFromGraveYardById(roomId, lastAnimalCardId);
-    await addCardsToPlayerDeck(roomId, playerType, [lastAnimalCardId]);
+export const returnRandomPowerCardToDeck = async (roomId: string, playerType: string) => {
+  const powerGY = await getItemsOnce(getBoardPath(roomId) + 'powerGY');
+  if (!_.isEmpty(powerGY)) {
+    const CardId = powerGY[getRandomNumber(powerGY.length)];
+    await deletePowerCardFromGraveYardById(roomId, CardId);
+    await addCardsToPlayerDeck(roomId, playerType, [CardId]);
   }
 };
+function getRandomNumber(max:number) {
+  return Math.floor(Math.random() * max) ;
+}

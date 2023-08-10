@@ -1,10 +1,9 @@
 import _ from 'lodash';
 import {
   add1Hp,
-  addLastAnimalToDeck,
   drawOneCard,
   minus1Hp,
-  returnAnimalToDeck,
+  returnAnimalToDeck, returnRandomPowerCardToDeck,
 } from './animalsAbilities';
 import { ANIMALS_POINTS, ClanName, JOKER, KING, getAnimalCard } from './data';
 import { getBoardPath, getItemsOnce, setItem } from './db';
@@ -137,7 +136,7 @@ export const activateJokerAbility = async (
       await minus1Hp(roomId, getOpponentIdFromCurrentId(playerType));
       break;
     case 'Fox':
-      await addLastAnimalToDeck(roomId, playerType);
+      await returnRandomPowerCardToDeck(roomId, playerType);
       break;
     case 'Snake':
       await add1Hp(roomId, playerType);
