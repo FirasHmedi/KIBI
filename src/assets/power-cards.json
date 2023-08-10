@@ -84,11 +84,6 @@
     "description": "Sacrifice 1hp to Revive last animal card (can attack)",
     "name": "Revive last animal for 1HP"
   },
-  "6-p": {
-    "ability": "Switch health with opponent",
-    "description": "Switch health with opponent",
-    "name": "Switch health of players"
-  },
   "7-p": {
     "ability": "Switch deck with opponent",
     "description": "Switch deck with opponent",

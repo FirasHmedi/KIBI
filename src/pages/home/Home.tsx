@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { buttonStyle, centerStyle } from '../../styles/Style';
-import { PREPARE, ROOMS_PATH } from '../../utils/data';
+import { INITIAL_HP, PREPARE, ROOMS_PATH } from '../../utils/data';
 import { setItem } from '../../utils/db';
 import { PlayerType } from '../../utils/interface';
 
@@ -16,7 +16,7 @@ function Home() {
     await setItem(ROOMS_PATH + roomId, {
       status: PREPARE,
       one: {
-        hp: 8,
+        hp: INITIAL_HP,
         playerName: 'player1',
         canAttack: true,
         canPlayPowers: true,
@@ -37,7 +37,7 @@ function Home() {
   const joinRoom = async () => {
     if (roomId.length === 0) return;
     await setItem(ROOMS_PATH + roomId + '/two', {
-      hp: 8,
+      hp: INITIAL_HP,
       playerName: 'player2',
       canAttack: true,
       canPlayPowers: true,

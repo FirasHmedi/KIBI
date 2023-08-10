@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { drawCardFromMainDeck } from './actions';
+import { activateJokerAbility, drawCardFromMainDeck } from './actions';
 import { ClanName, EMPTY } from './data';
 import { getBoardPath, getItemsOnce, getRoomPath, setItem } from './db';
-import { getOpponentIdFromCurrentId } from './helpers';
+import { getOpponentIdFromCurrentId, isAnimalCard } from './helpers';
 import { PlayerType, SlotType } from './interface';
 import {
   addAnimalToBoard,
@@ -42,10 +42,10 @@ export const sacrifice2HpToReviveAnyAnimal = async (
   animalId?: string,
   slotNb?: number,
 ) => {
-  if (!animalId || _.isNil(slotNb)) return;
+  if (!isAnimalCard(animalId) || _.isNil(slotNb)) return;
   await removeHpFromPlayer(roomId, playerType, 2);
-  await deleteAnimalCardFromGraveYardById(roomId, animalId);
-  await addAnimalToBoard(roomId, playerType, slotNb, animalId, true);
+  await deleteAnimalCardFromGraveYardById(roomId, animalId!);
+  await addAnimalToBoard(roomId, playerType, slotNb, animalId!, true);
 };
 
 export const sacrifice3HpToSteal = async (
@@ -59,6 +59,7 @@ export const sacrifice3HpToSteal = async (
   await removeHpFromPlayer(roomId, playerType, 3);
   await removePlayerAnimalFromBoard(roomId, getOpponentIdFromCurrentId(playerType), oppSlotNb);
   await addAnimalToBoard(roomId, playerType, mySlotNb, animalId, true);
+  await activateJokerAbility(roomId, animalId, playerType);
 };
 
 export const sacrifice1HpToReviveLastAnimal = async (

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { buttonStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
+import { INITIAL_HP } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
@@ -154,7 +155,7 @@ const PlayerDataView = ({
       justifyContent: 'center',
     }}>
     <h5>Player {name?.toUpperCase()}</h5>
-    <progress value={hp} max={hp > 8 ? hp : 8} />
+    <progress value={hp} max={hp > INITIAL_HP ? hp : INITIAL_HP} />
     <h4 style={{ fontSize: '0.9em' }}>{hp} HP</h4>
     {canAttack === false && <h5>Can't attack</h5>}
     {canPlayPowers === false && <h5>Can't play power cards</h5>}

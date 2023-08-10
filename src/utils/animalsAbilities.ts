@@ -7,7 +7,8 @@ import {
   addAnimalToGraveYard,
   addCardsToPlayerDeck,
   addHpToPlayer,
-  deleteAnimalCardFromGraveYardById, deletePowerCardFromGraveYardById,
+  deleteAnimalCardFromGraveYardById,
+  deletePowerCardFromGraveYardById,
   removeHpFromPlayer,
   removePlayerAnimalFromBoard,
 } from './unitActions';
@@ -50,6 +51,6 @@ export const returnRandomPowerCardToDeck = async (roomId: string, playerType: st
     await addCardsToPlayerDeck(roomId, playerType, [CardId]);
   }
 };
-function getRandomNumber(max:number) {
-  return Math.floor(Math.random() * max) ;
+function getRandomNumber(max: number) {
+  return Math.floor(Math.random() * max);
 }

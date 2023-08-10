@@ -18,7 +18,6 @@ import {
   shieldOwnerPlus2Hp,
   shieldOwnerPlus3Hp,
   switchDeck,
-  switchHealth,
 } from '../utils/abilities';
 import {
   activateJokerAbility,
@@ -170,7 +169,7 @@ export function GameView({
           roomId,
           playerType,
           selectedGYAnimals![0],
-          selectedCurrPSlotNb,
+          selectedCurrPSlotNb!,
         );
         break;
       case '4-p':
@@ -184,9 +183,6 @@ export function GameView({
         break;
       case '5-p':
         await sacrifice1HpToReviveLastAnimal(roomId, playerType, selectedCurrPSlotNb);
-        break;
-      case '6-p':
-        await switchHealth(roomId);
         break;
       case '7-p':
         await switchDeck(roomId);
@@ -225,7 +221,6 @@ export function GameView({
         break;
       case '20-p':
         setCanPlaceKingWithoutSacrifice(true);
-        setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
         break;
       case '21-p':
         await handleKingAbility(roomId, playerType, true);
@@ -241,7 +236,9 @@ export function GameView({
     setSelectedGYAnimals([]);
     setSelectedCurrPSlotNb(undefined);
     setSelectedCurrPSlotNb(undefined);
-    setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
+    if (cardId != '20-p') {
+      setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
+    }
   };
 
   const playCard = async (cardId?: string) => {

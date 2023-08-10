@@ -14,6 +14,8 @@ export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const ROOMS_PATH = 'rooms/';
 
+export const INITIAL_HP = 10;
+
 export const EMPTY = 'empty';
 
 export const WATER = 'water';
@@ -121,7 +123,13 @@ export const getOriginalCardId = (cardId: string = '') => new String(cardId).sub
 
 export const getSortedMainDeck = () => [
   ...POWERS_CARDS_IDS.map(id => 'one-' + id),
-  ...POWERS_CARDS_IDS.filter(id => !POWERFUL_POWER_CARDS_IDS.includes(id)).map(id => 'two-' + id),
+  ...POWERS_CARDS_IDS.map(id => 'two-' + id),
 ];
 
-const POWERFUL_POWER_CARDS_IDS = ['6-p', '7-p'];
+/*
+  "6-p": {
+    "ability": "Switch health with opponent",
+    "description": "Switch health with opponent",
+    "name": "Switch health of players"
+  },
+*/
