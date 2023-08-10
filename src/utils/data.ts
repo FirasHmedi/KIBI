@@ -14,7 +14,7 @@ export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const ROOMS_PATH = 'rooms/';
 
-export const INITIAL_HP = 10;
+export const INITIAL_HP = 9;
 
 export const EMPTY = 'empty';
 
