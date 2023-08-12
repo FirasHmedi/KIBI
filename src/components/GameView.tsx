@@ -135,6 +135,7 @@ export function GameView({
     switch (getOriginalCardId(cardId!)) {
       case '3-p':
         if (selectedGYAnimals?.length != 1 || _.isNil(selectedCurrPSlotNb)) return;
+        break;
       case '4-p':
         if (
           _.isNil(selectedCurrPSlotNb) ||
@@ -146,6 +147,9 @@ export function GameView({
         break;
       case '9-p':
         if (_.isNil(selectedCurrPSlotNb) || animalIdInCurrPSlot === EMPTY) return;
+        break;
+      case '13-p':
+        if (selectedGYAnimals?.length != 2 ) return;
         break;
       case '18-p':
         if (!selectedGYAnimals || selectedGYAnimals?.length != 1) return;
@@ -221,6 +225,7 @@ export function GameView({
         break;
       case '20-p':
         setCanPlaceKingWithoutSacrifice(true);
+        setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
         break;
       case '21-p':
         await handleKingAbility(roomId, playerType, true);
