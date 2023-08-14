@@ -43,6 +43,8 @@ import {
   getAnimalCard,
   getOriginalCardId,
   getPowerCard,
+  isAnimalInEnv,
+  isKing,
 } from '../utils/data';
 import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Board, Player, Round } from '../utils/interface';
@@ -79,6 +81,8 @@ export function GameView({
 
   const isAttackAnimalEnabled =
     round.player === playerType &&
+    currentPlayer.canAttack &&
+    !hasAttacked &&
     !_.isNil(selectedCurrPSlotNb) &&
     !_.isNil(selectedOppPSlotNb) &&
     !_.isEmpty(animalIdInCurrPSlot) &&
@@ -87,16 +91,20 @@ export function GameView({
     animalIdInOppPSlot !== EMPTY &&
     currentPSlots[selectedCurrPSlotNb]?.canAttack;
 
+  const isOppSlotsEmpty =
+    !isAnimalCard(opponentPSlots[0]?.cardId) &&
+    !isAnimalCard(opponentPSlots[1]?.cardId) &&
+    !isAnimalCard(opponentPSlots[2]?.cardId);
+
   const isAttackOwnerEnabled =
     round.player === playerType &&
+    currentPlayer.canAttack &&
+    !hasAttacked &&
     !!animalIdInCurrPSlot &&
     isAnimalCard(animalIdInCurrPSlot) &&
     !_.isNil(selectedCurrPSlotNb) &&
-    ((getAnimalCard(animalIdInCurrPSlot)?.role === KING &&
-      envType === getAnimalCard(animalIdInCurrPSlot)?.clan) ||
-      (!isAnimalCard(opponentPSlots[0]?.cardId) &&
-        !isAnimalCard(opponentPSlots[1]?.cardId) &&
-        !isAnimalCard(opponentPSlots[2]?.cardId))) &&
+    ((isKing(animalIdInCurrPSlot) && isAnimalInEnv(animalIdInCurrPSlot, envType)) ||
+      isOppSlotsEmpty) &&
     currentPSlots[selectedCurrPSlotNb]?.canAttack;
 
   const handlePlacingKing = async (cardId: string, clan: ClanName): Promise<void> => {
@@ -149,7 +157,7 @@ export function GameView({
         if (_.isNil(selectedCurrPSlotNb) || animalIdInCurrPSlot === EMPTY) return;
         break;
       case '13-p':
-        if (selectedGYAnimals?.length != 2 ) return;
+        if (selectedGYAnimals?.length != 2) return;
         break;
       case '18-p':
         if (!selectedGYAnimals || selectedGYAnimals?.length != 1) return;
@@ -285,10 +293,10 @@ export function GameView({
 
     const animalA = getAnimalCard(animalIdInCurrPSlot);
     const animalD = getAnimalCard(animalIdInOppPSlot);
-    const slotNb = selectedCurrPSlotNb;
     if (!animalA || !animalD || ANIMALS_POINTS[animalA.role].ap < ANIMALS_POINTS[animalD.role].hp)
       return;
-    await changeHasAttacked(roomId, playerType, slotNb, true);
+    setHasAttacked(true);
+    await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, true);
     await attackAnimal(
       roomId,
       playerType,
@@ -298,17 +306,21 @@ export function GameView({
       selectedOppPSlotNb,
     );
     await waitFor(500);
-    await changeHasAttacked(roomId, playerType, slotNb, false);
+    await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, false);
   };
 
   const attackOppHp = async () => {
+    if (!isAttackOwnerEnabled) return;
+    setHasAttacked(true);
+    await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb!, true);
     await attackOwner(
       roomId,
       getOpponentIdFromCurrentId(playerType),
       animalIdInCurrPSlot,
       currentPlayer.isDoubleAP,
     );
-    setHasAttacked(true);
+    await waitFor(500);
+    await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb!, false);
   };
 
   return (

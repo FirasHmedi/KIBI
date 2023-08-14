@@ -86,6 +86,13 @@ export const rolesIcons = {
   attacker: attackerIcon,
 };
 
+export const isKing = (cardId?: string) => getAnimalCard(cardId)?.role === KING;
+export const isJoker = (cardId?: string) => getAnimalCard(cardId)?.role === JOKER;
+export const isAttacker = (cardId?: string) => getAnimalCard(cardId)?.role === ATTACKER;
+export const isTank = (cardId?: string) => getAnimalCard(cardId)?.role === TANK;
+export const isAnimalInEnv = (cardId?: string, envType?: ClanName) =>
+  envType === getAnimalCard(cardId)?.clan;
+
 const getArrayFromJson = (file: any) => {
   const object = JSON.parse(JSON.stringify(file));
   return Object.keys(object).map(id => ({ id, ...object[id] }));

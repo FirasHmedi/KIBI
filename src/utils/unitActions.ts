@@ -96,7 +96,7 @@ export const addHpToPlayer = async (roomId: string, playerType: string, hp: numb
 
 export const removeHpFromPlayer = async (roomId: string, playerType: string, hp: number) => {
   const oldHp = await getItemsOnce(getRoomPath(roomId) + playerType + '/hp');
-  if (oldHp) {
+  if (!_.isNil(oldHp)) {
     const newHp = oldHp - hp;
     await setItem(getRoomPath(roomId) + playerType, { hp: newHp });
   }

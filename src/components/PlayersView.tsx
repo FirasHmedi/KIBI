@@ -26,11 +26,11 @@ export const CurrentPView = ({
   isAttackOwnerEnabled: boolean;
   nbCardsToPlay: number;
 }) => {
-  const { hp, playerType, canAttack, canPlayPowers, isDoubleAP } = player;
+  const { playerType, canPlayPowers } = player;
   const cardsIds = player.cardsIds ?? [];
   const [selectedId, setSelectedId] = useState<string>();
   const isMyRound = round?.player === playerType;
-
+  console.log(isAttackOwnerEnabled, player);
   const isPlayCardEnabled =
     !!nbCardsToPlay &&
     !!selectedId &&
@@ -81,84 +81,62 @@ export const CurrentPView = ({
           style={{
             ...buttonStyle,
             fontSize: '0.8em',
-            backgroundColor: !isAttackAnimalEnabled || !canAttack ? 'grey' : violet,
+            backgroundColor: !isAttackAnimalEnabled ? 'grey' : violet,
           }}
-          disabled={!isAttackAnimalEnabled || !canAttack}
+          disabled={!isAttackAnimalEnabled}
           onClick={() => attackOpponentAnimal()}>
           Strike animal
         </button>
-        {isAttackOwnerEnabled && canAttack && (
-          <button
-            style={{
-              ...buttonStyle,
-              fontSize: '0.8em',
-            }}
-            onClick={() => attackOppHp()}>
-            Strike directly
-          </button>
-        )}
+        <button
+          style={{
+            ...buttonStyle,
+            fontSize: '0.8em',
+            backgroundColor: !isAttackOwnerEnabled ? 'grey' : violet,
+          }}
+          disabled={!isAttackOwnerEnabled}
+          onClick={() => attackOppHp()}>
+          Strike directly
+        </button>
       </div>
-      <PlayerDataView
-        name={playerType}
-        hp={hp}
-        canAttack={canAttack}
-        canPlayPowers={canPlayPowers}
-        isDoubleAP={isDoubleAP}
-      />
+      <PlayerDataView player={player} />
       <CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
     </div>
   );
 };
 
 export const OpponentPView = ({ player }: { player: Player }) => {
-  const { hp, playerType, canAttack, canPlayPowers, cardsIds, isDoubleAP } = player;
   return (
     <div
       style={{
         ...flexRowStyle,
         alignItems: 'center',
       }}>
-      <PlayerDataView
-        name={playerType}
-        hp={hp}
-        canAttack={canAttack}
-        canPlayPowers={canPlayPowers}
-        isDoubleAP={isDoubleAP}
-      />
-      <OpponentPDeck cardsIds={cardsIds} />
+      <PlayerDataView player={player} />
+      <OpponentPDeck cardsIds={player.cardsIds} />
     </div>
   );
 };
 
-const PlayerDataView = ({
-  name,
-  hp,
-  canAttack = false,
-  canPlayPowers = false,
-  isDoubleAP = false,
-}: {
-  name?: string;
-  hp: number;
-  canAttack: boolean;
-  canPlayPowers: boolean;
-  isDoubleAP?: boolean;
-}) => (
-  <div
-    style={{
-      color: violet,
-      position: 'absolute',
-      left: '2vw',
-      fontSize: '0.9em',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      justifyContent: 'center',
-    }}>
-    <h5>Player {name?.toUpperCase()}</h5>
-    <progress value={hp} max={hp > INITIAL_HP ? hp : INITIAL_HP} />
-    <h4 style={{ fontSize: '0.9em' }}>{hp} HP</h4>
-    {canAttack === false && <h5>Can't attack</h5>}
-    {canPlayPowers === false && <h5>Can't play power cards</h5>}
-    {isDoubleAP && <h5>King AP X 2</h5>}
-  </div>
-);
+const PlayerDataView = ({ player }: { player: Player }) => {
+  const { hp, playerType, canPlayPowers, isDoubleAP, canAttack } = player;
+  return (
+    <div
+      style={{
+        color: violet,
+        position: 'absolute',
+        left: '2vw',
+        fontSize: '0.9em',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+      }}>
+      <h5>Player {playerType?.toUpperCase()}</h5>
+      <progress value={hp} max={hp > INITIAL_HP ? hp : INITIAL_HP} />
+      <h4 style={{ fontSize: '0.9em' }}>{hp} HP</h4>
+      {canAttack === false && <h5>Can't attack</h5>}
+      {canPlayPowers === false && <h5>Can't play power cards</h5>}
+      {isDoubleAP && <h5>King AP X 2</h5>}
+    </div>
+  );
+};

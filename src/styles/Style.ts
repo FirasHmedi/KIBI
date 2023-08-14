@@ -1,4 +1,4 @@
-export const primary = '#bdc3c7'; //#242422 232323
+export const primary = '#2c3e50'; //'#bdc3c7'; //#242422 232323
 export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
 export const black = '#000000';

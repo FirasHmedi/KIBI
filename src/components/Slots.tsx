@@ -184,7 +184,9 @@ export const Slots = ({
             marginTop: index === 1 && opponent ? 50 : 0,
             marginBottom: index === 1 && current ? 50 : 0,
           }}
-          className={slot?.hasAttacked ? 'vertical-shake' : undefined}>
+          className={
+            slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
+          }>
           {current && <CanAttackIconsView slot={slot} />}
 
           <Slot
