@@ -133,6 +133,10 @@ export const getSortedMainDeck = () => [
   ...POWERS_CARDS_IDS.map(id => 'two-' + id),
 ];
 
+export const getMainDeckFirstHalf = () => [...POWERS_CARDS_IDS.map(id => 'one-' + id)];
+
+export const getMainDeckSecondHalf = () => [...POWERS_CARDS_IDS.map(id => 'one-' + id)];
+
 /*
   "6-p": {
     "ability": "Switch health with opponent",

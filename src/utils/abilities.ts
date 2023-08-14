@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { activateJokerAbility, drawCardFromMainDeck } from './actions';
-import { ClanName, EMPTY } from './data';
+import { ClanName, EMPTY, NEUTRAL } from './data';
 import { getBoardPath, getItemsOnce, getRoomPath, setItem } from './db';
 import { getOpponentIdFromCurrentId, isAnimalCard } from './helpers';
 import { PlayerType, SlotType } from './interface';
@@ -148,7 +148,7 @@ export const returnOneAnimalFromGYToDeck = async (
   await addCardsToPlayerDeck(roomId, playerType, [animalId]);
 };
 
-export const returnAllBoardAnimalsToDecks = async (
+export const resetBoard = async (
   roomId: string,
   playerType: PlayerType,
   currentPSlots: SlotType[],
@@ -168,6 +168,7 @@ export const returnAllBoardAnimalsToDecks = async (
       ]);
     }
   }
+  await changeEnv(roomId, NEUTRAL);
 };
 
 export const handleKingAbility = async (

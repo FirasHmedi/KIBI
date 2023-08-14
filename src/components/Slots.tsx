@@ -1,6 +1,13 @@
 import attIcon from '../assets/icons/att.png';
 import noAttIcon from '../assets/icons/no-att.png';
-import { centerStyle, flexRowStyle, selectedColor, slotStyle, violet } from '../styles/Style';
+import {
+  centerStyle,
+  flexRowStyle,
+  neutralColor,
+  selectedColor,
+  slotStyle,
+  violet,
+} from '../styles/Style';
 import {
   ANIMALS_POINTS,
   CLANS,
@@ -20,8 +27,8 @@ export const SlotBack = () => (
       backgroundColor: violet,
       color: 'white',
       ...centerStyle,
-      height: '9vh',
-      width: '3vw',
+      height: '8vh',
+      width: '2.7vw',
     }}>
     <h6>KIBI</h6>
   </div>
@@ -115,9 +122,9 @@ export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
     <div
       style={{
         ...slotStyle,
-        backgroundColor: '#95a5a6',
+        backgroundColor: neutralColor,
         justifyContent: 'center',
-        borderColor: selected ? selectedColor : '#95a5a6',
+        borderColor: selected ? selectedColor : neutralColor,
       }}
       onClick={() => selectSlotPolished()}>
       <h6>EMPTY</h6>
@@ -138,7 +145,7 @@ export const EnvSlot = ({ envType }: { envType?: ClanName }) => (
       transform: 'rotate(90deg)',
       justifyContent: 'center',
       flexShrink: 0,
-      fontSize: '0.8em',
+      fontSize: '0.7em',
     }}>
     <h6 style={{ transform: 'rotate(-90deg)' }}>{envType?.toUpperCase()}</h6>
   </div>

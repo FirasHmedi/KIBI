@@ -46,11 +46,10 @@ export const CurrentPView = ({
         style={{
           ...flexColumnStyle,
           position: 'absolute',
-          right: '12vw',
-          bottom: '4vh',
-          justifyContent: 'space-evenly',
+          right: '10vw',
+          bottom: '3vh',
           width: '10vw',
-          gap: 6,
+          gap: 10,
         }}>
         {!!nbCardsToPlay && isMyRound && (
           <h5 style={{ color: violet }}>Play {nbCardsToPlay} cards</h5>
@@ -59,7 +58,7 @@ export const CurrentPView = ({
           style={{
             ...buttonStyle,
             fontSize: '0.8em',
-            backgroundColor: !isMyRound ? '#95a5a6' : violet,
+            backgroundColor: !isMyRound ? 'grey' : violet,
           }}
           disabled={!isMyRound}
           onClick={() => finishRound()}>

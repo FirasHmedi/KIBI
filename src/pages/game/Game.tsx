@@ -4,7 +4,13 @@ import { useLocation } from 'react-router-dom';
 import { AnimalsSelection } from '../../components/AnimalsSelection';
 import { GameContainer } from '../../components/GameContainer';
 import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
-import { READY, ROOMS_PATH, RUNNING, getSortedMainDeck } from '../../utils/data';
+import {
+  READY,
+  ROOMS_PATH,
+  RUNNING,
+  getMainDeckFirstHalf,
+  getMainDeckSecondHalf,
+} from '../../utils/data';
 import { setItem, subscribeToItems } from '../../utils/db';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
@@ -30,7 +36,9 @@ function GamePage() {
     ) {
       setItem(ROOMS_PATH + roomId, {
         status: RUNNING,
-        board: { mainDeck: _.shuffle(getSortedMainDeck()) },
+        board: {
+          mainDeck: [..._.shuffle(getMainDeckFirstHalf()), ..._.shuffle(getMainDeckSecondHalf())],
+        },
         round: {
           player: PlayerType.ONE,
           nb: 1,

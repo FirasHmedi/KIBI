@@ -4,6 +4,7 @@ import {
   centerStyle,
   flexColumnStyle,
   flexRowStyle,
+  neutralColor,
   selectedColor,
   violet,
 } from '../styles/Style';
@@ -106,7 +107,7 @@ export const AnimalsSelection = ({ playerType, roomId }: Props) => {
       <button
         style={{
           ...buttonStyle,
-          backgroundColor: disabledBtn ? '#95a5a6' : violet,
+          backgroundColor: disabledBtn ? neutralColor : violet,
           padding: 12,
           fontSize: 26,
         }}
@@ -127,7 +128,7 @@ const AnimalSelectionSlot = ({ animal, idsSelected, toggleAnimalSelection }: any
         ...flexColumnStyle,
         border: 'solid 4px #95a5a6',
         borderRadius: 5,
-        borderColor: idsSelected.has(id) ? selectedColor : '#95a5a6',
+        borderColor: idsSelected.has(id) ? selectedColor : neutralColor,
         backgroundColor: CLANS[clan].color,
         color: 'white',
         fontSize: '1.2em',

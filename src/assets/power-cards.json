@@ -50,9 +50,9 @@
     "name": "Return 1 dead animal to deck"
   },
   "19-p": {
-    "ability": "Return all board animals to players decks",
-    "description": "Return all board animals to players decks",
-    "name": "Return all animals to decks"
+    "ability": "Reset Board (animals, env)",
+    "description": "Reset Board (animals, env)",
+    "name": "Reset Board (animals, env)"
   },
   "20-p": {
     "ability": "Place an active king on board",

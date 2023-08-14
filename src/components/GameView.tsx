@@ -7,7 +7,7 @@ import {
   changeEnv,
   draw2Cards,
   handleKingAbility,
-  returnAllBoardAnimalsToDecks,
+  resetBoard,
   returnOneAnimalFromGYToDeck,
   reviveLastPower,
   sacrifice1HpToAdd2animalsFromGYToDeck,
@@ -229,7 +229,7 @@ export function GameView({
         await returnOneAnimalFromGYToDeck(roomId, playerType, selectedGYAnimals![0]);
         break;
       case '19-p':
-        await returnAllBoardAnimalsToDecks(roomId, playerType, currentPSlots, opponentPSlots);
+        await resetBoard(roomId, playerType, currentPSlots, opponentPSlots);
         break;
       case '20-p':
         setCanPlaceKingWithoutSacrifice(true);
