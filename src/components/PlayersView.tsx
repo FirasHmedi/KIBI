@@ -30,7 +30,6 @@ export const CurrentPView = ({
   const cardsIds = player.cardsIds ?? [];
   const [selectedId, setSelectedId] = useState<string>();
   const isMyRound = round?.player === playerType;
-  console.log(isAttackOwnerEnabled, player);
   const isPlayCardEnabled =
     !!nbCardsToPlay &&
     !!selectedId &&
