@@ -141,7 +141,7 @@ export function GameView({
         if (selectedGYAnimals?.length != 1 || _.isNil(selectedCurrPSlotNb)) return false;
         break;
       case 'rev-last-anim-1p':
-        if (_.isNil(selectedCurrPSlotNb)) return false;
+        if (_.isNil(selectedCurrPSlotNb) || selectedGYAnimals?.length != 1) return false;
         break;
       case 'steal-anim-3hp':
         if (
