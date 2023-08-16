@@ -1,102 +1,102 @@
 {
-  "1-p": {
-    "ability": "Cancel attacks for next turn",
+  "block-att": {
+    "ability": "Block all attacks for 1 turn",
     "description": "Cancel attacks for next turn (all animal attacks)",
-    "name": "Cancel all attacks for 1 turn"
+    "name": "Block all attacks for 1 turn"
   },
-  "10-p": {
-    "ability": "+2 hp to owner",
+  "2hp": {
+    "ability": "+2hp to player",
     "description": "give the owner +2 hp",
     "name": "+2hp to player"
   },
-  "11-p": {
-    "ability": "+3 hp to owner",
+  "3hp": {
+    "ability": "+3hp to player",
     "description": "give the owner +3 hp",
     "name": "+3hp to player"
   },
-  "12-p": {
+  "draw-2": {
     "ability": "Draw 2 cards from the main deck",
     "description": "Draw 2 cards from the main deck",
     "name": "Draw 2 cards from main deck"
   },
-  "13-p": {
-    "ability": "- 1hp to return 2 animals to deck",
+  "2-anim-1hp": {
+    "ability": "Return 2 dead animals to deck for 1HP",
     "description": "Sacrifice 1hp to return 2 animals to deck from animal graveyard",
     "name": "Return 2 dead animals to deck for 1HP"
   },
-  "14-p": {
-    "ability": "Choose an env",
+  "env-1": {
+    "ability": "Choose an environment",
     "description": "player choose any env",
     "name": "Choose an environment"
   },
-  "15-p": {
-    "ability": "Choose an env",
+  "env-2": {
+    "ability": "Choose an environment",
     "description": "player choose any env",
     "name": "Choose an environment"
   },
-  "16-p": {
-    "ability": "Choose an env",
+  "env-3": {
+    "ability": "Choose an environment",
     "description": "player choose any env",
     "name": "Choose an environment"
   },
-  "17-p": {
-    "ability": "Block opponent from using power cards",
+  "block-pow": {
+    "ability": "Block using power cards for 1 turn",
     "description": "Block opponent from using power cards",
-    "name": "Cancel using power cards for 1 turn"
+    "name": "Block using power cards for 1 turn"
   },
-  "18-p": {
-    "ability": "Return 1 animal to deck",
+  "1-anim-deck": {
+    "ability": "Return 1 dead animal to deck",
     "description": "Return 1 animal to deck from animal graveyard",
     "name": "Return 1 dead animal to deck"
   },
-  "19-p": {
+  "reset-board": {
     "ability": "Reset Board (animals, env)",
     "description": "Reset Board (animals, env)",
     "name": "Reset Board (animals, env)"
   },
-  "20-p": {
+  "place-king": {
     "ability": "Place an active king on board",
     "description": "Place an active king on board",
-    "name": "Place a king on board"
+    "name": "Place an active king on board"
   },
-  "21-p": {
+  "double-king-ap": {
     "ability": "Double king ability in its env",
     "description": "Double king ability in its env",
     "name": "Double king ability in its env"
   },
-  "2-p": {
+  "rev-last-pow": {
     "ability": "Revive last power card",
     "description": "Revive last power card (activate directly)",
     "name": "Revive last power card"
   },
-  "3-p": {
-    "ability": "- 2 hp to revive any animal",
+  "rev-anim-2hp": {
+    "ability": "Revive any animal for 2HP",
     "description": "Sacrifice 2 hp to revive any animal, can attack",
     "name": "Revive any animal for 2HP"
   },
-  "4-p": {
-    "ability": "- 3 hp to steal an opponent animal",
+  "steal-anim-3hp": {
+    "ability": "Steal animal opponent for 3hp",
     "description": "Sacrifice 3 hp to switch side of an opponent animal",
     "name": "Steal animal opponent for 3hp"
   },
-  "5-p": {
-    "ability": "- 1hp to Revive last animal card",
+  "rev-last-anim-1p": {
+    "ability": "Revive last animal for 1HP",
     "description": "Sacrifice 1hp to Revive last animal card (can attack)",
     "name": "Revive last animal for 1HP"
   },
-  "7-p": {
-    "ability": "Switch deck with opponent",
+  "switch-decks": {
+    "ability": "Switch decks of players",
     "description": "Switch deck with opponent",
-    "name": "Switch deck of players"
+    "name": "Switch decks of players"
   },
-  "8-p": {
-    "ability": "Choose an env",
+  "env-4": {
+    "ability": "Choose an environment",
     "description": "player choose any env",
     "name": "Choose an environment"
   },
-  "9-p": {
-    "ability": "Sacrifice an animal to get 3hp",
+  "sacrif-anim-3hp": {
+    "ability": "Sacrifice an active animal for 3hp",
     "description": "Sacrifice an animal to get 3hp",
-    "name": "Sacrifice an animal for 3hp"
+    "name": "Sacrifice an active animal for 3hp"
   }
 }

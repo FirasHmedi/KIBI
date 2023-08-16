@@ -52,11 +52,11 @@ export const headerStyle: React.CSSProperties = {
 export const buttonStyle: React.CSSProperties = {
   backgroundColor: violet,
   color: 'white',
-  padding: 3,
+  padding: 1,
   borderRadius: 5,
   fontWeight: 'bold',
-  paddingLeft: 8,
-  paddingRight: 8,
+  paddingLeft: 4,
+  paddingRight: 4,
   maxWidth: 150,
 };
 

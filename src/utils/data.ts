@@ -52,9 +52,7 @@ export const CLANS = {
   },
 };
 
-export const envCardsIds = ['8-p', '14-p', '15-p', '16-p'];
-export const cardsWithSlotSelection = ['3-p', '4-p', '5-p'];
-
+export const envCardsIds = ['env-4', 'env-1', 'env-2', 'env-3'];
 export const ANIMALS_POINTS = {
   king: {
     ap: 2,
@@ -134,8 +132,7 @@ export const getSortedMainDeck = () => [
 ];
 
 export const getMainDeckFirstHalf = () => [...POWERS_CARDS_IDS.map(id => 'one-' + id)];
-
-export const getMainDeckSecondHalf = () => [...POWERS_CARDS_IDS.map(id => 'one-' + id)];
+export const getMainDeckSecondHalf = () => [...POWERS_CARDS_IDS.map(id => 'two-' + id)];
 
 /*
   "6-p": {

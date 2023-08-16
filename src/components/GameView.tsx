@@ -38,7 +38,6 @@ import {
   EMPTY,
   JOKER,
   KING,
-  cardsWithSlotSelection,
   envCardsIds,
   getAnimalCard,
   getOriginalCardId,
@@ -136,32 +135,39 @@ export function GameView({
     setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
   };
 
-  const playPowerCard = async (cardId: string) => {
-    if (cardsWithSlotSelection.includes(getOriginalCardId(cardId!)) && _.isNil(selectedCurrPSlotNb))
-      return;
-
+  const isPowerCardPlayable = (cardId: string) => {
     switch (getOriginalCardId(cardId!)) {
-      case '3-p':
-        if (selectedGYAnimals?.length != 1 || _.isNil(selectedCurrPSlotNb)) return;
+      case 'rev-anim-2hp':
+        if (selectedGYAnimals?.length != 1 || _.isNil(selectedCurrPSlotNb)) return false;
         break;
-      case '4-p':
+      case 'rev-last-anim-1p':
+        if (_.isNil(selectedCurrPSlotNb)) return false;
+        break;
+      case 'steal-anim-3hp':
         if (
           _.isNil(selectedCurrPSlotNb) ||
           _.isNil(selectedOppPSlotNb) ||
           !animalIdInOppPSlot ||
           animalIdInOppPSlot === EMPTY
         )
-          return;
+          return false;
         break;
-      case '9-p':
-        if (_.isNil(selectedCurrPSlotNb) || animalIdInCurrPSlot === EMPTY) return;
+      case 'sacrif-anim-3hp':
+        if (_.isNil(selectedCurrPSlotNb) || animalIdInCurrPSlot === EMPTY) return false;
         break;
-      case '13-p':
-        if (selectedGYAnimals?.length != 2) return;
+      case '2-anim-1hp':
+        if (selectedGYAnimals?.length != 2) return false;
         break;
-      case '18-p':
-        if (!selectedGYAnimals || selectedGYAnimals?.length != 1) return;
+      case '1-anim-deck':
+        if (!selectedGYAnimals || selectedGYAnimals?.length != 1) return false;
         break;
+    }
+    return true;
+  };
+
+  const playPowerCard = async (cardId: string) => {
+    if (!isPowerCardPlayable(cardId)) {
+      return false;
     }
 
     const { name } = getPowerCard(cardId)!;
@@ -169,14 +175,14 @@ export function GameView({
     await setPowerCardAsActive(roomId, playerType, cardId!, name!);
 
     switch (getOriginalCardId(cardId!)) {
-      case '1-p':
+      case 'block-att':
         await cancelAttacks(roomId, getOpponentIdFromCurrentId(playerType));
         break;
-      case '2-p':
+      case 'rev-last-pow':
         await reviveLastPower(roomId, playerType);
         setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
         break;
-      case '3-p':
+      case 'rev-anim-2hp':
         await sacrifice2HpToReviveAnyAnimal(
           roomId,
           playerType,
@@ -184,7 +190,7 @@ export function GameView({
           selectedCurrPSlotNb!,
         );
         break;
-      case '4-p':
+      case 'steal-anim-3hp':
         await sacrifice3HpToSteal(
           roomId,
           playerType,
@@ -193,50 +199,47 @@ export function GameView({
           selectedCurrPSlotNb!,
         );
         break;
-      case '5-p':
+      case 'rev-last-anim-1p':
         await sacrifice1HpToReviveLastAnimal(roomId, playerType, selectedCurrPSlotNb);
         break;
-      case '7-p':
+      case 'switch-decks':
         await switchDeck(roomId);
         break;
-      case '8-p': // env
-        break;
-      case '9-p':
+      case 'sacrif-anim-3hp':
         await sacrificeAnimalToGet3Hp(roomId, playerType, animalIdInCurrPSlot, selectedCurrPSlotNb);
         break;
-      case '10-p':
+      case '2hp':
         await shieldOwnerPlus2Hp(roomId, playerType);
         break;
-      case '11-p':
+      case '3hp':
         await shieldOwnerPlus3Hp(roomId, playerType);
         break;
-      case '12-p':
+      case 'draw-2':
         await draw2Cards(roomId, playerType);
         break;
-      case '13-p':
+      case '2-anim-1hp':
         await sacrifice1HpToAdd2animalsFromGYToDeck(roomId, playerType, selectedGYAnimals);
         break;
-      case '14-p': // env
-        break;
-      case '15-p': // env
-        break;
-      case '16-p': // env
-        break;
-      case '17-p':
+      case 'block-pow':
         await cancelUsingPowerCards(roomId, getOpponentIdFromCurrentId(playerType));
         break;
-      case '18-p':
+      case '1-anim-deck':
         await returnOneAnimalFromGYToDeck(roomId, playerType, selectedGYAnimals![0]);
         break;
-      case '19-p':
+      case 'reset-board':
         await resetBoard(roomId, playerType, currentPSlots, opponentPSlots);
         break;
-      case '20-p':
+      case 'place-king':
         setCanPlaceKingWithoutSacrifice(true);
         setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
         break;
-      case '21-p':
+      case 'double-king-ap':
         await handleKingAbility(roomId, playerType, true);
+        break;
+      case 'env-1': // env
+      case 'env-2': // env
+      case 'env-3': // env
+      case 'env-4': // env
         break;
     }
 
@@ -249,7 +252,7 @@ export function GameView({
     setSelectedGYAnimals([]);
     setSelectedCurrPSlotNb(undefined);
     setSelectedCurrPSlotNb(undefined);
-    if (cardId != '20-p') {
+    if (cardId != 'place-king') {
       setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
     }
   };

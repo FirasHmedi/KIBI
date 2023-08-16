@@ -4,6 +4,7 @@ import { INITIAL_HP } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
+import './styles.css';
 
 export const CurrentPView = ({
   player,
@@ -49,7 +50,7 @@ export const CurrentPView = ({
           right: '10vw',
           bottom: '3vh',
           width: '10vw',
-          gap: 10,
+          gap: 6,
         }}>
         {!!nbCardsToPlay && isMyRound && (
           <h5 style={{ color: violet }}>Play {nbCardsToPlay} cards</h5>
@@ -57,7 +58,7 @@ export const CurrentPView = ({
         <button
           style={{
             ...buttonStyle,
-            fontSize: '0.8em',
+            fontSize: '0.7em',
             backgroundColor: !isMyRound ? 'grey' : violet,
           }}
           disabled={!isMyRound}
@@ -67,7 +68,7 @@ export const CurrentPView = ({
         <button
           style={{
             ...buttonStyle,
-            fontSize: '0.8em',
+            fontSize: '0.7em',
             backgroundColor: !isPlayCardEnabled ? 'grey' : violet,
           }}
           disabled={!isPlayCardEnabled}
@@ -78,7 +79,7 @@ export const CurrentPView = ({
         <button
           style={{
             ...buttonStyle,
-            fontSize: '0.8em',
+            fontSize: '0.7em',
             backgroundColor: !isAttackAnimalEnabled ? 'grey' : violet,
           }}
           disabled={!isAttackAnimalEnabled}
@@ -88,7 +89,7 @@ export const CurrentPView = ({
         <button
           style={{
             ...buttonStyle,
-            fontSize: '0.8em',
+            fontSize: '0.7em',
             backgroundColor: !isAttackOwnerEnabled ? 'grey' : violet,
           }}
           disabled={!isAttackOwnerEnabled}
@@ -130,7 +131,7 @@ const PlayerDataView = ({ player }: { player: Player }) => {
         justifyContent: 'center',
       }}>
       <h5>Player {playerType?.toUpperCase()}</h5>
-      <progress value={hp} max={hp > INITIAL_HP ? hp : INITIAL_HP} />
+      <progress style={{ width: '8vw' }} value={hp} max={hp > INITIAL_HP ? hp : INITIAL_HP} />
       <h4 style={{ fontSize: '0.9em' }}>{hp} HP</h4>
       {canAttack === false && <h5>Can't attack</h5>}
       {canPlayPowers === false && <h5>Can't play power cards</h5>}

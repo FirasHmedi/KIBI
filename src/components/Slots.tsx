@@ -27,8 +27,8 @@ export const SlotBack = () => (
       backgroundColor: violet,
       color: 'white',
       ...centerStyle,
-      height: '8vh',
-      width: '2.7vw',
+      height: '7vh',
+      width: '2.5vw',
     }}>
     <h6>KIBI</h6>
   </div>
@@ -140,26 +140,23 @@ export const EnvSlot = ({ envType }: { envType?: ClanName }) => (
       backgroundColor: CLANS[envType!]?.color,
       color: 'white',
       flexDirection: 'column',
-      height: '3vw',
-      width: '3vw',
-      transform: 'rotate(90deg)',
+      height: '1.2vw',
+      width: '10vw',
       justifyContent: 'center',
       flexShrink: 0,
-      fontSize: '0.7em',
-    }}>
-    <h6 style={{ transform: 'rotate(-90deg)' }}>{envType?.toUpperCase()}</h6>
-  </div>
+      fontSize: '0.6em',
+    }}></div>
 );
 
 const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
   return isAnimalCard(slot?.cardId) ? (
     slot?.canAttack ? (
-      <img src={attIcon} style={{ width: 30 }}></img>
+      <img src={attIcon} style={{ width: 20 }}></img>
     ) : (
-      <img src={noAttIcon} style={{ width: 30 }}></img>
+      <img src={noAttIcon} style={{ width: 20 }}></img>
     )
   ) : (
-    <div style={{ height: 30 }} />
+    <div style={{ height: 20 }} />
   );
 };
 
