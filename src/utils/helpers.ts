@@ -14,6 +14,7 @@ export const getCurrentPathName = () => {
 
 export const isAnimalCard = (cardId?: string): boolean =>
   !!cardId && !_.isEmpty(getAnimalCard(cardId));
+
 export const isPowerCard = (cardId: string = ''): boolean =>
   POWER_CARDS_OBJECT.hasOwnProperty(new String(cardId).substring(4));
 

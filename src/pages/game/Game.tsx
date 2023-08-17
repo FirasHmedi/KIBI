@@ -1,16 +1,10 @@
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { AnimalsSelection } from '../../components/AnimalsSelection';
 import { GameContainer } from '../../components/GameContainer';
+import { SharedAnimalsSelection } from '../../components/SharedAnimalsSelection';
 import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
-import {
-  READY,
-  ROOMS_PATH,
-  RUNNING,
-  getMainDeckFirstHalf,
-  getMainDeckSecondHalf,
-} from '../../utils/data';
+import { ROOMS_PATH, RUNNING, getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/data';
 import { setItem, subscribeToItems } from '../../utils/db';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
@@ -30,8 +24,8 @@ function GamePage() {
 
   useEffect(() => {
     if (
-      game?.one?.status === READY &&
-      game?.two?.status === READY &&
+      game?.one?.cardsIds?.length === 8 &&
+      game?.two?.cardsIds?.length === 8 &&
       !isGameRunning(game?.status)
     ) {
       setItem(ROOMS_PATH + roomId, {
@@ -63,11 +57,28 @@ function GamePage() {
 
       {isGameInPreparation(game?.status) && (
         <div style={{ width: '100vw', color: violet }}>
-          <AnimalsSelection playerType={playerType} roomId={roomId} />
-          <h3 style={{ padding: 10 }}>
-            {playerName} : {playerType}
-          </h3>
-          <h3>Room ID: {roomId}</h3>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 4,
+            }}>
+            <h4 style={{ padding: 2 }}>
+              {playerName} : {playerType} //
+            </h4>
+            <h4>
+              Room ID: <span style={{ fontSize: '1.3em', color: 'red' }}>{roomId}</span>
+            </h4>
+          </div>
+          <SharedAnimalsSelection
+            playerType={playerType}
+            roomId={roomId}
+            oneCards={game?.one?.cardsIds ?? []}
+            twoCards={game?.two?.cardsIds ?? []}
+            playerToSelect={game?.playerToSelect}
+          />
         </div>
       )}
     </div>

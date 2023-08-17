@@ -22,6 +22,7 @@ function Home() {
         canPlayPowers: true,
         status: PREPARE,
       },
+      playerToSelect: PlayerType.ONE,
     });
 
     setDisabledButton(true);
@@ -53,14 +54,6 @@ function Home() {
     });
   };
 
-  const test = async () => {
-    //await attackOwner("test-room","one","1-a")
-    //await drawCardFromMainDeck("test-room","one")
-    //await placeAnimalOnBoard('test-room', 'one', 1, '2-a');
-    //await placeKingOnBoard('test-room', 'one', '1-a', '2-a',1);
-    //await changePLayerHealth('test-room', 'one', 5)
-    //await reviveLastPower('test-room','one')
-  };
   return (
     <div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100vh', ...centerStyle }}>
       <div

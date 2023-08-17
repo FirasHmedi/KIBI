@@ -55,6 +55,7 @@ export interface Game {
   one: Player;
   two: Player;
   round: Round;
+  playerToSelect?: PlayerType;
 }
 
 export interface Board {

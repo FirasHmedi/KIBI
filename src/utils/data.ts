@@ -112,8 +112,8 @@ export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(
 );
 
 export const getAnimalCard = (cardId?: string): AnimalCard | undefined => {
-  if (!cardId || cardId.length < 4) return;
-  return ANIMAL_CARDS_OBJECT[getOriginalCardId(cardId)];
+  if (!cardId || cardId?.length === 0) return;
+  return ANIMAL_CARDS_OBJECT[cardId];
 };
 
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));

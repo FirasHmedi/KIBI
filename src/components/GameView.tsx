@@ -298,6 +298,7 @@ export function GameView({
     const animalD = getAnimalCard(animalIdInOppPSlot);
     if (!animalA || !animalD || ANIMALS_POINTS[animalA.role].ap < ANIMALS_POINTS[animalD.role].hp)
       return;
+
     setHasAttacked(true);
     await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, true);
     await attackAnimal(
