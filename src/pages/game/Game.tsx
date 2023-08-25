@@ -33,6 +33,7 @@ function GamePage() {
         ..._.shuffle(getMainDeckSecondHalf()),
       ];
       const oneCard = mainDeck.pop();
+      const twoCard = mainDeck.pop();
       setItem(ROOMS_PATH + roomId, {
         status: RUNNING,
         board: {
@@ -45,6 +46,9 @@ function GamePage() {
       });
       setItem(ROOMS_PATH + roomId + '/one/', {
         cardsIds: [...game.one.cardsIds, oneCard],
+      });
+      setItem(ROOMS_PATH + roomId + '/two/', {
+        cardsIds: [...game.two.cardsIds, twoCard],
       });
     }
   }, [game]);
