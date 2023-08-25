@@ -76,7 +76,7 @@ export function GameView({
   const playerType = currentPlayer.playerType!;
   const animalIdInOppPSlot = opponentPSlots[selectedOppPSlotNb ?? 3]?.cardId;
   const animalIdInCurrPSlot = currentPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
-  const [nbCardsToPlay, setNbCardsToPlay] = useState(2);
+  const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
   const [hasAttacked, setHasAttacked] = useState(false);
 
   const isAttackAnimalEnabled =
@@ -279,9 +279,6 @@ export function GameView({
   const finishRound = async () => {
     await addSnapShot(roomId);
     await handleKingAbility(roomId, playerType, false);
-    setNbCardsToPlay(2);
-    setHasAttacked(false);
-    setCanPlaceKingWithoutSacrifice(false);
     await enableAttackingAndPlayingPowerCards(roomId, playerType);
     await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
     await enableAttackForOpponentAnimals(
@@ -290,6 +287,9 @@ export function GameView({
       opponentPSlots,
     );
     await activateJokersAbilities(roomId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+    setNbCardsToPlay(2);
+    setHasAttacked(false);
+    setCanPlaceKingWithoutSacrifice(false);
   };
 
   const attackOppAnimal = async () => {
@@ -306,10 +306,10 @@ export function GameView({
     await attackAnimal(
       roomId,
       playerType,
-      getOpponentIdFromCurrentId(playerType),
       animalIdInCurrPSlot,
       animalIdInOppPSlot,
       selectedOppPSlotNb,
+      envType,
     );
     await waitFor(500);
     await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, false);

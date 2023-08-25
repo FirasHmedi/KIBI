@@ -55,7 +55,7 @@ export function GameContainer({
       });
     }
     const newRound = game.round;
-    if (round) {
+    if (round && round.nb > 2) {
       checkAndDrawCardFromMainDeck(newRound);
     }
     setRound(newRound);

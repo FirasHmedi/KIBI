@@ -28,15 +28,23 @@ function GamePage() {
       game?.two?.cardsIds?.length === 8 &&
       !isGameRunning(game?.status)
     ) {
+      const mainDeck: string[] = [
+        ..._.shuffle(getMainDeckFirstHalf()),
+        ..._.shuffle(getMainDeckSecondHalf()),
+      ];
+      const oneCard = mainDeck.pop();
       setItem(ROOMS_PATH + roomId, {
         status: RUNNING,
         board: {
-          mainDeck: [..._.shuffle(getMainDeckFirstHalf()), ..._.shuffle(getMainDeckSecondHalf())],
+          mainDeck: mainDeck,
         },
         round: {
           player: PlayerType.ONE,
           nb: 1,
         },
+      });
+      setItem(ROOMS_PATH + roomId + '/one/', {
+        cardsIds: [...game.one.cardsIds, oneCard],
       });
     }
   }, [game]);
@@ -65,11 +73,8 @@ function GamePage() {
               alignItems: 'center',
               gap: 4,
             }}>
-            <h4 style={{ padding: 2 }}>
-              {playerName} : {playerType} //
-            </h4>
             <h4>
-              Room ID: <span style={{ fontSize: '1.3em', color: 'red' }}>{roomId}</span>
+              Room ID: <span style={{ fontSize: '1.3em', color: violet }}>{roomId}</span>
             </h4>
           </div>
           <SharedAnimalsSelection

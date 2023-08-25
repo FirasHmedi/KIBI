@@ -31,7 +31,7 @@ export const SharedAnimalsSelection = ({
   const [idSelected, setIdSelected] = useState<string>();
   const myCards = playerType === PlayerType.ONE ? oneCards : twoCards;
   const oppCards = playerType === PlayerType.ONE ? twoCards : oneCards;
-  console.log(playerToSelect, playerType);
+
   const selectCard = (id: string) => {
     if (myCards.includes(id) || oppCards.includes(id)) return;
     setIdSelected(selectedId => (selectedId === id ? undefined : id));
@@ -58,10 +58,11 @@ export const SharedAnimalsSelection = ({
         gap: 12,
         marginTop: 5,
       }}>
+      <h4 style={{ padding: 2 }}>Player {playerType}</h4>
       {playerToSelect === playerType ? (
-        <h5>Your turn to choose a card</h5>
+        <h4>Your turn to choose a card</h4>
       ) : (
-        <h5>Opponent turn to choose a card</h5>
+        <h4>Opponent turn to choose a card</h4>
       )}
       <div
         style={{
@@ -69,26 +70,7 @@ export const SharedAnimalsSelection = ({
           justifyContent: 'space-between',
           gap: 4,
         }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 4).map(
-          (animal: AnimalCard, index: number) => (
-            <AnimalSelectionSlot
-              key={index}
-              animal={animal}
-              idSelected={idSelected}
-              toggleAnimalSelection={selectCard}
-              myCards={myCards}
-              oppCards={oppCards}
-            />
-          ),
-        )}
-      </div>
-      <div
-        style={{
-          ...centerStyle,
-          justifyContent: 'space-between',
-          gap: 4,
-        }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 4 && index < 8).map(
+        {ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 8).map(
           (animal: AnimalCard, index: number) => (
             <AnimalSelectionSlot
               key={index}
@@ -124,8 +106,8 @@ export const SharedAnimalsSelection = ({
         style={{
           ...buttonStyle,
           backgroundColor: playerToSelect !== playerType || !idSelected ? neutralColor : violet,
-          padding: 8,
-          fontSize: 16,
+          padding: 10,
+          fontSize: 18,
         }}
         disabled={playerToSelect !== playerType && !!idSelected}
         onClick={() => submitCard()}>

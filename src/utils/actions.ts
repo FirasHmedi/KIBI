@@ -3,7 +3,8 @@ import {
   add1Hp,
   drawOneCard,
   minus1Hp,
-  returnAnimalToDeck, returnRandomPowerCardToDeck,
+  returnAnimalToDeck,
+  returnRandomPowerCardToDeck,
 } from './animalsAbilities';
 import { ANIMALS_POINTS, ClanName, JOKER, KING, getAnimalCard } from './data';
 import { getBoardPath, getItemsOnce, setItem } from './db';
@@ -84,25 +85,24 @@ export const placeKingOnBoard = async (
 
 export const attackAnimal = async (
   roomId: string,
-  playerAType: PlayerType,
-  playerDType: PlayerType,
+  playerType: PlayerType,
   animalAId: string,
   animalDId: string,
   slotDNumber: number,
+  envType?: ClanName,
 ) => {
-  const animalA = getAnimalCard(animalAId);
-  const animalD = getAnimalCard(animalDId);
-  if (!animalA || !animalD || ANIMALS_POINTS[animalA.role].ap < ANIMALS_POINTS[animalD.role].hp)
-    return;
+  const animalA = getAnimalCard(animalAId)!;
+  const animalD = getAnimalCard(animalDId)!;
+  const opponentId = getOpponentIdFromCurrentId(playerType);
 
-  await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name);
-  await removePlayerAnimalFromBoard(roomId, playerDType, slotDNumber);
-  await addAnimalToGraveYard(roomId, animalDId);
+  await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name + ' of ' + opponentId);
+  await removePlayerAnimalFromBoard(roomId, opponentId, slotDNumber);
 
-  const envType = await getEnvType(roomId);
-  if (envType != animalD.clan) return;
-
-  await returnAnimalToDeck(roomId, playerDType, animalDId);
+  if (envType != animalD.clan) {
+    await addAnimalToGraveYard(roomId, animalDId);
+  } else {
+    await returnAnimalToDeck(roomId, opponentId, animalDId);
+  }
 };
 
 export const attackOwner = async (
