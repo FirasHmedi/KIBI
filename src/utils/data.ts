@@ -123,7 +123,14 @@ export const getPowerCard = (cardId?: string): Card | undefined => {
   if (!cardId || cardId.length < 4) return;
   return POWER_CARDS_OBJECT[getOriginalCardId(cardId)];
 };
-
+export const getCard = (cardId?: string): Card | undefined => {
+  if (!cardId) return;
+  if(cardId.slice(-2)=="-a"){
+    return ANIMAL_CARDS_OBJECT[cardId];
+  }else {
+    return POWER_CARDS_OBJECT[getOriginalCardId(cardId)];
+  }
+};
 export const getOriginalCardId = (cardId: string = '') => new String(cardId).substring(4);
 
 export const getSortedMainDeck = () => [

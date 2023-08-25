@@ -51,6 +51,7 @@ import { addOneRound, addPowerToGraveYard } from '../utils/unitActions';
 import { BoardView } from './Board';
 import { EnvPopup, RoundView } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
+import {addSnapShot} from "../utils/logsSnapShot";
 
 export function GameView({
   round,
@@ -276,6 +277,7 @@ export function GameView({
   };
 
   const finishRound = async () => {
+    await addSnapShot(roomId);
     await handleKingAbility(roomId, playerType, false);
     setNbCardsToPlay(2);
     setHasAttacked(false);
