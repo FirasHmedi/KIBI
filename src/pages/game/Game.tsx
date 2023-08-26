@@ -24,8 +24,8 @@ function GamePage() {
 
   useEffect(() => {
     if (
-      game?.one?.cardsIds?.length === 2 &&
-      game?.two?.cardsIds?.length === 2 &&
+      game?.one?.cardsIds?.length === 9 &&
+      game?.two?.cardsIds?.length === 9 &&
       !isGameRunning(game?.status)
     ) {
       const powerNotChoosed = (game.initialPowers ?? [])?.find(

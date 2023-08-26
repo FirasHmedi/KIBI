@@ -34,8 +34,8 @@ export const SharedSelection = ({
   const [idSelected, setIdSelected] = useState<string>();
   const myCards = playerType === PlayerType.ONE ? oneCards : twoCards;
   const oppCards = playerType === PlayerType.ONE ? twoCards : oneCards;
-  const switchCardsTypes = myCards.length >= 1 && oppCards.length >= 1;
-  const changePlayerToSelect = oppCards.length === 1 && myCards.length === 0;
+  const switchCardsTypes = myCards.length >= 8 && oppCards.length >= 8;
+  const changePlayerToSelect = oppCards.length === 8 && myCards.length === 7;
 
   const selectCard = (id: string) => {
     if (myCards.includes(id) || oppCards.includes(id)) return;
