@@ -263,6 +263,7 @@ export function GameView({
 
     if (isAnimalCard(cardId) && selectedCurrPSlotNb != null) {
       await playAnimalCard(cardId!);
+      return;
     }
 
     if (isPowerCard(cardId)) {
@@ -290,6 +291,9 @@ export function GameView({
     setNbCardsToPlay(2);
     setHasAttacked(false);
     setCanPlaceKingWithoutSacrifice(false);
+    setSelectedGYAnimals([]);
+    setSelectedCurrPSlotNb(undefined);
+    setSelectedCurrPSlotNb(undefined);
   };
 
   const attackOppAnimal = async () => {
