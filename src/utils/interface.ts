@@ -56,6 +56,7 @@ export interface Game {
   two: Player;
   round: Round;
   playerToSelect?: PlayerType;
+  initialPowers?: string[];
 }
 
 export interface Board {

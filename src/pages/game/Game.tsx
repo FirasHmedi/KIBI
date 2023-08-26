@@ -2,10 +2,10 @@ import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameContainer } from '../../components/GameContainer';
-import { SharedAnimalsSelection } from '../../components/SharedAnimalsSelection';
+import { SharedSelection } from '../../components/SharedSelection';
 import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
-import { ROOMS_PATH, RUNNING, getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/data';
-import { setItem, subscribeToItems } from '../../utils/db';
+import { ROOMS_PATH, RUNNING } from '../../utils/data';
+import { getBoardPath, setItem, subscribeToItems } from '../../utils/db';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
 
@@ -24,32 +24,25 @@ function GamePage() {
 
   useEffect(() => {
     if (
-      game?.one?.cardsIds?.length === 8 &&
-      game?.two?.cardsIds?.length === 8 &&
+      game?.one?.cardsIds?.length === 2 &&
+      game?.two?.cardsIds?.length === 2 &&
       !isGameRunning(game?.status)
     ) {
-      const mainDeck: string[] = [
-        ..._.shuffle(getMainDeckFirstHalf()),
-        ..._.shuffle(getMainDeckSecondHalf()),
-      ];
-      const oneCard = mainDeck.pop();
-      const twoCard = mainDeck.pop();
+      const powerNotChoosed = (game.initialPowers ?? [])?.find(
+        id => id !== game?.one?.cardsIds[8] || id !== game?.two?.cardsIds[8],
+      );
       setItem(ROOMS_PATH + roomId, {
         status: RUNNING,
-        board: {
-          mainDeck: mainDeck,
-        },
         round: {
           player: PlayerType.ONE,
           nb: 1,
         },
       });
-      setItem(ROOMS_PATH + roomId + '/one/', {
-        cardsIds: [...game.one.cardsIds, oneCard],
-      });
-      setItem(ROOMS_PATH + roomId + '/two/', {
-        cardsIds: [...game.two.cardsIds, twoCard],
-      });
+      if (!_.isEmpty(powerNotChoosed)) {
+        setItem(getBoardPath(roomId), {
+          mainDeck: [...game.board.mainDeck, powerNotChoosed],
+        });
+      }
     }
   }, [game]);
 
@@ -78,15 +71,17 @@ function GamePage() {
               gap: 4,
             }}>
             <h4>
-              Room ID: <span style={{ fontSize: '1.3em', color: violet }}>{roomId}</span>
+              Room ID:{' '}
+              <span style={{ fontSize: '1.1em', color: violet, userSelect: 'all' }}>{roomId}</span>
             </h4>
           </div>
-          <SharedAnimalsSelection
+          <SharedSelection
             playerType={playerType}
             roomId={roomId}
             oneCards={game?.one?.cardsIds ?? []}
             twoCards={game?.two?.cardsIds ?? []}
             playerToSelect={game?.playerToSelect}
+            powerCards={game?.initialPowers}
           />
         </div>
       )}

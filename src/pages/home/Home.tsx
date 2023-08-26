@@ -1,8 +1,15 @@
+import _ from 'lodash';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { buttonStyle, centerStyle } from '../../styles/Style';
-import { INITIAL_HP, PREPARE, ROOMS_PATH } from '../../utils/data';
+import {
+  INITIAL_HP,
+  PREPARE,
+  ROOMS_PATH,
+  getMainDeckFirstHalf,
+  getMainDeckSecondHalf,
+} from '../../utils/data';
 import { setItem } from '../../utils/db';
 import { PlayerType } from '../../utils/interface';
 
@@ -13,6 +20,12 @@ function Home() {
 
   const createRoom = async () => {
     const roomId = uuidv4();
+    const mainDeck: string[] = [
+      ..._.shuffle(getMainDeckFirstHalf()),
+      ..._.shuffle(getMainDeckSecondHalf()),
+    ];
+    const initialPowers = mainDeck.splice(-3, 3);
+
     await setItem(ROOMS_PATH + roomId, {
       status: PREPARE,
       one: {
@@ -22,7 +35,11 @@ function Home() {
         canPlayPowers: true,
         status: PREPARE,
       },
+      board: {
+        mainDeck,
+      },
       playerToSelect: PlayerType.ONE,
+      initialPowers: initialPowers,
     });
 
     setDisabledButton(true);

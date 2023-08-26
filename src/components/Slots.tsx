@@ -45,12 +45,17 @@ export const PowerSlot = ({
   cardId,
   select,
   selected,
+  isBigStyle,
 }: {
   cardId: string;
   select: () => void;
   selected?: boolean;
+  isBigStyle?: boolean;
 }) => {
   const { name } = getPowerCard(cardId) ?? {};
+  const bigStyle: React.CSSProperties = !!isBigStyle
+    ? { height: '20vh', width: '8vw', fontSize: '1em' }
+    : {};
   return (
     <div
       style={{
@@ -58,6 +63,7 @@ export const PowerSlot = ({
         backgroundColor: violet,
         justifyContent: 'center',
         borderColor: selected ? selectedColor : violet,
+        ...bigStyle,
       }}
       onClick={() => select()}>
       <h6>{name?.toUpperCase()}</h6>

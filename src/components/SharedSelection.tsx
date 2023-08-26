@@ -12,6 +12,7 @@ import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, rolesIcons } from '../utils/data'
 import { getRoomPath, setItem } from '../utils/db';
 import { getOpponentIdFromCurrentId } from '../utils/helpers';
 import { AnimalCard, PlayerType } from '../utils/interface';
+import { PowerSlot } from './Slots';
 
 interface Props {
   playerType: PlayerType;
@@ -19,18 +20,22 @@ interface Props {
   oneCards: string[];
   twoCards: string[];
   playerToSelect?: PlayerType;
+  powerCards?: string[];
 }
 
-export const SharedAnimalsSelection = ({
+export const SharedSelection = ({
   playerType,
   roomId,
   oneCards,
   twoCards,
   playerToSelect,
+  powerCards,
 }: Props) => {
   const [idSelected, setIdSelected] = useState<string>();
   const myCards = playerType === PlayerType.ONE ? oneCards : twoCards;
   const oppCards = playerType === PlayerType.ONE ? twoCards : oneCards;
+  const switchCardsTypes = myCards.length >= 1 && oppCards.length >= 1;
+  const changePlayerToSelect = oppCards.length === 1 && myCards.length === 0;
 
   const selectCard = (id: string) => {
     if (myCards.includes(id) || oppCards.includes(id)) return;
@@ -43,8 +48,12 @@ export const SharedAnimalsSelection = ({
     await setItem(getRoomPath(roomId) + `${playerType}`, {
       cardsIds: [...myCards, idSelected],
     });
+
+    const playerToSelect = changePlayerToSelect
+      ? playerType
+      : getOpponentIdFromCurrentId(playerType);
     await setItem(getRoomPath(roomId), {
-      playerToSelect: getOpponentIdFromCurrentId(playerType),
+      playerToSelect,
     });
     setIdSelected(undefined);
   };
@@ -52,56 +61,73 @@ export const SharedAnimalsSelection = ({
   return (
     <div
       style={{
-        ...centerStyle,
+        display: 'flex',
+        alignItems: 'center',
         flexDirection: 'column',
         width: '100vw',
-        gap: 12,
-        marginTop: 5,
+        height: '90vh',
+        gap: 16,
+        marginTop: 10,
       }}>
-      <h4 style={{ padding: 2 }}>Player {playerType}</h4>
       {playerToSelect === playerType ? (
         <h4>Your turn to choose a card</h4>
       ) : (
         <h4>Opponent turn to choose a card</h4>
       )}
-      <div
-        style={{
-          ...centerStyle,
-          justifyContent: 'space-between',
-          gap: 4,
-        }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 8).map(
-          (animal: AnimalCard, index: number) => (
-            <AnimalSelectionSlot
-              key={index}
-              animal={animal}
-              idSelected={idSelected}
-              toggleAnimalSelection={selectCard}
+      {!switchCardsTypes ? (
+        <>
+          <div
+            style={{
+              ...centerStyle,
+              justifyContent: 'space-between',
+              gap: 4,
+            }}>
+            {ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 8).map(
+              (animal: AnimalCard, index: number) => (
+                <AnimalSelectionSlot
+                  key={index}
+                  animal={animal}
+                  idSelected={idSelected}
+                  toggleAnimalSelection={selectCard}
+                  myCards={myCards}
+                  oppCards={oppCards}
+                />
+              ),
+            )}
+          </div>
+          <div
+            style={{
+              ...centerStyle,
+              justifyContent: 'space-between',
+              gap: 4,
+            }}>
+            {ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16).map(
+              (animal: AnimalCard, index: number) => (
+                <AnimalSelectionSlot
+                  key={index}
+                  animal={animal}
+                  idSelected={idSelected}
+                  toggleAnimalSelection={selectCard}
+                  myCards={myCards}
+                  oppCards={oppCards}
+                />
+              ),
+            )}
+          </div>
+        </>
+      ) : (
+        <div style={{ ...flexRowStyle, gap: 20 }}>
+          {powerCards?.map(id => (
+            <PowerSelectionSlot
+              id={id}
+              selectCard={selectCard}
               myCards={myCards}
               oppCards={oppCards}
-            />
-          ),
-        )}
-      </div>
-      <div
-        style={{
-          ...centerStyle,
-          justifyContent: 'space-between',
-          gap: 4,
-        }}>
-        {ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16).map(
-          (animal: AnimalCard, index: number) => (
-            <AnimalSelectionSlot
-              key={index}
-              animal={animal}
               idSelected={idSelected}
-              toggleAnimalSelection={selectCard}
-              myCards={myCards}
-              oppCards={oppCards}
             />
-          ),
-        )}
-      </div>
+          ))}
+        </div>
+      )}
       <button
         style={{
           ...buttonStyle,
@@ -113,6 +139,31 @@ export const SharedAnimalsSelection = ({
         onClick={() => submitCard()}>
         CHOOSE
       </button>
+      <div style={{ position: 'absolute', bottom: '2vh', left: '2vw' }}>
+        <h4 style={{ padding: 2 }}>Player {playerType}</h4>
+      </div>
+    </div>
+  );
+};
+
+const PowerSelectionSlot = ({ id, idSelected, selectCard, myCards = [], oppCards = [] }: any) => {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {myCards.includes(id) ? (
+        <h5>For me</h5>
+      ) : oppCards.includes(id) ? (
+        <h5>For Opponent</h5>
+      ) : (
+        <h5></h5>
+      )}
+      <PowerSlot
+        cardId={id}
+        selected={idSelected === id}
+        select={() => {
+          selectCard(id);
+        }}
+        isBigStyle={true}
+      />
     </div>
   );
 };
@@ -157,7 +208,7 @@ const AnimalSelectionSlot = ({
         }}
         onClick={() => toggleAnimalSelection(id)}>
         <h6>{name?.toUpperCase()}</h6>
-        {ability && <h6 style={{ fontSize: '0.65em' }}>{ability}</h6>}
+        {ability && <h6 style={{ fontSize: '0.55em', fontWeight: 'initial' }}>{ability}</h6>}
         <div
           style={{
             ...flexRowStyle,
@@ -166,11 +217,11 @@ const AnimalSelectionSlot = ({
             alignItems: 'center',
             paddingBottom: 4,
           }}>
-          <h6>{ANIMALS_POINTS[role].ap} AP</h6>
+          <h6 style={{ fontSize: '0.55em' }}>{ANIMALS_POINTS[role].ap} AP</h6>
           <img
             src={rolesIcons[role]}
             style={{ width: 22, filter: 'brightness(0) invert(1)' }}></img>
-          <h6>{ANIMALS_POINTS[role].hp} HP</h6>
+          <h6 style={{ fontSize: '0.55em' }}>{ANIMALS_POINTS[role].hp} HP</h6>
         </div>
       </div>
     </div>
