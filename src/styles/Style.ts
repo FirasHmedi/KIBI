@@ -13,79 +13,90 @@ export const neutralColor = '#95a5a6';
 export const selectedColor = '#34495e';
 
 export const flexRowStyle: React.CSSProperties = {
-  display: 'flex',
-  textAlign: 'center',
-  width: 'auto',
-  flexDirection: 'row',
+	display: 'flex',
+	textAlign: 'center',
+	width: 'auto',
+	flexDirection: 'row',
 };
 
 export const flexColumnStyle: React.CSSProperties = {
-  display: 'flex',
-  textAlign: 'center',
-  flexDirection: 'column',
-  alignItems: 'center',
+	display: 'flex',
+	textAlign: 'center',
+	flexDirection: 'column',
+	alignItems: 'center',
 };
 
 export const centerStyle: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  textAlign: 'center',
+	display: 'flex',
+	justifyContent: 'center',
+	alignItems: 'center',
+	textAlign: 'center',
 };
 
 export const appStyle: React.CSSProperties = {
-  backgroundColor: primary,
-  height: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
+	backgroundColor: primary,
+	height: '100vh',
+	display: 'flex',
+	flexDirection: 'column',
 };
 
 export const headerStyle: React.CSSProperties = {
-  ...centerStyle,
-  color: primaryBlue,
-  height: '3vh',
-  justifyContent: 'space-between',
-  paddingLeft: 10,
-  paddingRight: 10,
+	...centerStyle,
+	color: primaryBlue,
+	height: '3vh',
+	justifyContent: 'space-between',
+	paddingLeft: 10,
+	paddingRight: 10,
 };
 
 export const buttonStyle: React.CSSProperties = {
-  backgroundColor: violet,
-  color: 'white',
-  padding: 1,
-  borderRadius: 5,
-  fontWeight: 'bold',
-  paddingLeft: 4,
-  paddingRight: 4,
-  maxWidth: 150,
+	backgroundColor: violet,
+	color: 'white',
+	padding: 1,
+	borderRadius: 5,
+	fontWeight: 'bold',
+	paddingLeft: 4,
+	paddingRight: 4,
+	maxWidth: 150,
 };
 
 export const slotStyle: React.CSSProperties = {
-  ...flexColumnStyle,
-  borderRadius: 5,
-  color: 'white',
-  fontSize: '0.85em',
-  height: '15vh',
-  width: '5.8vw',
-  flexShrink: 0,
-  border: 'solid 3px #95a5a6',
+	...flexColumnStyle,
+	borderRadius: 5,
+	color: 'white',
+	fontSize: '0.85em',
+	height: '17.5vh',
+	width: '7.5vw',
+	flexShrink: 0,
+	border: 'solid 4px #95a5a6',
+};
+
+export const deckSlotStyle: React.CSSProperties = {
+	...flexColumnStyle,
+	borderRadius: 5,
+	color: 'white',
+	fontSize: '0.85em',
+	height: '13vh',
+	width: '5vw',
+	flexShrink: 0,
+	border: 'solid 4px #95a5a6',
 };
 
 export const signupContainerStyle: React.CSSProperties = {
-  ...centerStyle,
-  backgroundColor: primary,
-  borderRadius: 5,
-  width: '20vw',
-  alignSelf: 'center',
-  flexDirection: 'column',
-  gap: 30,
-  marginTop: 100,
-  padding: 10,
-  paddingTop: 30,
-  paddingBottom: 30,
-  minHeight: '40vh',
+	...centerStyle,
+	backgroundColor: primary,
+	borderRadius: 5,
+	width: '20vw',
+	alignSelf: 'center',
+	flexDirection: 'column',
+	gap: 30,
+	marginTop: 100,
+	padding: 10,
+	paddingTop: 30,
+	paddingBottom: 30,
+	minHeight: '40vh',
 };
 
 export const signinContainerStyle: React.CSSProperties = {
-  ...signupContainerStyle,
+	...signupContainerStyle,
 };

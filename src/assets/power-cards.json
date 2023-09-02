@@ -1,102 +1,87 @@
 {
-  "block-att": {
-    "ability": "Block all attacks for 1 turn",
-    "description": "Cancel attacks for next turn (all animal attacks)",
-    "name": "Block all attacks for 1 turn"
-  },
-  "2hp": {
-    "ability": "+2hp to player",
-    "description": "give the owner +2 hp",
-    "name": "+2hp to player"
-  },
-  "3hp": {
-    "ability": "+3hp to player",
-    "description": "give the owner +3 hp",
-    "name": "+3hp to player"
-  },
-  "draw-2": {
-    "ability": "Draw 2 cards from the main deck",
-    "description": "Draw 2 cards from the main deck",
-    "name": "Draw 2 cards from main deck"
-  },
-  "2-anim-1hp": {
-    "ability": "Return 2 dead animals to deck for 1HP",
-    "description": "Sacrifice 1hp to return 2 animals to deck from animal graveyard",
-    "name": "Return 2 dead animals to deck for 1HP"
-  },
-  "env-1": {
-    "ability": "Choose an environment",
-    "description": "player choose any env",
-    "name": "Choose an environment"
-  },
-  "env-2": {
-    "ability": "Choose an environment",
-    "description": "player choose any env",
-    "name": "Choose an environment"
-  },
-  "env-3": {
-    "ability": "Choose an environment",
-    "description": "player choose any env",
-    "name": "Choose an environment"
-  },
-  "block-pow": {
-    "ability": "Block using power cards for 1 turn",
-    "description": "Block opponent from using power cards",
-    "name": "Block using power cards for 1 turn"
-  },
-  "1-anim-deck": {
-    "ability": "Return 1 dead animal to deck",
-    "description": "Return 1 animal to deck from animal graveyard",
-    "name": "Return 1 dead animal to deck"
-  },
-  "reset-board": {
-    "ability": "Reset Board (animals, env)",
-    "description": "Reset Board (animals, env)",
-    "name": "Reset Board (animals, env)"
-  },
-  "place-king": {
-    "ability": "Place an active king on board",
-    "description": "Place an active king on board",
-    "name": "Place an active king on board"
-  },
-  "double-king-ap": {
-    "ability": "Double king ability in its env",
-    "description": "Double king ability in its env",
-    "name": "Double king ability in its env"
-  },
-  "rev-last-pow": {
-    "ability": "Revive last power card",
-    "description": "Revive last power card (activate directly)",
-    "name": "Revive last power card"
-  },
-  "rev-anim-2hp": {
-    "ability": "Revive any animal for 2HP",
-    "description": "Sacrifice 2 hp to revive any animal, can attack",
-    "name": "Revive any animal for 2HP"
-  },
-  "steal-anim-3hp": {
-    "ability": "Steal animal opponent for 3hp",
-    "description": "Sacrifice 3 hp to switch side of an opponent animal",
-    "name": "Steal animal opponent for 3hp"
-  },
-  "rev-last-anim-1p": {
-    "ability": "Revive last animal for 1HP",
-    "description": "Sacrifice 1hp to Revive last animal card (can attack)",
-    "name": "Revive last animal for 1HP"
-  },
-  "switch-decks": {
-    "ability": "Switch decks of players",
-    "description": "Switch deck with opponent",
-    "name": "Switch decks of players"
-  },
-  "env-4": {
-    "ability": "Choose an environment",
-    "description": "player choose any env",
-    "name": "Choose an environment"
-  },
-  "sacrif-anim-3hp": {
-    "ability": "Sacrifice an active animal for 3hp",
-    "description": "Sacrifice an animal to get 3hp",
-    "name": "Sacrifice an active animal for 3hp"
-  }
+	"block-att": {
+		"ability": "Block all attacks for 1 turn",
+		"description": "Cancel attacks for next turn (all animal attacks)",
+		"name": "Block all attacks for 1 turn"
+	},
+	"2hp": {
+		"ability": "+2hp to player",
+		"description": "give the owner +2 hp",
+		"name": "+2hp to player"
+	},
+	"3hp": {
+		"ability": "+3hp to player",
+		"description": "give the owner +3 hp",
+		"name": "+3hp to player"
+	},
+	"draw-2": {
+		"ability": "Draw 2 cards from the main deck",
+		"description": "Draw 2 cards from the main deck",
+		"name": "Draw 2 cards from main deck"
+	},
+	"2-anim-1hp": {
+		"ability": "Return 2 dead animals to deck for 1HP",
+		"description": "Sacrifice 1hp to return 2 animals to deck from animal graveyard",
+		"name": "Return 2 dead animals to deck for 1HP"
+	},
+	"load-env": {
+		"ability": "Load the environment card",
+		"description": "player loads the env card",
+		"name": "Load the environment card"
+	},
+	"block-pow": {
+		"ability": "Block using power cards for 1 turn",
+		"description": "Block opponent from using power cards",
+		"name": "Block using power cards for 1 turn"
+	},
+	"1-anim-deck": {
+		"ability": "Return 1 dead animal to deck",
+		"description": "Return 1 animal to deck from animal graveyard",
+		"name": "Return 1 dead animal to deck"
+	},
+	"reset-board": {
+		"ability": "Reset Board (animals, env)",
+		"description": "Reset Board (animals, env)",
+		"name": "Reset Board (animals, env)"
+	},
+	"place-king": {
+		"ability": "Place an active king on board",
+		"description": "Place an active king on board",
+		"name": "Place an active king on board"
+	},
+	"double-king-ap": {
+		"ability": "Double king ability in its env",
+		"description": "Double king ability in its env",
+		"name": "Double king ability in its env"
+	},
+	"rev-last-pow": {
+		"ability": "Revive last power card",
+		"description": "Revive last power card (activate directly)",
+		"name": "Revive last power card"
+	},
+	"rev-anim-2hp": {
+		"ability": "Revive any animal for 2HP",
+		"description": "Sacrifice 2 hp to revive any animal, can attack",
+		"name": "Revive any animal for 2HP"
+	},
+	"steal-anim-3hp": {
+		"ability": "Steal animal opponent for 3hp",
+		"description": "Sacrifice 3 hp to switch side of an opponent animal",
+		"name": "Steal animal opponent for 3hp"
+	},
+	"rev-last-anim-1p": {
+		"ability": "Revive last animal for 1HP",
+		"description": "Sacrifice 1hp to Revive last animal card (can attack)",
+		"name": "Revive last animal for 1HP"
+	},
+	"switch-decks": {
+		"ability": "Switch decks of players",
+		"description": "Switch deck with opponent",
+		"name": "Switch decks of players"
+	},
+	"sacrif-anim-3hp": {
+		"ability": "Sacrifice an active animal for 3hp",
+		"description": "Sacrifice an animal to get 3hp",
+		"name": "Sacrifice an active animal for 3hp"
+	}
 }

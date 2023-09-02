@@ -10,83 +10,76 @@ import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
 
 function GamePage() {
-  const location = useLocation();
-  const { roomId, playerName, playerType } = location.state;
-  const [game, setGame] = useState<Game>();
+	const location = useLocation();
+	const { roomId, playerType } = location.state;
+	const [game, setGame] = useState<Game>();
 
-  const subscribeToRoom = async () => {
-    await subscribeToItems(ROOMS_PATH + roomId, setGame);
-  };
+	const subscribeToRoom = async () => {
+		await subscribeToItems(ROOMS_PATH + roomId, setGame);
+	};
 
-  useEffect(() => {
-    subscribeToRoom();
-  }, []);
+	useEffect(() => {
+		subscribeToRoom();
+	}, []);
 
-  useEffect(() => {
-    if (
-      game?.one?.cardsIds?.length === 9 &&
-      game?.two?.cardsIds?.length === 9 &&
-      !isGameRunning(game?.status)
-    ) {
-      const powerNotChoosed = (game.initialPowers ?? [])?.find(
-        id => id !== game?.one?.cardsIds[8] || id !== game?.two?.cardsIds[8],
-      );
-      setItem(ROOMS_PATH + roomId, {
-        status: RUNNING,
-        round: {
-          player: PlayerType.ONE,
-          nb: 1,
-        },
-      });
-      if (!_.isEmpty(powerNotChoosed)) {
-        setItem(getBoardPath(roomId), {
-          mainDeck: [...game.board.mainDeck, powerNotChoosed],
-        });
-      }
-    }
-  }, [game]);
+	useEffect(() => {
+		if (game?.one?.cardsIds?.length === 9 && game?.two?.cardsIds?.length === 9 && !isGameRunning(game?.status)) {
+			const powerNotChoosed = (game.initialPowers ?? [])?.find(
+				id => id !== game?.one?.cardsIds[8] || id !== game?.two?.cardsIds[8],
+			);
+			setItem(ROOMS_PATH + roomId, {
+				status: RUNNING,
+				round: {
+					player: PlayerType.ONE,
+					nb: 1,
+				},
+			});
+			if (!_.isEmpty(powerNotChoosed)) {
+				setItem(getBoardPath(roomId), {
+					mainDeck: _.shuffle([...game.board.mainDeck, powerNotChoosed]),
+				});
+			}
+		}
+	}, [game]);
 
-  return (
-    <div
-      style={{
-        ...flexColumnStyle,
-        ...centerStyle,
-        backgroundColor: '#ecf0f1',
-        justifyContent: 'flex-start',
-        height: '100vh',
-        width: '100vw',
-      }}>
-      {isGameRunning(game?.status) && (
-        <GameContainer game={game!} roomId={roomId} playerType={playerType} />
-      )}
+	return (
+		<div
+			style={{
+				...flexColumnStyle,
+				...centerStyle,
+				backgroundColor: '#ecf0f1',
+				justifyContent: 'flex-start',
+				height: '100vh',
+				width: '100vw',
+			}}>
+			{isGameRunning(game?.status) && <GameContainer game={game!} roomId={roomId} playerType={playerType} />}
 
-      {isGameInPreparation(game?.status) && (
-        <div style={{ width: '100vw', color: violet }}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: 4,
-            }}>
-            <h4>
-              Room ID:{' '}
-              <span style={{ fontSize: '1.1em', color: violet, userSelect: 'all' }}>{roomId}</span>
-            </h4>
-          </div>
-          <SharedSelection
-            playerType={playerType}
-            roomId={roomId}
-            oneCards={game?.one?.cardsIds ?? []}
-            twoCards={game?.two?.cardsIds ?? []}
-            playerToSelect={game?.playerToSelect}
-            powerCards={game?.initialPowers}
-          />
-        </div>
-      )}
-    </div>
-  );
+			{isGameInPreparation(game?.status) && (
+				<div style={{ width: '100vw', color: violet }}>
+					<div
+						style={{
+							display: 'flex',
+							flexDirection: 'row',
+							justifyContent: 'center',
+							alignItems: 'center',
+							gap: 4,
+						}}>
+						<h4>
+							Room ID: <span style={{ fontSize: '1.1em', color: violet, userSelect: 'all' }}>{roomId}</span>
+						</h4>
+					</div>
+					<SharedSelection
+						playerType={playerType}
+						roomId={roomId}
+						oneCards={game?.one?.cardsIds ?? []}
+						twoCards={game?.two?.cardsIds ?? []}
+						playerToSelect={game?.playerToSelect}
+						powerCards={game?.initialPowers}
+					/>
+				</div>
+			)}
+		</div>
+	);
 }
 
 export default GamePage;
