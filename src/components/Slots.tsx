@@ -212,6 +212,19 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
 	if (cardId && isPowerCard(cardId)) {
 		return <PowerDeckSlot cardId={cardId} select={selectSlotPolished} selected={selected} />;
 	}
+
+	return (
+		<div
+			style={{
+				...deckSlotStyle,
+				backgroundColor: neutralColor,
+				justifyContent: 'center',
+				borderColor: selected ? selectedColor : neutralColor,
+			}}
+			onClick={() => selectSlotPolished()}>
+			<h6>EMPTY</h6>
+		</div>
+	);
 };
 
 export const EnvSlot = ({ envType }: { envType?: ClanName }) => (
