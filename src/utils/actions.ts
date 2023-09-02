@@ -133,7 +133,7 @@ export const setPowerCardAsActive = async (roomId: string, playerType: PlayerTyp
 	await addInfoToLog(roomId, 'player ' + playerType + ' placed a ' + name);
 	await removeCardFromPlayerDeck(roomId, playerType, cardId);
 	await setActivePowerCard(roomId, cardId);
-	await waitFor(1200);
+	await waitFor(2000);
 	await setActivePowerCard(roomId, '');
 };
 
@@ -192,12 +192,12 @@ export const incrementEnvLoad = async (roomId: string, playerType: PlayerType) =
 };
 
 export const setEnvLoad = async (roomId: string, playerType: PlayerType, val: number = 1) => {
-	if (val === 0) {
+	if (val === 0 || val === 3) {
 		await setItem(getPlayerPath(roomId, playerType), { envLoadNb: val });
 		return;
 	}
 	const envLoadNb = (await getItemsOnce(getPlayerPath(roomId, playerType))).envLoadNb ?? 0;
-	if (envLoadNb === 3) {
+	if (envLoadNb >= 3) {
 		return;
 	}
 	await setItem(getPlayerPath(roomId, playerType), { envLoadNb: envLoadNb + 1 });

@@ -25,9 +25,9 @@
 		"name": "Return 2 dead animals to deck for 1HP"
 	},
 	"load-env": {
-		"ability": "Load the environment card",
-		"description": "player loads the env card",
-		"name": "Load the environment card"
+		"ability": "Load the element card",
+		"description": "player loads the element card",
+		"name": "Load the element card"
 	},
 	"block-pow": {
 		"ability": "Block using power cards for 1 turn",

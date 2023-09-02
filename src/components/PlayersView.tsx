@@ -82,7 +82,7 @@ export const CurrentPView = ({
 						...flexColumnStyle,
 						justifyContent: 'space-evenly',
 						position: 'absolute',
-						right: '17vw',
+						right: '19vw',
 						bottom: '30vh',
 						gap: 8,
 						width: '7vw',
@@ -117,7 +117,7 @@ export const CurrentPView = ({
 					}}
 					disabled={disableEnv}
 					onClick={() => setEnvironment()}>
-					Set an environment
+					Set environment
 				</button>
 			</div>
 			<PlayerDataView player={player} />
@@ -147,7 +147,7 @@ const PlayerDataView = ({ player }: { player: Player }) => {
 			style={{
 				color: violet,
 				position: 'absolute',
-				left: '2vw',
+				left: '1vw',
 				fontSize: '0.9em',
 				display: 'flex',
 				flexDirection: 'column',
@@ -156,7 +156,7 @@ const PlayerDataView = ({ player }: { player: Player }) => {
 			}}>
 			<h5>Player {playerType?.toUpperCase()}</h5>
 			<progress style={{ width: '8vw' }} value={hp} max={hp > INITIAL_HP ? hp : INITIAL_HP} />
-			<h4 style={{ fontSize: '0.9em' }}>{hp} HP</h4>
+			<h4 style={{ fontSize: '1em' }}>{hp} HP</h4>
 			{canAttack === false && <h5>Can't attack</h5>}
 			{canPlayPowers === false && <h5>Can't play power cards</h5>}
 			{isDoubleAP && <h5>King AP X 2</h5>}
@@ -178,7 +178,7 @@ const EnvCard = ({ loadNb = 0 }: any) => {
 			}}>
 			<div style={{ height: '4.666667vh', backgroundColor: disableeUsage ? 'grey' : violet, width: '100%' }}> </div>
 			<div style={{ height: '4.666667vh', backgroundColor: loadNb >= 2 ? violet : 'grey' }}>
-				<h6>Choose an environment</h6>
+				<h5>Choose an element</h5>
 			</div>
 			<div style={{ height: '4.666667vh', backgroundColor: loadNb >= 1 ? violet : 'grey', width: '100%' }}> </div>
 		</div>

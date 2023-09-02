@@ -68,7 +68,7 @@ export const slotStyle: React.CSSProperties = {
 	height: '17.5vh',
 	width: '7.5vw',
 	flexShrink: 0,
-	border: 'solid 4px #95a5a6',
+	border: 'solid 3px #95a5a6',
 };
 
 export const deckSlotStyle: React.CSSProperties = {
@@ -79,7 +79,7 @@ export const deckSlotStyle: React.CSSProperties = {
 	height: '13vh',
 	width: '5vw',
 	flexShrink: 0,
-	border: 'solid 4px #95a5a6',
+	border: 'solid 3px #95a5a6',
 };
 
 export const signupContainerStyle: React.CSSProperties = {

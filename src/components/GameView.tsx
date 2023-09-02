@@ -226,6 +226,9 @@ export function GameView({
 			case 'double-king-ap':
 				await handleKingAbility(roomId, playerType, true);
 				break;
+			case 'load-env':
+				await setEnvLoad(roomId, playerType, 3);
+				break;
 		}
 
 		await addPowerToGraveYard(roomId, cardId!);
@@ -266,7 +269,7 @@ export function GameView({
 	};
 
 	const finishRound = async () => {
-		// await addSnapShot(roomId);
+		await addSnapShot(roomId);
 		await handleKingAbility(roomId, playerType, false);
 		await enableAttackingAndPlayingPowerCards(roomId, playerType);
 		await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));

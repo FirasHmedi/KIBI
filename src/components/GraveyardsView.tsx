@@ -35,7 +35,7 @@ export const Graveyard = ({
 	};
 
 	return (
-		<div style={{ width: '25vw', color: violet }}>
+		<div style={{ width: '17vw', color: violet }}>
 			<h5 style={{ marginBottom: 4 }}>
 				{name} #{cardsIds.length}
 				<br />

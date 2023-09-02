@@ -4,7 +4,7 @@ import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
-import { EnvSlot, Slot, BoardSlots } from './Slots';
+import { EnvSlot, Slot, BoardSlots, DeckSlot } from './Slots';
 
 interface Props {
 	board: Board;
@@ -58,7 +58,7 @@ export const BoardView = ({
 				/>
 			</div>
 
-			<div style={{ position: 'absolute', right: '30vw' }}>
+			<div style={{ position: 'absolute', left: '33vw' }}>
 				<EnvSlot envType={envType} />
 			</div>
 
@@ -73,6 +73,6 @@ export const BoardView = ({
 
 const ActiveCardSlot = ({ cardId }: { cardId: string }) => (
 	<div style={{ position: 'absolute', left: '25vw' }}>
-		<Slot cardId={cardId} />
+		<DeckSlot cardId={cardId} />
 	</div>
 );

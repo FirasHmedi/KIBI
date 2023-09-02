@@ -45,7 +45,7 @@ export const RoundView = ({ nb = 1 }: { nb: number }) => (
 	<div
 		style={{
 			position: 'absolute',
-			left: '2vw',
+			left: '1vw',
 			top: 0,
 			bottom: 0,
 			margin: 'auto',
