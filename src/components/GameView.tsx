@@ -232,6 +232,8 @@ export function GameView({
 				break;
 			case 'load-env-2':
 				await setElementLoad(roomId, playerType, 3);
+			case 'load-env-3':
+				await setElementLoad(roomId, playerType, 3);
 				break;
 		}
 
@@ -285,7 +287,6 @@ export function GameView({
 		setSelectedGYAnimals([]);
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedCurrPSlotNb(undefined);
-		await changeElementUnitAction(roomId, NEUTRAL);
 		setElementLoad(roomId, getOpponentIdFromCurrentId(playerType), 1);
 	};
 
