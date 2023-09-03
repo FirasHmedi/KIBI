@@ -29,6 +29,11 @@
 		"description": "player loads the element card",
 		"name": "Load the element card"
 	},
+	"load-env-2": {
+		"ability": "Load the element card",
+		"description": "player loads the element card",
+		"name": "Load the element card"
+	},
 	"block-pow": {
 		"ability": "Block using power cards for 1 turn",
 		"description": "Block opponent from using power cards",

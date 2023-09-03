@@ -39,6 +39,7 @@ import {
 	EMPTY,
 	JOKER,
 	KING,
+	NEUTRAL,
 	envCardsIds,
 	getAnimalCard,
 	getOriginalCardId,
@@ -229,6 +230,9 @@ export function GameView({
 			case 'load-env':
 				await setElementLoad(roomId, playerType, 3);
 				break;
+			case 'load-env-2':
+				await setElementLoad(roomId, playerType, 3);
+				break;
 		}
 
 		await addPowerToGraveYard(roomId, cardId!);
@@ -281,6 +285,7 @@ export function GameView({
 		setSelectedGYAnimals([]);
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedCurrPSlotNb(undefined);
+		changeElement(roomId, NEUTRAL, playerType);
 		setElementLoad(roomId, getOpponentIdFromCurrentId(playerType), 1);
 	};
 
