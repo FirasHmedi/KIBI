@@ -49,7 +49,7 @@ import {
 } from '../utils/data';
 import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Board, Player, Round } from '../utils/interface';
-import { addOneRound, addPowerToGraveYard } from '../utils/unitActions';
+import { addOneRound, addPowerToGraveYard, changeElementUnitAction } from '../utils/unitActions';
 import { BoardView } from './Board';
 import { ElementPopup, RoundView } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
@@ -285,7 +285,7 @@ export function GameView({
 		setSelectedGYAnimals([]);
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedCurrPSlotNb(undefined);
-		changeElement(roomId, NEUTRAL, playerType);
+		await changeElementUnitAction(roomId, NEUTRAL);
 		setElementLoad(roomId, getOpponentIdFromCurrentId(playerType), 1);
 	};
 

@@ -192,6 +192,7 @@ export const incrementEnvLoad = async (roomId: string, playerType: PlayerType) =
 };
 
 export const setElementLoad = async (roomId: string, playerType: PlayerType, val: number = 1) => {
+	// 0 when he changed element, 3 for loading element with card
 	if (val === 0 || val === 3) {
 		await setItem(getPlayerPath(roomId, playerType), { envLoadNb: val });
 		return;
