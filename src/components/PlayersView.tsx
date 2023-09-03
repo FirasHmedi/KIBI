@@ -16,7 +16,7 @@ export const CurrentPView = ({
 	isAttackAnimalEnabled,
 	isAttackOwnerEnabled,
 	nbCardsToPlay,
-	setEnvironment,
+	setElement,
 }: {
 	player: Player;
 	round: Round;
@@ -27,7 +27,7 @@ export const CurrentPView = ({
 	isAttackAnimalEnabled: boolean;
 	isAttackOwnerEnabled: boolean;
 	nbCardsToPlay: number;
-	setEnvironment: () => void;
+	setElement: () => void;
 }) => {
 	const { playerType, canPlayPowers } = player;
 	const cardsIds = player.cardsIds ?? [];
@@ -116,12 +116,12 @@ export const CurrentPView = ({
 						backgroundColor: disableEnv ? 'grey' : violet,
 					}}
 					disabled={disableEnv}
-					onClick={() => setEnvironment()}>
-					Set environment
+					onClick={() => setElement()}>
+					Set element
 				</button>
 			</div>
 			<PlayerDataView player={player} />
-			<EnvCard loadNb={player.envLoadNb} setEnvironment={setEnvironment} />
+			<ElementCard loadNb={player.envLoadNb} setElement={setElement} />
 			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
 		</div>
 	);
@@ -164,8 +164,8 @@ const PlayerDataView = ({ player }: { player: Player }) => {
 	);
 };
 
-const EnvCard = ({ loadNb = 0 }: any) => {
-	const disableeUsage = loadNb !== 3;
+const ElementCard = ({ loadNb = 0 }: any) => {
+	const disableUsage = loadNb !== 3;
 	return (
 		<div
 			style={{
@@ -175,12 +175,21 @@ const EnvCard = ({ loadNb = 0 }: any) => {
 				position: 'relative',
 				left: '-5vw',
 				borderColor: violet,
+				flex: 1,
 			}}>
-			<div style={{ height: '4.666667vh', backgroundColor: disableeUsage ? 'grey' : violet, width: '100%' }}> </div>
-			<div style={{ height: '4.666667vh', backgroundColor: loadNb >= 2 ? violet : 'grey' }}>
-				<h5>Choose an element</h5>
+			<div style={{ backgroundColor: disableUsage ? 'grey' : violet, width: '100%', flex: 1 }}> </div>
+			<div
+				style={{
+					backgroundColor: loadNb >= 2 ? violet : 'grey',
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					width: '100%',
+					flex: 1,
+				}}>
+				{disableUsage ? <h5>Element loading</h5> : <h5>Element ready</h5>}
 			</div>
-			<div style={{ height: '4.666667vh', backgroundColor: loadNb >= 1 ? violet : 'grey', width: '100%' }}> </div>
+			<div style={{ flex: 1, backgroundColor: loadNb >= 1 ? violet : 'grey', width: '100%' }}> </div>
 		</div>
 	);
 };

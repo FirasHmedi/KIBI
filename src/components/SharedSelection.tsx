@@ -49,6 +49,24 @@ export const SharedSelection = ({ playerType, roomId, oneCards, twoCards, player
 		setIdSelected(undefined);
 	};
 
+	const submitTestCards = async () => {
+		if (myCards.length === 8) return;
+		const cardsIds = (
+			playerType === PlayerType.ONE
+				? ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 8)
+				: ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16)
+		).map(animal => animal.id);
+
+		await setItem(getRoomPath(roomId) + `${playerType}`, {
+			cardsIds: cardsIds,
+		});
+
+		const playerToSelect = changePlayerToSelect ? playerType : getOpponentIdFromCurrentId(playerType);
+		await setItem(getRoomPath(roomId), {
+			playerToSelect,
+		});
+	};
+
 	return (
 		<div
 			style={{
@@ -122,6 +140,17 @@ export const SharedSelection = ({ playerType, roomId, oneCards, twoCards, player
 				disabled={playerToSelect !== playerType && !!idSelected}
 				onClick={() => submitCard()}>
 				CHOOSE
+			</button>
+			<button
+				style={{
+					...buttonStyle,
+					backgroundColor: playerToSelect !== playerType ? neutralColor : 'red',
+					padding: 10,
+					fontSize: 18,
+				}}
+				disabled={playerToSelect !== playerType}
+				onClick={() => submitTestCards()}>
+				TEST CHOOSE
 			</button>
 			<div style={{ position: 'absolute', bottom: '2vh', left: '2vw' }}>
 				<h4 style={{ padding: 2 }}>Player {playerType}</h4>

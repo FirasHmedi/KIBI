@@ -32,8 +32,8 @@ export const OpponentPDeck = ({ cardsNb = 0 }: { cardsNb: number }) => (
 			width: '40vw',
 			overflowY: 'auto',
 		}}>
-		{[1, 2].map((_, index) => (
-			<div key={index} style={{ marginRight: 8 }}>
+		{[...Array(cardsNb).keys()].map((_, index) => (
+			<div key={index} style={{ marginRight: 6 }}>
 				<SlotBack />
 			</div>
 		))}

@@ -6,7 +6,7 @@ export const Seperator = ({ h }: { h?: string }) => {
 	return <div style={{ height }} />;
 };
 
-export const EnvPopup = ({ changeEnv }: { changeEnv: (envType: ClanName) => void }) => (
+export const ElementPopup = ({ changeElement }: { changeElement: (elementType: ClanName) => void }) => (
 	<div
 		style={{
 			position: 'absolute',
@@ -30,12 +30,21 @@ export const EnvPopup = ({ changeEnv }: { changeEnv: (envType: ClanName) => void
 				zIndex: 10,
 			}}>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
-				<div style={{ width: '8vw', height: '8vw', backgroundColor: fireColor }} onClick={() => changeEnv('fire')} />
-				<div style={{ width: '8vw', height: '8vw', backgroundColor: airColor }} onClick={() => changeEnv('air')} />
+				<div
+					style={{ width: '8vw', height: '8vw', backgroundColor: fireColor }}
+					onClick={() => changeElement('fire')}
+				/>
+				<div style={{ width: '8vw', height: '8vw', backgroundColor: airColor }} onClick={() => changeElement('air')} />
 			</div>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
-				<div style={{ width: '8vw', height: '8vw', backgroundColor: waterColor }} onClick={() => changeEnv('water')} />
-				<div style={{ width: '8vw', height: '8vw', backgroundColor: earthColor }} onClick={() => changeEnv('earth')} />
+				<div
+					style={{ width: '8vw', height: '8vw', backgroundColor: waterColor }}
+					onClick={() => changeElement('water')}
+				/>
+				<div
+					style={{ width: '8vw', height: '8vw', backgroundColor: earthColor }}
+					onClick={() => changeElement('earth')}
+				/>
 			</div>
 		</div>
 	</div>

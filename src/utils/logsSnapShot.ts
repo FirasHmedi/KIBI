@@ -14,7 +14,7 @@ export const addSnapShot = async (roomId: string) => {
 					two: transformBoardCardIdToCardName(board?.two),
 					animalGY: (board?.animalGY ?? []).map(cardId => getAnimalCard(cardId)?.name),
 					powerGY: (board?.powerGY ?? []).map(cardId => getPowerCard(cardId)?.name),
-					env: board?.envType ?? 'empty',
+					env: board?.elementType ?? 'empty',
 				},
 				playerTurn: round?.player,
 				one: {

@@ -13,7 +13,6 @@ import { ANIMALS_POINTS, CLANS, ClanName, getAnimalCard, getPowerCard, rolesIcon
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
-import fox from '../assets/animals/fox.png';
 
 export const SlotBack = () => (
 	<div
@@ -227,12 +226,12 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
 	);
 };
 
-export const EnvSlot = ({ envType }: { envType?: ClanName }) => (
+export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => (
 	<div
 		style={{
 			...centerStyle,
 			borderRadius: 5,
-			backgroundColor: CLANS[envType!]?.color,
+			backgroundColor: CLANS[elementType!]?.color,
 			color: 'white',
 			flexDirection: 'column',
 			height: '3vw',

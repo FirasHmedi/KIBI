@@ -4,7 +4,7 @@ import { flexColumnStyle } from '../styles/Style';
 import {
 	cancelAttacks,
 	cancelUsingPowerCards,
-	changeEnv,
+	changeElement,
 	draw2Cards,
 	handleKingAbility,
 	resetBoard,
@@ -30,7 +30,7 @@ import {
 	placeAnimalOnBoard,
 	placeKingOnBoard,
 	placeKingWithoutSacrifice,
-	setEnvLoad,
+	setElementLoad,
 	setPowerCardAsActive,
 } from '../utils/actions';
 import {
@@ -50,7 +50,7 @@ import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard, waitFor } from '
 import { Board, Player, Round } from '../utils/interface';
 import { addOneRound, addPowerToGraveYard } from '../utils/unitActions';
 import { BoardView } from './Board';
-import { EnvPopup, RoundView } from './Elements';
+import { ElementPopup, RoundView } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 import { addSnapShot } from '../utils/logsSnapShot';
 
@@ -67,7 +67,7 @@ export function GameView({
 	opponentPlayer: Player;
 	currentPlayer: Player;
 }) {
-	const { opponentPSlots, currentPSlots, envType } = board;
+	const { opponentPSlots, currentPSlots, elementType } = board;
 
 	const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
 	const [selectedOppPSlotNb, setSelectedOppPSlotNb] = useState<number>();
@@ -104,7 +104,7 @@ export function GameView({
 		!!animalIdInCurrPSlot &&
 		isAnimalCard(animalIdInCurrPSlot) &&
 		!_.isNil(selectedCurrPSlotNb) &&
-		((isKing(animalIdInCurrPSlot) && isAnimalInEnv(animalIdInCurrPSlot, envType)) || isOppSlotsEmpty) &&
+		((isKing(animalIdInCurrPSlot) && isAnimalInEnv(animalIdInCurrPSlot, elementType)) || isOppSlotsEmpty) &&
 		currentPSlots[selectedCurrPSlotNb]?.canAttack;
 
 	const handlePlacingKing = async (cardId: string, clan: ClanName): Promise<void> => {
@@ -129,7 +129,7 @@ export function GameView({
 			await placeAnimalOnBoard(roomId, playerType, selectedCurrPSlotNb!, cardId);
 		}
 
-		if (role === JOKER && clan === envType) {
+		if (role === JOKER && clan === elementType) {
 			await activateJokerAbility(roomId, cardId, playerType);
 		}
 
@@ -227,7 +227,7 @@ export function GameView({
 				await handleKingAbility(roomId, playerType, true);
 				break;
 			case 'load-env':
-				await setEnvLoad(roomId, playerType, 3);
+				await setElementLoad(roomId, playerType, 3);
 				break;
 		}
 
@@ -245,7 +245,7 @@ export function GameView({
 		}
 	};
 
-	const setEnvironment = () => {
+	const setElement = () => {
 		setShowEnvPopup(true);
 	};
 
@@ -262,8 +262,8 @@ export function GameView({
 		}
 	};
 
-	const changeEnvWithPopup = async (envType: ClanName) => {
-		await changeEnv(roomId, envType, playerType);
+	const changeEnvWithPopup = async (elementType: ClanName) => {
+		await changeElement(roomId, elementType, playerType);
 		setShowEnvPopup(false);
 		await activateJokersAbilities(roomId, playerType, currentPSlots);
 	};
@@ -281,7 +281,7 @@ export function GameView({
 		setSelectedGYAnimals([]);
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedCurrPSlotNb(undefined);
-		setEnvLoad(roomId, getOpponentIdFromCurrentId(playerType), 1);
+		setElementLoad(roomId, getOpponentIdFromCurrentId(playerType), 1);
 	};
 
 	const attackOppAnimal = async () => {
@@ -294,7 +294,7 @@ export function GameView({
 
 		setHasAttacked(true);
 		await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, true);
-		await attackAnimal(roomId, playerType, animalIdInCurrPSlot, animalIdInOppPSlot, selectedOppPSlotNb, envType);
+		await attackAnimal(roomId, playerType, animalIdInCurrPSlot, animalIdInOppPSlot, selectedOppPSlotNb, elementType);
 		await waitFor(500);
 		await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, false);
 	};
@@ -322,7 +322,7 @@ export function GameView({
 
 			<RoundView nb={round.nb} />
 
-			{showEnvPopup && <EnvPopup changeEnv={changeEnvWithPopup} />}
+			{showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
 
 			<BoardView
 				board={board}
@@ -344,7 +344,7 @@ export function GameView({
 				isAttackAnimalEnabled={isAttackAnimalEnabled}
 				isAttackOwnerEnabled={isAttackOwnerEnabled}
 				nbCardsToPlay={nbCardsToPlay}
-				setEnvironment={setEnvironment}
+				setElement={setElement}
 			/>
 		</div>
 	);

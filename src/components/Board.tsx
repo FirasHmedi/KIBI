@@ -4,7 +4,7 @@ import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
-import { EnvSlot, Slot, BoardSlots, DeckSlot } from './Slots';
+import { ElementSlot, BoardSlots, DeckSlot } from './Slots';
 
 interface Props {
 	board: Board;
@@ -25,7 +25,7 @@ export const BoardView = ({
 	selectedGYAnimals,
 	setSelectedGYAnimals,
 }: Props) => {
-	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, envType, activeCardId } = board;
+	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 	return (
 		<div
 			style={{
@@ -59,7 +59,7 @@ export const BoardView = ({
 			</div>
 
 			<div style={{ position: 'absolute', left: '33vw' }}>
-				<EnvSlot envType={envType} />
+				<ElementSlot elementType={elementType} />
 			</div>
 
 			<div>

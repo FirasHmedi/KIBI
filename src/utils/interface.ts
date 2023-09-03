@@ -29,7 +29,7 @@ export const DefaultBoard = {
 	opponentPSlots: [],
 	animalGY: [],
 	powerGY: [],
-	envType: 'neutral' as ClanName,
+	elementType: 'neutral' as ClanName,
 	activeCardId: undefined,
 };
 
@@ -68,7 +68,7 @@ export interface Board {
 	two?: SlotType[];
 	animalGY: string[];
 	powerGY: string[];
-	envType?: ClanName;
+	elementType?: ClanName;
 	activeCardId?: string;
 }
 

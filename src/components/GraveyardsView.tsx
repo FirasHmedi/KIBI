@@ -42,7 +42,7 @@ export const Graveyard = ({
 				{!_.isEmpty(selectedIds) && <h5>{selectedIds.length} selected</h5>}
 			</h5>
 			{cardsIds.length > 0 ? (
-				<div style={{ ...flexRowStyle, overflowY: 'auto', justifyContent: 'center' }}>
+				<div style={{ ...flexRowStyle, overflowY: 'auto' }}>
 					{cardsIds.map((cardId, index) => (
 						<div style={{ marginRight: 8 }} key={index} onClick={() => selectCardsPolished(cardId)}>
 							<DeckSlot cardId={cardId} selected={selectedIds.includes(cardId)} />

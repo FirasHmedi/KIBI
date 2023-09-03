@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { activateJokerAbility, drawCardFromMainDeck, setEnvLoad } from './actions';
+import { activateJokerAbility, drawCardFromMainDeck, setElementLoad } from './actions';
 import { ClanName, EMPTY, NEUTRAL } from './data';
 import { getBoardPath, getItemsOnce, getRoomPath, setItem } from './db';
 import { getOpponentIdFromCurrentId, isAnimalCard } from './helpers';
@@ -10,7 +10,7 @@ import {
 	addCardsToPlayerDeck,
 	addHpToPlayer,
 	changeCanAttackVar,
-	changeEnvUnitAction,
+	changeElementUnitAction,
 	changePLayerCards,
 	changePLayerHealth,
 	changeUsingPowerCardsVar,
@@ -88,10 +88,10 @@ export const switchDeck = async (roomId: string) => {
 	await changePLayerCards(roomId, 'two', oneCards);
 };
 
-export const changeEnv = async (roomId: string, envType: ClanName, playerType?: PlayerType) => {
-	await changeEnvUnitAction(roomId, envType);
+export const changeElement = async (roomId: string, elementType: ClanName, playerType?: PlayerType) => {
+	await changeElementUnitAction(roomId, elementType);
 	if (playerType) {
-		setEnvLoad(roomId, playerType, 0);
+		setElementLoad(roomId, playerType, 0);
 	}
 };
 
@@ -161,7 +161,7 @@ export const resetBoard = async (
 			await addCardsToPlayerDeck(roomId, getOpponentIdFromCurrentId(playerType), [opponentPSlots[i].cardId]);
 		}
 	}
-	await changeEnv(roomId, NEUTRAL);
+	await changeElement(roomId, NEUTRAL);
 };
 
 export const handleKingAbility = async (roomId: string, playerType: PlayerType, isDoubleAP: boolean) => {

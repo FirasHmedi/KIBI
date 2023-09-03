@@ -58,8 +58,8 @@ export const placeKingOnBoard = async (
 	if (!king || !sacrificedAnimal || king.clan !== sacrificedAnimal.clan) return;
 	const isRemoved = await removePlayerAnimalFromBoard(roomId, playerType, slotNb);
 	if (isRemoved) {
-		const envType = await getEnvType(roomId);
-		if (envType != sacrificedAnimal.clan) {
+		const elementType = await getElementType(roomId);
+		if (elementType != sacrificedAnimal.clan) {
 			await addAnimalToGraveYard(roomId, sacrificedAnimalId);
 		} else {
 			await returnAnimalToDeck(roomId, playerType, sacrificedAnimalId);
@@ -75,7 +75,7 @@ export const attackAnimal = async (
 	animalAId: string,
 	animalDId: string,
 	slotDNumber: number,
-	envType?: ClanName,
+	elementType?: ClanName,
 ) => {
 	const animalA = getAnimalCard(animalAId)!;
 	const animalD = getAnimalCard(animalDId)!;
@@ -84,7 +84,7 @@ export const attackAnimal = async (
 	await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name + ' of ' + opponentId);
 	await removePlayerAnimalFromBoard(roomId, opponentId, slotDNumber);
 
-	if (envType != animalD.clan) {
+	if (elementType != animalD.clan) {
 		await addAnimalToGraveYard(roomId, animalDId);
 	} else {
 		await returnAnimalToDeck(roomId, opponentId, animalDId);
@@ -108,8 +108,8 @@ export const activateJokerAbility = async (roomId: string, jokerId: string, play
 	const joker = getAnimalCard(jokerId);
 	if (!joker || joker.role != JOKER) return;
 
-	const envType = await getEnvType(roomId);
-	if (envType != joker.clan) return;
+	const elementType = await getElementType(roomId);
+	if (elementType != joker.clan) return;
 
 	await addInfoToLog(roomId, joker.name + ' has activated his ability');
 
@@ -158,8 +158,8 @@ export const activateJokersAbilities = async (roomId: string, playerDType: Playe
 	}
 };
 
-export const getEnvType = async (roomId: string): Promise<ClanName> => {
-	return await getItemsOnce(getBoardPath(roomId) + 'envType');
+export const getElementType = async (roomId: string): Promise<ClanName> => {
+	return await getItemsOnce(getBoardPath(roomId) + 'elementType');
 };
 
 export const placeKingWithoutSacrifice = async (
@@ -191,7 +191,7 @@ export const incrementEnvLoad = async (roomId: string, playerType: PlayerType) =
 	await setItem(getPlayerPath(roomId, playerType), { envLoadNb: envLoadNb + 1 });
 };
 
-export const setEnvLoad = async (roomId: string, playerType: PlayerType, val: number = 1) => {
+export const setElementLoad = async (roomId: string, playerType: PlayerType, val: number = 1) => {
 	if (val === 0 || val === 3) {
 		await setItem(getPlayerPath(roomId, playerType), { envLoadNb: val });
 		return;
