@@ -100,6 +100,7 @@ import badger from '/animals/badger.png';
 import bee from '/animals/bee.png';
 import fox from '/animals/fox.png';
 import phoenix from '/animals/phoenix.png';
+import whale from '/animals/whale.png';
 
 export const animalsPics = {
 	elephant: elephant,
@@ -117,6 +118,7 @@ export const animalsPics = {
 	crow: crow,
 	jellyfish: jellyfish,
 	fox: fox,
+	whale: whale,
 };
 
 export const isKing = (cardId?: string) => getAnimalCard(cardId)?.role === KING;
