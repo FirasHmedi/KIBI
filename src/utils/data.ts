@@ -92,7 +92,7 @@ import crow from '../assets/animals/crow.png';
 import orca from '../assets/animals/orca.png';
 import ostrich from '../assets/animals/ostrich.png';
 import shark from '../assets/animals/shark.png';
-import snake from '../assets/animals/snake.png';
+// import snake from '../assets/animals/snake.png';
 import eagle from '../assets/animals/eagle.png';
 import jellyfish from '../assets/animals/jellyfish.png';
 import dragon from '../assets/animals/dragon.png';
@@ -114,7 +114,7 @@ export const animalsPics = {
 	badger,
 	shark,
 	bee,
-	snake,
+	// snake,
 	crow,
 	jellyfish,
 	fox,
