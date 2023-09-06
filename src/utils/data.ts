@@ -85,21 +85,21 @@ export const rolesIcons = {
 	attacker: attackerIcon,
 };
 
-import elephant from '/src/assets/animals/elephant.png';
-import lion from '/src/assets/animals/lion.png';
-import crow from '/src/assets/animals/crow.png';
-import orca from '/src/assets/animals/orca.png';
-import ostrich from '/src/assets/animals/ostrich.png';
-import shark from '/src/assets/animals/shark.png';
-import snake from '/src/assets/animals/snake.png';
-import eagle from '/src/assets/animals/eagle.png';
-import jellyfish from '/src/assets/animals/jellyfish.png';
-import dragon from '/src/assets/animals/dragon.png';
-import bear from '/src/assets/animals/bear.png';
-import badger from '/src/assets/animals/badger.png';
-import bee from '/src/assets/animals/bee.png';
-import fox from '/src/assets/animals/fox.png';
-import phoenix from '/src/assets/animals/phoenix.png';
+import elephant from '/animals/elephant.png';
+import lion from '/animals/lion.png';
+import crow from '/animals/crow.png';
+import orca from '/animals/orca.png';
+import ostrich from '/animals/ostrich.png';
+import shark from '/animals/shark.png';
+import snake from '/animals/snake.png';
+import eagle from '/animals/eagle.png';
+import jellyfish from '/animals/jellyfish.png';
+import dragon from '/animals/dragon.png';
+import bear from '/animals/bear.png';
+import badger from '/animals/badger.png';
+import bee from '/animals/bee.png';
+import fox from '/animals/fox.png';
+import phoenix from '/animals/phoenix.png';
 
 export const animalsPics = {
 	elephant: elephant,
