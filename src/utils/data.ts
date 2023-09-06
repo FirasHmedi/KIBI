@@ -1,4 +1,3 @@
-// @ts-ignore
 import animalsCardsJson from '../assets/animal-cards.json';
 import powerCardsJson from '../assets/power-cards.json';
 import { airColor, earthColor, fireColor, neutralColor, waterColor } from '../styles/Style';
@@ -74,10 +73,10 @@ export const ANIMALS_POINTS = {
 	},
 };
 
-import attackerIcon from '../assets/icons/attacker.png';
-import jokerIcon from '../assets/icons/joker.png';
-import kingIcon from '../assets/icons/king.png';
-import tankIcon from '../assets/icons/tank.png';
+import attackerIcon from '/src/assets/icons/attacker.png';
+import jokerIcon from '/src/assets/icons/joker.png';
+import kingIcon from '/src/assets/icons/king.png';
+import tankIcon from '/src/assets/icons/tank.png';
 
 export const rolesIcons = {
 	tank: tankIcon,
@@ -86,21 +85,21 @@ export const rolesIcons = {
 	attacker: attackerIcon,
 };
 
-import elephant from '../assets/animals/elephant.png';
-import lion from '../assets/animals/lion.png';
-import crow from '../assets/animals/crow.png';
-import orca from '../assets/animals/orca.png';
-import ostrich from '../assets/animals/ostrich.png';
-import shark from '../assets/animals/shark.png';
-import snake from '../assets/animals/snake.png';
-import eagle from '../assets/animals/eagle.png';
-import jellyfish from '../assets/animals/jellyfish.png';
-import dragon from '../assets/animals/dragon.png';
-import bear from '../assets/animals/bear.png';
-import badger from '../assets/animals/badger.png';
-import bee from '../assets/animals/bee.png';
-import fox from '../assets/animals/fox.png';
-import phoenix from '../assets/animals/phoenix.png';
+import elephant from '/src/assets/animals/elephant.png';
+import lion from '/src/assets/animals/lion.png';
+import crow from '/src/assets/animals/crow.png';
+import orca from '/src/assets/animals/orca.png';
+import ostrich from '/src/assets/animals/ostrich.png';
+import shark from '/src/assets/animals/shark.png';
+import snake from '/src/assets/animals/snake.png';
+import eagle from '/src/assets/animals/eagle.png';
+import jellyfish from '/src/assets/animals/jellyfish.png';
+import dragon from '/src/assets/animals/dragon.png';
+import bear from '/src/assets/animals/bear.png';
+import badger from '/src/assets/animals/badger.png';
+import bee from '/src/assets/animals/bee.png';
+import fox from '/src/assets/animals/fox.png';
+import phoenix from '/src/assets/animals/phoenix.png';
 
 export const animalsPics = {
 	elephant: elephant,
