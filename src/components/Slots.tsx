@@ -284,13 +284,7 @@ export const BoardSlots = ({
 				justifyContent: 'space-evenly',
 			}}>
 			{compoundSlots.map((slot, index) => (
-				<div
-					key={index}
-					style={{
-						marginTop: index === 1 && opponent ? 50 : 0,
-						marginBottom: index === 1 && current ? 50 : 0,
-					}}
-					className={slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined}>
+				<div key={index} className={slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined}>
 					{current && <CanAttackIconsView slot={slot} />}
 
 					<Slot nb={index} selectSlot={selectSlot} cardId={slot?.cardId} selected={selectedSlotNb === index} />
