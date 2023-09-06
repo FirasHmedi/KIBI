@@ -92,7 +92,7 @@ import crow from '../assets/animals/crow.png';
 import orca from '../assets/animals/orca.png';
 import ostrich from '../assets/animals/ostrich.png';
 import shark from '../assets/animals/shark.png';
-// import snake from '../assets/animals/snake.png';
+import snake from '../assets/animals/snake.png';
 import eagle from '../assets/animals/eagle.png';
 import jellyfish from '../assets/animals/jellyfish.png';
 import dragon from '../assets/animals/dragon.png';
@@ -103,21 +103,21 @@ import fox from '../assets/animals/fox.png';
 import phoenix from '../assets/animals/phoenix.png';
 
 export const animalsPics = {
-	elephant,
-	bear,
-	ostrich,
-	lion,
-	eagle,
-	orca,
-	dragon,
-	phoenix,
-	badger,
-	shark,
-	bee,
-	// snake,
-	crow,
-	jellyfish,
-	fox,
+	elephant: elephant,
+	bear: bear,
+	ostrich: ostrich,
+	lion: lion,
+	eagle: eagle,
+	orca: orca,
+	dragon: dragon,
+	phoenix: phoenix,
+	badger: badger,
+	shark: shark,
+	bee: bee,
+	snake: snake,
+	crow: crow,
+	jellyfish: jellyfish,
+	fox: fox,
 };
 
 export const isKing = (cardId?: string) => getAnimalCard(cardId)?.role === KING;
