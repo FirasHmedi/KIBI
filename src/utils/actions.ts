@@ -75,7 +75,6 @@ export const attackAnimal = async (
 	animalAId: string,
 	animalDId: string,
 	slotDNumber: number,
-	elementType?: ClanName,
 ) => {
 	const animalA = getAnimalCard(animalAId)!;
 	const animalD = getAnimalCard(animalDId)!;
@@ -84,11 +83,7 @@ export const attackAnimal = async (
 	await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name + ' of ' + opponentId);
 	await removePlayerAnimalFromBoard(roomId, opponentId, slotDNumber);
 
-	if (elementType != animalD.clan) {
-		await addAnimalToGraveYard(roomId, animalDId);
-	} else {
-		await returnAnimalToDeck(roomId, opponentId, animalDId);
-	}
+	await addAnimalToGraveYard(roomId, animalDId);
 };
 
 export const attackOwner = async (

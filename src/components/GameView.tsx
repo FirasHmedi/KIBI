@@ -230,11 +230,6 @@ export function GameView({
 			case 'load-env':
 				await setElementLoad(roomId, playerType, 3);
 				break;
-			case 'load-env-2':
-				await setElementLoad(roomId, playerType, 3);
-			case 'load-env-3':
-				await setElementLoad(roomId, playerType, 3);
-				break;
 		}
 
 		await addPowerToGraveYard(roomId, cardId!);
@@ -300,7 +295,7 @@ export function GameView({
 
 		setHasAttacked(true);
 		await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, true);
-		await attackAnimal(roomId, playerType, animalIdInCurrPSlot, animalIdInOppPSlot, selectedOppPSlotNb, elementType);
+		await attackAnimal(roomId, playerType, animalIdInCurrPSlot, animalIdInOppPSlot, selectedOppPSlotNb);
 		await waitFor(500);
 		await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, false);
 	};

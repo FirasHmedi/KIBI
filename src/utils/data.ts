@@ -86,6 +86,40 @@ export const rolesIcons = {
 	attacker: attackerIcon,
 };
 
+import elephant from '../assets/animals/elephant.png';
+import lion from '../assets/animals/lion.png';
+import crow from '../assets/animals/crow.png';
+import orca from '../assets/animals/orca.png';
+import ostrich from '../assets/animals/ostrich.png';
+import shark from '../assets/animals/shark.png';
+import snake from '../assets/animals/snake.png';
+import eagle from '../assets/animals/eagle.png';
+import jellyfish from '../assets/animals/jellyfish.png';
+import dragon from '../assets/animals/dragon.png';
+import bear from '../assets/animals/bear.png';
+import badger from '../assets/animals/badger.png';
+import bee from '../assets/animals/bee.png';
+import fox from '../assets/animals/fox.png';
+import phoenix from '../assets/animals/phoenix.png';
+
+export const animalsPics = {
+	elephant,
+	bear,
+	ostrich,
+	lion,
+	eagle,
+	orca,
+	dragon,
+	phoenix,
+	badger,
+	shark,
+	bee,
+	snake,
+	crow,
+	jellyfish,
+	fox,
+};
+
 export const isKing = (cardId?: string) => getAnimalCard(cardId)?.role === KING;
 export const isJoker = (cardId?: string) => getAnimalCard(cardId)?.role === JOKER;
 export const isAttacker = (cardId?: string) => getAnimalCard(cardId)?.role === ATTACKER;

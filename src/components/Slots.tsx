@@ -9,7 +9,7 @@ import {
 	slotStyle,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_POINTS, CLANS, ClanName, getAnimalCard, getPowerCard, rolesIcons } from '../utils/data';
+import { ANIMALS_POINTS, CLANS, ClanName, animalsPics, getAnimalCard, getPowerCard, rolesIcons } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
@@ -113,7 +113,14 @@ export const AnimalSlot = ({
 			}}
 			onClick={() => select()}>
 			<h6 style={{ fontSize: '0.85em', paddingTop: 4 }}>{name?.toUpperCase()}</h6>
-			{ability && <h6 style={{ fontSize: '0.65em' }}>{ability}</h6>}
+
+			{!!name && name?.toLowerCase() in animalsPics && (
+				<img
+					src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
+					style={{ height: 80, backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+			)}
+
+			{false && <h6 style={{ fontSize: '0.65em' }}>{ability}</h6>}
 			<div
 				style={{
 					...flexRowStyle,
