@@ -81,7 +81,23 @@ export function GameView({
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
 	const [hasAttacked, setHasAttacked] = useState(false);
 
+	const canOtherAnimalsDefendKing = () => {
+		const king = getAnimalCard(animalIdInOppPSlot);
+		if (!king || king?.role !== KING) {
+			return false;
+		}
+		for (let i = 0; i < 3; i++) {
+			const animal = getAnimalCard(opponentPSlots[i]?.cardId);
+			if (animal?.role !== king.role && king.clan === animal?.clan) {
+				return true;
+			}
+		}
+		return false;
+	};
+
 	const isAttackAnimalEnabled =
+		round.nb != 1 &&
+		round.nb != 2 &&
 		round.player === playerType &&
 		currentPlayer.canAttack &&
 		!hasAttacked &&
@@ -91,7 +107,8 @@ export function GameView({
 		animalIdInCurrPSlot !== EMPTY &&
 		!_.isEmpty(animalIdInOppPSlot) &&
 		animalIdInOppPSlot !== EMPTY &&
-		currentPSlots[selectedCurrPSlotNb]?.canAttack;
+		currentPSlots[selectedCurrPSlotNb]?.canAttack &&
+		!canOtherAnimalsDefendKing();
 
 	const isOppSlotsEmpty =
 		!isAnimalCard(opponentPSlots[0]?.cardId) &&
@@ -99,6 +116,8 @@ export function GameView({
 		!isAnimalCard(opponentPSlots[2]?.cardId);
 
 	const isAttackOwnerEnabled =
+		round.nb != 1 &&
+		round.nb != 2 &&
 		round.player === playerType &&
 		currentPlayer.canAttack &&
 		!hasAttacked &&
