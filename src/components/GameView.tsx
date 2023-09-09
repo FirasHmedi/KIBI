@@ -339,8 +339,6 @@ export function GameView({
 			}}>
 			<OpponentPView player={opponentPlayer} />
 
-			<RoundView nb={round.nb} />
-
 			{showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
 
 			<BoardView
@@ -351,6 +349,7 @@ export function GameView({
 				selectOpponentSlot={setSelectedOppPSlotNb}
 				selectedGYAnimals={selectedGYAnimals}
 				setSelectedGYAnimals={setSelectedGYAnimals}
+				roundNb={round.nb}
 			/>
 
 			<CurrentPView

@@ -21,7 +21,7 @@ function Home() {
 
 	const createRoom = async () => {
 		const roomId = uuidv4();
-		const mainDeck: string[] = [..._.shuffle(getMainDeckFirstHalf()), ..._.shuffle(getMainDeckSecondHalf())];
+		const mainDeck: string[] = _.shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-3, 3);
 
 		await setItem(ROOMS_PATH + roomId, {
@@ -72,7 +72,7 @@ function Home() {
 	};
 
 	return (
-		<div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100vh', ...centerStyle }}>
+		<div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100%', ...centerStyle }}>
 			<div
 				style={{
 					display: 'flex',

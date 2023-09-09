@@ -36,8 +36,6 @@ export const centerStyle: React.CSSProperties = {
 export const appStyle: React.CSSProperties = {
 	backgroundColor: primary,
 	height: '100vh',
-	display: 'flex',
-	flexDirection: 'column',
 };
 
 export const headerStyle: React.CSSProperties = {
@@ -52,21 +50,21 @@ export const headerStyle: React.CSSProperties = {
 export const buttonStyle: React.CSSProperties = {
 	backgroundColor: violet,
 	color: 'white',
-	padding: 1,
 	borderRadius: 5,
 	fontWeight: 'bold',
-	paddingLeft: 4,
-	paddingRight: 4,
-	maxWidth: 150,
+	padding: 3,
+	paddingLeft: 5,
+	paddingRight: 5,
+	minWidth: '4vw',
 };
 
-export const slotStyle: React.CSSProperties = {
+export const boardSlotStyle: React.CSSProperties = {
 	...flexColumnStyle,
 	borderRadius: 5,
 	color: 'white',
 	fontSize: '0.85em',
-	height: '17.5vh',
-	width: '7.5vw',
+	height: '19vh',
+	width: '8vw',
 	flexShrink: 0,
 	border: 'solid 3px #95a5a6',
 };

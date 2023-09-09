@@ -6,7 +6,7 @@ import {
 	flexRowStyle,
 	neutralColor,
 	selectedColor,
-	slotStyle,
+	boardSlotStyle,
 	violet,
 } from '../styles/Style';
 import { ANIMALS_POINTS, CLANS, ClanName, animalsPics, getAnimalCard, getPowerCard, rolesIcons } from '../utils/data';
@@ -25,7 +25,7 @@ export const SlotBack = () => (
 			width: '2.5vw',
 			fontSize: '0.9em',
 		}}>
-		<h6>KIBI</h6>
+		<h6>K</h6>
 	</div>
 );
 
@@ -36,7 +36,7 @@ interface SlotProps {
 	nb?: number;
 }
 
-export const PowerSlot = ({
+export const PowerBoardSlot = ({
 	cardId,
 	select,
 	selected,
@@ -52,7 +52,7 @@ export const PowerSlot = ({
 	return (
 		<div
 			style={{
-				...slotStyle,
+				...boardSlotStyle,
 				backgroundColor: violet,
 				justifyContent: 'center',
 				borderColor: selected ? selectedColor : violet,
@@ -92,7 +92,7 @@ export const PowerDeckSlot = ({
 	);
 };
 
-export const AnimalSlot = ({
+export const AnimalBoardSlot = ({
 	cardId,
 	select,
 	selected,
@@ -101,36 +101,34 @@ export const AnimalSlot = ({
 	select: () => void;
 	selected?: boolean;
 }) => {
-	const { clan, name, ability, role } = getAnimalCard(cardId)!;
+	const { clan, name, role } = getAnimalCard(cardId)!;
 	const { hp, ap } = ANIMALS_POINTS[role];
 	return (
 		<div
 			style={{
-				...slotStyle,
+				...boardSlotStyle,
 				backgroundColor: CLANS[clan!]?.color,
 				justifyContent: 'space-between',
 				borderColor: selected ? selectedColor : CLANS[clan!]?.color,
+				paddingBottom: 2,
 			}}
 			onClick={() => select()}>
-			<h6 style={{ fontSize: '0.85em', paddingTop: 4 }}>{name?.toUpperCase()}</h6>
-
 			{!!name && name?.toLowerCase() in animalsPics && (
 				<img
 					src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-					style={{ height: 80, backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+					style={{ height: '15vh', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 			)}
 
-			{false && <h6 style={{ fontSize: '0.65em' }}>{ability}</h6>}
 			<div
 				style={{
 					...flexRowStyle,
 					width: '100%',
 					justifyContent: 'space-around',
 					alignItems: 'center',
-					paddingBottom: 4,
+					fontSize: '1.2em',
 				}}>
 				<h6>{ap} AP</h6>
-				<img src={rolesIcons[role]} style={{ width: 22, filter: 'brightness(0) invert(1)' }}></img>
+				<img src={rolesIcons[role]} style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
 				<h6>{hp} HP</h6>
 			</div>
 		</div>
@@ -175,7 +173,7 @@ export const AnimalDeckSlot = ({
 	);
 };
 
-export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
+export const BoardSlot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
 	const selectSlotPolished = () => {
 		if (!!selectSlot) {
 			selected ? selectSlot(undefined) : selectSlot(nb);
@@ -183,17 +181,17 @@ export const Slot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
 	};
 
 	if (cardId && isAnimalCard(cardId)) {
-		return <AnimalSlot cardId={cardId} select={selectSlotPolished} selected={selected} />;
+		return <AnimalBoardSlot cardId={cardId} select={selectSlotPolished} selected={selected} />;
 	}
 
 	if (cardId && isPowerCard(cardId)) {
-		return <PowerSlot cardId={cardId} select={selectSlotPolished} selected={selected} />;
+		return <PowerBoardSlot cardId={cardId} select={selectSlotPolished} selected={selected} />;
 	}
 
 	return (
 		<div
 			style={{
-				...slotStyle,
+				...boardSlotStyle,
 				backgroundColor: neutralColor,
 				justifyContent: 'center',
 				borderColor: selected ? selectedColor : neutralColor,
@@ -280,14 +278,14 @@ export const BoardSlots = ({
 		<div
 			style={{
 				...centerStyle,
-				width: '26vw',
+				width: '28.5vw',
 				justifyContent: 'space-evenly',
 			}}>
 			{compoundSlots.map((slot, index) => (
 				<div key={index} className={slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined}>
 					{current && <CanAttackIconsView slot={slot} />}
 
-					<Slot nb={index} selectSlot={selectSlot} cardId={slot?.cardId} selected={selectedSlotNb === index} />
+					<BoardSlot nb={index} selectSlot={selectSlot} cardId={slot?.cardId} selected={selectedSlotNb === index} />
 
 					{opponent && <CanAttackIconsView slot={slot} />}
 				</div>

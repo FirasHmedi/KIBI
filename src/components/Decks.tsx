@@ -13,7 +13,7 @@ export const CurrentPDeck = ({ cardsIds = [], setSelectedId, selectedId }: Curre
 		<div
 			style={{
 				...flexRowStyle,
-				width: '50vw',
+				width: '40vw',
 				overflowY: 'auto',
 			}}>
 			{cardsIds.map((cardId, index) => (
@@ -42,10 +42,9 @@ export const OpponentPDeck = ({ cardsNb = 0 }: { cardsNb: number }) => (
 
 export const MainDeck = ({ nbCards = 0 }: { nbCards: number }) => {
 	return (
-		<div style={{ width: '17vw', ...flexColumnStyle, color: violet, gap: 4 }}>
-			<h5>Main Deck</h5>
+		<div style={{ width: '17vw', ...flexColumnStyle, color: violet, gap: 2 }}>
+			<h5>Main Deck #{nbCards} </h5>
 			<SlotBack />
-			<h5>{nbCards} cards</h5>
 		</div>
 	);
 };

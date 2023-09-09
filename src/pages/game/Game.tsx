@@ -49,7 +49,7 @@ function GamePage() {
 				...centerStyle,
 				backgroundColor: '#ecf0f1',
 				justifyContent: 'flex-start',
-				height: '100vh',
+				height: '100%',
 				width: '100vw',
 			}}>
 			{isGameRunning(game?.status) && <GameContainer game={game!} roomId={roomId} playerType={playerType} />}

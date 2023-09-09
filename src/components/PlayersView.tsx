@@ -49,79 +49,80 @@ export const CurrentPView = ({
 			<div
 				style={{
 					...flexColumnStyle,
+					justifyContent: 'center',
 					position: 'absolute',
-					right: '10vw',
-					bottom: '3vh',
+					right: '26vw',
+					bottom: '29vh',
+					gap: 10,
 					width: '10vw',
-					gap: 6,
+					fontSize: '0.6em',
 				}}>
-				{!!nbCardsToPlay && isMyRound && <h5 style={{ color: violet }}>Play {nbCardsToPlay} cards</h5>}
 				<button
 					style={{
 						...buttonStyle,
-						fontSize: '0.7em',
-						backgroundColor: !isMyRound ? 'grey' : violet,
-					}}
-					disabled={!isMyRound}
-					onClick={() => finishRound()}>
-					Finish
-				</button>
-				<button
-					style={{
-						...buttonStyle,
-						fontSize: '0.7em',
-						backgroundColor: !isPlayCardEnabled ? 'grey' : violet,
-					}}
-					disabled={!isPlayCardEnabled}
-					onClick={() => playCard(selectedId)}>
-					Play card
-				</button>
-
-				<div
-					style={{
-						...flexColumnStyle,
-						justifyContent: 'space-evenly',
-						position: 'absolute',
-						right: '19vw',
-						bottom: '30vh',
-						gap: 8,
-						width: '7vw',
-					}}>
-					<button
-						style={{
-							...buttonStyle,
-							fontSize: '0.7em',
-							backgroundColor: !isAttackAnimalEnabled ? 'grey' : violet,
-						}}
-						disabled={!isAttackAnimalEnabled}
-						onClick={() => attackOpponentAnimal()}>
-						Strike animal
-					</button>
-					<button
-						style={{
-							...buttonStyle,
-							fontSize: '0.7em',
-							backgroundColor: !isAttackOwnerEnabled ? 'grey' : violet,
-						}}
-						disabled={!isAttackOwnerEnabled}
-						onClick={() => attackOppHp()}>
-						Strike directly
-					</button>
-				</div>
-
-				<button
-					style={{
-						...buttonStyle,
-						fontSize: '0.7em',
 						backgroundColor: disableEnv ? 'grey' : violet,
 					}}
 					disabled={disableEnv}
 					onClick={() => setElement()}>
-					Set element
+					SET ELEMENT
+				</button>
+				<button
+					style={{
+						...buttonStyle,
+						backgroundColor: !isAttackAnimalEnabled ? 'grey' : violet,
+					}}
+					disabled={!isAttackAnimalEnabled}
+					onClick={() => attackOpponentAnimal()}>
+					STRIKE ANIMAL
+				</button>
+				<button
+					style={{
+						...buttonStyle,
+						backgroundColor: !isAttackOwnerEnabled ? 'grey' : violet,
+					}}
+					disabled={!isAttackOwnerEnabled}
+					onClick={() => attackOppHp()}>
+					STRIKE PLAYER
+				</button>
+			</div>
+
+			<div
+				style={{
+					...flexColumnStyle,
+					position: 'absolute',
+					right: '18vw',
+					bottom: '3vh',
+					width: '10vw',
+					gap: 6,
+					fontSize: '0.6em',
+				}}>
+				{!!nbCardsToPlay && isMyRound && (
+					<h5 style={{ color: violet, width: '6vw', fontSize: '1.3em' }}>Play {nbCardsToPlay} cards</h5>
+				)}
+				<button
+					style={{
+						...buttonStyle,
+						backgroundColor: !isPlayCardEnabled ? 'grey' : violet,
+					}}
+					disabled={!isPlayCardEnabled}
+					onClick={() => playCard(selectedId)}>
+					PLAY CARD
+				</button>
+
+				<button
+					style={{
+						...buttonStyle,
+						backgroundColor: !isMyRound ? 'grey' : violet,
+					}}
+					disabled={!isMyRound}
+					onClick={() => finishRound()}>
+					FINISH
 				</button>
 			</div>
 			<PlayerDataView player={player} />
-			<ElementCard loadNb={player.envLoadNb} setElement={setElement} />
+			<div style={{ position: 'absolute', left: '22vw' }}>
+				<ElementCard loadNb={player.envLoadNb} setElement={setElement} />
+			</div>
 			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
 		</div>
 	);
@@ -154,12 +155,12 @@ const PlayerDataView = ({ player }: { player: Player }) => {
 				alignItems: 'flex-start',
 				justifyContent: 'center',
 			}}>
-			<h5>Player {playerType?.toUpperCase()}</h5>
+			<h4>{playerType?.toUpperCase()}</h4>
 			<progress style={{ width: '8vw' }} value={hp} max={hp > INITIAL_HP ? hp : INITIAL_HP} />
-			<h4 style={{ fontSize: '1em' }}>{hp} HP</h4>
-			{canAttack === false && <h5>Can't attack</h5>}
-			{canPlayPowers === false && <h5>Can't play power cards</h5>}
-			{isDoubleAP && <h5>King AP X 2</h5>}
+			<h4 style={{ fontSize: '1.1em' }}>{hp} HP</h4>
+			{canAttack === false && <h5>Blocked from attacking</h5>}
+			{canPlayPowers === false && <h5>Blocked from playing power cards</h5>}
+			{isDoubleAP && <h5>King AP X 2 in its element</h5>}
 		</div>
 	);
 };
@@ -172,8 +173,6 @@ const ElementCard = ({ loadNb = 0 }: any) => {
 				...deckSlotStyle,
 				justifyContent: 'center',
 				flexShrink: 0,
-				position: 'relative',
-				left: '-5vw',
 				borderColor: violet,
 				flex: 1,
 			}}>

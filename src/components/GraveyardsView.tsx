@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { flexRowStyle, violet } from '../styles/Style';
-import { DeckSlot, Slot } from './Slots';
+import { DeckSlot } from './Slots';
 
 export const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
 	<Graveyard name={'Power graveyard'} cardsIds={cardsIds} />

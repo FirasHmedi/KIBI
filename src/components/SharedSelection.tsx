@@ -12,7 +12,7 @@ import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, rolesIcons } from '../utils/data'
 import { getRoomPath, setItem } from '../utils/db';
 import { getOpponentIdFromCurrentId } from '../utils/helpers';
 import { AnimalCard, PlayerType } from '../utils/interface';
-import { PowerSlot } from './Slots';
+import { PowerBoardSlot } from './Slots';
 
 interface Props {
 	playerType: PlayerType;
@@ -74,7 +74,7 @@ export const SharedSelection = ({ playerType, roomId, oneCards, twoCards, player
 				alignItems: 'center',
 				flexDirection: 'column',
 				width: '100vw',
-				height: '90vh',
+				height: '80vh',
 				gap: 16,
 				marginTop: 10,
 			}}>
@@ -153,7 +153,7 @@ export const SharedSelection = ({ playerType, roomId, oneCards, twoCards, player
 				TEST CHOOSE
 			</button>
 			<div style={{ position: 'absolute', bottom: '2vh', left: '2vw' }}>
-				<h4 style={{ padding: 2 }}>Player {playerType}</h4>
+				<h4 style={{ padding: 2 }}>{playerType}</h4>
 			</div>
 		</div>
 	);
@@ -163,7 +163,7 @@ const PowerSelectionSlot = ({ id, idSelected, selectCard, myCards = [], oppCards
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 			{myCards.includes(id) ? <h5>For me</h5> : oppCards.includes(id) ? <h5>For Opponent</h5> : <h5></h5>}
-			<PowerSlot
+			<PowerBoardSlot
 				cardId={id}
 				selected={idSelected === id}
 				select={() => {

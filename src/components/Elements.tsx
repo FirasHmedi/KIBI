@@ -2,7 +2,7 @@ import { airColor, earthColor, fireColor, violet, waterColor } from '../styles/S
 import { ClanName } from '../utils/data';
 
 export const Seperator = ({ h }: { h?: string }) => {
-	const height = h ?? '3vh';
+	const height = h ?? '2vh';
 	return <div style={{ height }} />;
 };
 
@@ -53,16 +53,11 @@ export const ElementPopup = ({ changeElement }: { changeElement: (elementType: C
 export const RoundView = ({ nb = 1 }: { nb: number }) => (
 	<div
 		style={{
-			position: 'absolute',
-			left: '1vw',
-			top: 0,
-			bottom: 0,
-			margin: 'auto',
-			height: '4vh',
+			width: '17vw',
 			fontSize: '0.8em',
 			fontWeight: 'bold',
 			color: violet,
 		}}>
-		Round {Math.floor(nb / 2)}
+		ROUND #{Math.floor(nb / 2)}
 	</div>
 );

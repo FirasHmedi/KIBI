@@ -2,12 +2,13 @@ import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { isPowerCard } from '../utils/helpers';
 import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
-import { Seperator } from './Elements';
+import { RoundView, Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
 import { ElementSlot, BoardSlots, DeckSlot } from './Slots';
 
 interface Props {
 	board: Board;
+	roundNb: number;
 	selectOpponentSlot: (slotNb?: number) => void;
 	selectCurrentSlot: (slotNb?: number) => void;
 	selectedCurrentPSlotNb?: number;
@@ -24,6 +25,7 @@ export const BoardView = ({
 	selectedOpponentPSlotNb,
 	selectedGYAnimals,
 	setSelectedGYAnimals,
+	roundNb,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 	return (
@@ -31,11 +33,7 @@ export const BoardView = ({
 			style={{
 				...centerStyle,
 				flexDirection: 'row',
-				width: '90vw',
-				justifyContent: 'space-between',
 			}}>
-			<MainDeck nbCards={mainDeck.length} />
-
 			{isPowerCard(activeCardId) && <ActiveCardSlot cardId={activeCardId!} />}
 
 			<div
@@ -58,11 +56,15 @@ export const BoardView = ({
 				/>
 			</div>
 
-			<div style={{ position: 'absolute', left: '33vw' }}>
+			<div style={{ position: 'absolute', left: '31vw' }}>
 				<ElementSlot elementType={elementType} />
 			</div>
 
-			<div>
+			<div style={{ position: 'absolute', right: '3vw' }}>
+				<RoundView nb={roundNb} />
+				<Seperator />
+				<MainDeck nbCards={mainDeck.length} />
+				<Seperator />
 				<AnimalGraveyard cardsIds={animalGY} selectCards={setSelectedGYAnimals} selectedIds={selectedGYAnimals} />
 				<Seperator />
 				<PowerGraveyard cardsIds={powerGY} />
