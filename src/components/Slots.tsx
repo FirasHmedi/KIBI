@@ -108,15 +108,14 @@ export const AnimalBoardSlot = ({
 			style={{
 				...boardSlotStyle,
 				backgroundColor: CLANS[clan!]?.color,
-				justifyContent: 'space-between',
+				justifyContent: 'center',
 				borderColor: selected ? selectedColor : CLANS[clan!]?.color,
-				paddingBottom: 2,
 			}}
 			onClick={() => select()}>
 			{!!name && name?.toLowerCase() in animalsPics && (
 				<img
 					src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-					style={{ height: '15vh', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+					style={{ height: '13vh', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 			)}
 
 			<div
@@ -278,7 +277,7 @@ export const BoardSlots = ({
 		<div
 			style={{
 				...centerStyle,
-				width: '28.5vw',
+				width: '25vw',
 				justifyContent: 'space-evenly',
 			}}>
 			{compoundSlots.map((slot, index) => (

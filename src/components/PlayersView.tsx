@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { buttonStyle, deckSlotStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
-import { Player, PlayerType, Round } from '../utils/interface';
+import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
 
@@ -17,6 +17,7 @@ export const CurrentPView = ({
 	isAttackOwnerEnabled,
 	nbCardsToPlay,
 	setElement,
+	spectator,
 }: {
 	player: Player;
 	round: Round;
@@ -28,6 +29,7 @@ export const CurrentPView = ({
 	isAttackOwnerEnabled: boolean;
 	nbCardsToPlay: number;
 	setElement: () => void;
+	spectator?: boolean;
 }) => {
 	const { playerType, canPlayPowers } = player;
 	const cardsIds = player.cardsIds ?? [];
@@ -46,79 +48,84 @@ export const CurrentPView = ({
 				...flexRowStyle,
 				alignItems: 'center',
 			}}>
-			<div
-				style={{
-					...flexColumnStyle,
-					justifyContent: 'center',
-					position: 'absolute',
-					right: '26vw',
-					bottom: '29vh',
-					gap: 10,
-					width: '10vw',
-					fontSize: '0.6em',
-				}}>
-				<button
-					style={{
-						...buttonStyle,
-						backgroundColor: disableEnv ? 'grey' : violet,
-					}}
-					disabled={disableEnv}
-					onClick={() => setElement()}>
-					SET ELEMENT
-				</button>
-				<button
-					style={{
-						...buttonStyle,
-						backgroundColor: !isAttackAnimalEnabled ? 'grey' : violet,
-					}}
-					disabled={!isAttackAnimalEnabled}
-					onClick={() => attackOpponentAnimal()}>
-					STRIKE ANIMAL
-				</button>
-				<button
-					style={{
-						...buttonStyle,
-						backgroundColor: !isAttackOwnerEnabled ? 'grey' : violet,
-					}}
-					disabled={!isAttackOwnerEnabled}
-					onClick={() => attackOppHp()}>
-					STRIKE PLAYER
-				</button>
-			</div>
+			{!spectator && (
+				<>
+					<div
+						style={{
+							...flexColumnStyle,
+							justifyContent: 'center',
+							position: 'absolute',
+							right: '29vw',
+							bottom: '34vh',
+							gap: 10,
+							width: '10vw',
+							fontSize: '0.6em',
+						}}>
+						<button
+							style={{
+								...buttonStyle,
+								backgroundColor: disableEnv ? 'grey' : violet,
+							}}
+							disabled={disableEnv}
+							onClick={() => setElement()}>
+							SET ELEMENT
+						</button>
+						<button
+							style={{
+								...buttonStyle,
+								backgroundColor: !isAttackAnimalEnabled ? 'grey' : violet,
+							}}
+							disabled={!isAttackAnimalEnabled}
+							onClick={() => attackOpponentAnimal()}>
+							STRIKE ANIMAL
+						</button>
+						<button
+							style={{
+								...buttonStyle,
+								backgroundColor: !isAttackOwnerEnabled ? 'grey' : violet,
+							}}
+							disabled={!isAttackOwnerEnabled}
+							onClick={() => attackOppHp()}>
+							STRIKE PLAYER
+						</button>
+					</div>
 
-			<div
-				style={{
-					...flexColumnStyle,
-					position: 'absolute',
-					right: '18vw',
-					bottom: '3vh',
-					width: '10vw',
-					gap: 6,
-					fontSize: '0.6em',
-				}}>
-				{!!nbCardsToPlay && isMyRound && (
-					<h5 style={{ color: violet, width: '6vw', fontSize: '1.3em' }}>Play {nbCardsToPlay} cards</h5>
-				)}
-				<button
-					style={{
-						...buttonStyle,
-						backgroundColor: !isPlayCardEnabled ? 'grey' : violet,
-					}}
-					disabled={!isPlayCardEnabled}
-					onClick={() => playCard(selectedId)}>
-					PLAY CARD
-				</button>
+					<div
+						style={{
+							...flexColumnStyle,
+							position: 'absolute',
+							right: '18vw',
+							bottom: '6vh',
+							width: '10vw',
+							gap: 6,
+							fontSize: '0.6em',
+						}}>
+						{!!nbCardsToPlay && isMyRound && (
+							<h5 style={{ color: violet, width: '6vw', fontSize: '1.3em' }}>Play {nbCardsToPlay} cards</h5>
+						)}
+						<button
+							style={{
+								...buttonStyle,
+								backgroundColor: !isPlayCardEnabled ? 'grey' : violet,
+							}}
+							disabled={!isPlayCardEnabled}
+							onClick={() => playCard(selectedId)}>
+							PLAY CARD
+						</button>
 
-				<button
-					style={{
-						...buttonStyle,
-						backgroundColor: !isMyRound ? 'grey' : violet,
-					}}
-					disabled={!isMyRound}
-					onClick={() => finishRound()}>
-					FINISH
-				</button>
-			</div>
+						<button
+							style={{
+								...buttonStyle,
+								backgroundColor: !isMyRound ? 'grey' : violet,
+							}}
+							disabled={!isMyRound}
+							onClick={() => finishRound()}>
+							FINISH
+						</button>
+					</div>
+				</>
+			)}
+
 			<PlayerDataView player={player} />
 			<div style={{ position: 'absolute', left: '22vw' }}>
 				<ElementCard loadNb={player.envLoadNb} setElement={setElement} />

@@ -20,8 +20,8 @@ import {
 
 export const revertMainDeck = async (roomId: string) => {
 	const powerGY = (await getItemsOnce('rooms/' + roomId + '/board/powerGY')) as string[];
-	await setItem('rooms/' + roomId + '/board/', { powerGY: [] });
 	await setItem('rooms/' + roomId + '/board/', { mainDeck: _.shuffle(powerGY) });
+	await setItem('rooms/' + roomId + '/board/', { powerGY: [] });
 };
 
 export const enableAttackingAndPlayingPowerCards = async (roomId: string, playerType: string) => {

@@ -5,7 +5,17 @@ import { isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
 
-export function GameContainer({ game, playerType, roomId }: { game: Game; playerType: PlayerType; roomId: string }) {
+export function GameContainer({
+	game,
+	playerType,
+	roomId,
+	spectator,
+}: {
+	game: Game;
+	playerType: PlayerType;
+	roomId: string;
+	spectator?: boolean;
+}) {
 	const [board, setBoard] = useState<Board>();
 	const [round, setRound] = useState<Round>();
 	const [currentPlayer, setCurrPlayer] = useState<Player>();
@@ -26,6 +36,7 @@ export function GameContainer({ game, playerType, roomId }: { game: Game; player
 			currentPSlots: [],
 			opponentPSlots: [],
 		};
+		console.log(playerType, gameBoard);
 		const p1 = { ...game[PlayerType.ONE], playerType: PlayerType.ONE };
 		const p2 = { ...game[PlayerType.TWO], playerType: PlayerType.TWO };
 
@@ -46,13 +57,19 @@ export function GameContainer({ game, playerType, roomId }: { game: Game; player
 				opponentPSlots: gameBoard.one ?? [],
 			});
 		}
+
 		const newRound = game.round;
-		if (round) {
+		if (round && !spectator) {
 			checkAndDrawCardFromMainDeck(newRound);
 		}
 		setRound(newRound);
 
-		if (_.isEmpty(gameBoard?.mainDeck) && round?.player === playerType && !_.isEmpty(gameBoard?.powerGY)) {
+		if (
+			_.isEmpty(gameBoard?.mainDeck) &&
+			round?.player === playerType &&
+			!_.isEmpty(gameBoard?.powerGY) &&
+			!spectator
+		) {
 			revertMainDeck(roomId);
 		}
 	}, [game]);
@@ -72,6 +89,7 @@ export function GameContainer({ game, playerType, roomId }: { game: Game; player
 			board={board}
 			opponentPlayer={opponentPlayer}
 			currentPlayer={currentPlayer}
+			spectator={spectator}
 		/>
 	);
 }

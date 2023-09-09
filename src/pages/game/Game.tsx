@@ -11,7 +11,7 @@ import { Game, PlayerType } from '../../utils/interface';
 
 function GamePage() {
 	const location = useLocation();
-	const { roomId, playerType } = location.state;
+	const { roomId, playerType, spectator } = location.state;
 	const [game, setGame] = useState<Game>();
 
 	const subscribeToRoom = async () => {
@@ -23,6 +23,8 @@ function GamePage() {
 	}, []);
 
 	useEffect(() => {
+		if (spectator) return;
+
 		if (game?.one?.cardsIds?.length === 9 && game?.two?.cardsIds?.length === 9 && !isGameRunning(game?.status)) {
 			const powerNotChoosed = (game.initialPowers ?? [])?.find(
 				id => id !== game?.one?.cardsIds[8] || id !== game?.two?.cardsIds[8],
@@ -52,9 +54,11 @@ function GamePage() {
 				height: '100%',
 				width: '100vw',
 			}}>
-			{isGameRunning(game?.status) && <GameContainer game={game!} roomId={roomId} playerType={playerType} />}
+			{isGameRunning(game?.status) && (
+				<GameContainer game={game!} roomId={roomId} playerType={playerType} spectator={spectator} />
+			)}
 
-			{isGameInPreparation(game?.status) && (
+			{!spectator && isGameInPreparation(game?.status) && (
 				<div style={{ width: '100vw', color: violet }}>
 					<div
 						style={{

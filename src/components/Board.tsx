@@ -56,7 +56,7 @@ export const BoardView = ({
 				/>
 			</div>
 
-			<div style={{ position: 'absolute', left: '31vw' }}>
+			<div style={{ position: 'absolute', left: '34vw' }}>
 				<ElementSlot elementType={elementType} />
 			</div>
 

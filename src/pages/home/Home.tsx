@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { buttonStyle, centerStyle } from '../../styles/Style';
+import { buttonStyle, centerStyle, flexRowStyle } from '../../styles/Style';
 import {
 	ENV_MAX_LOAD,
 	INITIAL_HP,
@@ -51,7 +51,7 @@ function Home() {
 		});
 	};
 
-	const joinRoom = async () => {
+	const joinRoomAsPlayer = async () => {
 		if (roomId.length === 0) return;
 		await setItem(ROOMS_PATH + roomId + '/two', {
 			hp: INITIAL_HP,
@@ -71,6 +71,18 @@ function Home() {
 		});
 	};
 
+	const joinRoomAsSpectator = async () => {
+		if (roomId.length === 0) return;
+		setDisabledButton(true);
+		navigate('game/' + roomId, {
+			state: {
+				roomId: roomId,
+				spectator: true,
+				playerType: PlayerType.TWO,
+			},
+		});
+	};
+
 	return (
 		<div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100%', ...centerStyle }}>
 			<div
@@ -81,7 +93,7 @@ function Home() {
 					alignItems: 'center',
 					flexDirection: 'column',
 				}}>
-				<button style={{ ...buttonStyle, fontSize: 26, padding: 20 }} disabled={false} onClick={() => createRoom()}>
+				<button style={{ ...buttonStyle, fontSize: '1em', padding: 10 }} disabled={false} onClick={() => createRoom()}>
 					Create a room
 				</button>
 
@@ -102,12 +114,20 @@ function Home() {
 						disabled={disabledButton}
 						onChange={e => setRoomId(e.target.value)}
 					/>
-					<button
-						style={{ ...buttonStyle, fontSize: 26, padding: 20 }}
-						disabled={disabledButton}
-						onClick={() => joinRoom()}>
-						Join a room
-					</button>
+					<div style={{ width: '20vw', ...flexRowStyle, gap: 10 }}>
+						<button
+							style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
+							disabled={disabledButton}
+							onClick={() => joinRoomAsPlayer()}>
+							Join as player
+						</button>
+						<button
+							style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
+							disabled={disabledButton}
+							onClick={() => joinRoomAsSpectator()}>
+							Join as spectator
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

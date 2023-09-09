@@ -49,9 +49,9 @@ import {
 } from '../utils/data';
 import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Board, Player, Round } from '../utils/interface';
-import { addOneRound, addPowerToGraveYard, changeElementUnitAction } from '../utils/unitActions';
+import { addOneRound, addPowerToGraveYard } from '../utils/unitActions';
 import { BoardView } from './Board';
-import { ElementPopup, RoundView } from './Elements';
+import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 import { addSnapShot } from '../utils/logsSnapShot';
 
@@ -61,12 +61,14 @@ export function GameView({
 	board,
 	opponentPlayer,
 	currentPlayer,
+	spectator,
 }: {
 	round: Round;
 	roomId: string;
 	board: Board;
 	opponentPlayer: Player;
 	currentPlayer: Player;
+	spectator?: boolean;
 }) {
 	const { opponentPSlots, currentPSlots, elementType } = board;
 
@@ -266,6 +268,7 @@ export function GameView({
 	};
 
 	const setElement = () => {
+		if (spectator) return;
 		setShowEnvPopup(true);
 	};
 
@@ -339,7 +342,7 @@ export function GameView({
 			}}>
 			<OpponentPView player={opponentPlayer} />
 
-			{showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
+			{!spectator && showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
 
 			<BoardView
 				board={board}
@@ -363,6 +366,7 @@ export function GameView({
 				isAttackOwnerEnabled={isAttackOwnerEnabled}
 				nbCardsToPlay={nbCardsToPlay}
 				setElement={setElement}
+				spectator={spectator}
 			/>
 		</div>
 	);
