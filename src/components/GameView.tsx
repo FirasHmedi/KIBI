@@ -220,8 +220,8 @@ export function GameView({
 			case 'sacrif-anim-3hp':
 				await sacrificeAnimalToGet3Hp(roomId, playerType, animalIdInCurrPSlot, selectedCurrPSlotNb);
 				break;
-			case '2hp':
-				await shieldOwnerPlus2Hp(roomId, playerType);
+			case '3hp-dupl':
+				await shieldOwnerPlus3Hp(roomId, playerType);
 				break;
 			case '3hp':
 				await shieldOwnerPlus3Hp(roomId, playerType);

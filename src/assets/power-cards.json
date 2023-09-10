@@ -4,12 +4,12 @@
 		"description": "Cancel attacks for next turn (all animal attacks)",
 		"name": "Block all attacks for 1 turn"
 	},
-	"2hp": {
-		"ability": "+2hp to player",
-		"description": "give the owner +2 hp",
-		"name": "+2hp to player"
-	},
 	"3hp": {
+		"ability": "+3hp to player",
+		"description": "give the owner +3 hp",
+		"name": "+3hp to player"
+	},
+	"3hp-dupl": {
 		"ability": "+3hp to player",
 		"description": "give the owner +3 hp",
 		"name": "+3hp to player"

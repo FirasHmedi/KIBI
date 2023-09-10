@@ -146,19 +146,19 @@ export const returnOneAnimalFromGYToDeck = async (roomId: string, playerType: Pl
 export const resetBoard = async (
 	roomId: string,
 	playerType: PlayerType,
-	currentPSlots: SlotType[],
-	opponentPSlots: SlotType[],
+	currentPSlots: SlotType[] = [],
+	opponentPSlots: SlotType[] = [],
 ) => {
 	for (let i = 0; i < 3; i++) {
 		await removePlayerAnimalFromBoard(roomId, playerType, i);
-		if (!_.isEmpty(currentPSlots[i].cardId) && currentPSlots[i].cardId !== EMPTY) {
-			await addCardsToPlayerDeck(roomId, playerType, [currentPSlots[i].cardId]);
+		if (!_.isEmpty(currentPSlots[i]?.cardId) && currentPSlots[i]?.cardId !== EMPTY) {
+			await addCardsToPlayerDeck(roomId, playerType, [currentPSlots[i]?.cardId]);
 		}
 	}
 	for (let i = 0; i < 3; i++) {
 		await removePlayerAnimalFromBoard(roomId, getOpponentIdFromCurrentId(playerType), i);
-		if (!_.isEmpty(opponentPSlots[i].cardId) && opponentPSlots[i].cardId !== EMPTY) {
-			await addCardsToPlayerDeck(roomId, getOpponentIdFromCurrentId(playerType), [opponentPSlots[i].cardId]);
+		if (!_.isEmpty(opponentPSlots[i]?.cardId) && opponentPSlots[i]?.cardId !== EMPTY) {
+			await addCardsToPlayerDeck(roomId, getOpponentIdFromCurrentId(playerType), [opponentPSlots[i]?.cardId]);
 		}
 	}
 	await changeElement(roomId, NEUTRAL);
