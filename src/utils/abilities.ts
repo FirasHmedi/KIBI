@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { activateJokerAbility, drawCardFromMainDeck, setElementLoad } from './actions';
-import { ClanName, EMPTY, NEUTRAL } from './data';
+import { ClanName, EMPTY, NEUTRAL, getPowerCard } from './data';
 import { getBoardPath, getItemsOnce, getRoomPath, setItem } from './db';
 import { getOpponentIdFromCurrentId, isAnimalCard } from './helpers';
 import { PlayerType, SlotType } from './interface';
@@ -36,14 +36,26 @@ export const reviveLastPower = async (roomId: string, playerType: PlayerType) =>
 	}
 };
 
-export const sacrifice2HpToReviveAnyAnimal = async (
+export const reviveAnyPowerFor1hp = async (roomId: string, playerType: PlayerType, cardId: string) => {
+	if (!getPowerCard(cardId)) {
+		return;
+	}
+	const powerGY: string[] = await getItemsOnce(getBoardPath(roomId) + 'powerGY');
+	if (!_.isEmpty(powerGY) && powerGY.includes(cardId)) {
+		await removeHpFromPlayer(roomId, playerType, 1);
+		await deletePowerCardFromGraveYardById(roomId, cardId);
+		await addCardsToPlayerDeck(roomId, playerType, [cardId]);
+	}
+};
+
+export const sacrifice1HpToReviveAnyAnimal = async (
 	roomId: string,
 	playerType: PlayerType,
 	animalId?: string,
 	slotNb?: number,
 ) => {
 	if (!isAnimalCard(animalId) || _.isNil(slotNb)) return;
-	await removeHpFromPlayer(roomId, playerType, 2);
+	await removeHpFromPlayer(roomId, playerType, 1);
 	await deleteAnimalCardFromGraveYardById(roomId, animalId!);
 	await addAnimalToBoard(roomId, playerType, slotNb, animalId!, true);
 };
@@ -122,13 +134,8 @@ export const draw2Cards = async (roomId: string, playerType: PlayerType) => {
 	await drawCardFromMainDeck(roomId, playerType);
 };
 
-export const sacrifice1HpToAdd2animalsFromGYToDeck = async (
-	roomId: string,
-	playerType: PlayerType,
-	animalsIds: string[] = [],
-) => {
-	if (animalsIds.length != 2 && animalsIds.length != 1) return;
-	await removeHpFromPlayer(roomId, playerType, 1);
+export const return2animalsFromGYToDeck = async (roomId: string, playerType: PlayerType, animalsIds: string[] = []) => {
+	if (animalsIds.length != 2) return;
 	await deleteAnimalCardsFromGraveYardByIds(roomId, animalsIds);
 	await addCardsToPlayerDeck(roomId, playerType, animalsIds);
 };

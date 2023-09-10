@@ -2,36 +2,54 @@ import _ from 'lodash';
 import { flexRowStyle, violet } from '../styles/Style';
 import { DeckSlot } from './Slots';
 
-export const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => (
-	<Graveyard name={'Power graveyard'} cardsIds={cardsIds} />
+export const PowerGraveyard = ({
+	cardsIds,
+	selectedIds,
+	selectIds,
+}: {
+	cardsIds: string[];
+	selectedIds?: string[];
+	selectIds?: React.Dispatch<React.SetStateAction<string[]>>;
+}) => (
+	<Graveyard
+		name={'Power graveyard'}
+		cardsIds={cardsIds}
+		selectedIds={selectedIds}
+		selectIds={selectIds}
+		singleSelect={true}
+	/>
 );
 
 export const AnimalGraveyard = ({
 	cardsIds,
-	selectCards,
+	selectIds,
 	selectedIds,
 }: {
 	cardsIds: string[];
-	selectCards?: React.Dispatch<React.SetStateAction<string[] | undefined>>;
+	selectIds?: React.Dispatch<React.SetStateAction<string[]>>;
 	selectedIds?: string[];
-}) => <Graveyard name={'Animal graveyard'} cardsIds={cardsIds} selectCards={selectCards} selectedIds={selectedIds} />;
+}) => <Graveyard name={'Animal graveyard'} cardsIds={cardsIds} selectIds={selectIds} selectedIds={selectedIds} />;
 
 export const Graveyard = ({
 	name,
 	cardsIds = [],
-	selectCards,
+	selectIds,
 	selectedIds = [],
+	singleSelect = false,
 }: {
 	name: string;
 	cardsIds: string[];
-	selectCards?: React.Dispatch<React.SetStateAction<string[] | undefined>>;
+	selectIds?: React.Dispatch<React.SetStateAction<string[]>>;
 	selectedIds?: string[];
+	singleSelect?: boolean;
 }) => {
 	const selectCardsPolished = (cardId: string) => {
-		if (!selectCards) return;
+		if (!selectIds) return;
 		selectedIds.includes(cardId)
-			? selectCards(ids => ids?.filter(id => cardId != id))
-			: selectCards(ids => [...(ids ?? []), cardId]);
+			? selectIds(ids => ids?.filter(id => cardId != id))
+			: singleSelect
+			? selectIds([cardId])
+			: selectIds(ids => [...(ids ?? []), cardId]);
 	};
 
 	return (

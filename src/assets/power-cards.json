@@ -19,10 +19,10 @@
 		"description": "Draw 2 cards from the main deck",
 		"name": "Draw 2 cards from main deck"
 	},
-	"2-anim-1hp": {
-		"ability": "Return 2 dead animals to deck for 1HP",
-		"description": "Sacrifice 1hp to return 2 animals to deck from animal graveyard",
-		"name": "Return 2 dead animals to deck for 1HP"
+	"2-anim-gy": {
+		"ability": "Return 2 dead animals to deck",
+		"description": "Return 2 animals to deck from animal graveyard",
+		"name": "Return 2 dead animals to deck"
 	},
 	"load-env": {
 		"ability": "Load the element card",
@@ -34,11 +34,6 @@
 		"description": "Block opponent from using power cards",
 		"name": "Block using power cards for 1 turn"
 	},
-	"1-anim-deck": {
-		"ability": "Return 1 dead animal to deck",
-		"description": "Return 1 animal to deck from animal graveyard",
-		"name": "Return 1 dead animal to deck"
-	},
 	"reset-board": {
 		"ability": "Reset Board (animals, env)",
 		"description": "Reset Board (animals, env)",
@@ -49,30 +44,35 @@
 		"description": "Place an active king on board",
 		"name": "Place an active king on board"
 	},
+	"place-2-anim-1-hp": {
+		"ability": "Place 2 animals on board for 1hp",
+		"description": "Place 2 animals on board for 1hp",
+		"name": "Place 2 animals on board for 1hp"
+	},
 	"double-king-ap": {
 		"ability": "Double king ability in its env",
 		"description": "Double king ability in its env",
 		"name": "Double king ability in its env"
 	},
 	"rev-last-pow": {
-		"ability": "Revive last power card",
-		"description": "Revive last power card (activate directly)",
-		"name": "Revive last power card"
+		"ability": "Activate last power card",
+		"description": "Activate last power card (activate directly)",
+		"name": "Activate last power card"
 	},
-	"rev-anim-2hp": {
-		"ability": "Revive any animal for 2HP",
-		"description": "Sacrifice 2 hp to revive any animal, can attack",
-		"name": "Revive any animal for 2HP"
+	"rev-any-pow-1hp": {
+		"ability": "Activate any power card for 1hp",
+		"description": "Activate any power card for 1hp",
+		"name": "Activate any power card for 1hp"
+	},
+	"rev-any-anim-1hp": {
+		"ability": "Revive any animal for 1HP",
+		"description": "Sacrifice 1 hp to revive any animal, can attack",
+		"name": "Revive any animal for 1HP"
 	},
 	"steal-anim-3hp": {
 		"ability": "Steal animal opponent for 3hp",
 		"description": "Sacrifice 3 hp to switch side of an opponent animal",
 		"name": "Steal animal opponent for 3hp"
-	},
-	"rev-last-anim-1p": {
-		"ability": "Revive last animal for 1HP",
-		"description": "Sacrifice 1hp to Revive last animal card (can attack)",
-		"name": "Revive last animal for 1HP"
 	},
 	"switch-decks": {
 		"ability": "Switch decks of players",

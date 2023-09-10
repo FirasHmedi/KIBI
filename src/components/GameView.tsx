@@ -8,16 +8,15 @@ import {
 	draw2Cards,
 	handleKingAbility,
 	resetBoard,
-	returnOneAnimalFromGYToDeck,
 	reviveLastPower,
-	sacrifice1HpToAdd2animalsFromGYToDeck,
+	return2animalsFromGYToDeck,
 	sacrifice1HpToReviveLastAnimal,
-	sacrifice2HpToReviveAnyAnimal,
+	sacrifice1HpToReviveAnyAnimal,
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
-	shieldOwnerPlus2Hp,
 	shieldOwnerPlus3Hp,
 	switchDeck,
+	reviveAnyPowerFor1hp,
 } from '../utils/abilities';
 import {
 	activateJokerAbility,
@@ -74,7 +73,8 @@ export function GameView({
 
 	const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
 	const [selectedOppPSlotNb, setSelectedOppPSlotNb] = useState<number>();
-	const [selectedGYAnimals, setSelectedGYAnimals] = useState<string[]>();
+	const [selectedGYAnimals, setSelectedGYAnimals] = useState<string[]>([]);
+	const [selectedGYPower, setSelectedGYPower] = useState<string[]>([]);
 	const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
 	const [canPlaceKingWithoutSacrifice, setCanPlaceKingWithoutSacrifice] = useState<boolean>(false);
 	const playerType = currentPlayer.playerType!;
@@ -82,6 +82,7 @@ export function GameView({
 	const animalIdInCurrPSlot = currentPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
 	const [hasAttacked, setHasAttacked] = useState(false);
+	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
 
 	const canOtherAnimalsDefendKing = () => {
 		const king = getAnimalCard(animalIdInOppPSlot);
@@ -143,7 +144,7 @@ export function GameView({
 
 		if (role === KING) {
 			const sacrificedAnimal = getAnimalCard(animalIdInCurrPSlot);
-			if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
+			if (twoAnimalsToPlace === 0 && !canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
 				return;
 			}
 			await handlePlacingKing(cardId, clan);
@@ -155,15 +156,13 @@ export function GameView({
 			await activateJokerAbility(roomId, cardId, playerType);
 		}
 
+		setTwoAnimalsToPlace(animalsNb => (animalsNb > 1 ? animalsNb - 1 : 0));
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 	};
 
 	const isPowerCardPlayable = (cardId: string) => {
 		switch (getOriginalCardId(cardId!)) {
-			case 'rev-anim-2hp':
-				if (selectedGYAnimals?.length != 1 || _.isNil(selectedCurrPSlotNb)) return false;
-				break;
-			case 'rev-last-anim-1p':
+			case 'rev-any-anim-1hp':
 				if (_.isNil(selectedCurrPSlotNb) || selectedGYAnimals?.length != 1) return false;
 				break;
 			case 'steal-anim-3hp':
@@ -178,11 +177,14 @@ export function GameView({
 			case 'sacrif-anim-3hp':
 				if (_.isNil(selectedCurrPSlotNb) || animalIdInCurrPSlot === EMPTY) return false;
 				break;
-			case '2-anim-1hp':
+			case '2-anim-gy':
 				if (selectedGYAnimals?.length != 2) return false;
 				break;
-			case '1-anim-deck':
-				if (!selectedGYAnimals || selectedGYAnimals?.length != 1) return false;
+			case 'rev-any-pow-1-hp':
+				if (_.isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
+				break;
+			case 'rev-any-pow-1-hp':
+				if (_.isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
 				break;
 		}
 		return true;
@@ -205,8 +207,12 @@ export function GameView({
 				await reviveLastPower(roomId, playerType);
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
-			case 'rev-anim-2hp':
-				await sacrifice2HpToReviveAnyAnimal(roomId, playerType, selectedGYAnimals![0], selectedCurrPSlotNb!);
+			case 'rev-any-pow-1-hp':
+				await reviveAnyPowerFor1hp(roomId, playerType, selectedGYPower[0]);
+				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
+				break;
+			case 'rev-any-anim-1hp':
+				await sacrifice1HpToReviveAnyAnimal(roomId, playerType, selectedGYAnimals![0], selectedCurrPSlotNb!);
 				break;
 			case 'steal-anim-3hp':
 				await sacrifice3HpToSteal(roomId, playerType, animalIdInOppPSlot, selectedOppPSlotNb!, selectedCurrPSlotNb!);
@@ -229,14 +235,11 @@ export function GameView({
 			case 'draw-2':
 				await draw2Cards(roomId, playerType);
 				break;
-			case '2-anim-1hp':
-				await sacrifice1HpToAdd2animalsFromGYToDeck(roomId, playerType, selectedGYAnimals);
+			case '2-anim-gy':
+				await return2animalsFromGYToDeck(roomId, playerType, selectedGYAnimals);
 				break;
 			case 'block-pow':
 				await cancelUsingPowerCards(roomId, getOpponentIdFromCurrentId(playerType));
-				break;
-			case '1-anim-deck':
-				await returnOneAnimalFromGYToDeck(roomId, playerType, selectedGYAnimals![0]);
 				break;
 			case 'reset-board':
 				await resetBoard(roomId, playerType, currentPSlots, opponentPSlots);
@@ -250,6 +253,10 @@ export function GameView({
 				break;
 			case 'load-env':
 				await setElementLoad(roomId, playerType, 3);
+				break;
+			case 'place-2-anim-1-hp':
+				setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay ?? 0) + 2);
+				setTwoAnimalsToPlace(2);
 				break;
 		}
 
@@ -275,10 +282,18 @@ export function GameView({
 	const playCard = async (cardId?: string) => {
 		if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
 
+		if (!_.isEmpty(selectedGYPower) && cardId !== selectedGYPower[0]) return;
+
+		if (selectedGYPower[0] === cardId) {
+			setSelectedGYPower([]);
+		}
+
 		if (isAnimalCard(cardId) && selectedCurrPSlotNb != null) {
 			await playAnimalCard(cardId!);
 			return;
 		}
+
+		if (twoAnimalsToPlace > 0) return;
 
 		if (isPowerCard(cardId)) {
 			await playPowerCard(cardId!);
@@ -352,6 +367,8 @@ export function GameView({
 				selectOpponentSlot={setSelectedOppPSlotNb}
 				selectedGYAnimals={selectedGYAnimals}
 				setSelectedGYAnimals={setSelectedGYAnimals}
+				selectedGYPower={selectedGYPower}
+				setSelectedGYPower={setSelectedGYPower}
 				roundNb={round.nb}
 			/>
 

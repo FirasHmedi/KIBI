@@ -13,7 +13,7 @@ export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const ROOMS_PATH = 'rooms/';
 
-export const INITIAL_HP = 8;
+export const INITIAL_HP = 10;
 
 export const ENV_MAX_LOAD = 3; // each turn get 1
 
