@@ -7,27 +7,28 @@ export const addSnapShot = async (roomId: string) => {
 	try {
 		const game: Game = await getItemsOnce(getRoomPath(roomId));
 		const { board, one, two, round } = game ?? {};
-		await setItem('logs/' + roomId + '/snapShot', {
+		const snapshot = {
 			[round?.nb]: {
 				boards: {
 					one: transformBoardCardIdToCardName(board?.one),
 					two: transformBoardCardIdToCardName(board?.two),
-					animalGY: (board?.animalGY ?? []).map(cardId => getAnimalCard(cardId)?.name),
-					powerGY: (board?.powerGY ?? []).map(cardId => getPowerCard(cardId)?.name),
+					animalGY: (board?.animalGY ?? []).map(cardId => getAnimalCard(cardId)?.name ?? 'empty'),
+					powerGY: (board?.powerGY ?? []).map(cardId => getPowerCard(cardId)?.name ?? 'empty'),
 					env: board?.elementType ?? 'empty',
 				},
 				playerTurn: round?.player,
 				one: {
 					hp: one?.hp,
-					cards: (one?.cardsIds ?? []).map(cardId => getCard(cardId)?.name),
+					cards: (one?.cardsIds ?? []).map(cardId => getCard(cardId)?.name ?? 'empty'),
 				},
 				two: {
 					hp: two?.hp,
-					cards: (two?.cardsIds ?? []).map(cardId => getCard(cardId)?.name),
+					cards: (two?.cardsIds ?? []).map(cardId => getCard(cardId)?.name ?? 'empty'),
 				},
 				time: new Date().toTimeString(),
 			},
-		});
+		};
+		await setItem('logs/' + roomId + '/snapShot', snapshot);
 	} catch (e) {
 		console.error(e);
 	}
@@ -35,7 +36,7 @@ export const addSnapShot = async (roomId: string) => {
 export const transformBoardCardIdToCardName = (slots: SlotType[] = []) => {
 	return slots?.map(slot => ({
 		cardName: isAnimalCard(slot.cardId) ? getAnimalCard(slot.cardId)?.name : 'empty',
-		canAttack: slot?.canAttack,
+		canAttack: !!slot?.canAttack,
 		hasAttacked: !!slot?.hasAttacked,
 	}));
 };

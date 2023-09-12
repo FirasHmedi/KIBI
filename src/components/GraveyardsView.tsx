@@ -56,9 +56,8 @@ export const Graveyard = ({
 		<div style={{ width: '17vw', color: violet }}>
 			<h5 style={{ marginBottom: 4 }}>
 				{name} #{cardsIds.length}
-				<br />
-				{!_.isEmpty(selectedIds) && <h5>{selectedIds.length} selected</h5>}
 			</h5>
+			{!_.isEmpty(selectedIds) && <h5>{selectedIds.length} selected</h5>}
 			{cardsIds.length > 0 ? (
 				<div style={{ ...flexRowStyle, overflowY: 'auto' }}>
 					{cardsIds.map((cardId, index) => (

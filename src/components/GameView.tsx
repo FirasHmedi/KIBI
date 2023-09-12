@@ -163,7 +163,8 @@ export function GameView({
 	const isPowerCardPlayable = (cardId: string) => {
 		switch (getOriginalCardId(cardId!)) {
 			case 'rev-any-anim-1hp':
-				if (_.isNil(selectedCurrPSlotNb) || selectedGYAnimals?.length != 1) return false;
+				if (_.isNil(selectedCurrPSlotNb) || _.isEmpty(selectedGYAnimals) || selectedGYAnimals?.length != 1)
+					return false;
 				break;
 			case 'steal-anim-3hp':
 				if (
@@ -180,10 +181,7 @@ export function GameView({
 			case '2-anim-gy':
 				if (selectedGYAnimals?.length != 2) return false;
 				break;
-			case 'rev-any-pow-1-hp':
-				if (_.isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
-				break;
-			case 'rev-any-pow-1-hp':
+			case 'rev-any-pow-1hp':
 				if (_.isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
 				break;
 		}
@@ -207,7 +205,7 @@ export function GameView({
 				await reviveLastPower(roomId, playerType);
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
-			case 'rev-any-pow-1-hp':
+			case 'rev-any-pow-1hp':
 				await reviveAnyPowerFor1hp(roomId, playerType, selectedGYPower[0]);
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
@@ -217,17 +215,11 @@ export function GameView({
 			case 'steal-anim-3hp':
 				await sacrifice3HpToSteal(roomId, playerType, animalIdInOppPSlot, selectedOppPSlotNb!, selectedCurrPSlotNb!);
 				break;
-			case 'rev-last-anim-1p':
-				await sacrifice1HpToReviveLastAnimal(roomId, playerType, selectedCurrPSlotNb);
-				break;
 			case 'switch-decks':
 				await switchDeck(roomId);
 				break;
 			case 'sacrif-anim-3hp':
 				await sacrificeAnimalToGet3Hp(roomId, playerType, animalIdInCurrPSlot, selectedCurrPSlotNb);
-				break;
-			case '3hp-dupl':
-				await shieldOwnerPlus3Hp(roomId, playerType);
 				break;
 			case '3hp':
 				await shieldOwnerPlus3Hp(roomId, playerType);
@@ -282,7 +274,8 @@ export function GameView({
 	const playCard = async (cardId?: string) => {
 		if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
 
-		if (!_.isEmpty(selectedGYPower) && cardId !== selectedGYPower[0]) return;
+		if (!_.isEmpty(selectedGYPower) && cardId !== selectedGYPower[0] && getOriginalCardId(cardId) !== 'rev-any-pow-1hp')
+			return;
 
 		if (selectedGYPower[0] === cardId) {
 			setSelectedGYPower([]);

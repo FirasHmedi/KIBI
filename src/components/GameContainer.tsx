@@ -36,7 +36,7 @@ export function GameContainer({
 			currentPSlots: [],
 			opponentPSlots: [],
 		};
-		console.log(playerType, gameBoard);
+
 		const p1 = { ...game[PlayerType.ONE], playerType: PlayerType.ONE };
 		const p2 = { ...game[PlayerType.TWO], playerType: PlayerType.TWO };
 
