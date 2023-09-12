@@ -118,6 +118,11 @@ export function GameView({
 		!isAnimalCard(opponentPSlots[1]?.cardId) &&
 		!isAnimalCard(opponentPSlots[2]?.cardId);
 
+	const isAllOppSlotsFilled =
+		isAnimalCard(opponentPSlots[0]?.cardId) &&
+		isAnimalCard(opponentPSlots[1]?.cardId) &&
+		isAnimalCard(opponentPSlots[2]?.cardId);
+
 	const isAttackOwnerEnabled =
 		round.nb != 1 &&
 		round.nb != 2 &&
@@ -128,7 +133,8 @@ export function GameView({
 		isAnimalCard(animalIdInCurrPSlot) &&
 		!_.isNil(selectedCurrPSlotNb) &&
 		((isKing(animalIdInCurrPSlot) && isAnimalInEnv(animalIdInCurrPSlot, elementType)) || isOppSlotsEmpty) &&
-		currentPSlots[selectedCurrPSlotNb]?.canAttack;
+		currentPSlots[selectedCurrPSlotNb]?.canAttack &&
+		!isAllOppSlotsFilled;
 
 	const handlePlacingKing = async (cardId: string, clan: ClanName): Promise<void> => {
 		if (canPlaceKingWithoutSacrifice) {
