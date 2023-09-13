@@ -137,7 +137,7 @@ export function GameView({
 		!isAllOppSlotsFilled;
 
 	const handlePlacingKing = async (cardId: string, clan: ClanName): Promise<void> => {
-		if (canPlaceKingWithoutSacrifice) {
+		if (canPlaceKingWithoutSacrifice || twoAnimalsToPlace > 0) {
 			await placeKingWithoutSacrifice(roomId, playerType, cardId, selectedCurrPSlotNb!);
 			setCanPlaceKingWithoutSacrifice(false);
 		} else {
@@ -189,6 +189,9 @@ export function GameView({
 				break;
 			case 'rev-any-pow-1hp':
 				if (_.isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
+				break;
+			case 'place-2-anim-1-hp':
+				if ((currentPlayer.cardsIds ?? []).filter(id => isAnimalCard(id))?.length <= 2) return false;
 				break;
 		}
 		return true;
