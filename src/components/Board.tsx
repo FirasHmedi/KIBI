@@ -50,6 +50,7 @@ export const BoardView = ({
 					selectSlot={selectOpponentSlot}
 					selectedSlotNb={selectedOpponentPSlotNb}
 					opponent={true}
+					elementType={elementType}
 				/>
 				<Seperator />
 				<BoardSlots
@@ -57,6 +58,7 @@ export const BoardView = ({
 					selectSlot={selectCurrentSlot}
 					selectedSlotNb={selectedCurrentPSlotNb}
 					current={true}
+					elementType={elementType}
 				/>
 			</div>
 
