@@ -3,7 +3,9 @@ export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
 export const black = '#000000';
 export const primaryBlue = '#2980b9';
-export const violet = '#8e44ad';
+export const violet: string = '#8e44ad';
+
+export const greyBackground = '#ecf0f1';
 
 export const waterColor = '#2980b9';
 export const fireColor = '#c0392b';
@@ -63,10 +65,10 @@ export const boardSlotStyle: React.CSSProperties = {
 	borderRadius: 5,
 	color: 'white',
 	fontSize: '0.85em',
-	height: '16vh',
+	height: '17vh',
 	width: '7vw',
 	flexShrink: 0,
-	border: 'solid 3px #95a5a6',
+	border: 'solid 2px #95a5a6',
 };
 
 export const deckSlotStyle: React.CSSProperties = {
@@ -74,8 +76,8 @@ export const deckSlotStyle: React.CSSProperties = {
 	borderRadius: 5,
 	color: 'white',
 	fontSize: '0.85em',
-	height: '13vh',
-	width: '5vw',
+	height: '15vh',
+	width: '6vw',
 	flexShrink: 0,
 	border: 'solid 3px #95a5a6',
 };

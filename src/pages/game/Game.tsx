@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameContainer } from '../../components/GameContainer';
 import { SharedSelection } from '../../components/SharedSelection';
-import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
+import { centerStyle, flexColumnStyle, greyBackground, violet } from '../../styles/Style';
 import { ROOMS_PATH, RUNNING } from '../../utils/data';
 import { getBoardPath, setItem, subscribeToItems } from '../../utils/db';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
@@ -49,17 +49,16 @@ function GamePage() {
 			style={{
 				...flexColumnStyle,
 				...centerStyle,
-				backgroundColor: '#ecf0f1',
+				backgroundColor: greyBackground,
 				justifyContent: 'flex-start',
 				height: '100%',
-				width: '100vw',
 			}}>
 			{isGameRunning(game?.status) && (
 				<GameContainer game={game!} roomId={roomId} playerType={playerType} spectator={spectator} />
 			)}
 
 			{!spectator && isGameInPreparation(game?.status) && (
-				<div style={{ width: '100vw', color: violet }}>
+				<div style={{ color: violet }}>
 					<div
 						style={{
 							display: 'flex',

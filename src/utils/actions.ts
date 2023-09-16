@@ -58,12 +58,7 @@ export const placeKingOnBoard = async (
 	if (!king || !sacrificedAnimal || king.clan !== sacrificedAnimal.clan) return;
 	const isRemoved = await removePlayerAnimalFromBoard(roomId, playerType, slotNb);
 	if (isRemoved) {
-		const elementType = await getElementType(roomId);
-		if (elementType != sacrificedAnimal.clan) {
-			await addAnimalToGraveYard(roomId, sacrificedAnimalId);
-		} else {
-			await returnAnimalToDeck(roomId, playerType, sacrificedAnimalId);
-		}
+		await addAnimalToGraveYard(roomId, sacrificedAnimalId);
 		await removeCardFromPlayerDeck(roomId, playerType, kingId);
 		await addAnimalToBoard(roomId, playerType, slotNb, kingId, true);
 	}

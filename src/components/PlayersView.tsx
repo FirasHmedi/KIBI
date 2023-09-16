@@ -5,6 +5,7 @@ import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
+import ProgressBar from '@ramonak/react-progress-bar';
 
 export const CurrentPView = ({
 	player,
@@ -47,6 +48,8 @@ export const CurrentPView = ({
 			style={{
 				...flexRowStyle,
 				alignItems: 'center',
+				width: '100%',
+				justifyContent: 'space-around',
 			}}>
 			{!spectator && (
 				<>
@@ -56,7 +59,7 @@ export const CurrentPView = ({
 							justifyContent: 'center',
 							position: 'absolute',
 							right: '29vw',
-							bottom: '34vh',
+							bottom: '31vh',
 							gap: 10,
 							width: '10vw',
 							fontSize: '0.6em',
@@ -95,7 +98,7 @@ export const CurrentPView = ({
 							...flexColumnStyle,
 							position: 'absolute',
 							right: '18vw',
-							bottom: '6vh',
+							bottom: '5vh',
 							width: '10vw',
 							gap: 6,
 							fontSize: '0.6em',
@@ -127,10 +130,8 @@ export const CurrentPView = ({
 			)}
 
 			<PlayerDataView player={player} />
-			<div style={{ position: 'absolute', left: '22vw' }}>
-				<ElementCard loadNb={player.envLoadNb} setElement={setElement} />
-			</div>
 			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
+			<EmptyElement />
 		</div>
 	);
 };
@@ -141,61 +142,69 @@ export const OpponentPView = ({ player }: { player: Player }) => {
 			style={{
 				...flexRowStyle,
 				alignItems: 'center',
+				width: '100%',
+				justifyContent: 'space-around',
 			}}>
 			<PlayerDataView player={player} />
 			<OpponentPDeck cardsNb={player?.cardsIds?.length} />
+			<EmptyElement />
 		</div>
 	);
 };
 
+export const EmptyElement = ({ width = '11vw' }: any) => {
+	return <div style={{ width }}></div>;
+};
+
 const PlayerDataView = ({ player }: { player: Player }) => {
-	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack } = player;
+	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack, envLoadNb } = player;
 	return (
 		<div
 			style={{
 				color: violet,
-				position: 'absolute',
-				left: '1vw',
 				fontSize: '0.9em',
 				display: 'flex',
 				flexDirection: 'column',
 				alignItems: 'flex-start',
 				justifyContent: 'center',
+				gap: 12,
+				width: '11vw',
 			}}>
 			<h4>{playerType?.toUpperCase()}</h4>
-			<progress style={{ width: '8vw' }} value={hp} max={hp > INITIAL_HP ? hp : INITIAL_HP} />
-			<h4 style={{ fontSize: '1.1em' }}>{hp} HP</h4>
-			{canAttack === false && <h5>Blocked from attacking</h5>}
-			{canPlayPowers === false && <h5>Blocked from playing power cards</h5>}
-			{isDoubleAP && <h5>King AP X 2 in its element</h5>}
-		</div>
-	);
-};
 
-const ElementCard = ({ loadNb = 0 }: any) => {
-	const disableUsage = loadNb !== 3;
-	return (
-		<div
-			style={{
-				...deckSlotStyle,
-				justifyContent: 'center',
-				flexShrink: 0,
-				borderColor: violet,
-				flex: 1,
-			}}>
-			<div style={{ backgroundColor: disableUsage ? 'grey' : violet, width: '100%', flex: 1 }}> </div>
-			<div
-				style={{
-					backgroundColor: loadNb >= 2 ? violet : 'grey',
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					width: '100%',
-					flex: 1,
-				}}>
-				{disableUsage ? <h5>Element loading</h5> : <h5>Element ready</h5>}
+			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
+				<h4 style={{ fontSize: '1.1em' }}>{hp}HP</h4>
+				<ProgressBar
+					bgColor={violet}
+					maxCompleted={hp > INITIAL_HP ? hp : INITIAL_HP}
+					width='7vw'
+					height='1.4vh'
+					baseBgColor={'grey'}
+					isLabelVisible={false}
+					completed={hp}></ProgressBar>
 			</div>
-			<div style={{ flex: 1, backgroundColor: loadNb >= 1 ? violet : 'grey', width: '100%' }}> </div>
+
+			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
+				{envLoadNb !== 3 ? <h5>Element loading</h5> : <h5>Element ready</h5>}
+				<ProgressBar
+					bgColor={violet}
+					maxCompleted={3}
+					width='3vw'
+					height='1.4vh'
+					baseBgColor={'grey'}
+					isLabelVisible={false}
+					completed={envLoadNb}></ProgressBar>
+			</div>
+
+			{!canAttack === false && canPlayPowers === false ? (
+				<h5>Blocked from attacking and playing power cards</h5>
+			) : canAttack === false ? (
+				<h5>Blocked from attacking</h5>
+			) : canPlayPowers === false ? (
+				<h5>Blocked from playing power cards</h5>
+			) : null}
+
+			{isDoubleAP && <h5>King AP X 2 in its element</h5>}
 		</div>
 	);
 };

@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
 import { appStyle, violet } from '../styles/Style';
 import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
 import MenuIcon from '@mui/icons-material/Menu';
+import Sidebar from '../components/Sidebar';
 
 const Layout = ({ children }: any) => {
+	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+	const toggleSidebar = () => {
+		setIsSidebarOpen(!isSidebarOpen);
+	};
+
 	return (
 		<div style={appStyle}>
 			<div
@@ -17,10 +24,15 @@ const Layout = ({ children }: any) => {
 					display: 'flex',
 					alignItems: 'center',
 				}}>
-				<MenuIcon style={{ color: 'white', paddingLeft: '1vw' }} />
+				<button onClick={toggleSidebar}>
+					<MenuIcon style={{ color: 'white', paddingLeft: '1vw' }} />
+				</button>
 				<h4 style={{ paddingLeft: '1vw' }}>KIBI</h4>
 			</div>
-			<div style={{ height: '94vh' }}>{children}</div>
+			<div style={{ display: 'flex', flexDirection: 'row' }}>
+				{isSidebarOpen && <Sidebar />}
+				<div style={{ height: '94vh', width: isSidebarOpen ? '85vw' : '100vw' }}>{children}</div>
+			</div>
 		</div>
 	);
 };

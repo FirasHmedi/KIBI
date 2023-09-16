@@ -351,7 +351,7 @@ export function GameView({
 		<div
 			style={{
 				...flexColumnStyle,
-				width: '100vw',
+				width: '100%',
 				height: '96vh',
 				justifyContent: 'space-between',
 				paddingTop: '2vh',

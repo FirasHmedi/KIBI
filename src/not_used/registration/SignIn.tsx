@@ -4,33 +4,33 @@ import { isNotEmpty } from '../../utils/helpers';
 import { loginWithEmailPsw, loginWithGoogle } from '../auth';
 
 const inputStyle = {
-  height: '3vh',
-  borderRadius: 5,
-  padding: 3,
-  width: '15vw',
-  borderWidth: 0,
+	height: '3vh',
+	borderRadius: 5,
+	padding: 3,
+	width: '15vw',
+	borderWidth: 0,
 };
 
 export const SignIn = () => {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [psw, setPsw] = useState('');
+	const [email, setEmail] = useState('');
+	const [psw, setPsw] = useState('');
 
-  const signIn = () => {
-    loginWithEmailPsw(email, psw);
-    navigate('/');
-  };
+	const signIn = () => {
+		loginWithEmailPsw(email, psw);
+		navigate('/');
+	};
 
-  //signInWithGoogle
-  const signInWithGoogle = () => {
-    loginWithGoogle();
-    navigate('/');
-  };
+	//signInWithGoogle
+	const signInWithGoogle = () => {
+		loginWithGoogle();
+		navigate('/');
+	};
 
-  const isEnabled = () => isNotEmpty(psw) && email.includes('@');
+	const isEnabled = () => isNotEmpty(psw) && email.includes('@');
 
-  /* return (
+	/* return (
     <div style={signinContainerStyle}>
       <input
         type='text'
@@ -77,3 +77,33 @@ export const SignIn = () => {
     </div>
   ); */
 };
+
+/*
+const ElementCard = ({ loadNb = 0 }: any) => {
+	const disableUsage = loadNb !== 3;
+	return (
+		<div
+			style={{
+				...deckSlotStyle,
+				justifyContent: 'center',
+				flexShrink: 0,
+				borderColor: violet,
+				flex: 1,
+			}}>
+			<div style={{ backgroundColor: disableUsage ? 'grey' : violet, width: '100%', flex: 1 }}> </div>
+			<div
+				style={{
+					backgroundColor: loadNb >= 2 ? violet : 'grey',
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					width: '100%',
+					flex: 1,
+				}}>
+				{disableUsage ? <h5>Element loading</h5> : <h5>Element ready</h5>}
+			</div>
+			<div style={{ flex: 1, backgroundColor: loadNb >= 1 ? violet : 'grey', width: '100%' }}> </div>
+		</div>
+	);
+};
+*/

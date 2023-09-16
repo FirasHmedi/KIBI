@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { buttonStyle, centerStyle, flexRowStyle } from '../../styles/Style';
+import { buttonStyle, centerStyle, flexRowStyle, greyBackground } from '../../styles/Style';
 import {
 	ENV_MAX_LOAD,
 	INITIAL_HP,
@@ -84,13 +84,10 @@ function Home() {
 	};
 
 	return (
-		<div style={{ flex: 1, backgroundColor: '#ecf0f1', height: '100%', ...centerStyle }}>
+		<div style={{ backgroundColor: greyBackground, height: '100%', ...centerStyle, width: '100%' }}>
 			<div
 				style={{
-					display: 'flex',
-					flex: 1,
-					justifyContent: 'center',
-					alignItems: 'center',
+					...centerStyle,
 					flexDirection: 'column',
 				}}>
 				<button style={{ ...buttonStyle, fontSize: '1em', padding: 10 }} disabled={false} onClick={() => createRoom()}>

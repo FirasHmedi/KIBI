@@ -31,6 +31,7 @@ export const OpponentPDeck = ({ cardsNb = 0 }: { cardsNb: number }) => (
 			...flexRowStyle,
 			width: '40vw',
 			overflowY: 'auto',
+			justifyContent: 'center',
 		}}>
 		{[...Array(cardsNb).keys()].map((_, index) => (
 			<div key={index} style={{ marginRight: 6 }}>

@@ -73,7 +73,7 @@ export const SharedSelection = ({ playerType, roomId, oneCards, twoCards, player
 				display: 'flex',
 				alignItems: 'center',
 				flexDirection: 'column',
-				width: '100vw',
+				width: '100%',
 				height: '80vh',
 				gap: 16,
 				marginTop: 10,
