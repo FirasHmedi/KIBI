@@ -137,7 +137,7 @@ export function GameView({
 		!isAllOppSlotsFilled;
 
 	const handlePlacingKing = async (cardId: string, clan: ClanName): Promise<void> => {
-		if (canPlaceKingWithoutSacrifice || twoAnimalsToPlace > 0) {
+		if (canPlaceKingWithoutSacrifice) {
 			await placeKingWithoutSacrifice(roomId, playerType, cardId, selectedCurrPSlotNb!);
 			setCanPlaceKingWithoutSacrifice(false);
 		} else {

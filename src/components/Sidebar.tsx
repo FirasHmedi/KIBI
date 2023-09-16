@@ -13,6 +13,12 @@ function Sidebar() {
 					<li>
 						<h6>Player is attackable if no animal defends him</h6>
 					</li>
+					<li>
+						<h6>Animals defend their king from being attacked</h6>
+					</li>
+					<li>
+						<h6>King ability in its element is to attack opponent player</h6>
+					</li>
 				</ul>
 			</div>
 		</div>
