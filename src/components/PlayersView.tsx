@@ -196,7 +196,7 @@ const PlayerDataView = ({ player }: { player: Player }) => {
 					completed={envLoadNb}></ProgressBar>
 			</div>
 
-			{!canAttack === false && canPlayPowers === false ? (
+			{canAttack === false && canPlayPowers === false ? (
 				<h5>Blocked from attacking and playing power cards</h5>
 			) : canAttack === false ? (
 				<h5>Blocked from attacking</h5>
