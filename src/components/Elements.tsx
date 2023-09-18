@@ -1,5 +1,5 @@
-import { airColor, earthColor, fireColor, violet, waterColor } from '../styles/Style';
-import { ClanName } from '../utils/data';
+import { airColor, centerStyle, earthColor, fireColor, violet, waterColor } from '../styles/Style';
+import { AIR, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
 
 export const Seperator = ({ h }: { h?: string }) => {
 	const height = h ?? '2vh';
@@ -31,20 +31,40 @@ export const ElementPopup = ({ changeElement }: { changeElement: (elementType: C
 			}}>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
 				<div
-					style={{ width: '8vw', height: '8vw', backgroundColor: fireColor }}
-					onClick={() => changeElement('fire')}
-				/>
-				<div style={{ width: '8vw', height: '8vw', backgroundColor: airColor }} onClick={() => changeElement('air')} />
+					style={{ width: '8vw', height: '8vw', backgroundColor: fireColor, ...centerStyle }}
+					onClick={() => changeElement('fire')}>
+					<img
+						src={elementsIcons[FIRE]}
+						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+				</div>
+				<div
+					style={{ width: '8vw', height: '8vw', backgroundColor: airColor, ...centerStyle }}
+					onClick={() => changeElement('air')}>
+					<img
+						src={elementsIcons[AIR]}
+						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+				</div>
 			</div>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
 				<div
-					style={{ width: '8vw', height: '8vw', backgroundColor: waterColor }}
-					onClick={() => changeElement('water')}
-				/>
+					style={{
+						width: '8vw',
+						height: '8vw',
+						backgroundColor: waterColor,
+						...centerStyle,
+					}}
+					onClick={() => changeElement('water')}>
+					<img
+						src={elementsIcons[WATER]}
+						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+				</div>
 				<div
-					style={{ width: '8vw', height: '8vw', backgroundColor: earthColor }}
-					onClick={() => changeElement('earth')}
-				/>
+					style={{ width: '8vw', height: '8vw', backgroundColor: earthColor, ...centerStyle }}
+					onClick={() => changeElement('earth')}>
+					<img
+						src={elementsIcons[EARTH]}
+						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+				</div>
 			</div>
 		</div>
 	</div>
