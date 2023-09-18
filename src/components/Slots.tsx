@@ -200,9 +200,7 @@ export const BoardSlot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
 				justifyContent: 'center',
 				borderColor: selected ? selectedColor : neutralColor,
 			}}
-			onClick={() => selectSlotPolished()}>
-			<h6>EMPTY</h6>
-		</div>
+			onClick={() => selectSlotPolished()}></div>
 	);
 };
 
@@ -229,9 +227,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
 				justifyContent: 'center',
 				borderColor: selected ? selectedColor : neutralColor,
 			}}
-			onClick={() => selectSlotPolished()}>
-			<h6>EMPTY</h6>
-		</div>
+			onClick={() => selectSlotPolished()}></div>
 	);
 };
 

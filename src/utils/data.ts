@@ -13,7 +13,7 @@ export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const ROOMS_PATH = 'rooms/';
 
-export const ROUND_DURATION = 20;
+export const ROUND_DURATION = 60;
 
 export const INITIAL_HP = 8;
 
