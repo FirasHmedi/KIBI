@@ -17,7 +17,7 @@ import {
 	getAnimalCard,
 	getPowerCard,
 	rolesIcons,
-	getCard,
+	elementsIcons,
 } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
@@ -43,6 +43,7 @@ interface SlotProps {
 	selected?: boolean;
 	selectSlot?: (slotNb?: number) => void;
 	nb?: number;
+	graveyard?: boolean;
 }
 
 export const PowerBoardSlot = ({
@@ -78,11 +79,13 @@ export const PowerDeckSlot = ({
 	select,
 	selected,
 	isBigStyle,
+	graveyard,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
 	isBigStyle?: boolean;
+	graveyard?: boolean;
 }) => {
 	const { name } = getPowerCard(cardId) ?? {};
 	const bigStyle: React.CSSProperties = !!isBigStyle ? { height: '20vh', width: '8vw', fontSize: '1em' } : {};
@@ -254,7 +257,13 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => (
 			justifyContent: 'center',
 			flexShrink: 0,
 			fontSize: '0.6em',
-		}}></div>
+		}}>
+		{elementType !== 'neutral' && (
+			<img
+				src={elementsIcons[elementType!]}
+				style={{ height: '5vh', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+		)}
+	</div>
 );
 
 const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
@@ -263,7 +272,7 @@ const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
 		slot?.canAttack ? (
 			<img src={attIcon} style={{ width: val }}></img>
 		) : (
-			<img src={noAttIcon} style={{ width: val }}></img>
+			<img src={noAttIcon} style={{ width: 28 }}></img>
 		)
 	) : (
 		<div style={{ height: val }} />

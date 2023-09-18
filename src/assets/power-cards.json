@@ -10,19 +10,19 @@
 		"name": "+3hp to player"
 	},
 	"draw-2": {
-		"ability": "Draw 2 cards from the main deck",
+		"ability": "Draw 2 cards from main deck",
 		"description": "Draw 2 cards from the main deck",
 		"name": "Draw 2 cards from main deck"
 	},
 	"2-anim-gy": {
 		"ability": "Return 2 dead animals to deck",
-		"description": "Return 2 animals to deck from animal graveyard",
+		"description": "Return 2 animals to deck from graveyard",
 		"name": "Return 2 dead animals to deck"
 	},
 	"load-env": {
-		"ability": "Load the element card",
-		"description": "player loads the element card",
-		"name": "Load the element card"
+		"ability": "Charge the element",
+		"description": "Charge the element",
+		"name": "Charge the element"
 	},
 	"block-pow": {
 		"ability": "Block using power cards for 1 turn",
@@ -60,9 +60,9 @@
 		"name": "Activate any power card for 1hp"
 	},
 	"rev-any-anim-1hp": {
-		"ability": "Revive any animal for 1HP",
+		"ability": "Revive any animal for 1hp",
 		"description": "Sacrifice 1 hp to revive any animal, can attack",
-		"name": "Revive any animal for 1HP"
+		"name": "Revive any animal for 1hp"
 	},
 	"steal-anim-3hp": {
 		"ability": "Steal animal opponent for 3hp",

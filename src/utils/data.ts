@@ -85,6 +85,17 @@ export const rolesIcons = {
 	attacker: attackerIcon,
 };
 
+import airIcon from '/elements/white/air.png';
+import waterIcon from '/elements/white/water.png';
+import fireIcon from '/elements/white/fire.png';
+import earthIcon from '/elements/white/earth.png';
+export const elementsIcons = {
+	air: airIcon,
+	fire: fireIcon,
+	water: waterIcon,
+	earth: earthIcon,
+};
+
 import elephant from '/animals/elephant.png';
 import lion from '/animals/lion.png';
 import crow from '/animals/crow.png';

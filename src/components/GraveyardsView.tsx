@@ -62,7 +62,7 @@ export const Graveyard = ({
 				<div style={{ ...flexRowStyle, overflowY: 'auto' }}>
 					{cardsIds.map((cardId, index) => (
 						<div style={{ marginRight: 8 }} key={index} onClick={() => selectCardsPolished(cardId)}>
-							<DeckSlot cardId={cardId} selected={selectedIds.includes(cardId)} />
+							<DeckSlot cardId={cardId} selected={selectedIds.includes(cardId)} graveyard={true} />
 						</div>
 					))}
 				</div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { buttonStyle, deckSlotStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
+import { buttonStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
@@ -178,19 +178,19 @@ const PlayerDataView = ({ player }: { player: Player }) => {
 					bgColor={violet}
 					maxCompleted={hp > INITIAL_HP ? hp : INITIAL_HP}
 					width='7vw'
-					height='1.4vh'
+					height='1.6vh'
 					baseBgColor={'grey'}
 					isLabelVisible={false}
 					completed={hp}></ProgressBar>
 			</div>
 
 			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
-				{envLoadNb !== 3 ? <h5>Element loading</h5> : <h5>Element ready</h5>}
+				{envLoadNb !== 3 ? <h5>Element charging</h5> : <h5>Element charged</h5>}
 				<ProgressBar
 					bgColor={violet}
 					maxCompleted={3}
 					width='3vw'
-					height='1.4vh'
+					height='1.6vh'
 					baseBgColor={'grey'}
 					isLabelVisible={false}
 					completed={envLoadNb}></ProgressBar>

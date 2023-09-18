@@ -1,9 +1,9 @@
 import React from 'react';
-import { greyBackground, violet } from '../styles/Style';
+import { violet } from '../styles/Style';
 
 function Sidebar() {
 	return (
-		<div style={{ width: '15vw', color: violet, backgroundColor: greyBackground, padding: 4 }}>
+		<div style={{ width: '15vw', color: violet, backgroundColor: '#ecf0f1', padding: 4 }}>
 			<div>
 				<h5>Rules</h5>
 				<ul style={{}}>

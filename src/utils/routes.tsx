@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
 import { appStyle, violet } from '../styles/Style';
@@ -7,7 +7,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '../components/Sidebar';
 
 const Layout = ({ children }: any) => {
-	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
 	const toggleSidebar = () => {
 		setIsSidebarOpen(!isSidebarOpen);
