@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { add1Hp, drawOneCard, minus1Hp, returnRandomPowerCardToDeck } from './animalsAbilities';
-import { ANIMALS_POINTS, ClanName, JOKER, KING, getAnimalCard } from './data';
+import { ANIMALS_POINTS, ClanName, JOKER, KING } from './data';
 import { getBoardPath, getItemsOnce, getPlayerPath, setItem } from './db';
-import { getOpponentIdFromCurrentId, isAnimalCard, waitFor } from './helpers';
+import { getAnimalCard, getOpponentIdFromCurrentId, isAnimalCard, waitFor } from './helpers';
 import { PlayerType, SlotType } from './interface';
 import {
 	addAnimalToBoard,

@@ -9,17 +9,8 @@ import {
 	boardSlotStyle,
 	violet,
 } from '../styles/Style';
-import {
-	ANIMALS_POINTS,
-	CLANS,
-	ClanName,
-	animalsPics,
-	getAnimalCard,
-	getPowerCard,
-	rolesIcons,
-	elementsIcons,
-} from '../utils/data';
-import { isAnimalCard, isPowerCard } from '../utils/helpers';
+import { ANIMALS_POINTS, CLANS, ClanName, animalsPics, rolesIcons, elementsIcons } from '../utils/data';
+import { getAnimalCard, getPowerCard, isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
 

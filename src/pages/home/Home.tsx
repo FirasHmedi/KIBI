@@ -3,16 +3,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { buttonStyle, centerStyle, flexRowStyle, greyBackground } from '../../styles/Style';
-import {
-	ENV_MAX_LOAD,
-	INITIAL_HP,
-	PREPARE,
-	ROOMS_PATH,
-	getMainDeckFirstHalf,
-	getMainDeckSecondHalf,
-} from '../../utils/data';
+import { ENV_MAX_LOAD, INITIAL_HP, PREPARE, ROOMS_PATH } from '../../utils/data';
 import { setItem } from '../../utils/db';
 import { PlayerType } from '../../utils/interface';
+import { getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/helpers';
 
 function Home() {
 	const navigate = useNavigate();

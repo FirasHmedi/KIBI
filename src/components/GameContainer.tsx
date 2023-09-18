@@ -20,6 +20,7 @@ export function GameContainer({
 	const [round, setRound] = useState<Round>();
 	const [currentPlayer, setCurrPlayer] = useState<Player>();
 	const [opponentPlayer, setOppPlayer] = useState<Player>();
+	const [showCountDown, setShowCountDown] = useState(false);
 
 	useEffect(() => {
 		if (!isGameRunning(game.status)) {
@@ -45,16 +46,16 @@ export function GameContainer({
 			setOppPlayer(p2);
 			setBoard({
 				...partOfBoard,
-				currentPSlots: gameBoard.one ?? [],
-				opponentPSlots: gameBoard.two ?? [],
+				currentPSlots: gameBoard?.one ?? [],
+				opponentPSlots: gameBoard?.two ?? [],
 			});
 		} else {
 			setCurrPlayer(p2);
 			setOppPlayer(p1);
 			setBoard({
 				...partOfBoard,
-				currentPSlots: gameBoard.two ?? [],
-				opponentPSlots: gameBoard.one ?? [],
+				currentPSlots: gameBoard?.two ?? [],
+				opponentPSlots: gameBoard?.one ?? [],
 			});
 		}
 
@@ -77,6 +78,7 @@ export function GameContainer({
 	const checkAndDrawCardFromMainDeck = ({ player, nb }: Round) => {
 		if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {
 			drawCardFromMainDeck(roomId, playerType).then();
+			setShowCountDown(true);
 		}
 	};
 
@@ -90,6 +92,8 @@ export function GameContainer({
 			opponentPlayer={opponentPlayer}
 			currentPlayer={currentPlayer}
 			spectator={spectator}
+			showCountDown={showCountDown}
+			setShowCountDown={setShowCountDown}
 		/>
 	);
 }

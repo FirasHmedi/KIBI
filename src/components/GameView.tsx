@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { useState } from 'react';
-import { flexColumnStyle } from '../styles/Style';
+import { flexColumnStyle, violet } from '../styles/Style';
 import {
 	cancelAttacks,
 	cancelUsingPowerCards,
@@ -31,26 +31,25 @@ import {
 	setElementLoad,
 	setPowerCardAsActive,
 } from '../utils/actions';
+import { ANIMALS_POINTS, ClanName, EMPTY, JOKER, KING, ROUND_DURATION, envCardsIds } from '../utils/data';
 import {
-	ANIMALS_POINTS,
-	ClanName,
-	EMPTY,
-	JOKER,
-	KING,
-	envCardsIds,
 	getAnimalCard,
+	getOpponentIdFromCurrentId,
 	getOriginalCardId,
 	getPowerCard,
+	isAnimalCard,
 	isAnimalInEnv,
 	isKing,
-} from '../utils/data';
-import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
+	isPowerCard,
+	waitFor,
+} from '../utils/helpers';
 import { Board, Player, Round } from '../utils/interface';
 import { addOneRound, addPowerToGraveYard } from '../utils/unitActions';
 import { BoardView } from './Board';
 import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 import { addSnapShot } from '../utils/logsSnapShot';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 
 export function GameView({
 	round,
@@ -59,6 +58,8 @@ export function GameView({
 	opponentPlayer,
 	currentPlayer,
 	spectator,
+	showCountDown,
+	setShowCountDown,
 }: {
 	round: Round;
 	roomId: string;
@@ -66,6 +67,8 @@ export function GameView({
 	opponentPlayer: Player;
 	currentPlayer: Player;
 	spectator?: boolean;
+	showCountDown: boolean;
+	setShowCountDown: any;
 }) {
 	const { opponentPSlots, currentPSlots, elementType } = board;
 
@@ -307,6 +310,7 @@ export function GameView({
 	};
 
 	const finishRound = async () => {
+		setShowCountDown(false);
 		await addSnapShot(roomId);
 		await handleKingAbility(roomId, playerType, false);
 		await enableAttackingAndPlayingPowerCards(roomId, playerType);
@@ -385,6 +389,22 @@ export function GameView({
 				setElement={setElement}
 				spectator={spectator}
 			/>
+
+			{showCountDown && (
+				<div style={{ position: 'absolute', right: '14vw', bottom: '5.5vh' }}>
+					<CountdownCircleTimer
+						isPlaying
+						duration={ROUND_DURATION}
+						colors={`#8e44ad`}
+						onComplete={() => {
+							finishRound();
+						}}
+						size={50}
+						strokeWidth={4}>
+						{({ remainingTime }) => <h4 style={{ color: violet }}>{remainingTime}</h4>}
+					</CountdownCircleTimer>
+				</div>
+			)}
 		</div>
 	);
 }

@@ -13,6 +13,8 @@ export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const ROOMS_PATH = 'rooms/';
 
+export const ROUND_DURATION = 20;
+
 export const INITIAL_HP = 8;
 
 export const ENV_MAX_LOAD = 3; // each turn get 1
@@ -132,22 +134,15 @@ export const animalsPics = {
 	whale: whale,
 };
 
-export const isKing = (cardId?: string) => getAnimalCard(cardId)?.role === KING;
-export const isJoker = (cardId?: string) => getAnimalCard(cardId)?.role === JOKER;
-export const isAttacker = (cardId?: string) => getAnimalCard(cardId)?.role === ATTACKER;
-export const isTank = (cardId?: string) => getAnimalCard(cardId)?.role === TANK;
-export const isAnimalInEnv = (cardId?: string, elementType?: ClanName) => elementType === getAnimalCard(cardId)?.clan;
-
-const getArrayFromJson = (file: any) => {
-	const object = JSON.parse(JSON.stringify(file));
-	return Object.keys(object).map(id => ({ id, ...object[id] }));
-};
-
-const getKeysArrayFromJson = (file: any) => Object.keys(JSON.parse(JSON.stringify(file)));
-
 export const ALL_CARDS_OBJECT: Record<string, AllCards> = {
 	...JSON.parse(JSON.stringify(animalsCardsJson)),
 	...JSON.parse(JSON.stringify(powerCardsJson)),
+};
+
+export const getKeysArrayFromJson = (file: any) => Object.keys(JSON.parse(JSON.stringify(file)));
+export const getArrayFromJson = (file: any) => {
+	const object = JSON.parse(JSON.stringify(file));
+	return Object.keys(object).map(id => ({ id, ...object[id] }));
 };
 
 export const ANIMALS_CARDS_IDS: string[] = getKeysArrayFromJson(animalsCardsJson);
@@ -156,35 +151,8 @@ export const POWERS_CARDS_IDS: string[] = getKeysArrayFromJson(powerCardsJson);
 export const ANIMALS_CARDS: AnimalCard[] = getArrayFromJson(animalsCardsJson);
 export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.stringify(animalsCardsJson));
 
-export const getAnimalCard = (cardId?: string): AnimalCard | undefined => {
-	if (!cardId || cardId?.length === 0) return;
-	return ANIMAL_CARDS_OBJECT[cardId];
-};
-
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
-
-export const getPowerCard = (cardId?: string): Card | undefined => {
-	if (!cardId || cardId.length < 4) return;
-	return POWER_CARDS_OBJECT[getOriginalCardId(cardId)];
-};
-export const getCard = (cardId?: string): Card | undefined => {
-	if (!cardId) return;
-	if (cardId.slice(-2) == '-a') {
-		return ANIMAL_CARDS_OBJECT[cardId];
-	} else {
-		return POWER_CARDS_OBJECT[getOriginalCardId(cardId)];
-	}
-};
-export const getOriginalCardId = (cardId: string = '') => new String(cardId).substring(4);
-
-export const getSortedMainDeck = () => [
-	...POWERS_CARDS_IDS.map(id => 'one-' + id),
-	...POWERS_CARDS_IDS.map(id => 'two-' + id),
-];
-
-export const getMainDeckFirstHalf = () => [...POWERS_CARDS_IDS.map(id => 'one-' + id)];
-export const getMainDeckSecondHalf = () => [...POWERS_CARDS_IDS.map(id => 'two-' + id)];
 
 /*
   "6-p": {

@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { activateJokerAbility, drawCardFromMainDeck, setElementLoad } from './actions';
-import { ClanName, EMPTY, NEUTRAL, getPowerCard } from './data';
+import { ClanName, EMPTY, NEUTRAL } from './data';
 import { getBoardPath, getItemsOnce, getRoomPath, setItem } from './db';
-import { getOpponentIdFromCurrentId, isAnimalCard } from './helpers';
+import { getOpponentIdFromCurrentId, getPowerCard, isAnimalCard } from './helpers';
 import { PlayerType, SlotType } from './interface';
 import {
 	addAnimalToBoard,
