@@ -1,106 +1,114 @@
 {
-  "9-a": {
-    "ability": "Attacks opponent",
-    "clan": "air",
-    "description": "king of air clan",
-    "name": "Eagle",
-    "role": "king"
-  },
-  "10-a": {
-    "clan": "air",
-    "description": "attacker of air clan",
-    "name": "Bee",
-    "role": "attacker"
-  },
-  "11-a": {
-    "clan": "air",
-    "description": "tank of air clan",
-    "name": "Ostrich",
-    "role": "tank"
-  },
-  "12-a": {
-    "ability": "-1 at each turn to opponent",
-    "clan": "air",
-    "description": "joker of air clan",
-    "name": "Crow",
-    "role": "joker"
-  },
-  "13-a": {
-    "ability": "Attacks opponent",
-    "clan": "fire",
-    "description": "king of fire clan",
-    "name": "Dragon",
-    "role": "king"
-  },
-  "14-a": {
-    "clan": "fire",
-    "description": "attacker of fire clan",
-    "name": "Phoenix",
-    "role": "attacker"
-  },
-  "15-a": {
-    "clan": "fire",
-    "description": "tank of fire clan",
-    "name": "Bear",
-    "role": "tank"
-  },
-  "16-a": {
-    "ability": "Return random power card",
-    "clan": "fire",
-    "description": "joker of fire clan",
-    "name": "Fox",
-    "role": "joker"
-  },
-  "1-a": {
-    "ability": "Attacks opponent",
-    "clan": "earth",
-    "description": "king of earth clan",
-    "name": "Lion",
-    "role": "king"
-  },
-  "2-a": {
-    "clan": "earth",
-    "description": "attacker of earth clan",
-    "name": "Badger",
-    "role": "attacker"
-  },
-  "3-a": {
-    "clan": "earth",
-    "description": "tank of earth clan",
-    "name": "Elephant",
-    "role": "tank"
-  },
-  "4-a": {
-    "ability": "+1 at each turn for owner",
-    "clan": "earth",
-    "description": "joker of earth clan",
-    "name": "Snake",
-    "role": "joker"
-  },
-  "5-a": {
-    "ability": "Attacks opponent",
-    "clan": "water",
-    "description": "king of water clan",
-    "name": "Orca",
-    "role": "king"
-  },
-  "6-a": {
-    "clan": "water",
-    "description": "attacker of water clan",
-    "name": "Shark",
-    "role": "attacker"
-  },
-  "7-a": {
-    "clan": "water",
-    "description": "tank of water clan",
-    "name": "Whale",
-    "role": "tank"
-  },
-  "8-a": {
-    "ability": "Draw 1 card",
-    "clan": "water",
-    "description": "joker of water clan",
-    "name": "Jellyfish",
-    "role": "joker"
-  }
+	"9-a": {
+		"ability": "Attacks opponent",
+		"clan": "air",
+		"description": "king of air clan",
+		"name": "Eagle",
+		"role": "king"
+	},
+	"10-a": {
+		"clan": "air",
+		"description": "attacker of air clan",
+		"name": "Bee",
+		"role": "attacker",
+		"ability": "-1 at each turn to opponent"
+	},
+	"11-a": {
+		"clan": "air",
+		"description": "tank of air clan",
+		"name": "Ostrich",
+		"role": "tank",
+		"ability": "+1 at each turn for owner"
+	},
+	"12-a": {
+		"ability": "-1 at each turn to opponent",
+		"clan": "air",
+		"description": "joker of air clan",
+		"name": "Crow",
+		"role": "joker"
+	},
+	"13-a": {
+		"ability": "Attacks opponent",
+		"clan": "fire",
+		"description": "king of fire clan",
+		"name": "Dragon",
+		"role": "king"
+	},
+	"14-a": {
+		"clan": "fire",
+		"description": "attacker of fire clan",
+		"name": "Phoenix",
+		"role": "attacker",
+		"ability": "-1 at each turn to opponent"
+	},
+	"15-a": {
+		"clan": "fire",
+		"description": "tank of fire clan",
+		"name": "Bear",
+		"role": "tank",
+		"ability": "+1 at each turn for owner"
+	},
+	"16-a": {
+		"ability": "Return random power card",
+		"clan": "fire",
+		"description": "joker of fire clan",
+		"name": "Fox",
+		"role": "joker"
+	},
+	"1-a": {
+		"ability": "Attacks opponent",
+		"clan": "earth",
+		"description": "king of earth clan",
+		"name": "Lion",
+		"role": "king"
+	},
+	"2-a": {
+		"clan": "earth",
+		"description": "attacker of earth clan",
+		"name": "Badger",
+		"role": "attacker",
+		"ability": "-1 at each turn to opponent"
+	},
+	"3-a": {
+		"clan": "earth",
+		"description": "tank of earth clan",
+		"name": "Elephant",
+		"role": "tank",
+		"ability": "+1 at each turn for owner"
+	},
+	"4-a": {
+		"ability": "+1 at each turn for owner",
+		"clan": "earth",
+		"description": "joker of earth clan",
+		"name": "Snake",
+		"role": "joker"
+	},
+	"5-a": {
+		"ability": "Attacks opponent",
+		"clan": "water",
+		"description": "king of water clan",
+		"name": "Orca",
+		"role": "king"
+	},
+	"6-a": {
+		"clan": "water",
+		"description": "attacker of water clan",
+		"name": "Shark",
+		"role": "attacker",
+		"ability": "-1 at each turn to opponent"
+	},
+	"7-a": {
+		"clan": "water",
+		"description": "tank of water clan",
+		"name": "Whale",
+		"role": "tank",
+		"ability": "+1 at each turn for owner"
+	},
+	"8-a": {
+		"ability": "Draw 1 card",
+		"clan": "water",
+		"description": "joker of water clan",
+		"name": "Jellyfish",
+		"role": "joker"
+	}
 }

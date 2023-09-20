@@ -1,6 +1,13 @@
 import _ from 'lodash';
-import { add1Hp, drawOneCard, minus1Hp, returnRandomPowerCardToDeck } from './animalsAbilities';
-import { ANIMALS_POINTS, ClanName, JOKER, KING } from './data';
+import {
+	add1Hp,
+	drawOneCard,
+	minus1Hp,
+	returnRandomAnimalCardToDeck,
+	returnRandomPowerCardToDeck,
+	sendRandomOpponentCardToGY,
+} from './animalsAbilities';
+import { ANIMALS_POINTS, ATTACKER, ClanName, JOKER, KING, TANK } from './data';
 import { getBoardPath, getItemsOnce, getPlayerPath, setItem } from './db';
 import { getAnimalCard, getOpponentIdFromCurrentId, isAnimalCard, waitFor } from './helpers';
 import { PlayerType, SlotType } from './interface';
@@ -105,13 +112,13 @@ export const activateJokerAbility = async (roomId: string, jokerId: string, play
 
 	switch (joker.name) {
 		case 'Crow':
-			await minus1Hp(roomId, getOpponentIdFromCurrentId(playerType));
+			await returnRandomAnimalCardToDeck(roomId, playerType);
 			break;
 		case 'Fox':
 			await returnRandomPowerCardToDeck(roomId, playerType);
 			break;
 		case 'Snake':
-			await add1Hp(roomId, playerType);
+			await sendRandomOpponentCardToGY(roomId, playerType);
 			break;
 		case 'Jellyfish':
 			await drawOneCard(roomId, playerType);
@@ -119,8 +126,10 @@ export const activateJokerAbility = async (roomId: string, jokerId: string, play
 	}
 };
 
-export const setPowerCardAsActive = async (roomId: string, playerType: PlayerType, cardId: string, name: string) => {
-	await addInfoToLog(roomId, 'player ' + playerType + ' placed a ' + name);
+export const setPowerCardAsActive = async (roomId: string, playerType: PlayerType, cardId: string, name?: string) => {
+	if (name) {
+		await addInfoToLog(roomId, 'player ' + playerType + ' placed a ' + name);
+	}
 	await removeCardFromPlayerDeck(roomId, playerType, cardId);
 	await setActivePowerCard(roomId, cardId);
 	await waitFor(2000);
@@ -139,11 +148,32 @@ export const enableAttackForOpponentAnimals = async (
 	}
 };
 
-export const activateJokersAbilities = async (roomId: string, playerDType: PlayerType, oppSlots: SlotType[] = []) => {
-	for (let i = 0; i < oppSlots.length; i++) {
-		const cardId = oppSlots[i]?.cardId;
+export const activateJokersAbilities = async (roomId: string, playerDType: PlayerType, slots: SlotType[] = []) => {
+	for (let i = 0; i < slots.length; i++) {
+		const cardId = slots[i]?.cardId;
 		if (!!cardId && isAnimalCard(cardId)) {
 			await activateJokerAbility(roomId, cardId, playerDType);
+		}
+	}
+};
+
+export const activateTankAndAttackerAbilities = async (
+	roomId: string,
+	playerDType: PlayerType,
+	slots: SlotType[] = [],
+) => {
+	const elementType = await getElementType(roomId);
+	for (let i = 0; i < slots.length; i++) {
+		const cardId = slots[i]?.cardId;
+		if (!!cardId && isAnimalCard(cardId)) {
+			const animal = getAnimalCard(cardId)!;
+			if (animal?.role === TANK && animal?.clan === elementType) {
+				await add1Hp(roomId, playerDType);
+			}
+
+			if (animal.role === ATTACKER && animal.clan === elementType) {
+				await minus1Hp(roomId, getOpponentIdFromCurrentId(playerDType));
+			}
 		}
 	}
 };

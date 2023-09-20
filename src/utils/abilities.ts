@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { activateJokerAbility, drawCardFromMainDeck, setElementLoad } from './actions';
-import { ClanName, EMPTY, NEUTRAL } from './data';
+import { activateJokerAbility, drawCardFromMainDeck, getElementType, setElementLoad } from './actions';
+import { ATTACKER, ClanName, EMPTY, NEUTRAL, TANK } from './data';
 import { getBoardPath, getItemsOnce, getRoomPath, setItem } from './db';
-import { getOpponentIdFromCurrentId, getPowerCard, isAnimalCard } from './helpers';
+import { getAnimalCard, getOpponentIdFromCurrentId, getPowerCard, isAnimalCard } from './helpers';
 import { PlayerType, SlotType } from './interface';
 import {
 	addAnimalToBoard,
@@ -22,6 +22,7 @@ import {
 	removeHpFromPlayer,
 	removePlayerAnimalFromBoard,
 } from './unitActions';
+import { add1Hp, minus1Hp } from './animalsAbilities';
 
 export const cancelAttacks = async (roomId: string, playerType: PlayerType) => {
 	await changeCanAttackVar(roomId, playerType, false);
@@ -72,6 +73,16 @@ export const sacrifice3HpToSteal = async (
 	await removePlayerAnimalFromBoard(roomId, getOpponentIdFromCurrentId(playerType), oppSlotNb);
 	await addAnimalToBoard(roomId, playerType, mySlotNb, animalId, true);
 	await activateJokerAbility(roomId, animalId, playerType);
+
+	const elementType = await getElementType(roomId);
+	const animal = getAnimalCard(animalId)!;
+	if (animal?.role === TANK && animal?.clan === elementType) {
+		await add1Hp(roomId, playerType);
+	}
+
+	if (animal.role === ATTACKER && animal.clan === elementType) {
+		await minus1Hp(roomId, getOpponentIdFromCurrentId(playerType));
+	}
 };
 
 export const sacrifice1HpToReviveLastAnimal = async (roomId: string, playerType: PlayerType, slotNb?: number) => {

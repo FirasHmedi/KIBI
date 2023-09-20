@@ -20,6 +20,7 @@ import {
 import {
 	activateJokerAbility,
 	activateJokersAbilities,
+	activateTankAndAttackerAbilities,
 	attackAnimal,
 	attackOwner,
 	changeHasAttacked,
@@ -31,7 +32,17 @@ import {
 	setElementLoad,
 	setPowerCardAsActive,
 } from '../utils/actions';
-import { ANIMALS_POINTS, ClanName, EMPTY, JOKER, KING, ROUND_DURATION, envCardsIds } from '../utils/data';
+import {
+	ANIMALS_POINTS,
+	ATTACKER,
+	ClanName,
+	EMPTY,
+	JOKER,
+	KING,
+	ROUND_DURATION,
+	TANK,
+	envCardsIds,
+} from '../utils/data';
 import {
 	getAnimalCard,
 	getOpponentIdFromCurrentId,
@@ -50,6 +61,7 @@ import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 import { addSnapShot } from '../utils/logsSnapShot';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { add1Hp, minus1Hp } from '../utils/animalsAbilities';
 
 export function GameView({
 	round,
@@ -161,6 +173,14 @@ export function GameView({
 
 		if (role === JOKER && clan === elementType) {
 			await activateJokerAbility(roomId, cardId, playerType);
+		}
+
+		if (role === TANK && clan === elementType) {
+			await add1Hp(roomId, playerType);
+		}
+
+		if (role === ATTACKER && clan === elementType) {
+			await minus1Hp(roomId, getOpponentIdFromCurrentId(playerType));
 		}
 
 		setTwoAnimalsToPlace(animalsNb => (animalsNb > 1 ? animalsNb - 1 : 0));
@@ -307,6 +327,7 @@ export function GameView({
 		await changeElement(roomId, elementType, playerType);
 		setShowEnvPopup(false);
 		await activateJokersAbilities(roomId, playerType, currentPSlots);
+		await activateTankAndAttackerAbilities(roomId, playerType, currentPSlots);
 	};
 
 	const finishRound = async () => {
@@ -317,6 +338,7 @@ export function GameView({
 		await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
 		await enableAttackForOpponentAnimals(roomId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 		await activateJokersAbilities(roomId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+		await activateTankAndAttackerAbilities(roomId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 		setNbCardsToPlay(2);
 		setHasAttacked(false);
 		setCanPlaceKingWithoutSacrifice(false);
