@@ -152,7 +152,7 @@ export const AnimalBoardSlot = ({
 					height: '3.5vh',
 				}}>
 				<h6>{ap} AP</h6>
-				<Tooltip anchorSelect={`#${roleTooltipId}`} content={roleTooltipContent} />
+				<Tooltip anchorSelect={`#${roleTooltipId}`} content={roleTooltipContent} style={{ width: '10vw' }} />
 				<img id={roleTooltipId} src={rolesIcons[role]} style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
 				<h6>{hp} HP</h6>
 			</div>

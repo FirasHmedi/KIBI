@@ -89,8 +89,8 @@ export const rolesIcons = {
 
 export const rolesTooltipContents = {
 	tank: '+1HP to Player',
-	snake: 'Manipulation snake',
-	crow: 'Manipulation crow',
+	snake: 'Send random card from opponent to deck to graveyard',
+	crow: 'Return random dead animal to deck',
 	fox: 'Return last power card from graveyard to deck',
 	jellyfish: 'Draw 1 card from maindeck',
 	king: 'Attacks opponent directly',
