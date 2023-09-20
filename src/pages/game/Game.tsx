@@ -65,10 +65,11 @@ function GamePage() {
 							flexDirection: 'row',
 							justifyContent: 'center',
 							alignItems: 'center',
-							gap: 4,
+							padding: 10,
+							paddingTop: 30,
 						}}>
 						<h4>
-							Room ID: <span style={{ fontSize: '1.1em', color: violet, userSelect: 'all' }}>{roomId}</span>
+							Room ID: <span style={{ fontSize: '1.2em', color: violet, userSelect: 'all' }}>{roomId}</span>
 						</h4>
 					</div>
 					<SharedSelection

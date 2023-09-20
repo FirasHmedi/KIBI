@@ -27,22 +27,22 @@
 	"block-pow": {
 		"ability": "Block using power cards for 1 turn",
 		"description": "Block opponent from using power cards",
-		"name": "Block using power cards for 1 turn"
+		"name": "Block power cards for 1 turn"
 	},
 	"reset-board": {
 		"ability": "Reset Board (animals, env)",
 		"description": "Reset Board (animals, env)",
-		"name": "Reset Board (animals, env)"
+		"name": "Reset Board"
 	},
 	"place-king": {
 		"ability": "Place an active king on board",
-		"description": "Place an active king on board",
-		"name": "Place an active king on board"
+		"description": "Place an active king",
+		"name": "Place an active king"
 	},
 	"place-2-anim-1-hp": {
-		"ability": "Place 2 animals on board for 1hp",
-		"description": "Place 2 animals on board for 1hp",
-		"name": "Place 2 animals on board for 1hp"
+		"ability": "Place 2 animals for 1hp",
+		"description": "Place 2 animals for 1hp",
+		"name": "Place 2 animals for 1hp"
 	},
 	"double-king-ap": {
 		"ability": "Double king ability in its env",

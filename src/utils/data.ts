@@ -87,6 +87,16 @@ export const rolesIcons = {
 	attacker: attackerIcon,
 };
 
+export const rolesTooltipContents = {
+	tank: '+1HP to Player',
+	snake: 'Manipulation snake',
+	crow: 'Manipulation crow',
+	fox: 'Return last power card from graveyard to deck',
+	jellyfish: 'Draw 1 card from maindeck',
+	king: 'Attacks opponent directly',
+	attacker: '-1HP to opponent',
+};
+
 import airIcon from '/elements/white/air.png';
 import waterIcon from '/elements/white/water.png';
 import fireIcon from '/elements/white/fire.png';

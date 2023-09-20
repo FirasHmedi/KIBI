@@ -9,10 +9,20 @@ import {
 	boardSlotStyle,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_POINTS, CLANS, ClanName, animalsPics, rolesIcons, elementsIcons } from '../utils/data';
+import {
+	ANIMALS_POINTS,
+	CLANS,
+	ClanName,
+	animalsPics,
+	rolesIcons,
+	elementsIcons,
+	rolesTooltipContents,
+} from '../utils/data';
 import { getAnimalCard, getPowerCard, isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
+import InfoIcon from '@mui/icons-material/Info';
+import { Tooltip } from 'react-tooltip';
 
 export const SlotBack = () => (
 	<div
@@ -48,7 +58,8 @@ export const PowerBoardSlot = ({
 	selected?: boolean;
 	isBigStyle?: boolean;
 }) => {
-	const { name } = getPowerCard(cardId) ?? {};
+	const { name, description } = getPowerCard(cardId) ?? {};
+	const tooltipId = `power-deck-anchor${cardId}`;
 	const bigStyle: React.CSSProperties = !!isBigStyle ? { height: '20vh', width: '8vw', fontSize: '1em' } : {};
 	return (
 		<div
@@ -61,6 +72,8 @@ export const PowerBoardSlot = ({
 			}}
 			onClick={() => select()}>
 			<h6>{name?.toUpperCase()}</h6>
+			<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
+			<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.1vw' }} />
 		</div>
 	);
 };
@@ -70,15 +83,14 @@ export const PowerDeckSlot = ({
 	select,
 	selected,
 	isBigStyle,
-	graveyard,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
 	isBigStyle?: boolean;
-	graveyard?: boolean;
 }) => {
-	const { name } = getPowerCard(cardId) ?? {};
+	const { name, description } = getPowerCard(cardId) ?? {};
+	const tooltipId = `power-deck-anchor${cardId}`;
 	const bigStyle: React.CSSProperties = !!isBigStyle ? { height: '20vh', width: '8vw', fontSize: '1em' } : {};
 	return (
 		<div
@@ -91,6 +103,8 @@ export const PowerDeckSlot = ({
 			}}
 			onClick={() => select()}>
 			<h6>{name?.toUpperCase()}</h6>
+			<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
+			<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.1vw' }} />
 		</div>
 	);
 };
@@ -105,7 +119,13 @@ export const AnimalBoardSlot = ({
 	selected?: boolean;
 }) => {
 	const { clan, name, role } = getAnimalCard(cardId)!;
+	if (!name || !clan || !role) return <></>;
+
 	const { hp, ap } = ANIMALS_POINTS[role];
+	const roleTooltipContent =
+		rolesTooltipContents[role === 'joker' ? (name.toLowerCase() as keyof typeof rolesTooltipContents) : role];
+	const roleTooltipId = `role-anchor${cardId}`;
+
 	return (
 		<div
 			style={{
@@ -132,7 +152,8 @@ export const AnimalBoardSlot = ({
 					height: '3.5vh',
 				}}>
 				<h6>{ap} AP</h6>
-				<img src={rolesIcons[role]} style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
+				<Tooltip anchorSelect={`#${roleTooltipId}`} content={roleTooltipContent} />
+				<img id={roleTooltipId} src={rolesIcons[role]} style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
 				<h6>{hp} HP</h6>
 			</div>
 		</div>
