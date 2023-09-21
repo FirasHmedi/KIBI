@@ -45,6 +45,16 @@ export const drawOneCard = async (roomId: string, playerType: string) => {
 export const minus1Hp = async (roomId: string, playerType: string) => {
 	await removeHpFromPlayer(roomId, playerType, 1);
 };
+
+// tank
+export const add2Hp = async (roomId: string, playerType: string) => {
+	await addHpToPlayer(roomId, playerType, 2);
+};
+// attacker
+export const minus2Hp = async (roomId: string, playerType: string) => {
+	await removeHpFromPlayer(roomId, playerType, 2);
+};
+
 // ----------------------Snake-----------------------
 export const sendRandomOpponentCardToGY = async (roomId: string, playerType: PlayerType) => {
 	const cardsIds = await getItemsOnce(getRoomPath(roomId) + playerType + '/cardsIds');

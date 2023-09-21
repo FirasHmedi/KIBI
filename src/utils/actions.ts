@@ -1,8 +1,10 @@
 import _ from 'lodash';
 import {
 	add1Hp,
+	add2Hp,
 	drawOneCard,
 	minus1Hp,
+	minus2Hp,
 	returnRandomAnimalCardToDeck,
 	returnRandomPowerCardToDeck,
 	sendRandomOpponentCardToGY,
@@ -83,6 +85,17 @@ export const attackAnimal = async (
 	const opponentId = getOpponentIdFromCurrentId(playerType);
 
 	await addInfoToLog(roomId, animalA.name + ' killed ' + animalD.name + ' of ' + opponentId);
+
+	const elementType = await getElementType(roomId);
+	if (animalD.clan === elementType) {
+		if (animalD.role === TANK) {
+			add2Hp(roomId, getOpponentIdFromCurrentId(playerType));
+		}
+		if (animalD.role === ATTACKER) {
+			minus2Hp(roomId, playerType);
+		}
+	}
+
 	await removePlayerAnimalFromBoard(roomId, opponentId, slotDNumber);
 
 	await addAnimalToGraveYard(roomId, animalDId);

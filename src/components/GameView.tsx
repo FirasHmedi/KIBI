@@ -175,14 +175,6 @@ export function GameView({
 			await activateJokerAbility(roomId, cardId, playerType);
 		}
 
-		if (role === TANK && clan === elementType) {
-			await add1Hp(roomId, playerType);
-		}
-
-		if (role === ATTACKER && clan === elementType) {
-			await minus1Hp(roomId, getOpponentIdFromCurrentId(playerType));
-		}
-
 		setTwoAnimalsToPlace(animalsNb => (animalsNb > 1 ? animalsNb - 1 : 0));
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 	};
@@ -327,7 +319,6 @@ export function GameView({
 		await changeElement(roomId, elementType, playerType);
 		setShowEnvPopup(false);
 		await activateJokersAbilities(roomId, playerType, currentPSlots);
-		await activateTankAndAttackerAbilities(roomId, playerType, currentPSlots);
 	};
 
 	const finishRound = async () => {
@@ -338,7 +329,6 @@ export function GameView({
 		await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
 		await enableAttackForOpponentAnimals(roomId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 		await activateJokersAbilities(roomId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-		await activateTankAndAttackerAbilities(roomId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 		setNbCardsToPlay(2);
 		setHasAttacked(false);
 		setCanPlaceKingWithoutSacrifice(false);

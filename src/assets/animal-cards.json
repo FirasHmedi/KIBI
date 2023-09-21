@@ -11,14 +11,14 @@
 		"description": "attacker of air clan",
 		"name": "Bee",
 		"role": "attacker",
-		"ability": "-1 at each turn to opponent"
+		"ability": "-2hp to opponent when it is killed"
 	},
 	"11-a": {
 		"clan": "air",
 		"description": "tank of air clan",
 		"name": "Ostrich",
 		"role": "tank",
-		"ability": "+1 at each turn for owner"
+		"ability": "+2hp to owner when it is killed"
 	},
 	"12-a": {
 		"ability": "Return random dead animal to deck",
@@ -39,14 +39,14 @@
 		"description": "attacker of fire clan",
 		"name": "Phoenix",
 		"role": "attacker",
-		"ability": "-1 at each turn to opponent"
+		"ability": "-2hp to opponent when it is killed"
 	},
 	"15-a": {
 		"clan": "fire",
 		"description": "tank of fire clan",
 		"name": "Bear",
 		"role": "tank",
-		"ability": "+1 at each turn for owner"
+		"ability": "+2hp to owner when it is killed"
 	},
 	"16-a": {
 		"ability": "Return random power card",
@@ -67,14 +67,14 @@
 		"description": "attacker of earth clan",
 		"name": "Badger",
 		"role": "attacker",
-		"ability": "-1 at each turn to opponent"
+		"ability": "-2hp to opponent when it is killed"
 	},
 	"3-a": {
 		"clan": "earth",
 		"description": "tank of earth clan",
 		"name": "Elephant",
 		"role": "tank",
-		"ability": "+1 at each turn for owner"
+		"ability": "+2hp to owner when it is killed"
 	},
 	"4-a": {
 		"ability": "Send random card from opponent to deck to graveyard",
@@ -95,14 +95,14 @@
 		"description": "attacker of water clan",
 		"name": "Shark",
 		"role": "attacker",
-		"ability": "-1 at each turn to opponent"
+		"ability": "-2hp to opponent when it is killed"
 	},
 	"7-a": {
 		"clan": "water",
 		"description": "tank of water clan",
 		"name": "Whale",
 		"role": "tank",
-		"ability": "+1 at each turn for owner"
+		"ability": "+2hp to owner when it is killed"
 	},
 	"8-a": {
 		"ability": "Draw 1 card",
