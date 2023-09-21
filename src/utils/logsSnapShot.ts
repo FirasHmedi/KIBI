@@ -1,10 +1,10 @@
-import { getItemsOnce, getRoomPath, setItem } from './db';
+import { getItemsOnce, getGamePath, setItem } from './db';
 import { getAnimalCard, getCard } from './helpers';
 import { Game, SlotType } from './interface';
 
-export const addSnapShot = async (roomId: string) => {
-	let game: Game = await getItemsOnce(getRoomPath(roomId));
-	await setItem('logs/' + roomId + '/SnapShot', {
+export const addSnapShot = async (gameId: string) => {
+	let game: Game = await getItemsOnce(getGamePath(gameId));
+	await setItem('logs/' + gameId + '/SnapShot', {
 		[game?.round?.nb]: {
 			boards: {
 				one: game?.board?.one ? transformBoardCardIdListToCardNameString(game?.board?.one) : 'empty',
@@ -47,14 +47,14 @@ export const transformCardIdListCardIdString = (cardsId: string[] | undefined) =
 };
 /*
 
-import { getItemsOnce, getRoomPath, setItem } from '?./db';
+import { getItemsOnce, getGamePath, setItem } from '?./db';
 import { Game, SlotType } from '?./interface';
 import { getAnimalCard, getCard, getPowerCard } from '?./data';
 import { isAnimalCard } from '?./helpers';
 
-export const addSnapShot = async (roomId: string) => {
+export const addSnapShot = async (gameId: string) => {
 	try {
-		const game: Game = await getItemsOnce(getRoomPath(roomId));
+		const game: Game = await getItemsOnce(getGamePath(gameId));
 		const { board, one, two, round } = game ?? {};
 		const snapshot = {
 			[round?.nb]: {
@@ -77,7 +77,7 @@ export const addSnapShot = async (roomId: string) => {
 				time: new Date()?.toTimeString(),
 			},
 		};
-		await setItem('logs/' + roomId + '/snapShot', snapshot);
+		await setItem('logs/' + gameId + '/snapShot', snapshot);
 	} catch (e) {
 		console?.error(e);
 	}

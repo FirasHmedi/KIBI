@@ -2,7 +2,7 @@
 // ----------------------king------------------
 import _ from 'lodash';
 import { drawCardFromMainDeck, setPowerCardAsActive } from './actions';
-import { getBoardPath, getItemsOnce, getRoomPath } from './db';
+import { getBoardPath, getItemsOnce, getGamePath } from './db';
 import {
 	addAnimalToGraveYard,
 	addCardsToPlayerDeck,
@@ -16,68 +16,68 @@ import {
 import { getOpponentIdFromCurrentId } from './helpers';
 import { PlayerType } from './interface';
 
-export const returnAnimalToDeck = async (roomId: string, playerType: string, animalId: string) => {
-	await addCardsToPlayerDeck(roomId, playerType, [animalId]);
-	await deleteAnimalCardFromGraveYardById(roomId, animalId);
+export const returnAnimalToDeck = async (gameId: string, playerType: string, animalId: string) => {
+	await addCardsToPlayerDeck(gameId, playerType, [animalId]);
+	await deleteAnimalCardFromGraveYardById(gameId, animalId);
 };
 
 // ----------------------attacker--------------------
 export const removePlayerAnimalFromBoardAndAddToGraveYard = async (
-	roomId: string,
+	gameId: string,
 	playerType: string,
 	slotNumber: number,
 	animalId: string,
 ) => {
-	await removePlayerAnimalFromBoard(roomId, playerType, slotNumber);
-	await addAnimalToGraveYard(roomId, animalId);
+	await removePlayerAnimalFromBoard(gameId, playerType, slotNumber);
+	await addAnimalToGraveYard(gameId, animalId);
 };
 // ----------------------tank-----------------------
 export const returnTankToDeck = returnAnimalToDeck;
 // ----------------------Snake -----------------------
-export const add1Hp = async (roomId: string, playerType: string) => {
-	await addHpToPlayer(roomId, playerType, 1);
+export const add1Hp = async (gameId: string, playerType: string) => {
+	await addHpToPlayer(gameId, playerType, 1);
 };
 // ----------------------jellyfish-----------------------
-export const drawOneCard = async (roomId: string, playerType: string) => {
-	await drawCardFromMainDeck(roomId, playerType);
+export const drawOneCard = async (gameId: string, playerType: string) => {
+	await drawCardFromMainDeck(gameId, playerType);
 };
 
-export const minus1Hp = async (roomId: string, playerType: string) => {
-	await removeHpFromPlayer(roomId, playerType, 1);
+export const minus1Hp = async (gameId: string, playerType: string) => {
+	await removeHpFromPlayer(gameId, playerType, 1);
 };
 
 // tank
-export const add2Hp = async (roomId: string, playerType: string) => {
-	await addHpToPlayer(roomId, playerType, 2);
+export const add2Hp = async (gameId: string, playerType: string) => {
+	await addHpToPlayer(gameId, playerType, 2);
 };
 // attacker
-export const minus2Hp = async (roomId: string, playerType: string) => {
-	await removeHpFromPlayer(roomId, playerType, 2);
+export const minus2Hp = async (gameId: string, playerType: string) => {
+	await removeHpFromPlayer(gameId, playerType, 2);
 };
 
 // ----------------------Snake-----------------------
-export const sendRandomOpponentCardToGY = async (roomId: string, playerType: PlayerType) => {
-	const cardsIds = await getItemsOnce(getRoomPath(roomId) + playerType + '/cardsIds');
+export const sendRandomOpponentCardToGY = async (gameId: string, playerType: PlayerType) => {
+	const cardsIds = await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
 	const cardId = cardsIds[getRandomNumber(cardsIds.length)];
-	await setPowerCardAsActive(roomId, getOpponentIdFromCurrentId(playerType), cardId);
-	addPowerToGraveYard(roomId, cardId);
+	await setPowerCardAsActive(gameId, getOpponentIdFromCurrentId(playerType), cardId);
+	addPowerToGraveYard(gameId, cardId);
 };
 // ----------------------Fox-----------------------
-export const returnRandomPowerCardToDeck = async (roomId: string, playerType: string) => {
-	const powerGY = await getItemsOnce(getBoardPath(roomId) + 'powerGY');
+export const returnRandomPowerCardToDeck = async (gameId: string, playerType: string) => {
+	const powerGY = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
 	if (!_.isEmpty(powerGY)) {
 		const cardId = powerGY[getRandomNumber(powerGY.length)];
-		await deletePowerCardFromGraveYardById(roomId, cardId);
-		await addCardsToPlayerDeck(roomId, playerType, [cardId]);
+		await deletePowerCardFromGraveYardById(gameId, cardId);
+		await addCardsToPlayerDeck(gameId, playerType, [cardId]);
 	}
 };
 // ----------------------Crow-----------------------
-export const returnRandomAnimalCardToDeck = async (roomId: string, playerType: string) => {
-	const animalGY = await getItemsOnce(getBoardPath(roomId) + 'animalGY');
+export const returnRandomAnimalCardToDeck = async (gameId: string, playerType: string) => {
+	const animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
 	if (!_.isEmpty(animalGY)) {
 		const cardId = animalGY[getRandomNumber(animalGY.length)];
-		await deleteAnimalCardFromGraveYardById(roomId, cardId);
-		await addCardsToPlayerDeck(roomId, playerType, [cardId]);
+		await deleteAnimalCardFromGraveYardById(gameId, cardId);
+		await addCardsToPlayerDeck(gameId, playerType, [cardId]);
 	}
 };
 function getRandomNumber(max: number) {

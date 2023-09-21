@@ -11,7 +11,7 @@ export const GAME_PATH = '/game/:id';
 export const RUNNING = 'running';
 export const READY = 'ready';
 export const PREPARE = 'prepare';
-export const ROOMS_PATH = 'rooms/';
+export const GAMES_PATH = 'games/';
 
 export const ROUND_DURATION = 180; //60
 

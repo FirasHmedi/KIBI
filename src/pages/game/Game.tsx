@@ -4,22 +4,22 @@ import { useLocation } from 'react-router-dom';
 import { GameContainer } from '../../components/GameContainer';
 import { SharedSelection } from '../../components/SharedSelection';
 import { centerStyle, flexColumnStyle, greyBackground, violet } from '../../styles/Style';
-import { ROOMS_PATH, RUNNING } from '../../utils/data';
+import { GAMES_PATH, RUNNING } from '../../utils/data';
 import { getBoardPath, setItem, subscribeToItems } from '../../utils/db';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
 
 function GamePage() {
 	const location = useLocation();
-	const { roomId, playerType, spectator } = location.state;
+	const { gameId, playerType, spectator } = location.state;
 	const [game, setGame] = useState<Game>();
 
-	const subscribeToRoom = async () => {
-		await subscribeToItems(ROOMS_PATH + roomId, setGame);
+	const subscribeToGame = async () => {
+		await subscribeToItems(GAMES_PATH + gameId, setGame);
 	};
 
 	useEffect(() => {
-		subscribeToRoom();
+		subscribeToGame();
 	}, []);
 
 	useEffect(() => {
@@ -29,7 +29,7 @@ function GamePage() {
 			const powerNotChoosed = (game.initialPowers ?? [])?.find(
 				id => id !== game?.one?.cardsIds[8] || id !== game?.two?.cardsIds[8],
 			);
-			setItem(ROOMS_PATH + roomId, {
+			setItem(GAMES_PATH + gameId, {
 				status: RUNNING,
 				round: {
 					player: PlayerType.ONE,
@@ -37,7 +37,7 @@ function GamePage() {
 				},
 			});
 			if (!_.isEmpty(powerNotChoosed)) {
-				setItem(getBoardPath(roomId), {
+				setItem(getBoardPath(gameId), {
 					mainDeck: _.shuffle([...game.board.mainDeck, powerNotChoosed]),
 				});
 			}
@@ -54,7 +54,7 @@ function GamePage() {
 				height: '100%',
 			}}>
 			{isGameRunning(game?.status) && (
-				<GameContainer game={game!} roomId={roomId} playerType={playerType} spectator={spectator} />
+				<GameContainer game={game!} gameId={gameId} playerType={playerType} spectator={spectator} />
 			)}
 
 			{!spectator && isGameInPreparation(game?.status) && (
@@ -69,12 +69,12 @@ function GamePage() {
 							paddingTop: 30,
 						}}>
 						<h4>
-							Room ID: <span style={{ fontSize: '1.2em', color: violet, userSelect: 'all' }}>{roomId}</span>
+							Game ID: <span style={{ fontSize: '1.2em', color: violet, userSelect: 'all' }}>{gameId}</span>
 						</h4>
 					</div>
 					<SharedSelection
 						playerType={playerType}
-						roomId={roomId}
+						gameId={gameId}
 						oneCards={game?.one?.cardsIds ?? []}
 						twoCards={game?.two?.cardsIds ?? []}
 						playerToSelect={game?.playerToSelect}

@@ -2,23 +2,23 @@ import _ from 'lodash';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { buttonStyle, centerStyle, flexRowStyle, greyBackground } from '../../styles/Style';
-import { ENV_MAX_LOAD, INITIAL_HP, PREPARE, ROOMS_PATH } from '../../utils/data';
+import { buttonStyle, centerStyle, flexRowStyle, greyBackground, violet } from '../../styles/Style';
+import { ENV_MAX_LOAD, INITIAL_HP, PREPARE, GAMES_PATH } from '../../utils/data';
 import { setItem } from '../../utils/db';
 import { PlayerType } from '../../utils/interface';
 import { getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/helpers';
 
 function Home() {
 	const navigate = useNavigate();
-	const [roomId, setRoomId] = useState('');
+	const [gameId, setGameId] = useState('');
 	const [disabledButton, setDisabledButton] = useState(false);
 
-	const createRoom = async () => {
-		const roomId = uuidv4();
+	const createGame = async () => {
+		const gameId = uuidv4();
 		const mainDeck: string[] = _.shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-3, 3);
 
-		await setItem(ROOMS_PATH + roomId, {
+		await setItem(GAMES_PATH + gameId, {
 			status: PREPARE,
 			one: {
 				hp: INITIAL_HP,
@@ -36,18 +36,18 @@ function Home() {
 		});
 
 		setDisabledButton(true);
-		navigate('/game/' + roomId, {
+		navigate('/game/' + gameId, {
 			state: {
-				roomId: roomId,
+				gameId: gameId,
 				playerName: 'player1',
 				playerType: PlayerType.ONE,
 			},
 		});
 	};
 
-	const joinRoomAsPlayer = async () => {
-		if (roomId.length === 0) return;
-		await setItem(ROOMS_PATH + roomId + '/two', {
+	const joinGameAsPlayer = async () => {
+		if (gameId.length === 0) return;
+		await setItem(GAMES_PATH + gameId + '/two', {
 			hp: INITIAL_HP,
 			playerName: 'player2',
 			canAttack: true,
@@ -56,21 +56,21 @@ function Home() {
 			envLoadNb: ENV_MAX_LOAD,
 		});
 		setDisabledButton(true);
-		navigate('game/' + roomId, {
+		navigate('game/' + gameId, {
 			state: {
-				roomId: roomId,
+				gameId: gameId,
 				playerName: 'player2',
 				playerType: PlayerType.TWO,
 			},
 		});
 	};
 
-	const joinRoomAsSpectator = async () => {
-		if (roomId.length === 0) return;
+	const joinGameAsSpectator = async () => {
+		if (gameId.length === 0) return;
 		setDisabledButton(true);
-		navigate('game/' + roomId, {
+		navigate('game/' + gameId, {
 			state: {
-				roomId: roomId,
+				gameId: gameId,
 				spectator: true,
 				playerType: PlayerType.TWO,
 			},
@@ -83,40 +83,42 @@ function Home() {
 				style={{
 					...centerStyle,
 					flexDirection: 'column',
+					gap: 4,
 				}}>
-				<button style={{ ...buttonStyle, fontSize: '1em', padding: 10 }} disabled={false} onClick={() => createRoom()}>
-					Create a room
+				<button style={{ ...buttonStyle, fontSize: '1em', padding: 10 }} disabled={false} onClick={() => createGame()}>
+					Create a game
 				</button>
 
 				<div style={centerStyle}>
 					<input
 						type='text'
-						placeholder='Room Id'
+						placeholder='Game Id'
 						required
 						style={{
-							padding: 5,
+							padding: 10,
 							margin: 10,
-							width: '30vw',
-							height: '4vh',
+							width: '20vw',
+							height: '2vh',
 							borderRadius: 5,
-							borderWidth: 0,
+							borderWidth: 3,
+							borderColor: violet,
 						}}
-						value={roomId}
+						value={gameId}
 						disabled={disabledButton}
-						onChange={e => setRoomId(e.target.value)}
+						onChange={e => setGameId(e.target.value)}
 					/>
 					<div style={{ width: '20vw', ...flexRowStyle, gap: 10 }}>
 						<button
 							style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
 							disabled={disabledButton}
-							onClick={() => joinRoomAsPlayer()}>
-							Join as player
+							onClick={() => joinGameAsPlayer()}>
+							Join as second player
 						</button>
 						<button
 							style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
 							disabled={disabledButton}
-							onClick={() => joinRoomAsSpectator()}>
-							Join as spectator
+							onClick={() => joinGameAsSpectator()}>
+							Join as watcher
 						</button>
 					</div>
 				</div>

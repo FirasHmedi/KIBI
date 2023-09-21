@@ -8,12 +8,12 @@ import { GameView } from './GameView';
 export function GameContainer({
 	game,
 	playerType,
-	roomId,
+	gameId,
 	spectator,
 }: {
 	game: Game;
 	playerType: PlayerType;
-	roomId: string;
+	gameId: string;
 	spectator?: boolean;
 }) {
 	const [board, setBoard] = useState<Board>();
@@ -71,13 +71,13 @@ export function GameContainer({
 			!_.isEmpty(gameBoard?.powerGY) &&
 			!spectator
 		) {
-			revertMainDeck(roomId);
+			revertMainDeck(gameId);
 		}
 	}, [game]);
 
 	const checkAndDrawCardFromMainDeck = ({ player, nb }: Round) => {
 		if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {
-			drawCardFromMainDeck(roomId, playerType).then();
+			drawCardFromMainDeck(gameId, playerType).then();
 			setShowCountDown(true);
 		}
 	};
@@ -87,7 +87,7 @@ export function GameContainer({
 	return (
 		<GameView
 			round={round}
-			roomId={roomId}
+			gameId={gameId}
 			board={board}
 			opponentPlayer={opponentPlayer}
 			currentPlayer={currentPlayer}

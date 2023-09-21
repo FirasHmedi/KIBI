@@ -2,9 +2,9 @@ import { get, onValue, ref, update } from 'firebase/database';
 import { db } from '../firebase';
 import { PlayerType } from './interface';
 
-export const getBoardPath = (roomId: string) => 'rooms/' + roomId + '/board/';
-export const getRoomPath = (roomId: string) => 'rooms/' + roomId + '/';
-export const getPlayerPath = (roomId: string, playerType: PlayerType) => 'rooms/' + roomId + `/${playerType}/`;
+export const getBoardPath = (gameId: string) => 'games/' + gameId + '/board/';
+export const getGamePath = (gameId: string) => 'games/' + gameId + '/';
+export const getPlayerPath = (gameId: string, playerType: PlayerType) => 'games/' + gameId + `/${playerType}/`;
 
 export const setItem = async (path: string, item: any) => {
 	try {

@@ -65,7 +65,7 @@ import { add1Hp, minus1Hp } from '../utils/animalsAbilities';
 
 export function GameView({
 	round,
-	roomId,
+	gameId,
 	board,
 	opponentPlayer,
 	currentPlayer,
@@ -74,7 +74,7 @@ export function GameView({
 	setShowCountDown,
 }: {
 	round: Round;
-	roomId: string;
+	gameId: string;
 	board: Board;
 	opponentPlayer: Player;
 	currentPlayer: Player;
@@ -98,6 +98,10 @@ export function GameView({
 	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
 
 	const canOtherAnimalsDefendKing = () => {
+		const animal = getAnimalCard(animalIdInCurrPSlot);
+		if (animal?.role === ATTACKER && elementType === animal.clan) {
+			return false;
+		}
 		const king = getAnimalCard(animalIdInOppPSlot);
 		if (!king || king?.role !== KING) {
 			return false;
@@ -112,8 +116,7 @@ export function GameView({
 	};
 
 	const isAttackAnimalEnabled =
-		round.nb != 1 &&
-		round.nb != 2 &&
+		round.nb > 3 &&
 		round.player === playerType &&
 		currentPlayer.canAttack &&
 		!hasAttacked &&
@@ -151,10 +154,10 @@ export function GameView({
 
 	const handlePlacingKing = async (cardId: string, clan: ClanName): Promise<void> => {
 		if (canPlaceKingWithoutSacrifice) {
-			await placeKingWithoutSacrifice(roomId, playerType, cardId, selectedCurrPSlotNb!);
+			await placeKingWithoutSacrifice(gameId, playerType, cardId, selectedCurrPSlotNb!);
 			setCanPlaceKingWithoutSacrifice(false);
 		} else {
-			await placeKingOnBoard(roomId, playerType, cardId, animalIdInCurrPSlot, selectedCurrPSlotNb!);
+			await placeKingOnBoard(gameId, playerType, cardId, animalIdInCurrPSlot, selectedCurrPSlotNb!);
 		}
 	};
 
@@ -168,11 +171,11 @@ export function GameView({
 			}
 			await handlePlacingKing(cardId, clan);
 		} else {
-			await placeAnimalOnBoard(roomId, playerType, selectedCurrPSlotNb!, cardId);
+			await placeAnimalOnBoard(gameId, playerType, selectedCurrPSlotNb!, cardId);
 		}
 
 		if (role === JOKER && clan === elementType) {
-			await activateJokerAbility(roomId, cardId, playerType);
+			await activateJokerAbility(gameId, cardId, playerType);
 		}
 
 		setTwoAnimalsToPlace(animalsNb => (animalsNb > 1 ? animalsNb - 1 : 0));
@@ -217,56 +220,56 @@ export function GameView({
 
 		const { name } = getPowerCard(cardId)!;
 
-		await setPowerCardAsActive(roomId, playerType, cardId!, name!);
+		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
 
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
-				await cancelAttacks(roomId, getOpponentIdFromCurrentId(playerType));
+				await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
 				break;
 			case 'rev-last-pow':
-				await reviveLastPower(roomId, playerType);
+				await reviveLastPower(gameId, playerType);
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
 			case 'rev-any-pow-1hp':
-				await reviveAnyPowerFor1hp(roomId, playerType, selectedGYPower[0]);
+				await reviveAnyPowerFor1hp(gameId, playerType, selectedGYPower[0]);
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
 			case 'rev-any-anim-1hp':
-				await sacrifice1HpToReviveAnyAnimal(roomId, playerType, selectedGYAnimals![0], selectedCurrPSlotNb!);
+				await sacrifice1HpToReviveAnyAnimal(gameId, playerType, selectedGYAnimals![0], selectedCurrPSlotNb!);
 				break;
 			case 'steal-anim-3hp':
-				await sacrifice3HpToSteal(roomId, playerType, animalIdInOppPSlot, selectedOppPSlotNb!, selectedCurrPSlotNb!);
+				await sacrifice3HpToSteal(gameId, playerType, animalIdInOppPSlot, selectedOppPSlotNb!, selectedCurrPSlotNb!);
 				break;
 			case 'switch-decks':
-				await switchDeck(roomId);
+				await switchDeck(gameId);
 				break;
 			case 'sacrif-anim-3hp':
-				await sacrificeAnimalToGet3Hp(roomId, playerType, animalIdInCurrPSlot, selectedCurrPSlotNb);
+				await sacrificeAnimalToGet3Hp(gameId, playerType, animalIdInCurrPSlot, selectedCurrPSlotNb);
 				break;
 			case '3hp':
-				await shieldOwnerPlus3Hp(roomId, playerType);
+				await shieldOwnerPlus3Hp(gameId, playerType);
 				break;
 			case 'draw-2':
-				await draw2Cards(roomId, playerType);
+				await draw2Cards(gameId, playerType);
 				break;
 			case '2-anim-gy':
-				await return2animalsFromGYToDeck(roomId, playerType, selectedGYAnimals);
+				await return2animalsFromGYToDeck(gameId, playerType, selectedGYAnimals);
 				break;
 			case 'block-pow':
-				await cancelUsingPowerCards(roomId, getOpponentIdFromCurrentId(playerType));
+				await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
 				break;
 			case 'reset-board':
-				await resetBoard(roomId, playerType, currentPSlots, opponentPSlots);
+				await resetBoard(gameId, playerType, currentPSlots, opponentPSlots);
 				break;
 			case 'place-king':
 				setCanPlaceKingWithoutSacrifice(true);
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
 			case 'double-king-ap':
-				await handleKingAbility(roomId, playerType, true);
+				await handleKingAbility(gameId, playerType, true);
 				break;
 			case 'load-env':
-				await setElementLoad(roomId, playerType, 3);
+				await setElementLoad(gameId, playerType, 3);
 				break;
 			case 'place-2-anim-1-hp':
 				setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay ?? 0) + 2);
@@ -274,7 +277,7 @@ export function GameView({
 				break;
 		}
 
-		await addPowerToGraveYard(roomId, cardId!);
+		await addPowerToGraveYard(gameId, cardId!);
 
 		if (envCardsIds.includes(getOriginalCardId(cardId!))) {
 			setShowEnvPopup(true);
@@ -316,26 +319,26 @@ export function GameView({
 	};
 
 	const changeEnvWithPopup = async (elementType: ClanName) => {
-		await changeElement(roomId, elementType, playerType);
+		await changeElement(gameId, elementType, playerType);
 		setShowEnvPopup(false);
-		await activateJokersAbilities(roomId, playerType, currentPSlots);
+		await activateJokersAbilities(gameId, playerType, currentPSlots);
 	};
 
 	const finishRound = async () => {
 		setShowCountDown(false);
-		await addSnapShot(roomId);
-		await handleKingAbility(roomId, playerType, false);
-		await enableAttackingAndPlayingPowerCards(roomId, playerType);
-		await addOneRound(roomId, getOpponentIdFromCurrentId(playerType));
-		await enableAttackForOpponentAnimals(roomId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-		await activateJokersAbilities(roomId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+		await addSnapShot(gameId);
+		await handleKingAbility(gameId, playerType, false);
+		await enableAttackingAndPlayingPowerCards(gameId, playerType);
+		await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
+		await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+		await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 		setNbCardsToPlay(2);
 		setHasAttacked(false);
 		setCanPlaceKingWithoutSacrifice(false);
 		setSelectedGYAnimals([]);
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedCurrPSlotNb(undefined);
-		setElementLoad(roomId, getOpponentIdFromCurrentId(playerType), 1);
+		setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
 	};
 
 	const attackOppAnimal = async () => {
@@ -346,19 +349,19 @@ export function GameView({
 		if (!animalA || !animalD || ANIMALS_POINTS[animalA.role].ap < ANIMALS_POINTS[animalD.role].hp) return;
 
 		setHasAttacked(true);
-		await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, true);
-		await attackAnimal(roomId, playerType, animalIdInCurrPSlot, animalIdInOppPSlot, selectedOppPSlotNb);
+		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb, true);
+		await attackAnimal(gameId, playerType, animalIdInCurrPSlot, animalIdInOppPSlot, selectedOppPSlotNb);
 		await waitFor(500);
-		await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb, false);
+		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb, false);
 	};
 
 	const attackOppHp = async () => {
 		if (!isAttackOwnerEnabled) return;
 		setHasAttacked(true);
-		await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb!, true);
-		await attackOwner(roomId, getOpponentIdFromCurrentId(playerType), animalIdInCurrPSlot, currentPlayer.isDoubleAP);
+		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, true);
+		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalIdInCurrPSlot, currentPlayer.isDoubleAP);
 		await waitFor(500);
-		await changeHasAttacked(roomId, playerType, selectedCurrPSlotNb!, false);
+		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
 	};
 
 	return (

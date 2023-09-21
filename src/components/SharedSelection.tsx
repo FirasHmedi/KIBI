@@ -9,21 +9,21 @@ import {
 	violet,
 } from '../styles/Style';
 import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, rolesIcons } from '../utils/data';
-import { getRoomPath, setItem } from '../utils/db';
+import { getGamePath, setItem } from '../utils/db';
 import { getOpponentIdFromCurrentId } from '../utils/helpers';
 import { AnimalCard, PlayerType } from '../utils/interface';
 import { PowerBoardSlot } from './Slots';
 
 interface Props {
 	playerType: PlayerType;
-	roomId: string;
+	gameId: string;
 	oneCards: string[];
 	twoCards: string[];
 	playerToSelect?: PlayerType;
 	powerCards?: string[];
 }
 
-export const SharedSelection = ({ playerType, roomId, oneCards, twoCards, playerToSelect, powerCards }: Props) => {
+export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, playerToSelect, powerCards }: Props) => {
 	const [idSelected, setIdSelected] = useState<string>();
 	const myCards = playerType === PlayerType.ONE ? oneCards : twoCards;
 	const oppCards = playerType === PlayerType.ONE ? twoCards : oneCards;
@@ -38,12 +38,12 @@ export const SharedSelection = ({ playerType, roomId, oneCards, twoCards, player
 	const submitCard = async () => {
 		if (!idSelected || myCards.includes(idSelected) || oppCards.includes(idSelected)) return;
 
-		await setItem(getRoomPath(roomId) + `${playerType}`, {
+		await setItem(getGamePath(gameId) + `${playerType}`, {
 			cardsIds: [...myCards, idSelected],
 		});
 
 		const playerToSelect = changePlayerToSelect ? playerType : getOpponentIdFromCurrentId(playerType);
-		await setItem(getRoomPath(roomId), {
+		await setItem(getGamePath(gameId), {
 			playerToSelect,
 		});
 		setIdSelected(undefined);
@@ -57,12 +57,12 @@ export const SharedSelection = ({ playerType, roomId, oneCards, twoCards, player
 				: ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16)
 		).map(animal => animal.id);
 
-		await setItem(getRoomPath(roomId) + `${playerType}`, {
+		await setItem(getGamePath(gameId) + `${playerType}`, {
 			cardsIds: cardsIds,
 		});
 
 		const playerToSelect = changePlayerToSelect ? playerType : getOpponentIdFromCurrentId(playerType);
-		await setItem(getRoomPath(roomId), {
+		await setItem(getGamePath(gameId), {
 			playerToSelect,
 		});
 	};

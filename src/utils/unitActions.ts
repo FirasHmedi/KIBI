@@ -1,72 +1,72 @@
 import _ from 'lodash';
 import { ClanName } from './data';
-import { getBoardPath, getItemsOnce, getRoomPath, setItem } from './db';
+import { getBoardPath, getItemsOnce, getGamePath, setItem } from './db';
 import { isAnimalCard, isPowerCard } from './helpers';
 
-export const setActivePowerCard = async (roomId: string, cardId?: string) => {
-	await setItem(getBoardPath(roomId), { activeCardId: cardId });
+export const setActivePowerCard = async (gameId: string, cardId?: string) => {
+	await setItem(getBoardPath(gameId), { activeCardId: cardId });
 };
 
-export const checkIfAnimalExistAddItToGraveYard = async (roomId: string, playerType: string, slotNb: number) => {
-	const slot = await getItemsOnce(getBoardPath(roomId) + playerType + '/' + slotNb);
+export const checkIfAnimalExistAddItToGraveYard = async (gameId: string, playerType: string, slotNb: number) => {
+	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNb);
 	if (slot && isAnimalCard(slot.cardId)) {
-		await addAnimalToGraveYard(roomId, slot.cardId);
+		await addAnimalToGraveYard(gameId, slot.cardId);
 	}
 };
 
 export const addAnimalToBoard = async (
-	roomId: string,
+	gameId: string,
 	playerType: string,
 	slotNb: number,
 	animalId: string,
 	canAttack: boolean = false,
 ) => {
-	await checkIfAnimalExistAddItToGraveYard(roomId, playerType, slotNb);
-	const slots = (await getItemsOnce(getBoardPath(roomId) + playerType)) ?? [];
+	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb);
+	const slots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
 	const updatedSlots = [
 		slots[0] ?? { cardId: 'empty', canAttack: false },
 		slots[1] ?? { cardId: 'empty', canAttack: false },
 		slots[2] ?? { cardId: 'empty', canAttack: false },
 	];
 	updatedSlots[slotNb] = { cardId: animalId, canAttack };
-	await setItem(getBoardPath(roomId), { [`${playerType}`]: updatedSlots });
+	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });
 };
 
-export const addCardsToPlayerDeck = async (roomId: string, playerType: string, cardsIds: string[] = []) => {
-	const existantCardsIds = await getItemsOnce(getRoomPath(roomId) + playerType + '/cardsIds');
-	await setItem(getRoomPath(roomId) + playerType + '/', {
+export const addCardsToPlayerDeck = async (gameId: string, playerType: string, cardsIds: string[] = []) => {
+	const existantCardsIds = await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
+	await setItem(getGamePath(gameId) + playerType + '/', {
 		cardsIds: [...(existantCardsIds ?? []), ...cardsIds],
 	});
 };
 
-export const removeCardFromPlayerDeck = async (roomId: string, playerType: string, cardId: string) => {
-	let cardsIds = await getItemsOnce(getRoomPath(roomId) + playerType + '/cardsIds');
+export const removeCardFromPlayerDeck = async (gameId: string, playerType: string, cardId: string) => {
+	let cardsIds = await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
 	cardsIds = cardsIds.filter((id: string) => id != cardId);
-	await setItem(getRoomPath(roomId) + playerType, { cardsIds: cardsIds });
+	await setItem(getGamePath(gameId) + playerType, { cardsIds: cardsIds });
 };
 
-export const addAnimalToGraveYard = async (roomId: string, animalId: string) => {
+export const addAnimalToGraveYard = async (gameId: string, animalId: string) => {
 	if (!isAnimalCard(animalId)) return;
-	const animalGY = await getItemsOnce(getBoardPath(roomId) + 'animalGY');
+	const animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
 	const index = !!animalGY ? animalGY.length : 0;
-	await setItem(getBoardPath(roomId) + 'animalGY', { [`${index}`]: animalId });
+	await setItem(getBoardPath(gameId) + 'animalGY', { [`${index}`]: animalId });
 };
 
-export const addPowerToGraveYard = async (roomId: string, powerId: string) => {
+export const addPowerToGraveYard = async (gameId: string, powerId: string) => {
 	if (!isPowerCard(powerId)) return;
-	const powerGY = await getItemsOnce(getBoardPath(roomId) + 'powerGY');
+	const powerGY = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
 	const index = powerGY ? powerGY.length : 0;
-	await setItem(getBoardPath(roomId) + 'powerGY', { [`${index}`]: powerId });
+	await setItem(getBoardPath(gameId) + 'powerGY', { [`${index}`]: powerId });
 };
 
 export const removePlayerAnimalFromBoard = async (
-	roomId: string,
+	gameId: string,
 	playerType: string,
 	slotNumber: number,
 ): Promise<boolean> => {
-	const slot = await getItemsOnce(getBoardPath(roomId) + playerType + '/' + slotNumber);
+	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNumber);
 	if (slot) {
-		await setItem(getBoardPath(roomId) + playerType, {
+		await setItem(getBoardPath(gameId) + playerType, {
 			[`${slotNumber}`]: { cardId: 'empty', canAttack: false },
 		});
 		return true;
@@ -74,24 +74,24 @@ export const removePlayerAnimalFromBoard = async (
 	return false;
 };
 
-export const addHpToPlayer = async (roomId: string, playerType: string, hp: number) => {
-	const oldHp = await getItemsOnce(getRoomPath(roomId) + playerType + '/hp');
+export const addHpToPlayer = async (gameId: string, playerType: string, hp: number) => {
+	const oldHp = await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
 	if (!_.isNil(oldHp)) {
 		const newHp = (oldHp ?? 0) + hp;
-		await setItem(getRoomPath(roomId) + playerType, { hp: newHp });
+		await setItem(getGamePath(gameId) + playerType, { hp: newHp });
 	}
 };
 
-export const removeHpFromPlayer = async (roomId: string, playerType: string, hp: number) => {
-	const oldHp = await getItemsOnce(getRoomPath(roomId) + playerType + '/hp');
+export const removeHpFromPlayer = async (gameId: string, playerType: string, hp: number) => {
+	const oldHp = await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
 	if (!_.isNil(oldHp)) {
 		const newHp = oldHp - hp;
-		await setItem(getRoomPath(roomId) + playerType, { hp: newHp });
+		await setItem(getGamePath(gameId) + playerType, { hp: newHp });
 	}
 };
 
-export const addInfoToLog = async (roomId: string, text: string) => {
-	await setItem('logs/' + roomId + '/log', {
+export const addInfoToLog = async (gameId: string, text: string) => {
+	await setItem('logs/' + gameId + '/log', {
 		[`${new Date().getTime()}`]: {
 			action: text,
 			time: new Date().toTimeString(),
@@ -99,99 +99,99 @@ export const addInfoToLog = async (roomId: string, text: string) => {
 	});
 };
 
-export const changeElementUnitAction = async (roomId: string, elementType: ClanName) => {
-	await setItem(getBoardPath(roomId), { elementType });
+export const changeElementUnitAction = async (gameId: string, elementType: ClanName) => {
+	await setItem(getBoardPath(gameId), { elementType });
 };
 
-export const getCardFromMainDeck = async (roomId: string): Promise<string> => {
-	const mainDeck = (await getItemsOnce(getBoardPath(roomId) + 'mainDeck')) as string[];
+export const getCardFromMainDeck = async (gameId: string): Promise<string> => {
+	const mainDeck = (await getItemsOnce(getBoardPath(gameId) + 'mainDeck')) as string[];
 	return mainDeck[mainDeck.length - 1];
 };
 
-export const removeCardFromMainDeck = async (roomId: string) => {
-	const mainDeck = (await getItemsOnce(getBoardPath(roomId) + 'mainDeck')) as string[];
+export const removeCardFromMainDeck = async (gameId: string) => {
+	const mainDeck = (await getItemsOnce(getBoardPath(gameId) + 'mainDeck')) as string[];
 	mainDeck.pop();
-	await setItem(getBoardPath(roomId), { mainDeck: mainDeck });
+	await setItem(getBoardPath(gameId), { mainDeck: mainDeck });
 };
 
-export const changeCanAttackVar = async (roomId: string, playerType: string, value: boolean) => {
-	await setItem(getRoomPath(roomId) + playerType, { canAttack: value });
+export const changeCanAttackVar = async (gameId: string, playerType: string, value: boolean) => {
+	await setItem(getGamePath(gameId) + playerType, { canAttack: value });
 };
 
 export const changeCanAttackVarOfSlot = async (
-	roomId: string,
+	gameId: string,
 	playerType: string,
 	slotNumber: number,
 	value: boolean,
 ) => {
-	await setItem(getBoardPath(roomId) + playerType + '/' + slotNumber, {
+	await setItem(getBoardPath(gameId) + playerType + '/' + slotNumber, {
 		canAttack: value,
 	});
 };
 
-export const changeUsingPowerCardsVar = async (roomId: string, playerType: string, value: boolean) => {
-	await setItem(getRoomPath(roomId) + playerType, { canPlayPowers: value });
+export const changeUsingPowerCardsVar = async (gameId: string, playerType: string, value: boolean) => {
+	await setItem(getGamePath(gameId) + playerType, { canPlayPowers: value });
 };
 
-export const getPowerCardFromGraveYardByIndex = async (roomId: string, index: number) => {
-	let powerGY = await getItemsOnce(getBoardPath(roomId) + 'powerGY');
+export const getPowerCardFromGraveYardByIndex = async (gameId: string, index: number) => {
+	let powerGY = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
 	return powerGY[index];
 };
 
-export const deletePowerCardFromGraveYardById = async (roomId: string, powerId: string) => {
-	let powerCardsId = await getItemsOnce(getBoardPath(roomId) + 'powerGY');
+export const deletePowerCardFromGraveYardById = async (gameId: string, powerId: string) => {
+	let powerCardsId = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
 	powerCardsId = (powerCardsId ?? []).filter((id: string) => id != powerId);
-	await setItem(getBoardPath(roomId), { powerGY: powerCardsId });
+	await setItem(getBoardPath(gameId), { powerGY: powerCardsId });
 };
 
-export const deletePowerCardFromGraveYardByIndex = async (roomId: string, index: number) => {
-	let powerCardsId = await getItemsOnce(getBoardPath(roomId) + 'powerGY');
+export const deletePowerCardFromGraveYardByIndex = async (gameId: string, index: number) => {
+	let powerCardsId = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
 	powerCardsId.splice(index, 1);
-	await setItem(getBoardPath(roomId), { powerGY: powerCardsId });
+	await setItem(getBoardPath(gameId), { powerGY: powerCardsId });
 };
 
-export const deleteAnimalCardFromGraveYardById = async (roomId: string, animalId: string) => {
-	let animalGY = await getItemsOnce(getBoardPath(roomId) + 'animalGY');
+export const deleteAnimalCardFromGraveYardById = async (gameId: string, animalId: string) => {
+	let animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
 	animalGY = (animalGY ?? []).filter((id: string) => id != animalId);
-	await setItem(getBoardPath(roomId), { animalGY: animalGY });
+	await setItem(getBoardPath(gameId), { animalGY: animalGY });
 };
 
-export const deleteAnimalCardsFromGraveYardByIds = async (roomId: string, animalsIds: string[] = []) => {
-	let animalGY = await getItemsOnce(getBoardPath(roomId) + 'animalGY');
+export const deleteAnimalCardsFromGraveYardByIds = async (gameId: string, animalsIds: string[] = []) => {
+	let animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
 	animalGY = (animalGY ?? []).filter((id: string) => !animalsIds.includes(id));
-	await setItem(getBoardPath(roomId), { animalGY: animalGY });
+	await setItem(getBoardPath(gameId), { animalGY: animalGY });
 };
 
-export const getAnimalCardFromGraveYardByIndex = async (roomId: string, index: number) => {
-	const animalGY = await getItemsOnce(getBoardPath(roomId) + 'animalGY');
+export const getAnimalCardFromGraveYardByIndex = async (gameId: string, index: number) => {
+	const animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
 	return animalGY[index];
 };
 
-export const deleteAnimalCardFromGraveYardByIndex = async (roomId: string, index: number) => {
-	const animalGY: string[] = (await getItemsOnce(getBoardPath(roomId) + 'animalGY')) ?? [];
+export const deleteAnimalCardFromGraveYardByIndex = async (gameId: string, index: number) => {
+	const animalGY: string[] = (await getItemsOnce(getBoardPath(gameId) + 'animalGY')) ?? [];
 	animalGY.splice(index, 1);
-	await setItem(getBoardPath(roomId), { animalGY: animalGY });
+	await setItem(getBoardPath(gameId), { animalGY: animalGY });
 };
 
-export const getPLayerHealth = async (roomId: string, playerType: string) => {
-	return await getItemsOnce(getRoomPath(roomId) + playerType + '/hp');
+export const getPLayerHealth = async (gameId: string, playerType: string) => {
+	return await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
 };
 
-export const changePLayerHealth = async (roomId: string, playerType: string, hp: number) => {
-	await setItem(getRoomPath(roomId) + playerType, { hp: hp });
+export const changePLayerHealth = async (gameId: string, playerType: string, hp: number) => {
+	await setItem(getGamePath(gameId) + playerType, { hp: hp });
 };
 
-export const getPLayerCards = async (roomId: string, playerType: string) => {
-	return await getItemsOnce(getRoomPath(roomId) + playerType + '/cardsIds');
+export const getPLayerCards = async (gameId: string, playerType: string) => {
+	return await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
 };
 
-export const changePLayerCards = async (roomId: string, playerType: string, cards: string[]) => {
-	await setItem(getRoomPath(roomId) + playerType, { cardsIds: cards });
+export const changePLayerCards = async (gameId: string, playerType: string, cards: string[]) => {
+	await setItem(getGamePath(gameId) + playerType, { cardsIds: cards });
 };
 
-export const addOneRound = async (roomId: string, playerType: string) => {
-	const round = await getItemsOnce('rooms/' + roomId + '/round');
+export const addOneRound = async (gameId: string, playerType: string) => {
+	const round = await getItemsOnce('games/' + gameId + '/round');
 	round.player = playerType;
 	round.nb += 1;
-	await setItem('rooms/' + roomId + '/round', round);
+	await setItem('games/' + gameId + '/round', round);
 };
