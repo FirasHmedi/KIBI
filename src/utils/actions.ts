@@ -89,7 +89,7 @@ export const attackAnimal = async (
 	const elementType = await getElementType(gameId);
 	if (animalA.clan === elementType) {
 		if (animalA.role === TANK) {
-			add2Hp(gameId, playerType);
+			add1Hp(gameId, playerType);
 		}
 	}
 
