@@ -77,7 +77,7 @@
 		"ability": "+2hp to owner when it attacks"
 	},
 	"4-a": {
-		"ability": "Send random card from opponent to deck to graveyard",
+		"ability": "Send random card from opponent deck to graveyard",
 		"clan": "earth",
 		"description": "joker of earth clan",
 		"name": "Snake",

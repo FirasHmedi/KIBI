@@ -98,8 +98,8 @@ export function GameView({
 	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
 
 	const canOtherAnimalsDefendKing = () => {
-		const animal = getAnimalCard(animalIdInCurrPSlot);
-		if (animal?.role === ATTACKER && elementType === animal.clan) {
+		const myAnimal = getAnimalCard(animalIdInCurrPSlot);
+		if (myAnimal?.role === ATTACKER && elementType === myAnimal.clan) {
 			return false;
 		}
 		const king = getAnimalCard(animalIdInOppPSlot);
@@ -107,8 +107,8 @@ export function GameView({
 			return false;
 		}
 		for (let i = 0; i < 3; i++) {
-			const animal = getAnimalCard(opponentPSlots[i]?.cardId);
-			if (animal?.role !== king.role && king.clan === animal?.clan) {
+			const oppAnimal = getAnimalCard(opponentPSlots[i]?.cardId);
+			if (oppAnimal?.role !== king.role && king.clan === oppAnimal?.clan) {
 				return true;
 			}
 		}
@@ -116,16 +116,14 @@ export function GameView({
 	};
 
 	const isAttackAnimalEnabled =
-		round.nb > 3 &&
+		round.nb >= 3 &&
 		round.player === playerType &&
 		currentPlayer.canAttack &&
 		!hasAttacked &&
 		!_.isNil(selectedCurrPSlotNb) &&
 		!_.isNil(selectedOppPSlotNb) &&
-		!_.isEmpty(animalIdInCurrPSlot) &&
-		animalIdInCurrPSlot !== EMPTY &&
-		!_.isEmpty(animalIdInOppPSlot) &&
-		animalIdInOppPSlot !== EMPTY &&
+		isAnimalCard(animalIdInCurrPSlot) &&
+		isAnimalCard(animalIdInOppPSlot) &&
 		currentPSlots[selectedCurrPSlotNb]?.canAttack &&
 		!canOtherAnimalsDefendKing();
 
@@ -140,12 +138,10 @@ export function GameView({
 		isAnimalCard(opponentPSlots[2]?.cardId);
 
 	const isAttackOwnerEnabled =
-		round.nb != 1 &&
-		round.nb != 2 &&
+		round.nb >= 3 &&
 		round.player === playerType &&
 		currentPlayer.canAttack &&
 		!hasAttacked &&
-		!!animalIdInCurrPSlot &&
 		isAnimalCard(animalIdInCurrPSlot) &&
 		!_.isNil(selectedCurrPSlotNb) &&
 		((isKing(animalIdInCurrPSlot) && isAnimalInEnv(animalIdInCurrPSlot, elementType)) || isOppSlotsEmpty) &&
@@ -297,6 +293,16 @@ export function GameView({
 	};
 
 	const playCard = async (cardId?: string) => {
+		console.log(
+			'card id',
+			cardId,
+			'isAnimal',
+			isAnimalCard(cardId),
+			'isPower',
+			isPowerCard(cardId),
+			'slot selected',
+			selectedCurrPSlotNb,
+		);
 		if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
 
 		if (!_.isEmpty(selectedGYPower) && cardId !== selectedGYPower[0] && getOriginalCardId(cardId) !== 'rev-any-pow-1hp')
