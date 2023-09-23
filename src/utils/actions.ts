@@ -101,12 +101,12 @@ export const attackOwner = async (
 	gameId: string,
 	playerDType: PlayerType,
 	animalId: string,
-	double: boolean = false,
+	isDoubleAP: boolean = false,
 ) => {
 	if (!isAnimalCard(animalId)) return;
 	const { name, role } = getAnimalCard(animalId)!;
 	await addInfoToLog(gameId, name + ' has attacked ' + playerDType + ' directly');
-	const ap = double && role === KING ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
+	const ap = isDoubleAP ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
 	await removeHpFromPlayer(gameId, playerDType, ap);
 };
 
@@ -141,7 +141,7 @@ export const setPowerCardAsActive = async (gameId: string, playerType: PlayerTyp
 	}
 	await removeCardFromPlayerDeck(gameId, playerType, cardId);
 	await setActivePowerCard(gameId, cardId);
-	await waitFor(2000);
+	await waitFor(1200);
 	await setActivePowerCard(gameId, '');
 };
 

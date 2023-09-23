@@ -172,6 +172,6 @@ export const resetBoard = async (
 	await changeElement(gameId, NEUTRAL);
 };
 
-export const handleKingAbility = async (gameId: string, playerType: PlayerType, isDoubleAP: boolean) => {
+export const doubleAnimalsAP = async (gameId: string, playerType: PlayerType, isDoubleAP: boolean) => {
 	await setItem(getGamePath(gameId) + playerType, { isDoubleAP });
 };

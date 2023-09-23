@@ -9,10 +9,12 @@ import { ElementSlot, BoardSlots, DeckSlot } from './Slots';
 interface Props {
 	board: Board;
 	roundNb: number;
-	selectOpponentSlot: (slotNb?: number) => void;
-	selectCurrentSlot: (slotNb?: number) => void;
+	isDoubleCurrentAP?: boolean;
+	isDoubleOpponentAP?: boolean;
 	selectedCurrentPSlotNb?: number;
 	selectedOpponentPSlotNb?: number;
+	selectOpponentSlot: (slotNb?: number) => void;
+	selectCurrentSlot: (slotNb?: number) => void;
 	selectedGYAnimals: string[];
 	setSelectedGYAnimals: React.Dispatch<React.SetStateAction<string[]>>;
 	selectedGYPower: string[];
@@ -30,6 +32,8 @@ export const BoardView = ({
 	roundNb,
 	selectedGYPower,
 	setSelectedGYPower,
+	isDoubleCurrentAP = false,
+	isDoubleOpponentAP = false,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 	return (
@@ -51,6 +55,7 @@ export const BoardView = ({
 					selectedSlotNb={selectedOpponentPSlotNb}
 					opponent={true}
 					elementType={elementType}
+					isDoubleAP={isDoubleOpponentAP}
 				/>
 				<Seperator />
 				<BoardSlots
@@ -59,6 +64,7 @@ export const BoardView = ({
 					selectedSlotNb={selectedCurrentPSlotNb}
 					current={true}
 					elementType={elementType}
+					isDoubleAP={isDoubleCurrentAP}
 				/>
 			</div>
 

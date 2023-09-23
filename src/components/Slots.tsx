@@ -45,6 +45,15 @@ interface SlotProps {
 	selectSlot?: (slotNb?: number) => void;
 	nb?: number;
 	graveyard?: boolean;
+	isDoubleAP: boolean;
+}
+
+interface DeckSlotProps {
+	cardId?: string;
+	selected?: boolean;
+	selectSlot?: (slotNb?: number) => void;
+	nb?: number;
+	graveyard?: boolean;
 }
 
 export const PowerBoardSlot = ({
@@ -66,7 +75,7 @@ export const PowerBoardSlot = ({
 			style={{
 				...boardSlotStyle,
 				backgroundColor: violet,
-				justifyContent: 'center',
+				justifyContent: 'space-evenly',
 				borderColor: selected ? selectedColor : violet,
 				...bigStyle,
 			}}
@@ -103,8 +112,10 @@ export const PowerDeckSlot = ({
 			}}
 			onClick={() => select()}>
 			<h6>{name?.toUpperCase()}</h6>
-			<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
-			<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.1vw' }} />
+			<div>
+				<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
+				<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.1vw' }} />
+			</div>
 		</div>
 	);
 };
@@ -113,17 +124,18 @@ export const AnimalBoardSlot = ({
 	cardId,
 	select,
 	selected,
+	isDoubleAP,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
+	isDoubleAP: boolean;
 }) => {
-	const { clan, name, role } = getAnimalCard(cardId)!;
+	const { clan, name, role, ability } = getAnimalCard(cardId)!;
 	if (!name || !clan || !role) return <></>;
 
 	const { hp, ap } = ANIMALS_POINTS[role];
-	const roleTooltipContent =
-		rolesTooltipContents[role === 'joker' ? (name.toLowerCase() as keyof typeof rolesTooltipContents) : role];
+	const roleTooltipContent = ability;
 	const roleTooltipId = `role-anchor${cardId}`;
 
 	return (
@@ -151,7 +163,7 @@ export const AnimalBoardSlot = ({
 					backgroundColor: CLANS[clan!]?.color,
 					height: '3.5vh',
 				}}>
-				<h6>{ap} AP</h6>
+				<h6>{isDoubleAP ? ap * 2 : ap} AP</h6>
 				<Tooltip anchorSelect={`#${roleTooltipId}`} content={roleTooltipContent} style={{ width: '10vw' }} />
 				<img id={roleTooltipId} src={rolesIcons[role]} style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
 				<h6>{hp} HP</h6>
@@ -198,7 +210,7 @@ export const AnimalDeckSlot = ({
 	);
 };
 
-export const BoardSlot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
+export const BoardSlot = ({ cardId, selected, selectSlot, nb, isDoubleAP }: SlotProps) => {
 	const selectSlotPolished = () => {
 		if (!!selectSlot) {
 			selected ? selectSlot(undefined) : selectSlot(nb);
@@ -206,7 +218,7 @@ export const BoardSlot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
 	};
 
 	if (cardId && isAnimalCard(cardId)) {
-		return <AnimalBoardSlot cardId={cardId} select={selectSlotPolished} selected={selected} />;
+		return <AnimalBoardSlot cardId={cardId} select={selectSlotPolished} selected={selected} isDoubleAP={isDoubleAP} />;
 	}
 
 	if (cardId && isPowerCard(cardId)) {
@@ -225,7 +237,7 @@ export const BoardSlot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
 	);
 };
 
-export const DeckSlot = ({ cardId, selected, selectSlot, nb }: SlotProps) => {
+export const DeckSlot = ({ cardId, selected, selectSlot, nb }: DeckSlotProps) => {
 	const selectSlotPolished = () => {
 		if (!!selectSlot) {
 			selected ? selectSlot(undefined) : selectSlot(nb);
@@ -294,6 +306,7 @@ export const BoardSlots = ({
 	opponent,
 	current,
 	elementType,
+	isDoubleAP,
 }: {
 	slots: SlotType[];
 	selectedSlotNb?: number;
@@ -301,6 +314,7 @@ export const BoardSlots = ({
 	opponent?: boolean;
 	current?: boolean;
 	elementType?: ClanName;
+	isDoubleAP: boolean;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 
@@ -323,7 +337,13 @@ export const BoardSlots = ({
 						{current && <CanAttackIconsView slot={slot} />}
 					</div>
 					<div style={getAnimalCard(slot?.cardId)?.clan == elementType ? glow : undefined}>
-						<BoardSlot nb={index} selectSlot={selectSlot} cardId={slot?.cardId} selected={selectedSlotNb === index} />
+						<BoardSlot
+							nb={index}
+							isDoubleAP={isDoubleAP}
+							selectSlot={selectSlot}
+							cardId={slot?.cardId}
+							selected={selectedSlotNb === index}
+						/>
 					</div>
 					{opponent && <CanAttackIconsView slot={slot} />}
 				</div>
