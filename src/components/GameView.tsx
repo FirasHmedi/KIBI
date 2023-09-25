@@ -366,10 +366,10 @@ export function GameView({
 			style={{
 				...flexColumnStyle,
 				width: '100%',
-				height: '84vh',
+				height: '90vh',
 				justifyContent: 'space-between',
-				paddingTop: '8vh',
-				paddingBottom: '8vh',
+				paddingTop: '5vh',
+				paddingBottom: '5vh',
 			}}>
 			<OpponentPView player={opponentPlayer} />
 
