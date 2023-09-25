@@ -404,7 +404,7 @@ export function GameView({
 				spectator={spectator}
 			/>
 
-			{!showCountDown && (
+			{showCountDown && (
 				<div style={{ position: 'absolute', right: '12vw', bottom: '11vh' }}>
 					<CountdownCircleTimer
 						isPlaying
