@@ -1,7 +1,10 @@
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth } from '../firebase';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth, db } from '../firebase';
+import { FirebaseError } from 'firebase/app';
+import { doc, setDoc } from "firebase/firestore"; 
 
-/* export const registerWithEmailPsw = async (
+
+ export const registerWithEmailPsw = async (
   username: string,
   email: string,
   password: string
@@ -20,11 +23,31 @@ import { auth } from '../firebase';
   }
 };
 
+
+
+export const signUpWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    return user; // This is the user's data from Google
+  } catch (error) {
+    console.error("Error signing up with Google: ", error);
+    throw error; // or handle the error in another way
+  }
+};
+
+ 
+
+
+/*
 export const signUpWithGoogle = async (username: string) => {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
+
     const user = result.user;
     await updateProfile(user, { displayName: username });
     if (user.email) await addUser(user.uid, username, user.email);
@@ -41,8 +64,8 @@ export const signUpWithGoogle = async (username: string) => {
     // ...
     return false;
   }
-};
-
+};*/
+/*
 export const signOutUser = async () => {
   try {
     await signOut(auth);
@@ -50,11 +73,12 @@ export const signOutUser = async () => {
   } catch (e) {
     console.log('error registering', e);
   }
-}; */
+}; 
 
-/* const addUser = async (uid: string, username: string, email: string) => {
+*/
+const addUser = async (uid: string, username: string, email: string) => {
   try {
-    const docRef = await setDoc(doc(db, USERS, uid), {
+    const docRef = await setDoc(doc(db, "USERS", uid), {
       username,
       email,
     });
@@ -62,7 +86,7 @@ export const signOutUser = async () => {
   } catch (e) {
     console.log('error ', e);
   }
-}; */
+}; 
 
 export const loginWithEmailPsw = (email: string, password: string) => {
   signInWithEmailAndPassword(auth, email, password)
@@ -84,6 +108,7 @@ export const loginWithGoogle = async () => {
     const user = result.user;
     return true;
   } catch (e) {
+    console.error(e);
     return false;
   }
 };

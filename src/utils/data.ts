@@ -4,9 +4,10 @@ import { airColor, earthColor, fireColor, neutralColor, waterColor } from '../st
 import { AllCards, AnimalCard, Card } from './interface';
 
 export const SINGUP_PATH = '/signup';
-export const SIGNIN_PATH = '/signin';
+export const SIGNIN_PATH = '/SignIn';
 export const HOME_PATH = '/';
 export const GAME_PATH = '/game/:id';
+export const USER_HOME_PATH='/UserHome'
 
 export const RUNNING = 'running';
 export const READY = 'ready';

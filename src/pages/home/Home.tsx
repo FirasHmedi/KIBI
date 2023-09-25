@@ -79,6 +79,7 @@ function Home() {
 
 	return (
 		<div style={{ backgroundColor: greyBackground, height: '100%', ...centerStyle, width: '100%' }}>
+			
 			<div
 				style={{
 					...centerStyle,

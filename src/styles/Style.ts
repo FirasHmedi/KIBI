@@ -44,14 +44,14 @@ export const headerStyle: React.CSSProperties = {
 	...centerStyle,
 	color: primaryBlue,
 	height: '3vh',
-	justifyContent: 'space-between',
+	justifyContent: 'center',
 	paddingLeft: 10,
 	paddingRight: 10,
 };
 
 export const buttonStyle: React.CSSProperties = {
-	backgroundColor: violet,
-	color: 'white',
+	backgroundColor: "white",
+	color: violet,
 	borderRadius: 5,
 	fontWeight: 'bold',
 	padding: 3,
@@ -83,20 +83,31 @@ export const deckSlotStyle: React.CSSProperties = {
 };
 
 export const signupContainerStyle: React.CSSProperties = {
-	...centerStyle,
-	backgroundColor: primary,
-	borderRadius: 5,
-	width: '20vw',
-	alignSelf: 'center',
-	flexDirection: 'column',
-	gap: 30,
-	marginTop: 100,
-	padding: 10,
-	paddingTop: 30,
-	paddingBottom: 30,
-	minHeight: '40vh',
+	...centerStyle, // Retain existing centering styles
+  backgroundColor: violet,
+  borderRadius: 5,
+  width: '20vw',
+  flexDirection: 'column',
+  gap: 30,
+  padding: 10,
+  paddingTop: 30,
+  paddingBottom: 30,
+  minHeight: '40vh',
 };
 
 export const signinContainerStyle: React.CSSProperties = {
-	...signupContainerStyle,
+  ...centerStyle, // Retain existing centering styles
+  backgroundColor: violet,
+  borderRadius: 5,
+  width: '20vw',
+  flexDirection: 'column',
+  gap: 30,
+  padding: 10,
+  paddingTop: 30,
+  paddingBottom: 30,
+  minHeight: '40vh',
+  
+
+  
 };
+
