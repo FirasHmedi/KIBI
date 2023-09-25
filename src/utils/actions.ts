@@ -166,7 +166,7 @@ export const activateJokersAbilities = async (gameId: string, playerDType: Playe
 	}
 };
 
-export const activateTankAndAttackerAbilities = async (
+/* export const activateTankAndAttackerAbilities = async (
 	gameId: string,
 	playerDType: PlayerType,
 	slots: SlotType[] = [],
@@ -185,7 +185,7 @@ export const activateTankAndAttackerAbilities = async (
 			}
 		}
 	}
-};
+}; */
 
 export const getElementType = async (gameId: string): Promise<ClanName> => {
 	return await getItemsOnce(getBoardPath(gameId) + 'elementType');

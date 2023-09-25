@@ -86,10 +86,6 @@ export function GameView({
 	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
 
 	const canOtherAnimalsDefendKing = () => {
-		const myAnimal = getAnimalCard(idInCurrPSlot);
-		if (myAnimal?.role === ATTACKER && elementType === myAnimal.clan) {
-			return false;
-		}
 		const king = getAnimalCard(idInOppPSlot);
 		if (!king || king?.role !== KING) {
 			return false;
@@ -260,8 +256,10 @@ export function GameView({
 		}
 
 		setSelectedGYAnimals([]);
+		setSelectedGYPower([]);
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedCurrPSlotNb(undefined);
+
 		if (cardId != 'place-king') {
 			setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 		}
@@ -315,6 +313,7 @@ export function GameView({
 		setHasAttacked(false);
 		setCanPlaceKingWithoutSacrifice(false);
 		setSelectedGYAnimals([]);
+		setSelectedGYPower([]);
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedCurrPSlotNb(undefined);
 		setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
@@ -335,6 +334,20 @@ export function GameView({
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, true);
 		await attackAnimal(gameId, playerType, idInCurrPSlot, idInOppPSlot, selectedOppPSlotNb!);
+
+		// Attacker ability
+		if (animalA.role === ATTACKER && elementType === animalA.clan) {
+			for (let i = 0; i < 3; i++) {
+				const cardId = opponentPSlots[i].cardId;
+				if (cardId !== idInOppPSlot) {
+					const otherAnimal = getAnimalCard(cardId);
+					if (otherAnimal?.role === animalD.role) {
+						await attackAnimal(gameId, playerType, idInCurrPSlot, cardId, i!);
+					}
+				}
+			}
+		}
+
 		await waitFor(500);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
 	};
@@ -353,10 +366,10 @@ export function GameView({
 			style={{
 				...flexColumnStyle,
 				width: '100%',
-				height: '96vh',
+				height: '84vh',
 				justifyContent: 'space-between',
-				paddingTop: '2vh',
-				paddingBottom: '2vh',
+				paddingTop: '8vh',
+				paddingBottom: '8vh',
 			}}>
 			<OpponentPView player={opponentPlayer} />
 
@@ -391,8 +404,8 @@ export function GameView({
 				spectator={spectator}
 			/>
 
-			{showCountDown && (
-				<div style={{ position: 'absolute', right: '12vw', bottom: '7vh' }}>
+			{!showCountDown && (
+				<div style={{ position: 'absolute', right: '12vw', bottom: '11vh' }}>
 					<CountdownCircleTimer
 						isPlaying
 						duration={ROUND_DURATION}

@@ -40,6 +40,7 @@ export const CurrentPView = ({
 	const isMyRound = round?.player === playerType;
 	const disableEnv = !isMyRound || player.envLoadNb !== 3;
 	const [disablePlayButton, setDisablePlayButton] = useState(false);
+
 	const isPlayCardEnabled =
 		nbCardsToPlay >= 1 &&
 		!!selectedId &&
@@ -60,7 +61,7 @@ export const CurrentPView = ({
 				...flexRowStyle,
 				alignItems: 'center',
 				width: '100%',
-				justifyContent: 'space-around',
+				justifyContent: 'center',
 			}}>
 			{!spectator && (
 				<>
@@ -70,7 +71,7 @@ export const CurrentPView = ({
 							justifyContent: 'center',
 							position: 'absolute',
 							right: '29vw',
-							bottom: '31vh',
+							bottom: '30vh',
 							gap: 10,
 							width: '10vw',
 							fontSize: '0.6em',
@@ -109,7 +110,7 @@ export const CurrentPView = ({
 							...flexColumnStyle,
 							position: 'absolute',
 							right: '20vw',
-							bottom: '8vh',
+							bottom: '12vh',
 							width: '10vw',
 							gap: 6,
 							fontSize: '0.6em',
@@ -128,7 +129,7 @@ export const CurrentPView = ({
 							PLAY CARD
 						</button>
 					</div>
-					<div style={{ position: 'absolute', right: '14vw', bottom: '8vh', width: '10vw', fontSize: '0.6em' }}>
+					<div style={{ position: 'absolute', right: '14vw', bottom: '12vh', width: '10vw', fontSize: '0.6em' }}>
 						<button
 							style={{
 								...buttonStyle,
@@ -156,7 +157,7 @@ export const OpponentPView = ({ player }: { player: Player }) => {
 				...flexRowStyle,
 				alignItems: 'center',
 				width: '100%',
-				justifyContent: 'space-around',
+				justifyContent: 'center',
 			}}>
 			<PlayerDataView player={player} />
 			<OpponentPDeck cardsNb={player?.cardsIds?.length} />
