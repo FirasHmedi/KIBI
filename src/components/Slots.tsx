@@ -9,20 +9,14 @@ import {
 	boardSlotStyle,
 	violet,
 } from '../styles/Style';
-import {
-	ANIMALS_POINTS,
-	CLANS,
-	ClanName,
-	animalsPics,
-	rolesIcons,
-	elementsIcons,
-	rolesTooltipContents,
-} from '../utils/data';
+import { ANIMALS_POINTS, CLANS, ClanName, animalsPics, rolesIcons, elementsIcons } from '../utils/data';
 import { getAnimalCard, getPowerCard, isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
 import InfoIcon from '@mui/icons-material/Info';
 import { Tooltip } from 'react-tooltip';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 export const SlotBack = () => (
 	<div
@@ -31,7 +25,7 @@ export const SlotBack = () => (
 			backgroundColor: violet,
 			color: 'white',
 			...centerStyle,
-			height: '7vh',
+			height: '6vh',
 			width: '2.5vw',
 			fontSize: '0.9em',
 		}}>
@@ -82,7 +76,7 @@ export const PowerBoardSlot = ({
 			onClick={() => select()}>
 			<h6>{name?.toUpperCase()}</h6>
 			<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
-			<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.1vw' }} />
+			<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.2vw' }} />
 		</div>
 	);
 };
@@ -114,7 +108,7 @@ export const PowerDeckSlot = ({
 			<h6>{name?.toUpperCase()}</h6>
 			<div>
 				<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
-				<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.1vw' }} />
+				<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.3vw' }} />
 			</div>
 		</div>
 	);
@@ -161,12 +155,18 @@ export const AnimalBoardSlot = ({
 					alignItems: 'center',
 					fontSize: '1.1em',
 					backgroundColor: CLANS[clan!]?.color,
-					height: '3.5vh',
+					height: '4vh',
 				}}>
-				<h6>{isDoubleAP ? ap * 2 : ap} AP</h6>
+				<div style={{ ...centerStyle }}>
+					<h4>{isDoubleAP ? ap * 2 : ap}</h4>
+					<FitnessCenterIcon style={{ color: 'white', width: '0.8vw' }} />
+				</div>
 				<Tooltip anchorSelect={`#${roleTooltipId}`} content={roleTooltipContent} style={{ width: '10vw' }} />
 				<img id={roleTooltipId} src={rolesIcons[role]} style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
-				<h6>{hp} HP</h6>
+				<div style={{ ...centerStyle }}>
+					<h4>{hp}</h4>
+					<FavoriteIcon style={{ color: 'white', width: '0.8vw' }} />
+				</div>
 			</div>
 		</div>
 	);
@@ -202,9 +202,15 @@ export const AnimalDeckSlot = ({
 					alignItems: 'center',
 					paddingBottom: 4,
 				}}>
-				<h6>{ap} AP</h6>
+				<div style={{ ...centerStyle }}>
+					<h4>{ap}</h4>
+					<FitnessCenterIcon style={{ color: 'white', width: '0.8vw' }} />
+				</div>
 				<img src={rolesIcons[role]} style={{ width: 22, filter: 'brightness(0) invert(1)' }}></img>
-				<h6>{hp} HP</h6>
+				<div style={{ ...centerStyle }}>
+					<h4>{hp}</h4>
+					<FavoriteIcon style={{ color: 'white', width: '0.8vw' }} />
+				</div>
 			</div>
 		</div>
 	);

@@ -65,8 +65,8 @@ export const boardSlotStyle: React.CSSProperties = {
 	borderRadius: 5,
 	color: 'white',
 	fontSize: '0.85em',
-	height: '17vh',
-	width: '7vw',
+	height: '18vh',
+	width: '7.5vw',
 	flexShrink: 0,
 	border: 'solid 2px #95a5a6',
 };

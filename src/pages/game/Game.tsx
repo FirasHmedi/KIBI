@@ -49,7 +49,6 @@ function GamePage() {
 			style={{
 				...flexColumnStyle,
 				...centerStyle,
-				backgroundColor: greyBackground,
 				justifyContent: 'flex-start',
 				height: '100%',
 			}}>

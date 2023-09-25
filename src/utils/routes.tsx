@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
-import { appStyle, violet } from '../styles/Style';
+import { appStyle, greyBackground, violet } from '../styles/Style';
 import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
 import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '../components/Sidebar';
@@ -14,18 +14,17 @@ const Layout = ({ children }: any) => {
 	};
 
 	return (
-		<div style={appStyle}>
+		<div style={{ ...appStyle, backgroundColor: greyBackground }}>
 			<div
 				style={{
 					width: '100vw',
-					backgroundColor: violet,
-					color: 'white',
+					color: violet,
 					height: '6vh',
 					display: 'flex',
 					alignItems: 'center',
 				}}>
-				<button onClick={toggleSidebar}>
-					<MenuIcon style={{ color: 'white', paddingLeft: '1vw' }} />
+				<button style={{ display: 'flex', alignItems: 'center' }} onClick={toggleSidebar}>
+					<MenuIcon style={{ color: violet, paddingLeft: '1vw' }} />
 				</button>
 				<h4 style={{ paddingLeft: '1vw' }}>KIBI</h4>
 			</div>

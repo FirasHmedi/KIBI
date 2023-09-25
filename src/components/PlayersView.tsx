@@ -6,6 +6,7 @@ import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
 import ProgressBar from '@ramonak/react-progress-bar';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 export const CurrentPView = ({
 	player,
@@ -72,14 +73,15 @@ export const CurrentPView = ({
 							position: 'absolute',
 							right: '29vw',
 							bottom: '30vh',
-							gap: 10,
+							gap: 14,
 							width: '10vw',
-							fontSize: '0.6em',
 						}}>
 						<button
 							style={{
-								...buttonStyle,
-								backgroundColor: disableEnv ? 'grey' : violet,
+								fontWeight: 'bold',
+								minWidth: '4vw',
+								fontSize: '0.7em',
+								color: disableEnv ? 'grey' : violet,
 							}}
 							disabled={disableEnv}
 							onClick={() => setElement()}>
@@ -87,8 +89,10 @@ export const CurrentPView = ({
 						</button>
 						<button
 							style={{
-								...buttonStyle,
-								backgroundColor: !isAttackAnimalEnabled ? 'grey' : violet,
+								fontWeight: 'bold',
+								minWidth: '4vw',
+								fontSize: '0.7em',
+								color: !isAttackAnimalEnabled ? 'grey' : violet,
 							}}
 							disabled={!isAttackAnimalEnabled}
 							onClick={() => attackOpponentAnimal()}>
@@ -96,8 +100,10 @@ export const CurrentPView = ({
 						</button>
 						<button
 							style={{
-								...buttonStyle,
-								backgroundColor: !isAttackOwnerEnabled ? 'grey' : violet,
+								fontWeight: 'bold',
+								minWidth: '4vw',
+								fontSize: '0.7em',
+								color: !isAttackOwnerEnabled ? 'grey' : violet,
 							}}
 							disabled={!isAttackOwnerEnabled}
 							onClick={() => attackOppHp()}>
@@ -112,28 +118,31 @@ export const CurrentPView = ({
 							right: '20vw',
 							bottom: '12vh',
 							width: '10vw',
-							gap: 6,
-							fontSize: '0.6em',
+							gap: 12,
 						}}>
 						{!!nbCardsToPlay && isMyRound && (
-							<h5 style={{ color: violet, width: '6vw', fontSize: '1.3em' }}>Play {nbCardsToPlay} cards</h5>
+							<h6 style={{ color: violet, width: '6vw', fontSize: '0.7em' }}>{nbCardsToPlay} cards to play</h6>
 						)}
 						<button
 							ref={playCardRef}
 							style={{
-								...buttonStyle,
-								backgroundColor: !isPlayCardEnabled ? 'grey' : violet,
+								fontWeight: 'bold',
+								minWidth: '4vw',
+								fontSize: '0.8em',
+								color: !isPlayCardEnabled ? 'grey' : violet,
 							}}
 							disabled={!isPlayCardEnabled}
 							onClick={() => playCardWithButtonControl()}>
 							PLAY CARD
 						</button>
 					</div>
-					<div style={{ position: 'absolute', right: '14vw', bottom: '12vh', width: '10vw', fontSize: '0.6em' }}>
+					<div style={{ position: 'absolute', right: '14vw', bottom: '12vh', width: '10vw' }}>
 						<button
 							style={{
-								...buttonStyle,
-								backgroundColor: !isMyRound ? 'grey' : violet,
+								fontWeight: 'bold',
+								minWidth: '4vw',
+								fontSize: '0.8em',
+								color: !isMyRound ? 'grey' : violet,
 							}}
 							disabled={!isMyRound}
 							onClick={() => finishRound()}>
@@ -184,27 +193,31 @@ const PlayerDataView = ({ player }: { player: Player }) => {
 				gap: 12,
 				width: '11vw',
 			}}>
-			<h4>{playerType?.toUpperCase()}</h4>
+			<h5>{playerType?.toUpperCase()}</h5>
 
 			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
-				<h4 style={{ fontSize: '1.1em' }}>{hp}HP</h4>
+				<div style={{ ...flexRowStyle, justifyContent: 'center', alignItems: 'center' }}>
+					<h4 style={{ fontSize: '1.1em' }}>{hp}</h4>
+					<FavoriteIcon style={{ color: violet, width: '1.1vw' }} />
+				</div>
+
 				<ProgressBar
 					bgColor={violet}
 					maxCompleted={hp > INITIAL_HP ? hp : INITIAL_HP}
-					width='7vw'
-					height='1.4vh'
+					width='5vw'
+					height='1.2vh'
 					baseBgColor={'grey'}
 					isLabelVisible={false}
 					completed={hp}></ProgressBar>
 			</div>
 
 			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
-				{envLoadNb !== 3 ? <h5>Element charging</h5> : <h5>Element charged</h5>}
+				<h5>Element</h5>
 				<ProgressBar
 					bgColor={violet}
 					maxCompleted={3}
-					width='3vw'
-					height='1.4vh'
+					width='3.5vw'
+					height='1.2vh'
 					baseBgColor={'grey'}
 					isLabelVisible={false}
 					completed={envLoadNb}></ProgressBar>
