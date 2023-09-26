@@ -44,7 +44,7 @@ export const drawCardFromMainDeck = async (gameId: string, playerType: string) =
 	await addCardsToPlayerDeck(gameId, playerType, [powerCardId]);
 };
 
-export const placeAnimalOnBoard = async (gameId: string, playerType: string, slotNb: number, animalId: string) => {
+export const placeAnimalOnBoard = async (gameId: string, playerType: PlayerType, slotNb: number, animalId: string) => {
 	const animal = getAnimalCard(animalId);
 	await addInfoToLog(gameId, 'player ' + playerType + ' placed a ' + animal?.name + ' in slot ' + slotNb);
 	await removeCardFromPlayerDeck(gameId, playerType, animalId);
@@ -53,7 +53,7 @@ export const placeAnimalOnBoard = async (gameId: string, playerType: string, slo
 
 export const placeKingOnBoard = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	kingId: string,
 	sacrificedAnimalId: string,
 	slotNb: number,
@@ -160,7 +160,7 @@ export const enableAttackForOpponentAnimals = async (
 export const activateJokersAbilities = async (gameId: string, playerDType: PlayerType, slots: SlotType[] = []) => {
 	for (let i = 0; i < slots.length; i++) {
 		const cardId = slots[i]?.cardId;
-		if (!!cardId && isAnimalCard(cardId)) {
+		if (isAnimalCard(cardId)) {
 			await activateJokerAbility(gameId, cardId, playerDType);
 		}
 	}

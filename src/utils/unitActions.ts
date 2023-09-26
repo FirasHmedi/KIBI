@@ -2,6 +2,8 @@ import _ from 'lodash';
 import { ClanName } from './data';
 import { getBoardPath, getItemsOnce, getGamePath, setItem } from './db';
 import { isAnimalCard, isPowerCard } from './helpers';
+import { activateJokerAbility } from './actions';
+import { PlayerType } from './interface';
 
 export const setActivePowerCard = async (gameId: string, cardId?: string) => {
 	await setItem(getBoardPath(gameId), { activeCardId: cardId });
@@ -16,7 +18,7 @@ export const checkIfAnimalExistAddItToGraveYard = async (gameId: string, playerT
 
 export const addAnimalToBoard = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	slotNb: number,
 	animalId: string,
 	canAttack: boolean = false,
@@ -30,6 +32,7 @@ export const addAnimalToBoard = async (
 	];
 	updatedSlots[slotNb] = { cardId: animalId, canAttack };
 	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });
+	await activateJokerAbility(gameId, animalId, playerType);
 };
 
 export const addCardsToPlayerDeck = async (gameId: string, playerType: string, cardsIds: string[] = []) => {

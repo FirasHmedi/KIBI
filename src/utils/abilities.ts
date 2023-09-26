@@ -72,7 +72,6 @@ export const sacrifice3HpToSteal = async (
 	await removeHpFromPlayer(gameId, playerType, 3);
 	await removePlayerAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), oppSlotNb);
 	await addAnimalToBoard(gameId, playerType, mySlotNb, animalId, true);
-	await activateJokerAbility(gameId, animalId, playerType);
 };
 
 export const sacrifice1HpToReviveLastAnimal = async (gameId: string, playerType: PlayerType, slotNb?: number) => {

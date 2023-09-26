@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { buttonStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
+import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP } from '../utils/data';
 import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
@@ -52,6 +52,7 @@ export const CurrentPView = ({
 	const playCardWithButtonControl = async () => {
 		setDisablePlayButton(true);
 		await playCard(selectedId);
+		setSelectedId(undefined);
 		await waitFor(500);
 		setDisablePlayButton(false);
 	};

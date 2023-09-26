@@ -119,6 +119,11 @@ export function GameView({
 		!isAnimalCard(opponentPSlots[1]?.cardId) &&
 		!isAnimalCard(opponentPSlots[2]?.cardId);
 
+	const isOppSlotsAllFilled =
+		isAnimalCard(opponentPSlots[0]?.cardId) &&
+		isAnimalCard(opponentPSlots[1]?.cardId) &&
+		isAnimalCard(opponentPSlots[2]?.cardId);
+
 	const isAttackOwnerEnabled =
 		round.nb >= 3 &&
 		round.player === playerType &&
@@ -126,6 +131,7 @@ export function GameView({
 		!hasAttacked &&
 		isAnimalCard(idInCurrPSlot) &&
 		((isKing(idInCurrPSlot) && isAnimalInEnv(idInCurrPSlot, elementType)) || isOppSlotsEmpty) &&
+		!isOppSlotsAllFilled &&
 		currentPSlots[selectedCurrPSlotNb ?? 3]?.canAttack;
 
 	const handlePlacingKing = async (cardId: string, clan: ClanName): Promise<void> => {
