@@ -11,7 +11,7 @@
 		"description": "attacker of air clan",
 		"name": "Bee",
 		"role": "attacker",
-		"ability": "Strikes same role animals"
+		"ability": "Attacks kings directly"
 	},
 	"11-a": {
 		"clan": "air",
@@ -39,7 +39,7 @@
 		"description": "attacker of fire clan",
 		"name": "Phoenix",
 		"role": "attacker",
-		"ability": "Strikes same role animals"
+		"ability": "Attacks kings directly"
 	},
 	"15-a": {
 		"clan": "fire",
@@ -67,7 +67,7 @@
 		"description": "attacker of earth clan",
 		"name": "Badger",
 		"role": "attacker",
-		"ability": "Strikes same role animals"
+		"ability": "Attacks kings directly"
 	},
 	"3-a": {
 		"clan": "earth",
@@ -95,7 +95,7 @@
 		"description": "attacker of water clan",
 		"name": "Shark",
 		"role": "attacker",
-		"ability": "Strikes same role animals"
+		"ability": "Attacks kings directly"
 	},
 	"7-a": {
 		"clan": "water",

@@ -24,8 +24,8 @@
 		"name": "Block power cards for 1 turn"
 	},
 	"reset-board": {
-		"description": "Reset Board (animals, env)",
-		"name": "Reset Board"
+		"description": "Reset Board (animals, env) for 1HP",
+		"name": "Reset Board for 1hp"
 	},
 	"place-king": {
 		"description": "Place an active king",
@@ -57,7 +57,7 @@
 	},
 	"switch-decks": {
 		"description": "Switch deck with opponent",
-		"name": "Switch decks of players"
+		"name": "Switch decks of players for 1hp"
 	},
 	"sacrif-anim-3hp": {
 		"description": "Sacrifice an animal to get 3hp",

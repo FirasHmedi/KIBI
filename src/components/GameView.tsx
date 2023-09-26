@@ -50,6 +50,7 @@ import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 import { addSnapShot } from '../utils/logsSnapShot';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { minus1Hp } from '../utils/animalsAbilities';
 
 export function GameView({
 	round,
@@ -86,6 +87,10 @@ export function GameView({
 	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
 
 	const canOtherAnimalsDefendKing = () => {
+		const animal = getAnimalCard(idInCurrPSlot);
+		if (animal?.role === ATTACKER && elementType === animal.clan) {
+			return false;
+		}
 		const king = getAnimalCard(idInOppPSlot);
 		if (!king || king?.role !== KING) {
 			return false;
@@ -114,11 +119,6 @@ export function GameView({
 		!isAnimalCard(opponentPSlots[1]?.cardId) &&
 		!isAnimalCard(opponentPSlots[2]?.cardId);
 
-	const isAllOppSlotsFilled =
-		isAnimalCard(opponentPSlots[0]?.cardId) &&
-		isAnimalCard(opponentPSlots[1]?.cardId) &&
-		isAnimalCard(opponentPSlots[2]?.cardId);
-
 	const isAttackOwnerEnabled =
 		round.nb >= 3 &&
 		round.player === playerType &&
@@ -126,8 +126,7 @@ export function GameView({
 		!hasAttacked &&
 		isAnimalCard(idInCurrPSlot) &&
 		((isKing(idInCurrPSlot) && isAnimalInEnv(idInCurrPSlot, elementType)) || isOppSlotsEmpty) &&
-		currentPSlots[selectedCurrPSlotNb ?? 3]?.canAttack &&
-		!isAllOppSlotsFilled;
+		currentPSlots[selectedCurrPSlotNb ?? 3]?.canAttack;
 
 	const handlePlacingKing = async (cardId: string, clan: ClanName): Promise<void> => {
 		if (canPlaceKingWithoutSacrifice) {
@@ -213,6 +212,7 @@ export function GameView({
 				await sacrifice3HpToSteal(gameId, playerType, idInOppPSlot, selectedOppPSlotNb!, selectedCurrPSlotNb!);
 				break;
 			case 'switch-decks':
+				await minus1Hp(gameId, playerType);
 				await switchDeck(gameId);
 				break;
 			case 'sacrif-anim-3hp':
@@ -231,6 +231,7 @@ export function GameView({
 				await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
 				break;
 			case 'reset-board':
+				await minus1Hp(gameId, playerType);
 				await resetBoard(gameId, playerType, currentPSlots, opponentPSlots);
 				break;
 			case 'place-king':
