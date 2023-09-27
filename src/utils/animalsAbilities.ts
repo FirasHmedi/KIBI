@@ -10,10 +10,11 @@ import {
 	addPowerToGraveYard,
 	deleteAnimalCardFromGraveYardById,
 	deletePowerCardFromGraveYardById,
+	removeCardFromPlayerDeck,
 	removeHpFromPlayer,
 	removePlayerAnimalFromBoard,
 } from './unitActions';
-import { getOpponentIdFromCurrentId } from './helpers';
+import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard } from './helpers';
 import { PlayerType } from './interface';
 
 export const returnAnimalToDeck = async (gameId: string, playerType: string, animalId: string) => {
@@ -59,8 +60,14 @@ export const minus2Hp = async (gameId: string, playerType: string) => {
 export const sendRandomOpponentCardToGY = async (gameId: string, playerType: PlayerType) => {
 	const cardsIds = await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
 	const cardId = cardsIds[getRandomNumber(cardsIds.length)];
-	await setPowerCardAsActive(gameId, getOpponentIdFromCurrentId(playerType), cardId);
-	addPowerToGraveYard(gameId, cardId);
+
+	if (isAnimalCard(cardId)) {
+		await removeCardFromPlayerDeck(gameId, getOpponentIdFromCurrentId(playerType), cardId);
+		await addAnimalToGraveYard(gameId, cardId);
+	} else if (isPowerCard(cardId)) {
+		await setPowerCardAsActive(gameId, getOpponentIdFromCurrentId(playerType), cardId);
+		await addPowerToGraveYard(gameId, cardId);
+	}
 };
 // ----------------------Fox-----------------------
 export const returnRandomPowerCardToDeck = async (gameId: string, playerType: string) => {
