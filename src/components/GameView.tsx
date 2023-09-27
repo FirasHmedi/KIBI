@@ -139,7 +139,7 @@ export function GameView({
 			await placeKingWithoutSacrifice(gameId, playerType, cardId, selectedCurrPSlotNb!);
 			setCanPlaceKingWithoutSacrifice(false);
 		} else {
-			await placeKingOnBoard(gameId, playerType, cardId, idInCurrPSlot, selectedCurrPSlotNb!);
+			await placeKingOnBoard(gameId, playerType, cardId, idInCurrPSlot, selectedCurrPSlotNb!,elementType);
 		}
 	};
 
@@ -153,7 +153,7 @@ export function GameView({
 			}
 			await handlePlacingKing(cardId, clan);
 		} else {
-			await placeAnimalOnBoard(gameId, playerType, selectedCurrPSlotNb!, cardId);
+			await placeAnimalOnBoard(gameId, playerType, selectedCurrPSlotNb!, cardId,elementType);
 		}
 
 		if (role === JOKER && clan === elementType) {
@@ -222,7 +222,7 @@ export function GameView({
 				await switchDeck(gameId);
 				break;
 			case 'sacrif-anim-3hp':
-				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb);
+				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb,elementType);
 				break;
 			case '3hp':
 				await shieldOwnerPlus3Hp(gameId, playerType);
@@ -341,20 +341,6 @@ export function GameView({
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, true);
 		await attackAnimal(gameId, playerType, idInCurrPSlot, idInOppPSlot, selectedOppPSlotNb!);
-
-		// Attacker ability
-		if (animalA.role === ATTACKER && elementType === animalA.clan) {
-			for (let i = 0; i < 3; i++) {
-				const cardId = opponentPSlots[i].cardId;
-				if (cardId !== idInOppPSlot) {
-					const otherAnimal = getAnimalCard(cardId);
-					if (otherAnimal?.role === animalD.role) {
-						await attackAnimal(gameId, playerType, idInCurrPSlot, cardId, i!);
-					}
-				}
-			}
-		}
-
 		await waitFor(500);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
 	};

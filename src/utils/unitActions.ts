@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { ClanName } from './data';
+import {ATTACKER, ClanName} from './data';
 import { getBoardPath, getItemsOnce, getGamePath, setItem } from './db';
-import { isAnimalCard, isPowerCard } from './helpers';
+import {getAnimalCard, isAnimalCard, isPowerCard} from './helpers';
 import { activateJokerAbility } from './actions';
 import { PlayerType } from './interface';
 
@@ -9,11 +9,17 @@ export const setActivePowerCard = async (gameId: string, cardId?: string) => {
 	await setItem(getBoardPath(gameId), { activeCardId: cardId });
 };
 
-export const checkIfAnimalExistAddItToGraveYard = async (gameId: string, playerType: string, slotNb: number) => {
+export const checkIfAnimalExistAddItToGraveYard = async (gameId: string, playerType: string, slotNb: number,elementType?:string) => {
 	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNb);
 	if (slot && isAnimalCard(slot.cardId)) {
-		await addAnimalToGraveYard(gameId, slot.cardId);
+		const sacrificedAnimal = getAnimalCard(slot.cardId);
+		if (sacrificedAnimal?.role === ATTACKER && elementType === sacrificedAnimal.clan){
+			await addCardsToPlayerDeck(gameId, playerType,[slot.cardId]);
+		}else {
+			await addAnimalToGraveYard(gameId, slot.cardId);
+		}
 	}
+
 };
 
 export const addAnimalToBoard = async (
@@ -22,8 +28,9 @@ export const addAnimalToBoard = async (
 	slotNb: number,
 	animalId: string,
 	canAttack: boolean = false,
+	elementType?:string
 ) => {
-	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb);
+	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb,elementType);
 	const slots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
 	const updatedSlots = [
 		slots[0] ?? { cardId: 'empty', canAttack: false },
