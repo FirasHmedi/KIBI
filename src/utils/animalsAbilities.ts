@@ -58,7 +58,7 @@ export const minus2Hp = async (gameId: string, playerType: string) => {
 
 // ----------------------Snake-----------------------
 export const sendRandomOpponentCardToGY = async (gameId: string, playerType: PlayerType) => {
-	const cardsIds = await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
+	const cardsIds = await getItemsOnce(getGamePath(gameId) + getOpponentIdFromCurrentId(playerType) + '/cardsIds');
 	const cardId = cardsIds[getRandomNumber(cardsIds.length)];
 
 	if (isAnimalCard(cardId)) {
