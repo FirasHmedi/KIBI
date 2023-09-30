@@ -302,7 +302,11 @@ export function GameView({
 		}
 	};
 
-	const changeEnvWithPopup = async (elementType: ClanName) => {
+	const changeEnvWithPopup = async (elementType?: ClanName) => {
+		if (!elementType) {
+			setShowEnvPopup(false);
+			return;
+		}
 		await changeElement(gameId, elementType, playerType);
 		setShowEnvPopup(false);
 		await activateJokersAbilities(gameId, playerType, currentPSlots);
@@ -361,8 +365,8 @@ export function GameView({
 				width: '100%',
 				height: '90vh',
 				justifyContent: 'space-between',
-				paddingTop: '5vh',
-				paddingBottom: '5vh',
+				paddingTop: '1vh',
+				paddingBottom: '1vh',
 			}}>
 			<OpponentPView player={opponentPlayer} />
 
@@ -398,7 +402,7 @@ export function GameView({
 			/>
 
 			{showCountDown && (
-				<div style={{ position: 'absolute', right: '12vw', bottom: '11vh' }}>
+				<div style={{ position: 'absolute', right: '12vw', bottom: '9vh' }}>
 					<CountdownCircleTimer
 						isPlaying
 						duration={ROUND_DURATION}
@@ -406,9 +410,9 @@ export function GameView({
 						onComplete={() => {
 							finishRound();
 						}}
-						size={50}
-						strokeWidth={4}>
-						{({ remainingTime }) => <h4 style={{ color: violet }}>{remainingTime}</h4>}
+						size={42}
+						strokeWidth={3}>
+						{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
 					</CountdownCircleTimer>
 				</div>
 			)}
