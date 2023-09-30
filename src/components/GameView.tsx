@@ -214,7 +214,7 @@ export function GameView({
 				await sacrifice3HpToSteal(gameId, playerType, idInOppPSlot, selectedOppPSlotNb!, selectedCurrPSlotNb!);
 				break;
 			case 'switch-decks':
-				await minus2Hp(gameId, playerType);
+				await minus1Hp(gameId, playerType);
 				await switchDeck(gameId);
 				break;
 			case 'sacrif-anim-3hp':
