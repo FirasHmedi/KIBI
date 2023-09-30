@@ -13,9 +13,9 @@ import {
 	sacrifice1HpToReviveAnyAnimal,
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
-	shieldOwnerPlus3Hp,
 	switchDeck,
 	reviveAnyPowerFor1hp,
+	shieldOwnerPlus2Hp,
 } from '../utils/abilities';
 import {
 	activateJokerAbility,
@@ -224,8 +224,8 @@ export function GameView({
 			case 'sacrif-anim-3hp':
 				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb, elementType);
 				break;
-			case '3hp':
-				await shieldOwnerPlus3Hp(gameId, playerType);
+			case '2hp':
+				await shieldOwnerPlus2Hp(gameId, playerType);
 				break;
 			case 'draw-2':
 				await draw2Cards(gameId, playerType);
