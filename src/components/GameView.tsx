@@ -50,7 +50,7 @@ import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 import { addSnapShot } from '../utils/logsSnapShot';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import { minus1Hp } from '../utils/animalsAbilities';
+import { minus1Hp, minus2Hp } from '../utils/animalsAbilities';
 
 export function GameView({
 	round,
@@ -139,7 +139,7 @@ export function GameView({
 			await placeKingWithoutSacrifice(gameId, playerType, cardId, selectedCurrPSlotNb!);
 			setCanPlaceKingWithoutSacrifice(false);
 		} else {
-			await placeKingOnBoard(gameId, playerType, cardId, idInCurrPSlot, selectedCurrPSlotNb!,elementType);
+			await placeKingOnBoard(gameId, playerType, cardId, idInCurrPSlot, selectedCurrPSlotNb!, elementType);
 		}
 	};
 
@@ -153,7 +153,7 @@ export function GameView({
 			}
 			await handlePlacingKing(cardId, clan);
 		} else {
-			await placeAnimalOnBoard(gameId, playerType, selectedCurrPSlotNb!, cardId,elementType);
+			await placeAnimalOnBoard(gameId, playerType, selectedCurrPSlotNb!, cardId, elementType);
 		}
 
 		if (role === JOKER && clan === elementType) {
@@ -218,11 +218,11 @@ export function GameView({
 				await sacrifice3HpToSteal(gameId, playerType, idInOppPSlot, selectedOppPSlotNb!, selectedCurrPSlotNb!);
 				break;
 			case 'switch-decks':
-				await minus1Hp(gameId, playerType);
+				await minus2Hp(gameId, playerType);
 				await switchDeck(gameId);
 				break;
 			case 'sacrif-anim-3hp':
-				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb,elementType);
+				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb, elementType);
 				break;
 			case '3hp':
 				await shieldOwnerPlus3Hp(gameId, playerType);
