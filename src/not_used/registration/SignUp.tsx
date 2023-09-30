@@ -12,6 +12,10 @@ import { isNotEmpty } from '../../utils/helpers';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { HOME_PATH } from '../../utils/data';
 import { registerWithEmailPsw, signUpWithGoogle } from '../auth';
+import { getDatabase, ref, set } from 'firebase/database';
+import { auth, real_db } from '../../firebase';
+import { result } from 'lodash';
+
 
 const inputStyle = {
   height: '3vh',
@@ -28,38 +32,70 @@ export const SignUpfss = () => {
 
 export const SignUp = () => {
   const navigate = useNavigate();
-
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [psw, setPsw] = useState('');
   const [confirmPsw, setConfirmPsw] = useState('');
 
-
-  function delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-}
+  //  save the user to the realtime database
+  const saveUserToDatabase = async (uid: string, email: string, username: string) => {
+    try {
+      const userRef = ref(real_db, 'users/' + uid); // 'users' is the name of the node where you want to store user data
+      await set(userRef, {
+        username: username,
+        email: email
+      });
+      console.log('User saved successfully');
+    } catch (error) {
+      console.error('Error saving user to database: ', error);
+    }
+  };
   //register with email and password
   const signUp = async () => {
+    if (!isEnabled) return;
+
     try {
-      if (!isNotEmpty(username)) return;
-      const isUserRegistered = await registerWithEmailPsw(username, email, psw);
-      if (isUserRegistered) {//await delay(2000);
-        navigate(HOME_PATH);}
-    } catch (e) {}
-    
-  }; 
+        const result = await registerWithEmailPsw(username, email, psw);
+        
+        const user = auth.currentUser;
+
+        if (user) {
+            console.log(user.uid);
+            await saveUserToDatabase(user.uid, email, username);
+        } else {
+            console.log("nothing");
+        }
+
+        navigate(HOME_PATH);
+        return true;
+    } catch (e) {
+        console.log('error', e);
+    }
+};
+
   
 //register with google
 const registerWithGoogle = async () => {
+  if (!isNotEmpty(username)) {
+    throw new Error("Username is empty");
+  }
+
   try {
-    if (!isNotEmpty(username)) return;
-    const isUserRegistered = await signUpWithGoogle();
-    console.log("i'm here");
-    await delay(2000);
-    navigate('/');
-  } catch (e) {}
-  
+    const user = await signUpWithGoogle();
+
+    if (user && user.email) {
+      await saveUserToDatabase(user.uid, user.email, username);
+    } else {
+      console.error("No user returned after Google signup");
+    }
+
+    navigate(HOME_PATH);
+    return true;
+  } catch (e) {
+    console.error('Error during Google registration:', e);
+  }
 };
+
 
 const isEnabled = () =>
   true ||
@@ -67,6 +103,7 @@ const isEnabled = () =>
     psw === confirmPsw &&
     isNotEmpty(psw) &&
     email.includes('@'));
+
 
 
 return (

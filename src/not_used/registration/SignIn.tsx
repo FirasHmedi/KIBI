@@ -4,7 +4,7 @@ import { isNotEmpty } from '../../utils/helpers';
 import { loginWithEmailPsw, loginWithGoogle } from '../auth';
 import { black, buttonStyle, signinContainerStyle, softGrey } from '../../styles/Style';
 import { Link } from 'react-router-dom';
-import { SINGUP_PATH } from '../../utils/data';
+import { HOME_PATH, SINGUP_PATH } from '../../utils/data';
 
 
 
@@ -15,9 +15,6 @@ const inputStyle = {
 	width: '15vw',
 	borderWidth: 0,
 };
-function delay(ms: number) {
-  return new Promise( resolve => setTimeout(resolve, ms) );
-}
 export const SignIn = () => {
 	const navigate = useNavigate();
 
@@ -25,16 +22,28 @@ export const SignIn = () => {
 	const [psw, setPsw] = useState('');
 //sign in with email and password
 
-	const signIn = async () => {
-		loginWithEmailPsw(email, psw);
-    await delay(2000)
-		navigate('/');
-	};
+const signIn = async () => {
+  if (isEnabled()) {
+    try {
+      const uid = await loginWithEmailPsw(email, psw);
+      navigate(HOME_PATH);
+      return uid;
+    } catch (error) {
+      console.error("Error signing in with email and password:", error);
+      throw error;  // If you want the error to propagate
+    }
+  }
+};
+
 //signInWithGoogle
 const signInWithGoogle = async () => {
-  await loginWithGoogle();
-  navigate('/');
-  
+  try {
+    const uid = await loginWithGoogle();  
+    navigate(HOME_PATH); 
+    return(uid); 
+  } catch (error) {
+    console.error("Error signing in with Google:", error);
+  }
 };
 
 const isEnabled = () => isNotEmpty(psw) && email.includes('@');

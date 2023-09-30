@@ -1,9 +1,9 @@
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, updateProfile, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { FirebaseError } from 'firebase/app';
 import { doc, setDoc } from "firebase/firestore"; 
 
-
+//sign up with email and password
  export const registerWithEmailPsw = async (
   username: string,
   email: string,
@@ -15,70 +15,37 @@ import { doc, setDoc } from "firebase/firestore";
       email,
       password
     );
+
     await updateProfile(userCredential.user, { displayName: username });
-    await addUser(userCredential.user.uid, username, email);
+
+
     return true;
   } catch (e) {
     console.log('error registering', e);
   }
 };
 
-
-
+//sign up with google
 export const signUpWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
 
   try {
     const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    return user; // This is the user's data from Google
+    if (result && result.user) {
+      return result.user;  // This is the user's data from Google
+    }
+    throw new Error("No user from Google popup result");
   } catch (error) {
     console.error("Error signing up with Google: ", error);
-    throw error; // or handle the error in another way
+    throw error;
   }
 };
 
- 
-
-
+//this function is not used but it still there in case we use filestore 
 /*
-export const signUpWithGoogle = async (username: string) => {
-  try {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-
-    const user = result.user;
-    await updateProfile(user, { displayName: username });
-    if (user.email) await addUser(user.uid, username, user.email);
-    return true;
-  } catch (e) {
-    console.log('error registering', e);
-    if (e instanceof FirebaseError) {
-      const errorCode = e.code;
-      const errorMessage = e.message;
-      const email = e.customData?.email;
-      // The AuthCredential type that was used.
-      const credential = GoogleAuthProvider.credentialFromError(e);
-    }
-    // ...
-    return false;
-  }
-};*/
-/*
-export const signOutUser = async () => {
-  try {
-    await signOut(auth);
-    return true;
-  } catch (e) {
-    console.log('error registering', e);
-  }
-}; 
-
-*/
 const addUser = async (uid: string, username: string, email: string) => {
   try {
-    const docRef = await setDoc(doc(db, "USERS", uid), {
+    const docRef = await setDoc(doc(db, "users", uid), {
       username,
       email,
     });
@@ -87,26 +54,21 @@ const addUser = async (uid: string, username: string, email: string) => {
     console.log('error ', e);
   }
 }; 
-
-export const loginWithEmailPsw = (email: string, password: string) => {
-  signInWithEmailAndPassword(auth, email, password)
-    .then(userCredential => {
-      // Signed in
-      const user = userCredential.user;
-      // ...
-    })
-    .catch(error => {
-      console.log('error logging in', error);
-    });
+*/
+//login with email and password
+export const loginWithEmailPsw = async (email: string, psw: string) => {
+  const userCredential = await signInWithEmailAndPassword(auth, email, psw);
+  return userCredential.user.uid;
 };
 
+//login with google
 export const loginWithGoogle = async () => {
   try {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const user = result.user;
-    return true;
+    return user.uid;
   } catch (e) {
     console.error(e);
     return false;

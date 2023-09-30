@@ -2,32 +2,44 @@ import { useEffect, useState } from 'react';
 import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
 import { appStyle, greyBackground, violet } from '../styles/Style';
-import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH,USER_HOME_PATH } from './data';
+import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
 import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '../components/Sidebar';
-import { useNavigate } from 'react-router-dom';
 import { SignIn } from '../not_used/registration/SignIn';
 import { UserSignUp } from '../components/SignUp';
-import { UserSignIn } from '../components/SignIn';
 import { SignUp } from '../not_used/registration/SignUp';
-import { auth } from '../firebase';
+import { auth, real_db } from '../firebase';
+import { get, ref } from 'firebase/database';
 
 
 const Layout = ({ children }: any) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState<any>();
+    const getUsernameByUid = async (uid: string) => {
+        
+        const userRef = ref(real_db, `users/${uid}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          return snapshot.val().username;
+        } else {
+          console.error("User does not exist");
+          return null;
+        }
+      };
 
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            if (user) {
-                setCurrentUser(user);
-            } else {
-                setCurrentUser(null);
-            }
+      useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(async user => {
+              
+          if (user) {
+            const username = user.displayName;
+            setCurrentUser({ uid: user.uid, username: username });
+          } else {
+            setCurrentUser(null);
+          }
         });
-
+      
         return () => unsubscribe();
-    }, []);
+      }, [currentUser]);
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -50,7 +62,8 @@ const Layout = ({ children }: any) => {
                 <div style={{ marginLeft: 'auto', marginRight: '10px', display: 'flex', gap: '10px' }}>
                     {currentUser ? (
                         <>
-                            <span>UID: {currentUser.uuid}</span>
+                            <span>{currentUser.username}</span>
+                            
                             <button onClick={() => auth.signOut()}>Logout</button>
                         </>
                     ) : (
