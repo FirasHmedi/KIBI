@@ -156,10 +156,6 @@ export function GameView({
 			await placeAnimalOnBoard(gameId, playerType, selectedCurrPSlotNb!, cardId, elementType);
 		}
 
-		if (role === JOKER && clan === elementType) {
-			await activateJokerAbility(gameId, cardId, playerType);
-		}
-
 		setTwoAnimalsToPlace(animalsNb => (animalsNb > 1 ? animalsNb - 1 : 0));
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 	};

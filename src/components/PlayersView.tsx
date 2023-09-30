@@ -93,7 +93,7 @@ export const CurrentPView = ({
 							disabled={!isAttackOwnerEnabled}
 							onClick={() => attackOppHp()}>
 							<img src={SwordIcon} style={{ width: 28 }}></img>
-							<PersonIcon style={{ width: '2vw', height: 'auto', color: violet }} />
+							<PersonIcon style={{ width: '2vw', height: 'auto', color: !isAttackAnimalEnabled ? 'grey' : violet }} />
 						</button>
 						<button
 							style={{
@@ -104,7 +104,7 @@ export const CurrentPView = ({
 							disabled={!isAttackAnimalEnabled}
 							onClick={() => attackOpponentAnimal()}>
 							<img src={SwordIcon} style={{ width: 28 }}></img>
-							<ClawIcon style={{ width: '2vw', height: 'auto', color: violet }} />
+							<ClawIcon style={{ width: '2vw', height: 'auto', color: !isAttackAnimalEnabled ? 'grey' : violet }} />
 						</button>
 					</div>
 
