@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { drawCardFromMainDeck, revertMainDeck } from '../utils/actions';
 import { isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
+import { revertMainDeck, drawCardFromMainDeck } from '../backend/actions';
 
 export function GameContainer({
 	game,

@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameContainer } from '../../components/GameContainer';
 import { SharedSelection } from '../../components/SharedSelection';
-import { centerStyle, flexColumnStyle, greyBackground, violet } from '../../styles/Style';
+import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
 import { GAMES_PATH, RUNNING } from '../../utils/data';
-import { getBoardPath, setItem, subscribeToItems } from '../../utils/db';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
+import { subscribeToItems, setItem, getBoardPath } from '../../backend/db';
 
 function GamePage() {
 	const location = useLocation();

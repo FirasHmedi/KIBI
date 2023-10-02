@@ -14,8 +14,8 @@ import {
 	removeHpFromPlayer,
 	removePlayerAnimalFromBoard,
 } from './unitActions';
-import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard } from './helpers';
-import { PlayerType } from './interface';
+import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard } from '../utils/helpers';
+import { PlayerType } from '../utils/interface';
 
 export const returnAnimalToDeck = async (gameId: string, playerType: string, animalId: string) => {
 	await addCardsToPlayerDeck(gameId, playerType, [animalId]);

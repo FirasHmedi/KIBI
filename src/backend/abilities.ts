@@ -1,9 +1,8 @@
 import _ from 'lodash';
-import { activateJokerAbility, drawCardFromMainDeck, getElementType, setElementLoad } from './actions';
-import { ATTACKER, ClanName, EMPTY, NEUTRAL, TANK } from './data';
+import { drawCardFromMainDeck, setElementLoad } from './actions';
+
 import { getBoardPath, getItemsOnce, getGamePath, setItem } from './db';
-import { getAnimalCard, getOpponentIdFromCurrentId, getPowerCard, isAnimalCard } from './helpers';
-import { PlayerType, SlotType } from './interface';
+
 import {
 	addAnimalToBoard,
 	addAnimalToGraveYard,
@@ -22,7 +21,9 @@ import {
 	removeHpFromPlayer,
 	removePlayerAnimalFromBoard,
 } from './unitActions';
-import { add1Hp, minus1Hp } from './animalsAbilities';
+import { ClanName, ATTACKER, EMPTY, NEUTRAL } from '../utils/data';
+import { getPowerCard, isAnimalCard, getOpponentIdFromCurrentId, getAnimalCard } from '../utils/helpers';
+import { PlayerType, SlotType } from '../utils/interface';
 
 export const cancelAttacks = async (gameId: string, playerType: PlayerType) => {
 	await changeCanAttackVar(gameId, playerType, false);

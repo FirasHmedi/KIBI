@@ -7,6 +7,7 @@ export const SINGUP_PATH = '/signup';
 export const SIGNIN_PATH = '/signin';
 export const HOME_PATH = '/';
 export const GAME_PATH = '/game/:id';
+export const PROFILE_PATH = '/profile';
 
 export const RUNNING = 'running';
 export const READY = 'ready';

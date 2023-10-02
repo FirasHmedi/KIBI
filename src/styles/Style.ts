@@ -36,15 +36,14 @@ export const centerStyle: React.CSSProperties = {
 };
 
 export const appStyle: React.CSSProperties = {
-	backgroundColor: primary,
+	backgroundColor: greyBackground,
 	height: '100vh',
 };
 
 export const headerStyle: React.CSSProperties = {
 	...centerStyle,
-	color: primaryBlue,
 	height: '3vh',
-	justifyContent: 'space-between',
+	justifyContent: 'center',
 	paddingLeft: 10,
 	paddingRight: 10,
 };
@@ -83,14 +82,12 @@ export const deckSlotStyle: React.CSSProperties = {
 };
 
 export const signupContainerStyle: React.CSSProperties = {
-	...centerStyle,
-	backgroundColor: primary,
+	...centerStyle, // Retain existing centering styles
+	backgroundColor: violet,
 	borderRadius: 5,
 	width: '20vw',
-	alignSelf: 'center',
 	flexDirection: 'column',
 	gap: 30,
-	marginTop: 100,
 	padding: 10,
 	paddingTop: 30,
 	paddingBottom: 30,
@@ -98,5 +95,22 @@ export const signupContainerStyle: React.CSSProperties = {
 };
 
 export const signinContainerStyle: React.CSSProperties = {
-	...signupContainerStyle,
+	...centerStyle, // Retain existing centering styles
+	backgroundColor: violet,
+	borderRadius: 5,
+	width: '20vw',
+	flexDirection: 'column',
+	gap: 30,
+	padding: 10,
+	paddingTop: 30,
+	paddingBottom: 30,
+	minHeight: '40vh',
+};
+
+export const signInputStyle = {
+	height: '3vh',
+	borderRadius: 5,
+	padding: 3,
+	width: '15vw',
+	borderWidth: 0,
 };

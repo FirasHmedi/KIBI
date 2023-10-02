@@ -1,37 +1,8 @@
 import _ from 'lodash';
 import { useState } from 'react';
 import { flexColumnStyle, violet } from '../styles/Style';
-import {
-	cancelAttacks,
-	cancelUsingPowerCards,
-	changeElement,
-	draw2Cards,
-	doubleAnimalsAP,
-	resetBoard,
-	reviveLastPower,
-	return2animalsFromGYToDeck,
-	sacrifice1HpToReviveAnyAnimal,
-	sacrifice3HpToSteal,
-	sacrificeAnimalToGet3Hp,
-	switchDeck,
-	reviveAnyPowerFor1hp,
-	shieldOwnerPlus2Hp,
-} from '../utils/abilities';
-import {
-	activateJokerAbility,
-	activateJokersAbilities,
-	attackAnimal,
-	attackOwner,
-	changeHasAttacked,
-	enableAttackForOpponentAnimals,
-	enableAttackingAndPlayingPowerCards,
-	placeAnimalOnBoard,
-	placeKingOnBoard,
-	placeKingWithoutSacrifice,
-	setElementLoad,
-	setPowerCardAsActive,
-} from '../utils/actions';
-import { ANIMALS_POINTS, ATTACKER, ClanName, EMPTY, JOKER, KING, ROUND_DURATION, envCardsIds } from '../utils/data';
+
+import { ANIMALS_POINTS, ATTACKER, ClanName, EMPTY, KING, ROUND_DURATION, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
 	getOpponentIdFromCurrentId,
@@ -44,13 +15,42 @@ import {
 	waitFor,
 } from '../utils/helpers';
 import { Board, Player, Round } from '../utils/interface';
-import { addOneRound, addPowerToGraveYard } from '../utils/unitActions';
 import { BoardView } from './Board';
 import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
-import { addSnapShot } from '../utils/logsSnapShot';
+import { addSnapShot } from '../backend/logsSnapShot';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import { minus1Hp, minus2Hp } from '../utils/animalsAbilities';
+import {
+	cancelAttacks,
+	reviveLastPower,
+	reviveAnyPowerFor1hp,
+	sacrifice1HpToReviveAnyAnimal,
+	sacrifice3HpToSteal,
+	switchDeck,
+	sacrificeAnimalToGet3Hp,
+	shieldOwnerPlus2Hp,
+	draw2Cards,
+	return2animalsFromGYToDeck,
+	cancelUsingPowerCards,
+	resetBoard,
+	doubleAnimalsAP,
+	changeElement,
+} from '../backend/abilities';
+import {
+	placeKingWithoutSacrifice,
+	placeKingOnBoard,
+	placeAnimalOnBoard,
+	setPowerCardAsActive,
+	setElementLoad,
+	activateJokersAbilities,
+	enableAttackingAndPlayingPowerCards,
+	enableAttackForOpponentAnimals,
+	changeHasAttacked,
+	attackAnimal,
+	attackOwner,
+} from '../backend/actions';
+import { minus1Hp } from '../backend/animalsAbilities';
+import { addPowerToGraveYard, addOneRound } from '../backend/unitActions';
 
 export function GameView({
 	round,

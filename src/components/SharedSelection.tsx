@@ -9,10 +9,10 @@ import {
 	violet,
 } from '../styles/Style';
 import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, rolesIcons } from '../utils/data';
-import { getGamePath, setItem } from '../utils/db';
 import { getOpponentIdFromCurrentId } from '../utils/helpers';
 import { AnimalCard, PlayerType } from '../utils/interface';
 import { PowerBoardSlot } from './Slots';
+import { setItem, getGamePath } from '../backend/db';
 
 interface Props {
 	playerType: PlayerType;
