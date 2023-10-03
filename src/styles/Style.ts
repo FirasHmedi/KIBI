@@ -114,3 +114,48 @@ export const signInputStyle = {
 	width: '15vw',
 	borderWidth: 0,
 };
+export const graveyardPopup2 = {
+	position: 'fixed',
+            top: 0,
+            left: 0,
+            height: '100%',
+            width: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            zIndex: 1,
+}
+
+export const graveyardPopup = {
+	position: 'absolute',
+	left: '50%',
+	top: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: '32vw',
+	display: 'flex',
+	flexDirection: 'row',
+	flexWrap: 'wrap',
+	justifyContent: 'center',
+	gap: '1vw',
+	backgroundColor: 'transparent',
+	padding: '1vw',
+	borderRadius: '1vw',
+}
+
+export const closeButtonStyle = {
+    position: 'absolute',
+    top: '0.5vw',
+    right: '0.5vw',
+    backgroundColor: '#eee',
+    border: 'none',
+    borderRadius: '50%',
+    width: '2.5vw',
+    height: '2.5vw',
+    textAlign: 'center',
+    lineHeight: '2.5vw',
+    cursor: 'pointer',
+    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.3)',
+};
+ 
+
+export const   topCardStyle = {
+	boxShadow: '3px 3px 0px 0px gray, 6px 6px 0px 0px gray',  // Shadows are more pronounced
+};

@@ -381,7 +381,9 @@ export function GameView({
 				roundNb={round.nb}
 				isDoubleOpponentAP={opponentPlayer.isDoubleAP}
 				isDoubleCurrentAP={currentPlayer.isDoubleAP}
-			/>
+				round={round}
+				currentPlayer={currentPlayer}
+				/>
 
 			<CurrentPView
 				player={currentPlayer}

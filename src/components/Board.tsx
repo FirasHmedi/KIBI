@@ -1,6 +1,6 @@
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { isPowerCard } from '../utils/helpers';
-import { Board } from '../utils/interface';
+import { Board, Player, PlayerType, Round } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { RoundView, Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
@@ -8,7 +8,9 @@ import { ElementSlot, BoardSlots, DeckSlot } from './Slots';
 
 interface Props {
 	board: Board;
+	round: Round;
 	roundNb: number;
+	currentPlayer:Player;
 	isDoubleCurrentAP?: boolean;
 	isDoubleOpponentAP?: boolean;
 	selectedCurrentPSlotNb?: number;
@@ -23,6 +25,8 @@ interface Props {
 
 export const BoardView = ({
 	board,
+	currentPlayer,
+	round,
 	selectCurrentSlot,
 	selectOpponentSlot,
 	selectedCurrentPSlotNb,
@@ -77,9 +81,9 @@ export const BoardView = ({
 				<Seperator />
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator />
-				<AnimalGraveyard cardsIds={animalGY} selectIds={setSelectedGYAnimals} selectedIds={selectedGYAnimals} />
+				<AnimalGraveyard currentPlayer={currentPlayer} round={round}  cardsIds={animalGY}  selectIds={setSelectedGYAnimals}  selectedIds={selectedGYAnimals}  />
 				<Seperator />
-				<PowerGraveyard cardsIds={powerGY} selectIds={setSelectedGYPower} selectedIds={selectedGYPower} />
+				<PowerGraveyard currentPlayer={currentPlayer} round={round} cardsIds={powerGY}  selectIds={setSelectedGYAnimals}  selectedIds={selectedGYAnimals} />
 			</div>
 		</div>
 	);
