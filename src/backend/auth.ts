@@ -32,7 +32,7 @@ export const signUpWithGoogle = async () => {
 	}
 };
 
-//this function is not used but it still there in case we use filestore
+//this function is not used but it still there in case we use firestore
 /*
 const addUser = async (uid: string, username: string, email: string) => {
   try {
