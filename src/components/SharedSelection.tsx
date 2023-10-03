@@ -79,8 +79,7 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 					if (i < 2) {
 						oneCardsIds.push(id);
 						i++;
-					}
-					if (j < 2) {
+					} else if (j < 2) {
 						twoCardsIds.push(id);
 						j++;
 					}
