@@ -1,85 +1,86 @@
 import { useEffect, useState } from 'react';
 import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
-import { appStyle, greyBackground, violet } from '../styles/Style';
+import { appStyle, centerStyle, violet } from '../styles/Style';
 import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
 import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '../components/Sidebar';
-import { SignIn } from '../not_used/registration/SignIn';
-import { UserSignUp } from '../components/SignUp';
-import { SignUp } from '../not_used/registration/SignUp';
-import { auth, real_db } from '../firebase';
+import { SignIn } from '../pages/registration/SignIn';
+import { SignUp } from '../pages/registration/SignUp';
+import { auth, db } from '../firebase';
 import { get, ref } from 'firebase/database';
-
+import { SignUpButton } from '../components/SignUpButton';
+import { useNavigate } from 'react-router-dom';
 
 const Layout = ({ children }: any) => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [currentUser, setCurrentUser] = useState<any>();
-    const getUsernameByUid = async (uid: string) => {
-        
-        const userRef = ref(real_db, `users/${uid}`);
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-          return snapshot.val().username;
-        } else {
-          console.error("User does not exist");
-          return null;
-        }
-      };
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const [currentUser, setCurrentUser] = useState<any>();
+	const navigate = useNavigate();
 
-      useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(async user => {
-              
-          if (user) {
-            const username = user.displayName;
-            setCurrentUser({ uid: user.uid, username: username });
-          } else {
-            setCurrentUser(null);
-          }
-        });
-      
-        return () => unsubscribe();
-      }, [currentUser]);
+	const getUsernameByUid = async (uid: string) => {
+		const userRef = ref(db, `users/${uid}`);
+		const snapshot = await get(userRef);
+		if (snapshot.exists()) {
+			return snapshot.val().username;
+		} else {
+			console.error('User does not exist');
+			return null;
+		}
+	};
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
+	const toggleSidebar = () => {
+		setIsSidebarOpen(!isSidebarOpen);
+	};
 
-    return (
-        <div style={appStyle}>
-            <div style={{
-                width: '100vw',
-                backgroundColor: violet,
-                color: 'white',
-                height: '6vh',
-                display: 'flex',
-                alignItems: 'center',
-            }}>
-                <button onClick={toggleSidebar}>
-                    <MenuIcon style={{ color: 'white', paddingLeft: '1vw' }} />
-                </button>
-                <h4 style={{ paddingLeft: '1vw', margin: 0 }}>KIBI</h4>
-                <div style={{ marginLeft: 'auto', marginRight: '10px', display: 'flex', gap: '10px' }}>
-                    {currentUser ? (
-                        <>
-                            <span>{currentUser.username}</span>
-                            
-                            <button onClick={() => auth.signOut()}>Logout</button>
-                        </>
-                    ) : (
-                        <UserSignUp />
-                    )}
-                </div>
-            </div>
+	const logOut = async () => await auth.signOut();
 
-            <div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden', backgroundColor: greyBackground }}>
-                {isSidebarOpen && <Sidebar />}
-                <div style={{ height: '94vh', width: isSidebarOpen ? '85vw' : '100vw' }}>{children}</div>
-            </div>
-        </div>
-    );
+	useEffect(() => {
+		const unsubscribe = auth.onAuthStateChanged(async user => {
+			if (user) {
+				const username = user.displayName;
+				setCurrentUser({ uid: user.uid, username: username });
+			} else {
+				setCurrentUser(null);
+			}
+		});
+
+		return () => unsubscribe();
+	}, [currentUser]);
+
+	return (
+		<div style={appStyle}>
+			<div
+				style={{
+					width: '100vw',
+					color: violet,
+					height: '6vh',
+					display: 'flex',
+					alignItems: 'center',
+				}}>
+				<button style={{ display: 'flex', alignItems: 'center' }} onClick={toggleSidebar}>
+					<MenuIcon style={{ color: violet, paddingLeft: '1vw' }} />
+				</button>
+				<button onClick={() => navigate('/')}>
+					<h4 style={{ paddingLeft: '1vw', margin: 0 }}>KIBI</h4>
+				</button>
+				<div style={{ marginLeft: 'auto', marginRight: '1vw', display: 'flex', gap: 10 }}>
+					{currentUser ? (
+						<button onClick={() => logOut()}>
+							<h5 style={{ fontWeight: 'bold' }}>{currentUser.username}</h5>
+						</button>
+					) : (
+						<SignUpButton />
+					)}
+				</div>
+			</div>
+
+			<div style={{ display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
+				{isSidebarOpen && <Sidebar />}
+				<div style={{ height: '94vh', width: isSidebarOpen ? '85vw' : '100vw' }}>{children}</div>
+			</div>
+		</div>
+	);
 };
-
 
 export const routes = [
 	{
@@ -100,31 +101,30 @@ export const routes = [
 	},
 	{
 		path: SINGUP_PATH,
-		element: <Layout>
-			<div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh', // Center vertically within the viewport
-        }}> <SignUp /> </div>
-	
-		</Layout>,
+		element: (
+			<Layout>
+				<div
+					style={{
+						...centerStyle,
+						height: '100vh',
+					}}>
+					<SignUp />
+				</div>
+			</Layout>
+		),
 	},
 	{
 		path: SIGNIN_PATH,
-		element: <Layout 
-		> 
-		<div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh', // Center vertically within the viewport
-        }}> <SignIn /> </div>
-	
-				
-			 </Layout>,
+		element: (
+			<Layout>
+				<div
+					style={{
+						...centerStyle,
+						height: '100vh',
+					}}>
+					<SignIn />
+				</div>
+			</Layout>
+		),
 	},
-	
-
-
 ];

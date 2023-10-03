@@ -15,7 +15,6 @@ export const Header = ({ loading }: { loading: boolean }) => {
           fontWeight: 'bold',
           color: primaryBlue,
           fontSize: '1vw',
-          
         }}
         to={HOME_PATH}>
         KIBI

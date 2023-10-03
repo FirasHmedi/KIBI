@@ -3,9 +3,9 @@
 		"description": "Cancel attacks for next turn (all animal attacks)",
 		"name": "Block all attacks for 1 turn"
 	},
-	"3hp": {
-		"description": "give the owner +3 hp",
-		"name": "+3hp to player"
+	"2hp": {
+		"description": "give the owner +2 hp",
+		"name": "+2hp to player"
 	},
 	"draw-2": {
 		"description": "Draw 2 cards from the main deck",
@@ -24,8 +24,8 @@
 		"name": "Block power cards for 1 turn"
 	},
 	"reset-board": {
-		"description": "Reset Board (animals, env)",
-		"name": "Reset Board"
+		"description": "Reset Board (animals, env) for 1HP",
+		"name": "Reset Board for 1hp"
 	},
 	"place-king": {
 		"description": "Place an active king",
@@ -57,7 +57,7 @@
 	},
 	"switch-decks": {
 		"description": "Switch deck with opponent",
-		"name": "Switch decks of players"
+		"name": "Switch decks of players for 2hp"
 	},
 	"sacrif-anim-3hp": {
 		"description": "Sacrifice an animal to get 3hp",

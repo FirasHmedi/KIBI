@@ -1,23 +1,23 @@
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 18px;
-  line-height: 22px;
-  padding: 0;
-  margin: 0;
+	font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	line-height: 22px;
+	padding: 0;
+	margin: 0;
 }
 
 button {
-  all: unset;
-  cursor: pointer;
+	all: unset;
+	cursor: pointer;
 }
 
 html,
 body,
 #root > div {
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  background-color: '#bdc3c7';
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	background-color: '#bdc3c7';
 }
 
 div,
@@ -27,9 +27,9 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 0;
-  padding: 0;
-  scrollbar-width: none !important;
+	margin: 0;
+	padding: 0;
+	scrollbar-width: none !important;
 }
 
 div,
@@ -41,32 +41,10 @@ h5,
 h6,
 p,
 span {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
-}
-
-#button-34 {
-  background: #8e44ad;
-  border-radius: 999px;
-  box-shadow: #8e44ad 0 10px 20px -10px;
-  box-sizing: border-box;
-  color: #FFFFFF;
-  cursor: pointer;
-  font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 24px;
-  opacity: 1;
-  outline: 0 solid transparent;
-  padding: 8px 18px;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  width: fit-content;
-  word-break: break-word;
-  border: 0;
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }

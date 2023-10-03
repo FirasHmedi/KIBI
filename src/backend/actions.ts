@@ -1,18 +1,12 @@
 import _ from 'lodash';
 import {
 	add1Hp,
-	add2Hp,
 	drawOneCard,
-	minus1Hp,
-	minus2Hp,
 	returnRandomAnimalCardToDeck,
 	returnRandomPowerCardToDeck,
 	sendRandomOpponentCardToGY,
 } from './animalsAbilities';
-import { ANIMALS_POINTS, ATTACKER, ClanName, JOKER, KING, TANK } from './data';
 import { getBoardPath, getItemsOnce, getPlayerPath, setItem } from './db';
-import { getAnimalCard, getOpponentIdFromCurrentId, isAnimalCard, waitFor } from './helpers';
-import { PlayerType, SlotType } from './interface';
 import {
 	addAnimalToBoard,
 	addAnimalToGraveYard,
@@ -26,6 +20,9 @@ import {
 	removePlayerAnimalFromBoard,
 	setActivePowerCard,
 } from './unitActions';
+import { ATTACKER, TANK, ANIMALS_POINTS, JOKER, ClanName } from '../utils/data';
+import { getAnimalCard, getOpponentIdFromCurrentId, isAnimalCard, waitFor } from '../utils/helpers';
+import { PlayerType, SlotType } from '../utils/interface';
 
 export const revertMainDeck = async (gameId: string) => {
 	const powerGY = (await getItemsOnce('games/' + gameId + '/board/powerGY')) as string[];
@@ -44,19 +41,26 @@ export const drawCardFromMainDeck = async (gameId: string, playerType: string) =
 	await addCardsToPlayerDeck(gameId, playerType, [powerCardId]);
 };
 
-export const placeAnimalOnBoard = async (gameId: string, playerType: string, slotNb: number, animalId: string) => {
+export const placeAnimalOnBoard = async (
+	gameId: string,
+	playerType: PlayerType,
+	slotNb: number,
+	animalId: string,
+	elementType?: string,
+) => {
 	const animal = getAnimalCard(animalId);
 	await addInfoToLog(gameId, 'player ' + playerType + ' placed a ' + animal?.name + ' in slot ' + slotNb);
 	await removeCardFromPlayerDeck(gameId, playerType, animalId);
-	await addAnimalToBoard(gameId, playerType, slotNb, animalId);
+	await addAnimalToBoard(gameId, playerType, slotNb, animalId, false, elementType);
 };
 
 export const placeKingOnBoard = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	kingId: string,
 	sacrificedAnimalId: string,
 	slotNb: number,
+	elementType?: string,
 ) => {
 	const king = getAnimalCard(kingId);
 	const sacrificedAnimal = getAnimalCard(sacrificedAnimalId);
@@ -67,7 +71,11 @@ export const placeKingOnBoard = async (
 	if (!king || !sacrificedAnimal || king.clan !== sacrificedAnimal.clan) return;
 	const isRemoved = await removePlayerAnimalFromBoard(gameId, playerType, slotNb);
 	if (isRemoved) {
-		await addAnimalToGraveYard(gameId, sacrificedAnimalId);
+		if (sacrificedAnimal?.role === ATTACKER && elementType === sacrificedAnimal.clan) {
+			await addCardsToPlayerDeck(gameId, playerType, [sacrificedAnimalId]);
+		} else {
+			await addAnimalToGraveYard(gameId, sacrificedAnimalId);
+		}
 		await removeCardFromPlayerDeck(gameId, playerType, kingId);
 		await addAnimalToBoard(gameId, playerType, slotNb, kingId, true);
 	}
@@ -160,13 +168,13 @@ export const enableAttackForOpponentAnimals = async (
 export const activateJokersAbilities = async (gameId: string, playerDType: PlayerType, slots: SlotType[] = []) => {
 	for (let i = 0; i < slots.length; i++) {
 		const cardId = slots[i]?.cardId;
-		if (!!cardId && isAnimalCard(cardId)) {
+		if (isAnimalCard(cardId)) {
 			await activateJokerAbility(gameId, cardId, playerDType);
 		}
 	}
 };
 
-export const activateTankAndAttackerAbilities = async (
+/* export const activateTankAndAttackerAbilities = async (
 	gameId: string,
 	playerDType: PlayerType,
 	slots: SlotType[] = [],
@@ -185,7 +193,7 @@ export const activateTankAndAttackerAbilities = async (
 			}
 		}
 	}
-};
+}; */
 
 export const getElementType = async (gameId: string): Promise<ClanName> => {
 	return await getItemsOnce(getBoardPath(gameId) + 'elementType');

@@ -1,11 +1,19 @@
 import { useRef, useState } from 'react';
-import { buttonStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
+import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP } from '../utils/data';
 import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
 import ProgressBar from '@ramonak/react-progress-bar';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import Battery0BarIcon from '@mui/icons-material/Battery0Bar';
+import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
+import BatteryCharging80Icon from '@mui/icons-material/BatteryCharging80';
+import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
+import SwordIcon from '../assets/icons/sword-small-violet.png';
+import ClawIcon from '@mui/icons-material/Pets';
+import PersonIcon from '@mui/icons-material/Person';
 
 export const CurrentPView = ({
 	player,
@@ -40,6 +48,7 @@ export const CurrentPView = ({
 	const isMyRound = round?.player === playerType;
 	const disableEnv = !isMyRound || player.envLoadNb !== 3;
 	const [disablePlayButton, setDisablePlayButton] = useState(false);
+
 	const isPlayCardEnabled =
 		nbCardsToPlay >= 1 &&
 		!!selectedId &&
@@ -50,7 +59,8 @@ export const CurrentPView = ({
 	const playCardWithButtonControl = async () => {
 		setDisablePlayButton(true);
 		await playCard(selectedId);
-		await waitFor(500);
+		setSelectedId(undefined);
+		await waitFor(800);
 		setDisablePlayButton(false);
 	};
 
@@ -60,7 +70,7 @@ export const CurrentPView = ({
 				...flexRowStyle,
 				alignItems: 'center',
 				width: '100%',
-				justifyContent: 'space-around',
+				justifyContent: 'center',
 			}}>
 			{!spectator && (
 				<>
@@ -70,37 +80,31 @@ export const CurrentPView = ({
 							justifyContent: 'center',
 							position: 'absolute',
 							right: '29vw',
-							bottom: '31vh',
-							gap: 10,
+							bottom: '30vh',
+							gap: 40,
 							width: '10vw',
-							fontSize: '0.6em',
 						}}>
 						<button
 							style={{
-								...buttonStyle,
-								backgroundColor: disableEnv ? 'grey' : violet,
-							}}
-							disabled={disableEnv}
-							onClick={() => setElement()}>
-							SET ELEMENT
-						</button>
-						<button
-							style={{
-								...buttonStyle,
-								backgroundColor: !isAttackAnimalEnabled ? 'grey' : violet,
-							}}
-							disabled={!isAttackAnimalEnabled}
-							onClick={() => attackOpponentAnimal()}>
-							STRIKE ANIMAL
-						</button>
-						<button
-							style={{
-								...buttonStyle,
-								backgroundColor: !isAttackOwnerEnabled ? 'grey' : violet,
+								fontWeight: 'bold',
+								color: !isAttackOwnerEnabled ? 'grey' : violet,
+								...centerStyle,
 							}}
 							disabled={!isAttackOwnerEnabled}
 							onClick={() => attackOppHp()}>
-							STRIKE PLAYER
+							<img src={SwordIcon} style={{ width: 28 }}></img>
+							<PersonIcon style={{ width: '2vw', height: 'auto', color: !isAttackOwnerEnabled ? 'grey' : violet }} />
+						</button>
+						<button
+							style={{
+								fontWeight: 'bold',
+								color: !isAttackAnimalEnabled ? 'grey' : violet,
+								...centerStyle,
+							}}
+							disabled={!isAttackAnimalEnabled}
+							onClick={() => attackOpponentAnimal()}>
+							<img src={SwordIcon} style={{ width: 28 }}></img>
+							<ClawIcon style={{ width: '2vw', height: 'auto', color: !isAttackAnimalEnabled ? 'grey' : violet }} />
 						</button>
 					</div>
 
@@ -109,30 +113,33 @@ export const CurrentPView = ({
 							...flexColumnStyle,
 							position: 'absolute',
 							right: '20vw',
-							bottom: '8vh',
+							bottom: '10vh',
 							width: '10vw',
-							gap: 6,
-							fontSize: '0.6em',
+							gap: 12,
 						}}>
 						{!!nbCardsToPlay && isMyRound && (
-							<h5 style={{ color: violet, width: '6vw', fontSize: '1.3em' }}>Play {nbCardsToPlay} cards</h5>
+							<h6 style={{ color: violet, width: '6vw', fontSize: '0.7em' }}>{nbCardsToPlay} cards to play</h6>
 						)}
 						<button
 							ref={playCardRef}
 							style={{
-								...buttonStyle,
-								backgroundColor: !isPlayCardEnabled ? 'grey' : violet,
+								fontWeight: 'bold',
+								minWidth: '4vw',
+								fontSize: '0.8em',
+								color: !isPlayCardEnabled ? 'grey' : violet,
 							}}
 							disabled={!isPlayCardEnabled}
 							onClick={() => playCardWithButtonControl()}>
 							PLAY CARD
 						</button>
 					</div>
-					<div style={{ position: 'absolute', right: '14vw', bottom: '8vh', width: '10vw', fontSize: '0.6em' }}>
+					<div style={{ position: 'absolute', right: '14vw', bottom: '10vh', width: '10vw' }}>
 						<button
 							style={{
-								...buttonStyle,
-								backgroundColor: !isMyRound ? 'grey' : violet,
+								fontWeight: 'bold',
+								minWidth: '4vw',
+								fontSize: '0.8em',
+								color: !isMyRound ? 'grey' : violet,
 							}}
 							disabled={!isMyRound}
 							onClick={() => finishRound()}>
@@ -142,7 +149,7 @@ export const CurrentPView = ({
 				</>
 			)}
 
-			<PlayerDataView player={player} />
+			<PlayerDataView player={player} setElement={setElement} isMyRound={isMyRound} />
 			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
 			<EmptyElement />
 		</div>
@@ -156,7 +163,7 @@ export const OpponentPView = ({ player }: { player: Player }) => {
 				...flexRowStyle,
 				alignItems: 'center',
 				width: '100%',
-				justifyContent: 'space-around',
+				justifyContent: 'center',
 			}}>
 			<PlayerDataView player={player} />
 			<OpponentPDeck cardsNb={player?.cardsIds?.length} />
@@ -169,8 +176,18 @@ export const EmptyElement = ({ width = '11vw' }: any) => {
 	return <div style={{ width }}></div>;
 };
 
-const PlayerDataView = ({ player }: { player: Player }) => {
+const PlayerDataView = ({
+	player,
+	setElement,
+	isMyRound,
+}: {
+	player: Player;
+	setElement?: any;
+	isMyRound?: boolean;
+}) => {
 	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack, envLoadNb } = player;
+	const batteryStyle = { color: violet, width: '2.8vw', height: 'auto' };
+
 	return (
 		<div
 			style={{
@@ -183,31 +200,39 @@ const PlayerDataView = ({ player }: { player: Player }) => {
 				gap: 12,
 				width: '11vw',
 			}}>
-			<h4>{playerType?.toUpperCase()}</h4>
+			<h5>{playerType?.toUpperCase()}</h5>
 
 			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
-				<h4 style={{ fontSize: '1.1em' }}>{hp}HP</h4>
+				<div style={{ ...flexRowStyle, justifyContent: 'center', alignItems: 'center' }}>
+					<h4 style={{ fontSize: '1.1em' }}>{hp}</h4>
+					<FavoriteIcon style={{ color: violet, width: '1.1vw' }} />
+				</div>
+
 				<ProgressBar
 					bgColor={violet}
 					maxCompleted={hp > INITIAL_HP ? hp : INITIAL_HP}
-					width='7vw'
-					height='1.4vh'
+					width='5vw'
+					height='1vh'
 					baseBgColor={'grey'}
 					isLabelVisible={false}
 					completed={hp}></ProgressBar>
 			</div>
 
-			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
-				{envLoadNb !== 3 ? <h5>Element charging</h5> : <h5>Element charged</h5>}
-				<ProgressBar
-					bgColor={violet}
-					maxCompleted={3}
-					width='3vw'
-					height='1.4vh'
-					baseBgColor={'grey'}
-					isLabelVisible={false}
-					completed={envLoadNb}></ProgressBar>
-			</div>
+			<button
+				style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}
+				disabled={!(!!setElement && envLoadNb === 3 && isMyRound)}
+				onClick={() => setElement()}>
+				<h5>Element</h5>
+				{envLoadNb === 3 ? (
+					<BatteryChargingFullIcon style={batteryStyle} />
+				) : envLoadNb === 2 ? (
+					<BatteryCharging80Icon style={batteryStyle} />
+				) : envLoadNb === 1 ? (
+					<BatteryCharging20Icon style={batteryStyle} />
+				) : envLoadNb === 0 ? (
+					<Battery0BarIcon style={batteryStyle} />
+				) : null}
+			</button>
 
 			{canAttack === false && canPlayPowers === false ? (
 				<h5>Blocked from attacking and playing power cards</h5>

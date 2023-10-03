@@ -36,13 +36,12 @@ export const centerStyle: React.CSSProperties = {
 };
 
 export const appStyle: React.CSSProperties = {
-	backgroundColor: primary,
+	backgroundColor: greyBackground,
 	height: '100vh',
 };
 
 export const headerStyle: React.CSSProperties = {
 	...centerStyle,
-	color: primaryBlue,
 	height: '3vh',
 	justifyContent: 'center',
 	paddingLeft: 10,
@@ -50,8 +49,8 @@ export const headerStyle: React.CSSProperties = {
 };
 
 export const buttonStyle: React.CSSProperties = {
-	backgroundColor: "white",
-	color: violet,
+	backgroundColor: violet,
+	color: 'white',
 	borderRadius: 5,
 	fontWeight: 'bold',
 	padding: 3,
@@ -65,8 +64,8 @@ export const boardSlotStyle: React.CSSProperties = {
 	borderRadius: 5,
 	color: 'white',
 	fontSize: '0.85em',
-	height: '17vh',
-	width: '7vw',
+	height: '18vh',
+	width: '7.5vw',
 	flexShrink: 0,
 	border: 'solid 2px #95a5a6',
 };
@@ -84,30 +83,34 @@ export const deckSlotStyle: React.CSSProperties = {
 
 export const signupContainerStyle: React.CSSProperties = {
 	...centerStyle, // Retain existing centering styles
-  backgroundColor: violet,
-  borderRadius: 5,
-  width: '20vw',
-  flexDirection: 'column',
-  gap: 30,
-  padding: 10,
-  paddingTop: 30,
-  paddingBottom: 30,
-  minHeight: '40vh',
+	backgroundColor: violet,
+	borderRadius: 5,
+	width: '20vw',
+	flexDirection: 'column',
+	gap: 30,
+	padding: 10,
+	paddingTop: 30,
+	paddingBottom: 30,
+	minHeight: '40vh',
 };
 
 export const signinContainerStyle: React.CSSProperties = {
-  ...centerStyle, // Retain existing centering styles
-  backgroundColor: violet,
-  borderRadius: 5,
-  width: '20vw',
-  flexDirection: 'column',
-  gap: 30,
-  padding: 10,
-  paddingTop: 30,
-  paddingBottom: 30,
-  minHeight: '40vh',
-  
-
-  
+	...centerStyle, // Retain existing centering styles
+	backgroundColor: violet,
+	borderRadius: 5,
+	width: '20vw',
+	flexDirection: 'column',
+	gap: 30,
+	padding: 10,
+	paddingTop: 30,
+	paddingBottom: 30,
+	minHeight: '40vh',
 };
 
+export const signInputStyle = {
+	height: '3vh',
+	borderRadius: 5,
+	padding: 3,
+	width: '15vw',
+	borderWidth: 0,
+};
