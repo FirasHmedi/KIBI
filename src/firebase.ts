@@ -28,5 +28,5 @@ export const getApp = () => {
   return appInstance;
 };
 
-export const db = getDatabase(getApp());
+export const db = getFirestore(getApp());
 export const auth = getAuth(getApp());
