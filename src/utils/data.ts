@@ -16,7 +16,7 @@ export const GAMES_PATH = 'games/';
 
 export const ROUND_DURATION = 80; //60
 
-export const INITIAL_HP = 8;
+export const INITIAL_HP = 6;
 
 export const ENV_MAX_LOAD = 3; // each turn get 1
 
