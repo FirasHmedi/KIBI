@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useLocation } from 'react-router-dom';
 import {
 	ANIMAL_CARDS_OBJECT,
@@ -23,7 +23,7 @@ export const getCurrentPathName = () => {
 	return location.pathname;
 };
 
-export const isAnimalCard = (cardId?: string): boolean => !!cardId && !_.isEmpty(getAnimalCard(cardId));
+export const isAnimalCard = (cardId?: string): boolean => !!cardId && ANIMAL_CARDS_OBJECT.hasOwnProperty(cardId);
 
 export const isPowerCard = (cardId: string = ''): boolean =>
 	POWER_CARDS_OBJECT.hasOwnProperty(new String(cardId).substring(4));

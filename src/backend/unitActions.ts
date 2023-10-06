@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isNil from 'lodash/isNil';
 import { getBoardPath, getItemsOnce, getGamePath, setItem } from './db';
 import { activateJokerAbility } from './actions';
 import { ATTACKER, ClanName } from '../utils/data';
@@ -90,7 +90,7 @@ export const removePlayerAnimalFromBoard = async (
 
 export const addHpToPlayer = async (gameId: string, playerType: string, hp: number) => {
 	const oldHp = await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
-	if (!_.isNil(oldHp)) {
+	if (!isNil(oldHp)) {
 		const newHp = (oldHp ?? 0) + hp;
 		await setItem(getGamePath(gameId) + playerType, { hp: newHp });
 	}
@@ -98,7 +98,7 @@ export const addHpToPlayer = async (gameId: string, playerType: string, hp: numb
 
 export const removeHpFromPlayer = async (gameId: string, playerType: string, hp: number) => {
 	const oldHp = await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
-	if (!_.isNil(oldHp)) {
+	if (!isNil(oldHp)) {
 		const newHp = oldHp - hp;
 		await setItem(getGamePath(gameId) + playerType, { hp: newHp });
 	}

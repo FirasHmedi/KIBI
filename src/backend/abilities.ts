@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import isNil from 'lodash/isNil';
 import { drawCardFromMainDeck, setElementLoad } from './actions';
 
 import { getBoardPath, getItemsOnce, getGamePath, setItem } from './db';
@@ -31,7 +32,7 @@ export const cancelAttacks = async (gameId: string, playerType: PlayerType) => {
 
 export const reviveLastPower = async (gameId: string, playerType: PlayerType) => {
 	const powerGY: string[] = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
-	if (!_.isEmpty(powerGY)) {
+	if (!isEmpty(powerGY)) {
 		const lastPowerCardId = powerGY[powerGY.length - 1];
 		await deletePowerCardFromGraveYardById(gameId, lastPowerCardId);
 		await addCardsToPlayerDeck(gameId, playerType, [lastPowerCardId]);
@@ -43,7 +44,7 @@ export const reviveAnyPowerFor1hp = async (gameId: string, playerType: PlayerTyp
 		return;
 	}
 	const powerGY: string[] = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
-	if (!_.isEmpty(powerGY) && powerGY.includes(cardId)) {
+	if (!isEmpty(powerGY) && powerGY.includes(cardId)) {
 		await removeHpFromPlayer(gameId, playerType, 1);
 		await deletePowerCardFromGraveYardById(gameId, cardId);
 		await addCardsToPlayerDeck(gameId, playerType, [cardId]);
@@ -56,7 +57,7 @@ export const sacrifice1HpToReviveAnyAnimal = async (
 	animalId?: string,
 	slotNb?: number,
 ) => {
-	if (!isAnimalCard(animalId) || _.isNil(slotNb)) return;
+	if (!isAnimalCard(animalId) || isNil(slotNb)) return;
 	await removeHpFromPlayer(gameId, playerType, 1);
 	await deleteAnimalCardFromGraveYardById(gameId, animalId!);
 	await addAnimalToBoard(gameId, playerType, slotNb, animalId!, true);
@@ -69,18 +70,18 @@ export const sacrifice3HpToSteal = async (
 	oppSlotNb: number,
 	mySlotNb: number,
 ) => {
-	if (!animalId || _.isNil(mySlotNb) || _.isNil(oppSlotNb)) return;
+	if (!animalId || isNil(mySlotNb) || isNil(oppSlotNb)) return;
 	await removeHpFromPlayer(gameId, playerType, 3);
 	await removePlayerAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), oppSlotNb);
 	await addAnimalToBoard(gameId, playerType, mySlotNb, animalId, true);
 };
 
 export const sacrifice1HpToReviveLastAnimal = async (gameId: string, playerType: PlayerType, slotNb?: number) => {
-	if (_.isNil(slotNb) || !playerType) return;
+	if (isNil(slotNb) || !playerType) return;
 	await removeHpFromPlayer(gameId, playerType, 1);
 
 	const animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
-	if (!_.isEmpty(animalGY)) {
+	if (!isEmpty(animalGY)) {
 		const lastAnimalCardId = animalGY[animalGY.length - 1];
 		await deleteAnimalCardFromGraveYardById(gameId, lastAnimalCardId);
 		await addAnimalToBoard(gameId, playerType, slotNb, lastAnimalCardId, true);
@@ -115,7 +116,7 @@ export const sacrificeAnimalToGet3Hp = async (
 	slotNb?: number,
 	elementType?: string,
 ) => {
-	if (!animalId || _.isNil(slotNb)) return;
+	if (!animalId || isNil(slotNb)) return;
 	const sacrificedAnimal = getAnimalCard(animalId);
 	const isRemoved = await removePlayerAnimalFromBoard(gameId, playerType, slotNb);
 	if (isRemoved) {
@@ -165,13 +166,13 @@ export const resetBoard = async (
 ) => {
 	for (let i = 0; i < 3; i++) {
 		await removePlayerAnimalFromBoard(gameId, playerType, i);
-		if (!_.isEmpty(currentPSlots[i]?.cardId) && currentPSlots[i]?.cardId !== EMPTY) {
+		if (!isEmpty(currentPSlots[i]?.cardId) && currentPSlots[i]?.cardId !== EMPTY) {
 			await addCardsToPlayerDeck(gameId, playerType, [currentPSlots[i]?.cardId]);
 		}
 	}
 	for (let i = 0; i < 3; i++) {
 		await removePlayerAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), i);
-		if (!_.isEmpty(opponentPSlots[i]?.cardId) && opponentPSlots[i]?.cardId !== EMPTY) {
+		if (!isEmpty(opponentPSlots[i]?.cardId) && opponentPSlots[i]?.cardId !== EMPTY) {
 			await addCardsToPlayerDeck(gameId, getOpponentIdFromCurrentId(playerType), [opponentPSlots[i]?.cardId]);
 		}
 	}

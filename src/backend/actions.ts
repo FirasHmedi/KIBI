@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import shuffle from 'lodash/shuffle';
 import {
 	add1Hp,
 	drawOneCard,
@@ -26,7 +26,7 @@ import { PlayerType, SlotType } from '../utils/interface';
 
 export const revertMainDeck = async (gameId: string) => {
 	const powerGY = (await getItemsOnce('games/' + gameId + '/board/powerGY')) as string[];
-	await setItem('games/' + gameId + '/board/', { mainDeck: _.shuffle(powerGY) });
+	await setItem('games/' + gameId + '/board/', { mainDeck: shuffle(powerGY) });
 	await setItem('games/' + gameId + '/board/', { powerGY: [] });
 };
 

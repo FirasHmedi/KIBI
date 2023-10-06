@@ -154,19 +154,3 @@ export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.s
 
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
-
-/*
-  "6-p": {
-    "ability": "Switch health with opponent",
-    "description": "Switch health with opponent",
-    "name": "Switch health of players"
-  },
-*/
-
-/*
-  "reset-board": {
-    "ability": "Reset Board (animals, env)",
-    "description": "Reset Board (animals, env)",
-    "name": "Reset Board (animals, env)"
-  }
-*/

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useState } from 'react';
 import { flexColumnStyle, violet } from '../styles/Style';
 
@@ -51,6 +51,7 @@ import {
 } from '../backend/actions';
 import { minus1Hp } from '../backend/animalsAbilities';
 import { addPowerToGraveYard, addOneRound } from '../backend/unitActions';
+import isNil from 'lodash/isNil';
 
 export function GameView({
 	round,
@@ -163,21 +164,20 @@ export function GameView({
 	const isPowerCardPlayable = (cardId: string) => {
 		switch (getOriginalCardId(cardId!)) {
 			case 'rev-any-anim-1hp':
-				if (_.isNil(selectedCurrPSlotNb) || _.isEmpty(selectedGYAnimals) || selectedGYAnimals?.length != 1)
-					return false;
+				if (isNil(selectedCurrPSlotNb) || isEmpty(selectedGYAnimals) || selectedGYAnimals?.length != 1) return false;
 				break;
 			case 'steal-anim-3hp':
-				if (_.isNil(selectedCurrPSlotNb) || _.isNil(selectedOppPSlotNb) || !idInOppPSlot || idInOppPSlot === EMPTY)
+				if (isNil(selectedCurrPSlotNb) || isNil(selectedOppPSlotNb) || !idInOppPSlot || idInOppPSlot === EMPTY)
 					return false;
 				break;
 			case 'sacrif-anim-3hp':
-				if (_.isNil(selectedCurrPSlotNb) || idInCurrPSlot === EMPTY) return false;
+				if (isNil(selectedCurrPSlotNb) || idInCurrPSlot === EMPTY) return false;
 				break;
 			case '2-anim-gy':
 				if (selectedGYAnimals?.length != 2) return false;
 				break;
 			case 'rev-any-pow-1hp':
-				if (_.isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
+				if (isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
 				break;
 			case 'place-2-anim-1-hp':
 				if ((currentPlayer.cardsIds ?? []).filter(id => isAnimalCard(id))?.length <= 2) return false;
@@ -277,9 +277,9 @@ export function GameView({
 		console.log({ playerType }, { cardId }, 'isAnimal', isAnimalCard(cardId), 'isPower', isPowerCard(cardId), {
 			selectedCurrPSlotNb,
 		});
-		if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
+		if (isEmpty(cardId) || isEmpty(playerType)) return;
 
-		if (!_.isEmpty(selectedGYPower) && cardId !== selectedGYPower[0] && getOriginalCardId(cardId) !== 'rev-any-pow-1hp')
+		if (!isEmpty(selectedGYPower) && cardId !== selectedGYPower[0] && getOriginalCardId(cardId) !== 'rev-any-pow-1hp')
 			return;
 
 		if (selectedGYPower[0] === cardId) {

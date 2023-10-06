@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { flexRowStyle, violet } from '../styles/Style';
 import { DeckSlot } from './Slots';
 
@@ -57,7 +57,7 @@ export const Graveyard = ({
 			<h5 style={{ marginBottom: 4 }}>
 				{name} #{cardsIds.length}
 			</h5>
-			{!_.isEmpty(selectedIds) && <h5>{selectedIds.length} selected</h5>}
+			{!isEmpty(selectedIds) && <h5>{selectedIds.length} selected</h5>}
 			{cardsIds.length > 0 ? (
 				<div style={{ ...flexRowStyle, overflowY: 'auto' }}>
 					{cardsIds.map((cardId, index) => (

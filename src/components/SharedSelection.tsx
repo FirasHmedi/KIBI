@@ -13,7 +13,7 @@ import { getOpponentIdFromCurrentId } from '../utils/helpers';
 import { AnimalCard, PlayerType } from '../utils/interface';
 import { PowerBoardSlot } from './Slots';
 import { setItem, getGamePath } from '../backend/db';
-import _ from 'lodash';
+import shuffle from 'lodash/shuffle';
 
 interface Props {
 	playerType: PlayerType;
@@ -73,7 +73,7 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 		const twoCardsIds: string[] = [];
 		let i = 0,
 			j = 0;
-		const animalsWithoutKings = _.shuffle(ANIMALS_CARDS)
+		const animalsWithoutKings = shuffle(ANIMALS_CARDS)
 			.filter(({ role, id }) => {
 				if (role === KING) {
 					if (i < 2) {

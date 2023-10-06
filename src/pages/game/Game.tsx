@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameContainer } from '../../components/GameContainer';
@@ -36,9 +36,9 @@ function GamePage() {
 					nb: 1,
 				},
 			});
-			if (!_.isEmpty(powerNotChoosed)) {
+			if (isEmpty(powerNotChoosed)) {
 				setItem(getBoardPath(gameId), {
-					mainDeck: _.shuffle([...game.board.mainDeck, powerNotChoosed]),
+					mainDeck: [powerNotChoosed, ...game.board.mainDeck],
 				});
 			}
 		}
