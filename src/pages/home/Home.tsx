@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { buttonStyle, centerStyle, flexRowStyle, violet } from '../../styles/Style';
 import { ENV_MAX_LOAD, INITIAL_HP, PREPARE, GAMES_PATH } from '../../utils/data';
 import { PlayerType } from '../../utils/interface';
-import { getMainDeckFirstHalf } from '../../utils/helpers';
+import { getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/helpers';
 import { setItem } from '../../backend/db';
 
 function Home() {
@@ -15,7 +15,7 @@ function Home() {
 
 	const createGame = async () => {
 		const gameId = uuidv4();
-		const mainDeck: string[] = shuffle(getMainDeckFirstHalf());
+		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-3, 3);
 
 		await setItem(GAMES_PATH + gameId, {
