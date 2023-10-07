@@ -247,6 +247,7 @@ export function GameView({
 				await setElementLoad(gameId, playerType, 3);
 				break;
 			case 'place-2-anim-1-hp':
+				await minus1Hp(gameId, playerType);
 				setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay ?? 0) + 2);
 				setTwoAnimalsToPlace(2);
 				break;
