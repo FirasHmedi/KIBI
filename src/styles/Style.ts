@@ -1,3 +1,4 @@
+
 export const primary = '#2c3e50'; //'#bdc3c7'; //#242422 232323
 export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
@@ -114,7 +115,7 @@ export const signInputStyle = {
 	width: '15vw',
 	borderWidth: 0,
 };
-export const graveyardPopup2 = {
+export const graveyardPopup2 : React.CSSProperties = {
 	position: 'fixed',
             top: 0,
             left: 0,
@@ -124,7 +125,7 @@ export const graveyardPopup2 = {
             zIndex: 1,
 }
 
-export const graveyardPopup = {
+export const graveyardPopup : React.CSSProperties = {
 	position: 'absolute',
 	left: '50%',
 	top: '50%',
@@ -140,7 +141,7 @@ export const graveyardPopup = {
 	borderRadius: '1vw',
 }
 
-export const closeButtonStyle = {
+export const closeButtonStyle : React.CSSProperties  = {
     position: 'absolute',
     top: '0.5vw',
     right: '0.5vw',
@@ -154,8 +155,19 @@ export const closeButtonStyle = {
     cursor: 'pointer',
     boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.3)',
 };
- 
 
-export const   topCardStyle = {
+export const   topCardStyle : React.CSSProperties = {
 	boxShadow: '3px 3px 0px 0px gray, 6px 6px 0px 0px gray',  // Shadows are more pronounced
 };
+
+export  const alertStyle : React.CSSProperties = {
+    position: "fixed",
+    top: "10%",
+    left: "50%",
+    transform: "translateX(-50%)",
+    backgroundColor: "red",
+    color: "white",
+    padding: "1rem",
+    borderRadius: "5px",
+    zIndex: 10,
+  };

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+    alertStyle,
   centerStyle,
   closeButtonStyle,
   graveyardPopup,
@@ -125,18 +126,7 @@ export const Graveyard = ({
     setPopupOpen(false);
   };
 
-  const alertStyle = {
-    position: "fixed",
-    top: "10%",
-    left: "50%",
-    transform: "translateX(-50%)",
-    backgroundColor: "red",
-    color: "white",
-    padding: "1rem",
-    borderRadius: "5px",
-    zIndex: 10,
-    display: showAlert ? "block" : "none",
-  };
+ 
 
   return (
     <div
@@ -185,7 +175,7 @@ export const Graveyard = ({
           </div>
         </div>
       )}
-      <div style={alertStyle}>You are allowed to choose only two cards.</div>
+      <div style={{...alertStyle, display: showAlert ? "block" : "none",}}>You are allowed to choose only two cards.</div>
     </div>
   );
 };
