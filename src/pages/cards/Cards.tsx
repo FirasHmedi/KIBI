@@ -1,12 +1,12 @@
-import {centerStyle, flexColumnStyle, flexRowStyle, greyBackground, violet} from "../../styles/Style";
+import {centerStyle, flexColumnStyle, greyBackground, violet} from "../../styles/Style";
 import {AnimalBoardSlot, PowerBoardSlot} from "../../components/Slots";
-import {ANIMALS_CARDS, ANIMALS_CARDS_IDS, POWER_CARDS, POWERS_CARDS_IDS} from "../../utils/data";
+import {ANIMALS_CARDS, POWER_CARDS} from "../../utils/data";
 
 
 function Cards() {
     return (
         <div
-            style={{...flexColumnStyle, ...centerStyle, width: '100%', backgroundColor: greyBackground, color: violet}}>
+            style={{...flexColumnStyle, ...centerStyle, color: violet}}>
             <h1 style={{margin:'20px'}}>Animal Cards</h1>
             <div style={{display: 'flex', flexWrap: 'wrap', ...centerStyle}}>
                 {ANIMALS_CARDS.map((animal,index) => (

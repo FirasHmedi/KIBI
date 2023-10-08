@@ -1,10 +1,11 @@
-import {centerStyle, flexColumnStyle, flexRowStyle, greyBackground, neutralColor, violet} from "../../styles/Style";
+import {centerStyle, flexColumnStyle,violet} from "../../styles/Style";
 import React from "react";
 
 function WalkThrough() {
     return (
-        <div style={{ ...flexColumnStyle, ...centerStyle, width: '100%',backgroundColor:greyBackground,color:violet }}>
-            <h1>Game Explanation</h1>
+
+        <div style={{ ...flexColumnStyle, ...centerStyle,color:violet}}>
+            <h1 style={{padding:'10px'}}>Game Explanation</h1>
             <ul style={{textAlign:"left"}}>
                 <li>
                     <h6>The game contains animals and power cards</h6>
@@ -106,6 +107,7 @@ function WalkThrough() {
                 </ul>
             </p>
         </div>
+
     );
 }
 export default WalkThrough;

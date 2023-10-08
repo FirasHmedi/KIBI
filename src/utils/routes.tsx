@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
 import { appStyle, centerStyle, violet } from '../styles/Style';
-import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
+import {CARDS_PATH, GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH, WALKTHROUGH_PATH} from './data';
 import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '../components/Sidebar';
 import { SignIn } from '../pages/registration/SignIn';
@@ -11,6 +11,8 @@ import { auth, db } from '../firebase';
 import { get, ref } from 'firebase/database';
 import { SignUpButton } from '../components/SignUpButton';
 import { useNavigate } from 'react-router-dom';
+import Walkthrough from "../pages/walkthrough/Walkthrough";
+import Cards from "../pages/cards/Cards";
 
 const Layout = ({ children }: any) => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -63,7 +65,14 @@ const Layout = ({ children }: any) => {
 				<button onClick={() => navigate('/')}>
 					<h4 style={{ paddingLeft: '1vw', margin: 0 }}>KIBI</h4>
 				</button>
+
 				<div style={{ marginLeft: 'auto', marginRight: '1vw', display: 'flex', gap: 10 }}>
+					<button onClick={() => navigate(CARDS_PATH)}>
+						<h4 style={{ paddingLeft: '1vw', margin: 0 }}>Cards</h4>
+					</button>
+					<button onClick={() => navigate(WALKTHROUGH_PATH)}>
+						<h4 style={{ paddingLeft: '1vw', margin: 0 }}>Explanation</h4>
+					</button>
 					{currentUser ? (
 						<button onClick={() => logOut()}>
 							<h5 style={{ fontWeight: 'bold' }}>{currentUser.username}</h5>
@@ -124,6 +133,22 @@ export const routes = [
 					}}>
 					<SignIn />
 				</div>
+			</Layout>
+		),
+	},
+	{
+		path: WALKTHROUGH_PATH,
+		element: (
+			<Layout>
+				<Walkthrough />
+			</Layout>
+		),
+	},
+	{
+		path: CARDS_PATH,
+		element: (
+			<Layout>
+				<Cards />
 			</Layout>
 		),
 	},
