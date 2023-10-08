@@ -49,36 +49,48 @@ function WalkThrough() {
                 </li>
                 <li>
                     <h6>Each round, the player get a power card from the main deck, he can play 2 cards (3 in the
-                        first round), he can also set the environment if it's charged and attack the opponent.
+                        first round), he can also set the environment and attack the opponent.
                     </h6>
                 </li>
                 <li>
-                    <h6>King ability is to attack opponent player</h6>
+                    <h6>
+                        To change the environment, your element must be charged, it takes 3 round to charged(at the start of the element is charge it) or use the power card "Fully charge the element"
+                    </h6>
                 </li>
                 <li>
-                    <h6>Attacker ability is to return to deck when sacrificed</h6>
-                </li>
-                <li>
-                    <h6>Tank ability is to  add +1hp to owner when it attacks</h6>
-                </li>
-                <li>
-                    <h6>Crow(joker) ability is to return random dead animal to deck</h6>
-                </li>
-                <li>
-                    <h6>Fox(joker) ability is to return random power card</h6>
-                </li>
-                <li>
-                    <h6>Fox(Jellyfish) ability is to Draw 1 card from the main deck</h6>
-                </li>
-                <li>
-                    <h6>Fox(Snake) ability is to send random card from opponent deck to graveyard</h6>
+                    <h5>Animals abilities:</h5>
+                    <ul>
+                        <li>
+                            <h6>King ability is to attack opponent player</h6>
+                        </li>
+                        <li>
+                            <h6>Attacker ability is to return to deck when sacrificed</h6>
+                        </li>
+                        <li>
+                            <h6>Tank ability is to  add +1hp to owner when it attacks</h6>
+                        </li>
+                        <li>
+                            <h6>Crow(joker) ability is to return random dead animal to deck</h6>
+                        </li>
+                        <li>
+                            <h6>Fox(joker) ability is to return random power card</h6>
+                        </li>
+                        <li>
+                            <h6>Fox(Jellyfish) ability is to Draw 1 card from the main deck</h6>
+                        </li>
+                        <li>
+                            <h6>Fox(Snake) ability is to send random card from opponent deck to graveyard</h6>
+                        </li>
+                    </ul>
                 </li>
 
             </ul>
             <h1>Scenario</h1>
-            <div style={{...flexRowStyle,...centerStyle}}>
-                <img style={{height:"auto",width:"40%",marginLeft:"2%"}} src={"src/assets/img/scenario.PNG"}/>
-                <img style={{height:"auto",width:"40%"}} src={"src/assets/img/scenario2.PNG"}/>
+            <div style={{...flexColumnStyle,...centerStyle}}>
+                <img style={{height:"auto",width:"80%",marginLeft:"2%"}} src={"src/assets/img/scenario.PNG"}/>
+                <h1 style={{paddingTop:'10px'}}>1</h1>
+                <img style={{height:"auto",width:"80%"}} src={"src/assets/img/scenario2.PNG"}/>
+                <h1 style={{paddingTop:'10px'}}>2</h1>
             </div>
             <p>in this scenario, the player one choose to:
                 <ul  style={{textAlign:"left"}}>

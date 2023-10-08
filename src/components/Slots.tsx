@@ -123,7 +123,7 @@ export const AnimalBoardSlot = ({
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
-	isDoubleAP: boolean;
+	isDoubleAP?: boolean;
 }) => {
 	const { clan, name, role, ability } = getAnimalCard(cardId)!;
 	if (!name || !clan || !role) return <></>;

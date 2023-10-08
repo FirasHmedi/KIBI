@@ -2,10 +2,11 @@ import { useState } from 'react';
 import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
 import { appStyle, greyBackground, violet } from '../styles/Style';
-import {GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH, WALKTHROUGH_PATH} from './data';
+import {CARDS_PATH, GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH, WALKTHROUGH_PATH} from './data';
 import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '../components/Sidebar';
 import Walkthrough from "../pages/walkthrough/Walkthrough";
+import Cards from "../pages/cards/Cards";
 
 const Layout = ({ children }: any) => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -59,6 +60,14 @@ export const routes = [
 		element: (
 			<Layout>
 				<Walkthrough />
+			</Layout>
+		),
+	},
+	{
+		path: CARDS_PATH,
+		element: (
+			<Layout>
+				<Cards />
 			</Layout>
 		),
 	},

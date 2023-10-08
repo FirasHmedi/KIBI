@@ -11,6 +11,9 @@ function Sidebar() {
                         <h6>The animals abilities can be used only if their clan's environment is activated</h6>
                     </li>
                     <li>
+                        <h6>Animals cannot attack on the first round except the king and animals that revive it from the graveyard</h6>
+                    </li>
+                    <li>
                         <h6>3 Animals in board defend their player from being attacked</h6>
                     </li>
                     <li>

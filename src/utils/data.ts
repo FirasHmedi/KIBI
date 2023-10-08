@@ -8,6 +8,7 @@ export const SIGNIN_PATH = '/signin';
 export const HOME_PATH = '/';
 export const GAME_PATH = '/game/:id';
 export const WALKTHROUGH_PATH = '/walkthrough';
+export const CARDS_PATH = '/cards';
 
 export const RUNNING = 'running';
 export const READY = 'ready';
