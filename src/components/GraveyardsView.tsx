@@ -108,7 +108,10 @@ export const Graveyard = ({
 			</h5>
 			{cardsIds.length > 0 ? (
 				<div onClick={openCardSelectionPopup} style={topCardStyle}>
-					<DeckSlot cardId={cardsIds[0]} selected={selectedIds.includes(cardsIds[0])} />
+					<DeckSlot
+						cardId={cardsIds[cardsIds?.length - 1]}
+						selected={selectedIds.includes(cardsIds[cardsIds?.length - 1])}
+					/>
 				</div>
 			) : (
 				<div style={{ height: '15vh' }} />
