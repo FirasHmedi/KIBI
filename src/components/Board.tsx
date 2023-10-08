@@ -9,6 +9,7 @@ import { ElementSlot, BoardSlots, DeckSlot } from './Slots';
 interface Props {
 	board: Board;
 	roundNb: number;
+	isMyRound: boolean;
 	isDoubleCurrentAP?: boolean;
 	isDoubleOpponentAP?: boolean;
 	selectedCurrentPSlotNb?: number;
@@ -23,6 +24,7 @@ interface Props {
 
 export const BoardView = ({
 	board,
+	isMyRound,
 	selectCurrentSlot,
 	selectOpponentSlot,
 	selectedCurrentPSlotNb,
@@ -77,9 +79,19 @@ export const BoardView = ({
 				<Seperator />
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator />
-				<AnimalGraveyard cardsIds={animalGY} selectIds={setSelectedGYAnimals} selectedIds={selectedGYAnimals} />
+				<AnimalGraveyard
+					isMyRound={isMyRound}
+					cardsIds={animalGY}
+					selectIds={setSelectedGYAnimals}
+					selectedIds={selectedGYAnimals}
+				/>
 				<Seperator />
-				<PowerGraveyard cardsIds={powerGY} selectIds={setSelectedGYPower} selectedIds={selectedGYPower} />
+				<PowerGraveyard
+					isMyRound={isMyRound}
+					cardsIds={powerGY}
+					selectIds={setSelectedGYPower}
+					selectedIds={selectedGYPower}
+				/>
 			</div>
 		</div>
 	);

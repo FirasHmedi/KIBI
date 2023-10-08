@@ -1,34 +1,59 @@
-import isEmpty from 'lodash/isEmpty';
-import { flexRowStyle, violet } from '../styles/Style';
+import React, { useState } from 'react';
+import {
+	alertStyle,
+	closeButtonStyle,
+	graveyardPopupContainer,
+	graveyardPopupContent,
+	topCardStyle,
+	violet,
+} from '../styles/Style';
 import { DeckSlot } from './Slots';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export const PowerGraveyard = ({
 	cardsIds,
 	selectedIds,
 	selectIds,
+	isMyRound,
 }: {
 	cardsIds: string[];
 	selectedIds?: string[];
 	selectIds?: React.Dispatch<React.SetStateAction<string[]>>;
-}) => (
-	<Graveyard
-		name={'Power graveyard'}
-		cardsIds={cardsIds}
-		selectedIds={selectedIds}
-		selectIds={selectIds}
-		singleSelect={true}
-	/>
-);
+	isMyRound: boolean;
+}) => {
+	return (
+		<Graveyard
+			name={'Power graveyard'}
+			cardsIds={cardsIds}
+			selectIds={selectIds}
+			selectedIds={selectedIds}
+			singleSelect={true}
+			isMyRound={isMyRound}
+		/>
+	);
+};
 
 export const AnimalGraveyard = ({
 	cardsIds,
 	selectIds,
 	selectedIds,
+	isMyRound,
 }: {
 	cardsIds: string[];
 	selectIds?: React.Dispatch<React.SetStateAction<string[]>>;
 	selectedIds?: string[];
-}) => <Graveyard name={'Animal graveyard'} cardsIds={cardsIds} selectIds={selectIds} selectedIds={selectedIds} />;
+	isMyRound: boolean;
+}) => {
+	return (
+		<Graveyard
+			name={'Animal graveyard'}
+			cardsIds={cardsIds}
+			selectIds={selectIds}
+			selectedIds={selectedIds}
+			isMyRound={isMyRound}
+		/>
+	);
+};
 
 export const Graveyard = ({
 	name,
@@ -36,39 +61,80 @@ export const Graveyard = ({
 	selectIds,
 	selectedIds = [],
 	singleSelect = false,
+	isMyRound,
 }: {
 	name: string;
 	cardsIds: string[];
+	isMyRound: boolean;
 	selectIds?: React.Dispatch<React.SetStateAction<string[]>>;
 	selectedIds?: string[];
 	singleSelect?: boolean;
 }) => {
-	const selectCardsPolished = (cardId: string) => {
-		if (!selectIds) return;
-		selectedIds.includes(cardId)
-			? selectIds(ids => ids?.filter(id => cardId != id))
-			: singleSelect
-			? selectIds([cardId])
-			: selectIds(ids => [...(ids ?? []), cardId]);
+	const [isPopupOpen, setPopupOpen] = useState(false);
+	const [showAlert, setShowAlert] = useState(false);
+
+	const selectCardsPolished = async (cardId: string) => {
+		if (!selectIds || !isMyRound) return;
+
+		if (selectedIds.includes(cardId)) {
+			selectIds(ids => ids?.filter(id => cardId !== id));
+		} else {
+			if (singleSelect) {
+				selectIds([cardId]);
+			} else {
+				if (selectedIds.length < 2) {
+					selectIds(ids => [...(ids ?? []), cardId]);
+				} else {
+					setShowAlert(true);
+					setTimeout(() => setShowAlert(false), 3000);
+				}
+			}
+		}
 	};
 
+	const openCardSelectionPopup = () => setPopupOpen(true);
+	const closeCardSelectionPopup = () => setPopupOpen(false);
+
 	return (
-		<div style={{ width: '17vw', color: violet }}>
+		<div
+			style={{
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				color: violet,
+			}}>
 			<h5 style={{ marginBottom: 4 }}>
 				{name} #{cardsIds.length}
 			</h5>
-			{!isEmpty(selectedIds) && <h5>{selectedIds.length} selected</h5>}
 			{cardsIds.length > 0 ? (
-				<div style={{ ...flexRowStyle, overflowY: 'auto' }}>
-					{cardsIds.map((cardId, index) => (
-						<div style={{ marginRight: 8 }} key={index} onClick={() => selectCardsPolished(cardId)}>
-							<DeckSlot cardId={cardId} selected={selectedIds.includes(cardId)} graveyard={true} />
-						</div>
-					))}
+				<div onClick={openCardSelectionPopup} style={topCardStyle}>
+					<DeckSlot cardId={cardsIds[0]} selected={selectedIds.includes(cardsIds[0])} />
 				</div>
 			) : (
 				<div style={{ height: '15vh' }} />
 			)}
+			{isPopupOpen && (
+				<div style={graveyardPopupContainer} onClick={() => closeCardSelectionPopup()}>
+					<button style={closeButtonStyle} onClick={closeCardSelectionPopup}>
+						<CancelIcon style={{ color: 'white', width: '3vw', height: 'auto' }} />
+					</button>
+					<div style={graveyardPopupContent}>
+						{cardsIds.map((cardId, index) => (
+							<div
+								key={index}
+								onClick={e => {
+									e.stopPropagation();
+									selectCardsPolished(cardId);
+								}}>
+								<DeckSlot cardId={cardId} selected={selectedIds.includes(cardId)} />
+							</div>
+						))}
+					</div>
+				</div>
+			)}
+			<div style={{ ...alertStyle, display: showAlert ? 'block' : 'none' }}>
+				You are allowed to choose only two cards.
+			</div>
 		</div>
 	);
 };

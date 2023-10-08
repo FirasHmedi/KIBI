@@ -105,9 +105,11 @@ export function GameView({
 		return false;
 	};
 
+	const isMyRound = round.player === playerType;
+
 	const isAttackAnimalEnabled =
 		round.nb >= 3 &&
-		round.player === playerType &&
+		isMyRound &&
 		currentPlayer.canAttack &&
 		!hasAttacked &&
 		isAnimalCard(idInCurrPSlot) &&
@@ -127,7 +129,7 @@ export function GameView({
 
 	const isAttackOwnerEnabled =
 		round.nb >= 3 &&
-		round.player === playerType &&
+		isMyRound &&
 		currentPlayer.canAttack &&
 		!hasAttacked &&
 		isAnimalCard(idInCurrPSlot) &&
@@ -382,6 +384,7 @@ export function GameView({
 				roundNb={round.nb}
 				isDoubleOpponentAP={opponentPlayer.isDoubleAP}
 				isDoubleCurrentAP={currentPlayer.isDoubleAP}
+				isMyRound={isMyRound}
 			/>
 
 			<CurrentPView
