@@ -36,15 +36,14 @@ export const centerStyle: React.CSSProperties = {
 };
 
 export const appStyle: React.CSSProperties = {
-	backgroundColor: primary,
+	backgroundColor: greyBackground,
 	height: '100vh',
 };
 
 export const headerStyle: React.CSSProperties = {
 	...centerStyle,
-	color: primaryBlue,
 	height: '3vh',
-	justifyContent: 'space-between',
+	justifyContent: 'center',
 	paddingLeft: 10,
 	paddingRight: 10,
 };
@@ -83,14 +82,12 @@ export const deckSlotStyle: React.CSSProperties = {
 };
 
 export const signupContainerStyle: React.CSSProperties = {
-	...centerStyle,
-	backgroundColor: primary,
+	...centerStyle, // Retain existing centering styles
+	backgroundColor: violet,
 	borderRadius: 5,
 	width: '20vw',
-	alignSelf: 'center',
 	flexDirection: 'column',
 	gap: 30,
-	marginTop: 100,
 	padding: 10,
 	paddingTop: 30,
 	paddingBottom: 30,
@@ -98,5 +95,71 @@ export const signupContainerStyle: React.CSSProperties = {
 };
 
 export const signinContainerStyle: React.CSSProperties = {
-	...signupContainerStyle,
+	...centerStyle, // Retain existing centering styles
+	backgroundColor: violet,
+	borderRadius: 5,
+	width: '20vw',
+	flexDirection: 'column',
+	gap: 30,
+	padding: 10,
+	paddingTop: 30,
+	paddingBottom: 30,
+	minHeight: '40vh',
+};
+
+export const signInputStyle = {
+	height: '3vh',
+	borderRadius: 5,
+	padding: 3,
+	width: '15vw',
+	borderWidth: 0,
+};
+
+export const graveyardPopupContainer: React.CSSProperties = {
+	position: 'fixed',
+	top: 0,
+	left: 0,
+	height: '100%',
+	width: '100%',
+	backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	zIndex: 1,
+};
+
+export const graveyardPopupContent: React.CSSProperties = {
+	position: 'absolute',
+	left: '50%',
+	top: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: '40vw',
+	display: 'flex',
+	flexDirection: 'row',
+	flexWrap: 'wrap',
+	justifyContent: 'center',
+	gap: '1vw',
+	backgroundColor: 'transparent',
+	padding: '1vw',
+};
+
+export const closeButtonStyle: React.CSSProperties = {
+	position: 'absolute',
+	top: '0.5vw',
+	right: '0.5vw',
+};
+
+export const topCardStyle: React.CSSProperties = {
+	boxShadow: '6px 6px 0px 0px #7f26a4',
+	borderRadius: 5,
+	alignSelf: 'center',
+};
+
+export const alertStyle: React.CSSProperties = {
+	position: 'fixed',
+	top: '10%',
+	left: '50%',
+	transform: 'translateX(-50%)',
+	backgroundColor: 'red',
+	color: 'white',
+	padding: '1rem',
+	borderRadius: '5px',
+	zIndex: 10,
 };

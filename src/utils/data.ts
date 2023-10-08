@@ -7,17 +7,16 @@ export const SINGUP_PATH = '/signup';
 export const SIGNIN_PATH = '/signin';
 export const HOME_PATH = '/';
 export const GAME_PATH = '/game/:id';
-export const WALKTHROUGH_PATH = '/walkthrough';
-export const CARDS_PATH = '/cards';
+export const PROFILE_PATH = '/profile';
 
 export const RUNNING = 'running';
 export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const GAMES_PATH = 'games/';
 
-export const ROUND_DURATION = 100; //60
+export const ROUND_DURATION = 80; //60
 
-export const INITIAL_HP = 8;
+export const INITIAL_HP = 6;
 
 export const ENV_MAX_LOAD = 3; // each turn get 1
 
@@ -157,17 +156,8 @@ export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringif
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
 
 /*
-  "6-p": {
-    "ability": "Switch health with opponent",
-    "description": "Switch health with opponent",
-    "name": "Switch health of players"
-  },
-*/
-
-/*
-  "reset-board": {
-    "ability": "Reset Board (animals, env)",
-    "description": "Reset Board (animals, env)",
-    "name": "Reset Board (animals, env)"
-  }
+	"double-ap": {
+		"description": "Double animals AP for 1 turn",
+		"name": "Double animals AP for 1 turn"
+	},
 */

@@ -1,12 +1,12 @@
-import _ from 'lodash';
+import shuffle from 'lodash/shuffle';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { buttonStyle, centerStyle, flexRowStyle, greyBackground, violet } from '../../styles/Style';
+import { buttonStyle, centerStyle, flexRowStyle, violet } from '../../styles/Style';
 import { ENV_MAX_LOAD, INITIAL_HP, PREPARE, GAMES_PATH } from '../../utils/data';
-import { setItem } from '../../utils/db';
 import { PlayerType } from '../../utils/interface';
 import { getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/helpers';
+import { setItem } from '../../backend/db';
 
 function Home() {
 	const navigate = useNavigate();
@@ -15,7 +15,7 @@ function Home() {
 
 	const createGame = async () => {
 		const gameId = uuidv4();
-		const mainDeck: string[] = _.shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
+		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-3, 3);
 
 		await setItem(GAMES_PATH + gameId, {

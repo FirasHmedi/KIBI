@@ -1,25 +1,29 @@
-import _ from 'lodash';
-import {ATTACKER, ClanName} from './data';
+import isNil from 'lodash/isNil';
 import { getBoardPath, getItemsOnce, getGamePath, setItem } from './db';
-import {getAnimalCard, isAnimalCard, isPowerCard} from './helpers';
 import { activateJokerAbility } from './actions';
-import { PlayerType } from './interface';
+import { ATTACKER, ClanName } from '../utils/data';
+import { isAnimalCard, getAnimalCard, isPowerCard } from '../utils/helpers';
+import { PlayerType } from '../utils/interface';
 
 export const setActivePowerCard = async (gameId: string, cardId?: string) => {
 	await setItem(getBoardPath(gameId), { activeCardId: cardId });
 };
 
-export const checkIfAnimalExistAddItToGraveYard = async (gameId: string, playerType: string, slotNb: number,elementType?:string) => {
+export const checkIfAnimalExistAddItToGraveYard = async (
+	gameId: string,
+	playerType: string,
+	slotNb: number,
+	elementType?: string,
+) => {
 	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNb);
 	if (slot && isAnimalCard(slot.cardId)) {
 		const sacrificedAnimal = getAnimalCard(slot.cardId);
-		if (sacrificedAnimal?.role === ATTACKER && elementType === sacrificedAnimal.clan){
-			await addCardsToPlayerDeck(gameId, playerType,[slot.cardId]);
-		}else {
+		if (sacrificedAnimal?.role === ATTACKER && elementType === sacrificedAnimal.clan) {
+			await addCardsToPlayerDeck(gameId, playerType, [slot.cardId]);
+		} else {
 			await addAnimalToGraveYard(gameId, slot.cardId);
 		}
 	}
-
 };
 
 export const addAnimalToBoard = async (
@@ -28,9 +32,9 @@ export const addAnimalToBoard = async (
 	slotNb: number,
 	animalId: string,
 	canAttack: boolean = false,
-	elementType?:string
+	elementType?: string,
 ) => {
-	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb,elementType);
+	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb, elementType);
 	const slots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
 	const updatedSlots = [
 		slots[0] ?? { cardId: 'empty', canAttack: false },
@@ -86,7 +90,7 @@ export const removePlayerAnimalFromBoard = async (
 
 export const addHpToPlayer = async (gameId: string, playerType: string, hp: number) => {
 	const oldHp = await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
-	if (!_.isNil(oldHp)) {
+	if (!isNil(oldHp)) {
 		const newHp = (oldHp ?? 0) + hp;
 		await setItem(getGamePath(gameId) + playerType, { hp: newHp });
 	}
@@ -94,7 +98,7 @@ export const addHpToPlayer = async (gameId: string, playerType: string, hp: numb
 
 export const removeHpFromPlayer = async (gameId: string, playerType: string, hp: number) => {
 	const oldHp = await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
-	if (!_.isNil(oldHp)) {
+	if (!isNil(oldHp)) {
 		const newHp = oldHp - hp;
 		await setItem(getGamePath(gameId) + playerType, { hp: newHp });
 	}

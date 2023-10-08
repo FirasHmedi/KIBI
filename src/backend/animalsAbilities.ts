@@ -1,6 +1,4 @@
-// ******************************animal abilities**********************************************
-// ----------------------king------------------
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { drawCardFromMainDeck, setPowerCardAsActive } from './actions';
 import { getBoardPath, getItemsOnce, getGamePath } from './db';
 import {
@@ -14,8 +12,8 @@ import {
 	removeHpFromPlayer,
 	removePlayerAnimalFromBoard,
 } from './unitActions';
-import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard } from './helpers';
-import { PlayerType } from './interface';
+import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard } from '../utils/helpers';
+import { PlayerType } from '../utils/interface';
 
 export const returnAnimalToDeck = async (gameId: string, playerType: string, animalId: string) => {
 	await addCardsToPlayerDeck(gameId, playerType, [animalId]);
@@ -72,7 +70,7 @@ export const sendRandomOpponentCardToGY = async (gameId: string, playerType: Pla
 // ----------------------Fox-----------------------
 export const returnRandomPowerCardToDeck = async (gameId: string, playerType: string) => {
 	const powerGY = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
-	if (!_.isEmpty(powerGY)) {
+	if (!isEmpty(powerGY)) {
 		const cardId = powerGY[getRandomNumber(powerGY.length)];
 		await deletePowerCardFromGraveYardById(gameId, cardId);
 		await addCardsToPlayerDeck(gameId, playerType, [cardId]);
@@ -81,7 +79,7 @@ export const returnRandomPowerCardToDeck = async (gameId: string, playerType: st
 // ----------------------Crow-----------------------
 export const returnRandomAnimalCardToDeck = async (gameId: string, playerType: string) => {
 	const animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
-	if (!_.isEmpty(animalGY)) {
+	if (!isEmpty(animalGY)) {
 		const cardId = animalGY[getRandomNumber(animalGY.length)];
 		await deleteAnimalCardFromGraveYardById(gameId, cardId);
 		await addCardsToPlayerDeck(gameId, playerType, [cardId]);

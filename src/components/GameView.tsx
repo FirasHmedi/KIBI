@@ -1,37 +1,8 @@
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useState } from 'react';
 import { flexColumnStyle, violet } from '../styles/Style';
-import {
-	cancelAttacks,
-	cancelUsingPowerCards,
-	changeElement,
-	draw2Cards,
-	doubleAnimalsAP,
-	resetBoard,
-	reviveLastPower,
-	return2animalsFromGYToDeck,
-	sacrifice1HpToReviveAnyAnimal,
-	sacrifice3HpToSteal,
-	sacrificeAnimalToGet3Hp,
-	switchDeck,
-	reviveAnyPowerFor1hp,
-	shieldOwnerPlus2Hp,
-} from '../utils/abilities';
-import {
-	activateJokerAbility,
-	activateJokersAbilities,
-	attackAnimal,
-	attackOwner,
-	changeHasAttacked,
-	enableAttackForOpponentAnimals,
-	enableAttackingAndPlayingPowerCards,
-	placeAnimalOnBoard,
-	placeKingOnBoard,
-	placeKingWithoutSacrifice,
-	setElementLoad,
-	setPowerCardAsActive,
-} from '../utils/actions';
-import { ANIMALS_POINTS, ATTACKER, ClanName, EMPTY, JOKER, KING, ROUND_DURATION, envCardsIds } from '../utils/data';
+
+import { ANIMALS_POINTS, ATTACKER, ClanName, EMPTY, KING, ROUND_DURATION, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
 	getOpponentIdFromCurrentId,
@@ -44,13 +15,43 @@ import {
 	waitFor,
 } from '../utils/helpers';
 import { Board, Player, Round } from '../utils/interface';
-import { addOneRound, addPowerToGraveYard } from '../utils/unitActions';
 import { BoardView } from './Board';
 import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
-import { addSnapShot } from '../utils/logsSnapShot';
+import { addSnapShot } from '../backend/logsSnapShot';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import { minus1Hp, minus2Hp } from '../utils/animalsAbilities';
+import {
+	cancelAttacks,
+	reviveLastPower,
+	reviveAnyPowerFor1hp,
+	sacrifice1HpToReviveAnyAnimal,
+	sacrifice3HpToSteal,
+	switchDeck,
+	sacrificeAnimalToGet3Hp,
+	shieldOwnerPlus2Hp,
+	draw2Cards,
+	return2animalsFromGYToDeck,
+	cancelUsingPowerCards,
+	resetBoard,
+	doubleAnimalsAP,
+	changeElement,
+} from '../backend/abilities';
+import {
+	placeKingWithoutSacrifice,
+	placeKingOnBoard,
+	placeAnimalOnBoard,
+	setPowerCardAsActive,
+	setElementLoad,
+	activateJokersAbilities,
+	enableAttackingAndPlayingPowerCards,
+	enableAttackForOpponentAnimals,
+	changeHasAttacked,
+	attackAnimal,
+	attackOwner,
+} from '../backend/actions';
+import { add1Hp, minus1Hp } from '../backend/animalsAbilities';
+import { addPowerToGraveYard, addOneRound } from '../backend/unitActions';
+import isNil from 'lodash/isNil';
 
 export function GameView({
 	round,
@@ -104,9 +105,11 @@ export function GameView({
 		return false;
 	};
 
+	const isMyRound = round.player === playerType;
+
 	const isAttackAnimalEnabled =
 		round.nb >= 3 &&
-		round.player === playerType &&
+		isMyRound &&
 		currentPlayer.canAttack &&
 		!hasAttacked &&
 		isAnimalCard(idInCurrPSlot) &&
@@ -126,7 +129,7 @@ export function GameView({
 
 	const isAttackOwnerEnabled =
 		round.nb >= 3 &&
-		round.player === playerType &&
+		isMyRound &&
 		currentPlayer.canAttack &&
 		!hasAttacked &&
 		isAnimalCard(idInCurrPSlot) &&
@@ -163,21 +166,20 @@ export function GameView({
 	const isPowerCardPlayable = (cardId: string) => {
 		switch (getOriginalCardId(cardId!)) {
 			case 'rev-any-anim-1hp':
-				if (_.isNil(selectedCurrPSlotNb) || _.isEmpty(selectedGYAnimals) || selectedGYAnimals?.length != 1)
-					return false;
+				if (isNil(selectedCurrPSlotNb) || isEmpty(selectedGYAnimals) || selectedGYAnimals?.length != 1) return false;
 				break;
 			case 'steal-anim-3hp':
-				if (_.isNil(selectedCurrPSlotNb) || _.isNil(selectedOppPSlotNb) || !idInOppPSlot || idInOppPSlot === EMPTY)
+				if (isNil(selectedCurrPSlotNb) || isNil(selectedOppPSlotNb) || !idInOppPSlot || idInOppPSlot === EMPTY)
 					return false;
 				break;
 			case 'sacrif-anim-3hp':
-				if (_.isNil(selectedCurrPSlotNb) || idInCurrPSlot === EMPTY) return false;
+				if (isNil(selectedCurrPSlotNb) || idInCurrPSlot === EMPTY) return false;
 				break;
 			case '2-anim-gy':
 				if (selectedGYAnimals?.length != 2) return false;
 				break;
 			case 'rev-any-pow-1hp':
-				if (_.isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
+				if (isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
 				break;
 			case 'place-2-anim-1-hp':
 				if ((currentPlayer.cardsIds ?? []).filter(id => isAnimalCard(id))?.length <= 2) return false;
@@ -220,8 +222,8 @@ export function GameView({
 			case 'sacrif-anim-3hp':
 				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb, elementType);
 				break;
-			case '2hp':
-				await shieldOwnerPlus2Hp(gameId, playerType);
+			case '1hp':
+				await add1Hp(gameId, playerType);
 				break;
 			case 'draw-2':
 				await draw2Cards(gameId, playerType);
@@ -247,6 +249,7 @@ export function GameView({
 				await setElementLoad(gameId, playerType, 3);
 				break;
 			case 'place-2-anim-1-hp':
+				await minus1Hp(gameId, playerType);
 				setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay ?? 0) + 2);
 				setTwoAnimalsToPlace(2);
 				break;
@@ -277,9 +280,9 @@ export function GameView({
 		console.log({ playerType }, { cardId }, 'isAnimal', isAnimalCard(cardId), 'isPower', isPowerCard(cardId), {
 			selectedCurrPSlotNb,
 		});
-		if (_.isEmpty(cardId) || _.isEmpty(playerType)) return;
+		if (isEmpty(cardId) || isEmpty(playerType)) return;
 
-		if (!_.isEmpty(selectedGYPower) && cardId !== selectedGYPower[0] && getOriginalCardId(cardId) !== 'rev-any-pow-1hp')
+		if (!isEmpty(selectedGYPower) && cardId !== selectedGYPower[0] && getOriginalCardId(cardId) !== 'rev-any-pow-1hp')
 			return;
 
 		if (selectedGYPower[0] === cardId) {
@@ -381,6 +384,7 @@ export function GameView({
 				roundNb={round.nb}
 				isDoubleOpponentAP={opponentPlayer.isDoubleAP}
 				isDoubleCurrentAP={currentPlayer.isDoubleAP}
+				isMyRound={isMyRound}
 			/>
 
 			<CurrentPView

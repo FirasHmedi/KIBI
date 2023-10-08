@@ -8,11 +8,12 @@ import {
 	selectedColor,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, rolesIcons } from '../utils/data';
-import { getGamePath, setItem } from '../utils/db';
+import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, KING, TANK, rolesIcons } from '../utils/data';
 import { getOpponentIdFromCurrentId } from '../utils/helpers';
 import { AnimalCard, PlayerType } from '../utils/interface';
 import { PowerBoardSlot } from './Slots';
+import { setItem, getGamePath } from '../backend/db';
+import shuffle from 'lodash/shuffle';
 
 interface Props {
 	playerType: PlayerType;
@@ -64,6 +65,47 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 		const playerToSelect = changePlayerToSelect ? playerType : getOpponentIdFromCurrentId(playerType);
 		await setItem(getGamePath(gameId), {
 			playerToSelect,
+		});
+	};
+
+	const submitRandomSelection = async () => {
+		const oneCardsIds: string[] = [];
+		const twoCardsIds: string[] = [];
+		let i = 0,
+			j = 0;
+		const animalsWithoutKings = shuffle(ANIMALS_CARDS)
+			.filter(({ role, id }) => {
+				if (role === KING) {
+					if (i < 2) {
+						oneCardsIds.push(id);
+						i++;
+					} else if (j < 2) {
+						twoCardsIds.push(id);
+						j++;
+					}
+					return false;
+				}
+				return true;
+			})
+			.map(animal => animal.id);
+
+		animalsWithoutKings.forEach((id, index) => {
+			index < 6 ? oneCardsIds.push(id) : twoCardsIds.push(id);
+		});
+
+		oneCardsIds.push(powerCards![1]);
+		twoCardsIds.push(powerCards![2]);
+
+		await setItem(getGamePath(gameId) + PlayerType.ONE, {
+			cardsIds: oneCardsIds,
+		});
+
+		await setItem(getGamePath(gameId) + PlayerType.TWO, {
+			cardsIds: twoCardsIds,
+		});
+
+		await setItem(getGamePath(gameId), {
+			playerToSelect: PlayerType.ONE,
 		});
 	};
 
@@ -151,6 +193,17 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 				disabled={playerToSelect !== playerType}
 				onClick={() => submitTestCards()}>
 				TEST CHOOSE
+			</button>
+			<button
+				style={{
+					...buttonStyle,
+					backgroundColor: playerType !== PlayerType.ONE ? neutralColor : violet,
+					padding: 4,
+					fontSize: 14,
+				}}
+				disabled={playerType !== PlayerType.ONE}
+				onClick={() => submitRandomSelection()}>
+				RANDOM SELECTION
 			</button>
 			<div style={{ position: 'absolute', bottom: '2vh', left: '2vw' }}>
 				<h4 style={{ padding: 2 }}>{playerType}</h4>

@@ -1,9 +1,9 @@
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
-import { drawCardFromMainDeck, revertMainDeck } from '../utils/actions';
 import { isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
+import { revertMainDeck, drawCardFromMainDeck } from '../backend/actions';
 
 export function GameContainer({
 	game,
@@ -65,12 +65,7 @@ export function GameContainer({
 		}
 		setRound(newRound);
 
-		if (
-			_.isEmpty(gameBoard?.mainDeck) &&
-			round?.player === playerType &&
-			!_.isEmpty(gameBoard?.powerGY) &&
-			!spectator
-		) {
+		if (isEmpty(gameBoard?.mainDeck) && round?.player === playerType && !isEmpty(gameBoard?.powerGY) && !spectator) {
 			revertMainDeck(gameId);
 		}
 	}, [game]);
