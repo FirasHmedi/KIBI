@@ -49,7 +49,7 @@ import {
 	attackAnimal,
 	attackOwner,
 } from '../backend/actions';
-import { minus1Hp } from '../backend/animalsAbilities';
+import { add1Hp, minus1Hp } from '../backend/animalsAbilities';
 import { addPowerToGraveYard, addOneRound } from '../backend/unitActions';
 import isNil from 'lodash/isNil';
 
@@ -220,8 +220,8 @@ export function GameView({
 			case 'sacrif-anim-3hp':
 				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb, elementType);
 				break;
-			case '2hp':
-				await shieldOwnerPlus2Hp(gameId, playerType);
+			case '1hp':
+				await add1Hp(gameId, playerType);
 				break;
 			case 'draw-2':
 				await draw2Cards(gameId, playerType);

@@ -3,9 +3,9 @@
 		"description": "Cancel attacks for next turn (all animal attacks)",
 		"name": "Block all attacks for 1 turn"
 	},
-	"2hp": {
-		"description": "give the owner +2 hp",
-		"name": "+2hp to player"
+	"1hp": {
+		"description": "give the owner +1 hp",
+		"name": "+1hp to player"
 	},
 	"draw-2": {
 		"description": "Draw 2 cards from the main deck",
@@ -34,10 +34,6 @@
 	"place-2-anim-1-hp": {
 		"description": "Place 2 animals for 1hp",
 		"name": "Place 2 animals for 1hp"
-	},
-	"double-ap": {
-		"description": "Double animals AP for 1 turn",
-		"name": "Double animals AP for 1 turn"
 	},
 	"rev-last-pow": {
 		"description": "Activate last power card used (activate directly)",
