@@ -15,7 +15,7 @@ export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const GAMES_PATH = 'games/';
 
-export const ROUND_DURATION = 180; //60
+export const ROUND_DURATION = 100; //60
 
 export const INITIAL_HP = 8;
 
@@ -87,16 +87,6 @@ export const rolesIcons = {
 	joker: jokerIcon,
 	king: kingIcon,
 	attacker: attackerIcon,
-};
-
-export const rolesTooltipContents = {
-	tank: '+1HP to Player',
-	snake: 'Send random card from opponent to deck to graveyard',
-	crow: 'Return random dead animal to deck',
-	fox: 'Return last power card from graveyard to deck',
-	jellyfish: 'Draw 1 card from maindeck',
-	king: 'Attacks opponent directly',
-	attacker: '-1HP to opponent',
 };
 
 import airIcon from '/elements/white/air.png';

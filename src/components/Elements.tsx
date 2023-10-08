@@ -1,12 +1,13 @@
 import { airColor, centerStyle, earthColor, fireColor, violet, waterColor } from '../styles/Style';
 import { AIR, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export const Seperator = ({ h }: { h?: string }) => {
 	const height = h ?? '2vh';
 	return <div style={{ height }} />;
 };
 
-export const ElementPopup = ({ changeElement }: { changeElement: (elementType: ClanName) => void }) => (
+export const ElementPopup = ({ changeElement }: { changeElement: (elementType?: ClanName) => void }) => (
 	<div
 		style={{
 			position: 'absolute',
@@ -14,9 +15,12 @@ export const ElementPopup = ({ changeElement }: { changeElement: (elementType: C
 			left: 0,
 			height: '100%',
 			width: '100%',
-			backgroundColor: 'rgba(0, 0, 0, 0.4)',
+			backgroundColor: 'rgba(0, 0, 0, 0.6)',
 			zIndex: 1,
 		}}>
+		<button style={{ position: 'absolute', right: '35vw', top: '25vh' }} onClick={() => changeElement()}>
+			<CancelIcon style={{ color: 'white', width: '3vw', height: 'auto' }} />
+		</button>
 		<div
 			style={{
 				position: 'absolute',
@@ -25,20 +29,20 @@ export const ElementPopup = ({ changeElement }: { changeElement: (elementType: C
 				top: 0,
 				bottom: 0,
 				margin: 'auto',
-				height: '16vw',
-				width: '16vw',
+				height: '20vw',
+				width: '20vw',
 				zIndex: 10,
 			}}>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
 				<div
-					style={{ width: '8vw', height: '8vw', backgroundColor: fireColor, ...centerStyle }}
+					style={{ width: '10vw', height: '10vw', backgroundColor: fireColor, ...centerStyle, zIndex: 11 }}
 					onClick={() => changeElement('fire')}>
 					<img
 						src={elementsIcons[FIRE]}
 						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 				</div>
 				<div
-					style={{ width: '8vw', height: '8vw', backgroundColor: airColor, ...centerStyle }}
+					style={{ width: '10vw', height: '10vw', backgroundColor: airColor, ...centerStyle, zIndex: 11 }}
 					onClick={() => changeElement('air')}>
 					<img
 						src={elementsIcons[AIR]}
@@ -48,10 +52,11 @@ export const ElementPopup = ({ changeElement }: { changeElement: (elementType: C
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
 				<div
 					style={{
-						width: '8vw',
-						height: '8vw',
+						width: '10vw',
+						height: '10vw',
 						backgroundColor: waterColor,
 						...centerStyle,
+						zIndex: 11,
 					}}
 					onClick={() => changeElement('water')}>
 					<img
@@ -59,7 +64,7 @@ export const ElementPopup = ({ changeElement }: { changeElement: (elementType: C
 						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 				</div>
 				<div
-					style={{ width: '8vw', height: '8vw', backgroundColor: earthColor, ...centerStyle }}
+					style={{ width: '10vw', height: '10vw', backgroundColor: earthColor, ...centerStyle, zIndex: 11 }}
 					onClick={() => changeElement('earth')}>
 					<img
 						src={elementsIcons[EARTH]}

@@ -13,9 +13,9 @@ import {
 	sacrifice1HpToReviveAnyAnimal,
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
-	shieldOwnerPlus3Hp,
 	switchDeck,
 	reviveAnyPowerFor1hp,
+	shieldOwnerPlus2Hp,
 } from '../utils/abilities';
 import {
 	activateJokerAbility,
@@ -50,7 +50,7 @@ import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
 import { addSnapShot } from '../utils/logsSnapShot';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import { minus1Hp } from '../utils/animalsAbilities';
+import { minus1Hp, minus2Hp } from '../utils/animalsAbilities';
 
 export function GameView({
 	round,
@@ -139,7 +139,7 @@ export function GameView({
 			await placeKingWithoutSacrifice(gameId, playerType, cardId, selectedCurrPSlotNb!);
 			setCanPlaceKingWithoutSacrifice(false);
 		} else {
-			await placeKingOnBoard(gameId, playerType, cardId, idInCurrPSlot, selectedCurrPSlotNb!,elementType);
+			await placeKingOnBoard(gameId, playerType, cardId, idInCurrPSlot, selectedCurrPSlotNb!, elementType);
 		}
 	};
 
@@ -153,11 +153,7 @@ export function GameView({
 			}
 			await handlePlacingKing(cardId, clan);
 		} else {
-			await placeAnimalOnBoard(gameId, playerType, selectedCurrPSlotNb!, cardId,elementType);
-		}
-
-		if (role === JOKER && clan === elementType) {
-			await activateJokerAbility(gameId, cardId, playerType);
+			await placeAnimalOnBoard(gameId, playerType, selectedCurrPSlotNb!, cardId, elementType);
 		}
 
 		setTwoAnimalsToPlace(animalsNb => (animalsNb > 1 ? animalsNb - 1 : 0));
@@ -222,10 +218,10 @@ export function GameView({
 				await switchDeck(gameId);
 				break;
 			case 'sacrif-anim-3hp':
-				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb,elementType);
+				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb, elementType);
 				break;
-			case '3hp':
-				await shieldOwnerPlus3Hp(gameId, playerType);
+			case '2hp':
+				await shieldOwnerPlus2Hp(gameId, playerType);
 				break;
 			case 'draw-2':
 				await draw2Cards(gameId, playerType);
@@ -302,7 +298,11 @@ export function GameView({
 		}
 	};
 
-	const changeEnvWithPopup = async (elementType: ClanName) => {
+	const changeEnvWithPopup = async (elementType?: ClanName) => {
+		if (!elementType) {
+			setShowEnvPopup(false);
+			return;
+		}
 		await changeElement(gameId, elementType, playerType);
 		setShowEnvPopup(false);
 		await activateJokersAbilities(gameId, playerType, currentPSlots);
@@ -361,8 +361,8 @@ export function GameView({
 				width: '100%',
 				height: '90vh',
 				justifyContent: 'space-between',
-				paddingTop: '5vh',
-				paddingBottom: '5vh',
+				paddingTop: '1vh',
+				paddingBottom: '1vh',
 			}}>
 			<OpponentPView player={opponentPlayer} />
 
@@ -398,7 +398,7 @@ export function GameView({
 			/>
 
 			{showCountDown && (
-				<div style={{ position: 'absolute', right: '12vw', bottom: '11vh' }}>
+				<div style={{ position: 'absolute', right: '12vw', bottom: '9vh' }}>
 					<CountdownCircleTimer
 						isPlaying
 						duration={ROUND_DURATION}
@@ -406,9 +406,9 @@ export function GameView({
 						onComplete={() => {
 							finishRound();
 						}}
-						size={50}
-						strokeWidth={4}>
-						{({ remainingTime }) => <h4 style={{ color: violet }}>{remainingTime}</h4>}
+						size={42}
+						strokeWidth={3}>
+						{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
 					</CountdownCircleTimer>
 				</div>
 			)}
