@@ -1,3 +1,5 @@
+import isEmpty from 'lodash/isEmpty';
+import isNil from 'lodash/isNil';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { isPowerCard } from '../utils/helpers';
 import { Board } from '../utils/interface';
@@ -13,9 +15,9 @@ interface Props {
 	isDoubleCurrentAP?: boolean;
 	isDoubleOpponentAP?: boolean;
 	selectedCurrentPSlotNb?: number;
-	selectedOpponentPSlotNb?: number;
-	selectOpponentSlot: (slotNb?: number) => void;
-	selectCurrentSlot: (slotNb?: number) => void;
+	selectedOppSlotsNbs?: number[];
+	selectOppSlotsNbs: (slotNb: number) => void;
+	selectCurrentSlot: (slotNb: number) => void;
 	selectedGYAnimals: string[];
 	setSelectedGYAnimals: React.Dispatch<React.SetStateAction<string[]>>;
 	selectedGYPower: string[];
@@ -26,9 +28,9 @@ export const BoardView = ({
 	board,
 	isMyRound,
 	selectCurrentSlot,
-	selectOpponentSlot,
+	selectOppSlotsNbs,
+	selectedOppSlotsNbs = [],
 	selectedCurrentPSlotNb,
-	selectedOpponentPSlotNb,
 	selectedGYAnimals,
 	setSelectedGYAnimals,
 	roundNb,
@@ -38,6 +40,8 @@ export const BoardView = ({
 	isDoubleOpponentAP = false,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } = board;
+	const selectedCurrSlots = !isNil(selectedCurrentPSlotNb) ? [selectedCurrentPSlotNb!] : [];
+
 	return (
 		<div
 			style={{
@@ -53,8 +57,8 @@ export const BoardView = ({
 				}}>
 				<BoardSlots
 					slots={opponentPSlots}
-					selectSlot={selectOpponentSlot}
-					selectedSlotNb={selectedOpponentPSlotNb}
+					selectSlot={selectOppSlotsNbs}
+					selectedSlots={selectedOppSlotsNbs}
 					opponent={true}
 					elementType={elementType}
 					isDoubleAP={isDoubleOpponentAP}
@@ -63,7 +67,7 @@ export const BoardView = ({
 				<BoardSlots
 					slots={currentPSlots}
 					selectSlot={selectCurrentSlot}
-					selectedSlotNb={selectedCurrentPSlotNb}
+					selectedSlots={selectedCurrSlots}
 					current={true}
 					elementType={elementType}
 					isDoubleAP={isDoubleCurrentAP}

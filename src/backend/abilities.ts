@@ -11,7 +11,7 @@ import {
 	addHpToPlayer,
 	changeCanAttackVar,
 	changeElementUnitAction,
-	changePLayerCards,
+	setPlayerDeck,
 	changePLayerHealth,
 	changeUsingPowerCardsVar,
 	deleteAnimalCardFromGraveYardById,
@@ -25,6 +25,7 @@ import {
 import { ClanName, ATTACKER, EMPTY, NEUTRAL } from '../utils/data';
 import { getPowerCard, isAnimalCard, getOpponentIdFromCurrentId, getAnimalCard } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
+import { shuffle } from 'lodash';
 
 export const cancelAttacks = async (gameId: string, playerType: PlayerType) => {
 	await changeCanAttackVar(gameId, playerType, false);
@@ -98,8 +99,19 @@ export const switchHealth = async (gameId: string) => {
 export const switchDeck = async (gameId: string) => {
 	const oneCards = (await getPLayerCards(gameId, 'one')) ?? [];
 	const twoCards = (await getPLayerCards(gameId, 'two')) ?? [];
-	await changePLayerCards(gameId, 'one', twoCards);
-	await changePLayerCards(gameId, 'two', oneCards);
+	await setPlayerDeck(gameId, 'one', twoCards);
+	await setPlayerDeck(gameId, 'two', oneCards);
+};
+
+export const switch2RandomCards = async (gameId: string) => {
+	const oneCards = shuffle((await getPLayerCards(gameId, 'one')) ?? []);
+	const twoCards = shuffle((await getPLayerCards(gameId, 'two')) ?? []);
+	const oneCardFirst = oneCards.shift();
+	const oneCardSecond = oneCards.shift();
+	const twoCardFirst = twoCards.shift();
+	const twoCardSecond = twoCards.shift();
+	await setPlayerDeck(gameId, 'one', [...oneCards, twoCardFirst, twoCardSecond]);
+	await setPlayerDeck(gameId, 'two', [...twoCards, oneCardFirst, oneCardSecond]);
 };
 
 export const changeElement = async (gameId: string, elementType: ClanName, playerType?: PlayerType) => {
@@ -117,14 +129,9 @@ export const sacrificeAnimalToGet3Hp = async (
 	elementType?: string,
 ) => {
 	if (!animalId || isNil(slotNb)) return;
-	const sacrificedAnimal = getAnimalCard(animalId);
 	const isRemoved = await removePlayerAnimalFromBoard(gameId, playerType, slotNb);
 	if (isRemoved) {
-		if (sacrificedAnimal?.role === ATTACKER && elementType === sacrificedAnimal.clan) {
-			await addCardsToPlayerDeck(gameId, playerType, [animalId]);
-		} else {
-			await addAnimalToGraveYard(gameId, animalId);
-		}
+		await addAnimalToGraveYard(gameId, animalId);
 		await addHpToPlayer(gameId, playerType, 3);
 	}
 };
@@ -179,6 +186,6 @@ export const resetBoard = async (
 	await changeElement(gameId, NEUTRAL);
 };
 
-export const doubleAnimalsAP = async (gameId: string, playerType: PlayerType, isDoubleAP: boolean) => {
+export const doubleTankAP = async (gameId: string, playerType: PlayerType, isDoubleAP: boolean) => {
 	await setItem(getGamePath(gameId) + playerType, { isDoubleAP });
 };

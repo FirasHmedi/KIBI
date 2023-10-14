@@ -1,6 +1,7 @@
 import shuffle from 'lodash/shuffle';
 import {
 	add1Hp,
+	add2Hp,
 	drawOneCard,
 	returnRandomAnimalCardToDeck,
 	returnRandomPowerCardToDeck,
@@ -71,11 +72,7 @@ export const placeKingOnBoard = async (
 	if (!king || !sacrificedAnimal || king.clan !== sacrificedAnimal.clan) return;
 	const isRemoved = await removePlayerAnimalFromBoard(gameId, playerType, slotNb);
 	if (isRemoved) {
-		if (sacrificedAnimal?.role === ATTACKER && elementType === sacrificedAnimal.clan) {
-			await addCardsToPlayerDeck(gameId, playerType, [sacrificedAnimalId]);
-		} else {
-			await addAnimalToGraveYard(gameId, sacrificedAnimalId);
-		}
+		await addAnimalToGraveYard(gameId, sacrificedAnimalId);
 		await removeCardFromPlayerDeck(gameId, playerType, kingId);
 		await addAnimalToBoard(gameId, playerType, slotNb, kingId, true);
 	}
@@ -97,7 +94,7 @@ export const attackAnimal = async (
 	const elementType = await getElementType(gameId);
 	if (animalA.clan === elementType) {
 		if (animalA.role === TANK) {
-			add1Hp(gameId, playerType);
+			add2Hp(gameId, playerType);
 		}
 	}
 
@@ -114,7 +111,7 @@ export const attackOwner = async (
 	if (!isAnimalCard(animalId)) return;
 	const { name, role } = getAnimalCard(animalId)!;
 	await addInfoToLog(gameId, name + ' has attacked ' + playerDType + ' directly');
-	const ap = isDoubleAP ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
+	const ap = isDoubleAP && role === TANK ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
 	await removeHpFromPlayer(gameId, playerDType, ap);
 };
 

@@ -17,12 +17,7 @@ export const checkIfAnimalExistAddItToGraveYard = async (
 ) => {
 	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNb);
 	if (slot && isAnimalCard(slot.cardId)) {
-		const sacrificedAnimal = getAnimalCard(slot.cardId);
-		if (sacrificedAnimal?.role === ATTACKER && elementType === sacrificedAnimal.clan) {
-			await addCardsToPlayerDeck(gameId, playerType, [slot.cardId]);
-		} else {
-			await addAnimalToGraveYard(gameId, slot.cardId);
-		}
+		await addAnimalToGraveYard(gameId, slot.cardId);
 	}
 };
 
@@ -199,8 +194,8 @@ export const getPLayerCards = async (gameId: string, playerType: string) => {
 	return await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
 };
 
-export const changePLayerCards = async (gameId: string, playerType: string, cards: string[]) => {
-	await setItem(getGamePath(gameId) + playerType, { cardsIds: cards });
+export const setPlayerDeck = async (gameId: string, playerType: string, cardsIds: string[]) => {
+	await setItem(getGamePath(gameId) + playerType, { cardsIds });
 };
 
 export const addOneRound = async (gameId: string, playerType: string) => {

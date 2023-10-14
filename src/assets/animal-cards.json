@@ -1,6 +1,6 @@
 {
 	"9-a": {
-		"ability": "Strikes opponent",
+		"ability": "Attacks Twice",
 		"clan": "air",
 		"description": "king of air clan",
 		"name": "Eagle",
@@ -11,14 +11,14 @@
 		"description": "attacker of air clan",
 		"name": "Bee",
 		"role": "attacker",
-		"ability": "Return to deck when sacrificed"
+		"ability": "Attacks Opponent"
 	},
 	"11-a": {
 		"clan": "air",
 		"description": "tank of air clan",
 		"name": "Ostrich",
 		"role": "tank",
-		"ability": "+1hp to owner when it attacks"
+		"ability": "+2hp to owner when it attacks"
 	},
 	"12-a": {
 		"ability": "Return dead animal to deck",
@@ -28,7 +28,7 @@
 		"role": "joker"
 	},
 	"13-a": {
-		"ability": "Strikes opponent",
+		"ability": "Attacks Twice",
 		"clan": "fire",
 		"description": "king of fire clan",
 		"name": "Dragon",
@@ -39,14 +39,14 @@
 		"description": "attacker of fire clan",
 		"name": "Phoenix",
 		"role": "attacker",
-		"ability": "Return to deck when sacrificed"
+		"ability": "Attacks Opponent"
 	},
 	"15-a": {
 		"clan": "fire",
 		"description": "tank of fire clan",
 		"name": "Bear",
 		"role": "tank",
-		"ability": "+1hp to owner when it attacks"
+		"ability": "+2hp to owner when it attacks"
 	},
 	"16-a": {
 		"ability": "Return random power card",
@@ -56,7 +56,7 @@
 		"role": "joker"
 	},
 	"1-a": {
-		"ability": "Strikes opponent",
+		"ability": "Attacks Twice",
 		"clan": "earth",
 		"description": "king of earth clan",
 		"name": "Lion",
@@ -67,14 +67,14 @@
 		"description": "attacker of earth clan",
 		"name": "Badger",
 		"role": "attacker",
-		"ability": "Return to deck when sacrificed"
+		"ability": "Attacks Opponent"
 	},
 	"3-a": {
 		"clan": "earth",
 		"description": "tank of earth clan",
 		"name": "Elephant",
 		"role": "tank",
-		"ability": "+1hp to owner when it attacks"
+		"ability": "+2hp to owner when it attacks"
 	},
 	"4-a": {
 		"ability": "Send opponent card to graveyard",
@@ -84,7 +84,7 @@
 		"role": "joker"
 	},
 	"5-a": {
-		"ability": "Strikes opponent",
+		"ability": "Attacks Twice",
 		"clan": "water",
 		"description": "king of water clan",
 		"name": "Orca",
@@ -95,14 +95,14 @@
 		"description": "attacker of water clan",
 		"name": "Shark",
 		"role": "attacker",
-		"ability": "Return to deck when sacrificed"
+		"ability": "Attacks Opponent"
 	},
 	"7-a": {
 		"clan": "water",
 		"description": "tank of water clan",
 		"name": "Whale",
 		"role": "tank",
-		"ability": "+1hp to owner when it attacks"
+		"ability": "+2hp to owner when it attacks"
 	},
 	"8-a": {
 		"ability": "Draw 1 card",

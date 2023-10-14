@@ -52,11 +52,19 @@
 		"name": "Steal animal opponent for 3hp"
 	},
 	"switch-decks": {
-		"description": "Switch deck with opponent",
-		"name": "Switch decks of players for 2hp"
+		"description": "Switch deck with opponent for 1hp",
+		"name": "Switch decks of players for 1hp"
+	},
+	"switch-2-randoms": {
+		"description": "Switch 2 random cards with opponent",
+		"name": "Switch 2 random cards  with opponent"
 	},
 	"sacrif-anim-3hp": {
 		"description": "Sacrifice an animal to get 3hp",
 		"name": "Sacrifice an active animal for 3hp"
+	},
+	"double-tank-ap": {
+		"description": "Double attack points of tanks",
+		"name": "Double attack points of tanks"
 	}
 }

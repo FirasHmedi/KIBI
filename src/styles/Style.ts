@@ -12,7 +12,7 @@ export const fireColor = '#c0392b';
 export const airColor = '#2ecc71';
 export const earthColor = '#f39c12';
 export const neutralColor = '#95a5a6';
-export const selectedColor = '#34495e';
+export const selectedColor = '#575757';
 
 export const flexRowStyle: React.CSSProperties = {
 	display: 'flex',
@@ -67,7 +67,6 @@ export const boardSlotStyle: React.CSSProperties = {
 	height: '18vh',
 	width: '7.5vw',
 	flexShrink: 0,
-	border: 'solid 2px #95a5a6',
 };
 
 export const deckSlotStyle: React.CSSProperties = {

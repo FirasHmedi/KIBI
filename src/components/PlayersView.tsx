@@ -242,7 +242,7 @@ const PlayerDataView = ({
 				<h5>Blocked from playing power cards</h5>
 			) : null}
 
-			{isDoubleAP && <h5>Animals AP is doubled </h5>}
+			{isDoubleAP && <h5>TANK AP is doubled </h5>}
 		</div>
 	);
 };

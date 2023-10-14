@@ -9,8 +9,8 @@ import {
 	boardSlotStyle,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_POINTS, CLANS, ClanName, animalsPics, rolesIcons, elementsIcons } from '../utils/data';
-import { getAnimalCard, getPowerCard, isAnimalCard, isPowerCard } from '../utils/helpers';
+import { ANIMALS_POINTS, CLANS, ClanName, animalsPics, rolesIcons, elementsIcons, TANK } from '../utils/data';
+import { getAnimalCard, getPowerCard, isAnimalCard, isAnimalInEnv, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
 import InfoIcon from '@mui/icons-material/Info';
@@ -36,7 +36,7 @@ export const SlotBack = () => (
 interface SlotProps {
 	cardId?: string;
 	selected?: boolean;
-	selectSlot?: (slotNb?: number) => void;
+	selectSlot?: any;
 	nb?: number;
 	graveyard?: boolean;
 	isDoubleAP: boolean;
@@ -70,7 +70,7 @@ export const PowerBoardSlot = ({
 				...boardSlotStyle,
 				backgroundColor: violet,
 				justifyContent: 'space-evenly',
-				borderColor: selected ? selectedColor : violet,
+				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : `0 0 1.5px 2.5px ${violet}`,
 				...bigStyle,
 			}}
 			onClick={() => select()}>
@@ -129,6 +129,7 @@ export const AnimalBoardSlot = ({
 	if (!name || !clan || !role) return <></>;
 
 	const { hp, ap } = ANIMALS_POINTS[role];
+	const isTankDoubleAP = role === TANK && isDoubleAP;
 	const roleTooltipContent = ability;
 	const roleTooltipId = `role-anchor${cardId}`;
 
@@ -137,8 +138,7 @@ export const AnimalBoardSlot = ({
 			style={{
 				...boardSlotStyle,
 				justifyContent: 'space-between',
-				borderColor: selected ? selectedColor : CLANS[clan!]?.color,
-				borderWidth: selected ? '2.5px' : '2px',
+				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : `0 0 1px 2px ${CLANS[clan!]?.color}`,
 			}}
 			onClick={() => select()}>
 			{!!name && name?.toLowerCase() in animalsPics && (
@@ -158,7 +158,7 @@ export const AnimalBoardSlot = ({
 					height: '4vh',
 				}}>
 				<div style={{ ...centerStyle }}>
-					<h4>{isDoubleAP ? ap * 2 : ap}</h4>
+					<h4>{isTankDoubleAP ? ap * 2 : ap}</h4>
 					<FitnessCenterIcon style={{ color: 'white', width: '0.8vw' }} />
 				</div>
 				<Tooltip anchorSelect={`#${roleTooltipId}`} content={roleTooltipContent} style={{ width: '10vw' }} />
@@ -217,18 +217,10 @@ export const AnimalDeckSlot = ({
 };
 
 export const BoardSlot = ({ cardId, selected, selectSlot, nb, isDoubleAP }: SlotProps) => {
-	const selectSlotPolished = () => {
-		if (!!selectSlot) {
-			selected ? selectSlot(undefined) : selectSlot(nb);
-		}
-	};
-
-	if (cardId && isAnimalCard(cardId)) {
-		return <AnimalBoardSlot cardId={cardId} select={selectSlotPolished} selected={selected} isDoubleAP={isDoubleAP} />;
-	}
-
-	if (cardId && isPowerCard(cardId)) {
-		return <PowerBoardSlot cardId={cardId} select={selectSlotPolished} selected={selected} />;
+	if (!!cardId && isAnimalCard(cardId)) {
+		return (
+			<AnimalBoardSlot cardId={cardId} select={() => selectSlot(nb)} selected={selected} isDoubleAP={isDoubleAP} />
+		);
 	}
 
 	return (
@@ -237,9 +229,9 @@ export const BoardSlot = ({ cardId, selected, selectSlot, nb, isDoubleAP }: Slot
 				...boardSlotStyle,
 				backgroundColor: neutralColor,
 				justifyContent: 'center',
-				borderColor: selected ? selectedColor : neutralColor,
+				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
 			}}
-			onClick={() => selectSlotPolished()}></div>
+			onClick={() => selectSlot(nb)}></div>
 	);
 };
 
@@ -307,7 +299,7 @@ const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
 
 export const BoardSlots = ({
 	slots,
-	selectedSlotNb,
+	selectedSlots,
 	selectSlot,
 	opponent,
 	current,
@@ -315,15 +307,14 @@ export const BoardSlots = ({
 	isDoubleAP,
 }: {
 	slots: SlotType[];
-	selectedSlotNb?: number;
-	selectSlot: (slotNb?: number) => void;
+	selectedSlots: number[];
+	selectSlot: (slotNb: number) => void;
 	opponent?: boolean;
 	current?: boolean;
 	elementType?: ClanName;
 	isDoubleAP: boolean;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
-
 	// @ts-ignore
 	const mainColor = elementType == 'neutral' ? 'transparent' : CLANS[elementType].color;
 	const glow = {
@@ -342,13 +333,13 @@ export const BoardSlots = ({
 					<div className={slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined}>
 						{current && <CanAttackIconsView slot={slot} />}
 					</div>
-					<div style={getAnimalCard(slot?.cardId)?.clan == elementType ? glow : undefined}>
+					<div style={isAnimalInEnv(slot?.cardId, elementType) ? glow : undefined}>
 						<BoardSlot
 							nb={index}
 							isDoubleAP={isDoubleAP}
 							selectSlot={selectSlot}
 							cardId={slot?.cardId}
-							selected={selectedSlotNb === index}
+							selected={selectedSlots.includes(index)}
 						/>
 					</div>
 					{opponent && <CanAttackIconsView slot={slot} />}

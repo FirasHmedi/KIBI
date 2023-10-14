@@ -154,10 +154,3 @@ export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.s
 
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
-
-/*
-	"double-ap": {
-		"description": "Double animals AP for 1 turn",
-		"name": "Double animals AP for 1 turn"
-	},
-*/
