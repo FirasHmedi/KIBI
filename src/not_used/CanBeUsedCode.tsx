@@ -43,3 +43,5 @@ export const GeneralTestData = {
 	playerId: 'testId',
 };
 */
+
+export {};
