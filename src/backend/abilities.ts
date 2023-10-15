@@ -2,8 +2,12 @@ import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { drawCardFromMainDeck, setElementLoad } from './actions';
 
-import { getBoardPath, getItemsOnce, getGamePath, setItem } from './db';
+import { getBoardPath, getGamePath, getItemsOnce, setItem } from './db';
 
+import { shuffle } from 'lodash';
+import { ClanName, EMPTY, NEUTRAL } from '../utils/data';
+import { getOpponentIdFromCurrentId, getPowerCard, isAnimalCard } from '../utils/helpers';
+import { PlayerType, SlotType } from '../utils/interface';
 import {
 	addAnimalToBoard,
 	addAnimalToGraveYard,
@@ -11,7 +15,6 @@ import {
 	addHpToPlayer,
 	changeCanAttackVar,
 	changeElementUnitAction,
-	setPlayerDeck,
 	changePLayerHealth,
 	changeUsingPowerCardsVar,
 	deleteAnimalCardFromGraveYardById,
@@ -21,11 +24,8 @@ import {
 	getPLayerHealth,
 	removeHpFromPlayer,
 	removePlayerAnimalFromBoard,
+	setPlayerDeck,
 } from './unitActions';
-import { ClanName, ATTACKER, EMPTY, NEUTRAL } from '../utils/data';
-import { getPowerCard, isAnimalCard, getOpponentIdFromCurrentId, getAnimalCard } from '../utils/helpers';
-import { PlayerType, SlotType } from '../utils/interface';
-import { shuffle } from 'lodash';
 
 export const cancelAttacks = async (gameId: string, playerType: PlayerType) => {
 	await changeCanAttackVar(gameId, playerType, false);

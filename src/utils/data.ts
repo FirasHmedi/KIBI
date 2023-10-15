@@ -89,9 +89,9 @@ export const rolesIcons = {
 };
 
 import airIcon from '/elements/white/air.png';
-import waterIcon from '/elements/white/water.png';
-import fireIcon from '/elements/white/fire.png';
 import earthIcon from '/elements/white/earth.png';
+import fireIcon from '/elements/white/fire.png';
+import waterIcon from '/elements/white/water.png';
 export const elementsIcons = {
 	air: airIcon,
 	fire: fireIcon,
@@ -99,21 +99,21 @@ export const elementsIcons = {
 	earth: earthIcon,
 };
 
-import elephant from '/animals/elephant.png';
-import lion from '/animals/lion.png';
+import badger from '/animals/badger.png';
+import bear from '/animals/bear.png';
+import bee from '/animals/bee.png';
 import crow from '/animals/crow.png';
+import dragon from '/animals/dragon.png';
+import eagle from '/animals/eagle.png';
+import elephant from '/animals/elephant.png';
+import fox from '/animals/fox.png';
+import jellyfish from '/animals/jellyfish.png';
+import lion from '/animals/lion.png';
 import orca from '/animals/orca.png';
 import ostrich from '/animals/ostrich.png';
+import phoenix from '/animals/phoenix.png';
 import shark from '/animals/shark.png';
 import snake from '/animals/snake.png';
-import eagle from '/animals/eagle.png';
-import jellyfish from '/animals/jellyfish.png';
-import dragon from '/animals/dragon.png';
-import bear from '/animals/bear.png';
-import badger from '/animals/badger.png';
-import bee from '/animals/bee.png';
-import fox from '/animals/fox.png';
-import phoenix from '/animals/phoenix.png';
 import whale from '/animals/whale.png';
 
 export const animalsPics = {

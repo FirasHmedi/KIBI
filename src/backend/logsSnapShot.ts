@@ -1,6 +1,6 @@
-import { getItemsOnce, getGamePath, setItem } from './db';
 import { getAnimalCard, getCard } from '../utils/helpers';
 import { Game, SlotType } from '../utils/interface';
+import { getGamePath, getItemsOnce, setItem } from './db';
 
 export const addSnapShot = async (gameId: string) => {
 	let game: Game = await getItemsOnce(getGamePath(gameId));

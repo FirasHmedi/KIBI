@@ -1,22 +1,22 @@
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import InfoIcon from '@mui/icons-material/Info';
+import { Tooltip } from 'react-tooltip';
 import attIcon from '../assets/icons/att.png';
 import noAttIcon from '../assets/icons/no-att.png';
 import {
+	boardSlotStyle,
 	centerStyle,
 	deckSlotStyle,
 	flexRowStyle,
 	neutralColor,
 	selectedColor,
-	boardSlotStyle,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_POINTS, CLANS, ClanName, animalsPics, rolesIcons, elementsIcons, TANK } from '../utils/data';
+import { ANIMALS_POINTS, CLANS, ClanName, TANK, animalsPics, elementsIcons, rolesIcons } from '../utils/data';
 import { getAnimalCard, getPowerCard, isAnimalCard, isAnimalInEnv, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
-import InfoIcon from '@mui/icons-material/Info';
-import { Tooltip } from 'react-tooltip';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 export const SlotBack = () => (
 	<div

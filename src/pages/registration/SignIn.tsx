@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { isNotEmpty } from '../../utils/helpers';
+import { Link, useNavigate } from 'react-router-dom';
 import { loginWithEmailPsw, loginWithGoogle } from '../../backend/auth';
 import { buttonStyle, signInputStyle, signinContainerStyle, softGrey } from '../../styles/Style';
-import { Link } from 'react-router-dom';
 import { HOME_PATH, SINGUP_PATH } from '../../utils/data';
+import { isNotEmpty } from '../../utils/helpers';
 
 export const SignIn = () => {
 	const navigate = useNavigate();

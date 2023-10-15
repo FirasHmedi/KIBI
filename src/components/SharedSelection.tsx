@@ -1,4 +1,6 @@
+import shuffle from 'lodash/shuffle';
 import { useState } from 'react';
+import { getGamePath, setItem } from '../backend/db';
 import {
 	buttonStyle,
 	centerStyle,
@@ -8,12 +10,10 @@ import {
 	selectedColor,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, KING, TANK, rolesIcons } from '../utils/data';
+import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, KING, rolesIcons } from '../utils/data';
 import { getOpponentIdFromCurrentId } from '../utils/helpers';
 import { AnimalCard, PlayerType } from '../utils/interface';
 import { PowerBoardSlot } from './Slots';
-import { setItem, getGamePath } from '../backend/db';
-import shuffle from 'lodash/shuffle';
 
 interface Props {
 	playerType: PlayerType;

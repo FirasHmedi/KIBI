@@ -2,6 +2,39 @@ import isEmpty from 'lodash/isEmpty';
 import { useState } from 'react';
 import { flexColumnStyle, violet } from '../styles/Style';
 
+import isNil from 'lodash/isNil';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import {
+	cancelAttacks,
+	cancelUsingPowerCards,
+	changeElement,
+	doubleTankAP,
+	draw2Cards,
+	resetBoard,
+	return2animalsFromGYToDeck,
+	reviveAnyPowerFor1hp,
+	reviveLastPower,
+	sacrifice1HpToReviveAnyAnimal,
+	sacrifice3HpToSteal,
+	sacrificeAnimalToGet3Hp,
+	switch2RandomCards,
+	switchDeck,
+} from '../backend/abilities';
+import {
+	activateJokersAbilities,
+	attackAnimal,
+	attackOwner,
+	changeHasAttacked,
+	enableAttackForOpponentAnimals,
+	enableAttackingAndPlayingPowerCards,
+	placeAnimalOnBoard,
+	placeKingOnBoard,
+	placeKingWithoutSacrifice,
+	setElementLoad,
+	setPowerCardAsActive,
+} from '../backend/actions';
+import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
+import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
 import { ANIMALS_POINTS, ClanName, EMPTY, KING, ROUND_DURATION, TANK, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
@@ -19,41 +52,6 @@ import { Board, Player, Round } from '../utils/interface';
 import { BoardView } from './Board';
 import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
-import { addSnapShot } from '../backend/logsSnapShot';
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import {
-	cancelAttacks,
-	reviveLastPower,
-	reviveAnyPowerFor1hp,
-	sacrifice1HpToReviveAnyAnimal,
-	sacrifice3HpToSteal,
-	switchDeck,
-	sacrificeAnimalToGet3Hp,
-	shieldOwnerPlus2Hp,
-	draw2Cards,
-	return2animalsFromGYToDeck,
-	cancelUsingPowerCards,
-	resetBoard,
-	doubleTankAP,
-	changeElement,
-	switch2RandomCards,
-} from '../backend/abilities';
-import {
-	placeKingWithoutSacrifice,
-	placeKingOnBoard,
-	placeAnimalOnBoard,
-	setPowerCardAsActive,
-	setElementLoad,
-	activateJokersAbilities,
-	enableAttackingAndPlayingPowerCards,
-	enableAttackForOpponentAnimals,
-	changeHasAttacked,
-	attackAnimal,
-	attackOwner,
-} from '../backend/actions';
-import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
-import { addPowerToGraveYard, addOneRound } from '../backend/unitActions';
-import isNil from 'lodash/isNil';
 
 interface GameViewProps {
 	round: Round;

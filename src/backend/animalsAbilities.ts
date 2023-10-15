@@ -1,6 +1,8 @@
 import isEmpty from 'lodash/isEmpty';
+import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard } from '../utils/helpers';
+import { PlayerType } from '../utils/interface';
 import { drawCardFromMainDeck, setPowerCardAsActive } from './actions';
-import { getBoardPath, getItemsOnce, getGamePath } from './db';
+import { getBoardPath, getGamePath, getItemsOnce } from './db';
 import {
 	addAnimalToGraveYard,
 	addCardsToPlayerDeck,
@@ -12,8 +14,6 @@ import {
 	removeHpFromPlayer,
 	removePlayerAnimalFromBoard,
 } from './unitActions';
-import { getOpponentIdFromCurrentId, isAnimalCard, isPowerCard } from '../utils/helpers';
-import { PlayerType } from '../utils/interface';
 
 export const returnAnimalToDeck = async (gameId: string, playerType: string, animalId: string) => {
 	await addCardsToPlayerDeck(gameId, playerType, [animalId]);

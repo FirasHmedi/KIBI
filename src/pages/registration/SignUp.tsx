@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { buttonStyle, signInputStyle, signupContainerStyle, softGrey } from '../../styles/Style';
-import { isNotEmpty } from '../../utils/helpers';
-import { HOME_PATH } from '../../utils/data';
-import { registerWithEmailPsw, signUpWithGoogle } from '../../backend/auth';
 import { ref, set } from 'firebase/database';
-import { auth, db } from '../../firebase';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { registerWithEmailPsw, signUpWithGoogle } from '../../backend/auth';
 import { USERS_PATH } from '../../backend/db';
+import { auth, db } from '../../firebase';
+import { buttonStyle, signInputStyle, signupContainerStyle, softGrey } from '../../styles/Style';
+import { HOME_PATH } from '../../utils/data';
+import { isNotEmpty } from '../../utils/helpers';
 
 export const SignUp = () => {
 	const navigate = useNavigate();

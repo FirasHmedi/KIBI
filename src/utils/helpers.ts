@@ -1,4 +1,3 @@
-import isEmpty from 'lodash/isEmpty';
 import { useLocation } from 'react-router-dom';
 import {
 	ANIMAL_CARDS_OBJECT,

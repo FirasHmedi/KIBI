@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { setItem, subscribeToItems } from '../../backend/db';
 import { GameContainer } from '../../components/GameContainer';
 import { SharedSelection } from '../../components/SharedSelection';
 import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
 import { GAMES_PATH, RUNNING } from '../../utils/data';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
-import { subscribeToItems, setItem } from '../../backend/db';
 
 function GamePage() {
 	const location = useLocation();

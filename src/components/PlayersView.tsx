@@ -1,19 +1,19 @@
+import Battery0BarIcon from '@mui/icons-material/Battery0Bar';
+import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
+import BatteryCharging80Icon from '@mui/icons-material/BatteryCharging80';
+import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import PersonIcon from '@mui/icons-material/Person';
+import ClawIcon from '@mui/icons-material/Pets';
+import ProgressBar from '@ramonak/react-progress-bar';
 import { useRef, useState } from 'react';
+import SwordIcon from '../assets/icons/sword-small-violet.png';
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP } from '../utils/data';
 import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
-import ProgressBar from '@ramonak/react-progress-bar';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import Battery0BarIcon from '@mui/icons-material/Battery0Bar';
-import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
-import BatteryCharging80Icon from '@mui/icons-material/BatteryCharging80';
-import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
-import SwordIcon from '../assets/icons/sword-small-violet.png';
-import ClawIcon from '@mui/icons-material/Pets';
-import PersonIcon from '@mui/icons-material/Person';
 
 export const CurrentPView = ({
 	player,

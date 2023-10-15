@@ -1,7 +1,9 @@
 import shuffle from 'lodash/shuffle';
+import { ANIMALS_POINTS, ClanName, JOKER, TANK } from '../utils/data';
+import { getAnimalCard, getOpponentIdFromCurrentId, isAnimalCard, waitFor } from '../utils/helpers';
+import { PlayerType, SlotType } from '../utils/interface';
 import {
 	add1Hp,
-	add2Hp,
 	drawOneCard,
 	returnRandomAnimalCardToDeck,
 	returnRandomPowerCardToDeck,
@@ -21,9 +23,6 @@ import {
 	removePlayerAnimalFromBoard,
 	setActivePowerCard,
 } from './unitActions';
-import { ATTACKER, TANK, ANIMALS_POINTS, JOKER, ClanName } from '../utils/data';
-import { getAnimalCard, getOpponentIdFromCurrentId, isAnimalCard, waitFor } from '../utils/helpers';
-import { PlayerType, SlotType } from '../utils/interface';
 
 export const revertMainDeck = async (gameId: string) => {
 	const powerGY = (await getItemsOnce('games/' + gameId + '/board/powerGY')) as string[];

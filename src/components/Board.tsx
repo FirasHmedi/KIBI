@@ -1,4 +1,3 @@
-import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { isPowerCard } from '../utils/helpers';
@@ -6,7 +5,7 @@ import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { RoundView, Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
-import { ElementSlot, BoardSlots, DeckSlot } from './Slots';
+import { BoardSlots, DeckSlot, ElementSlot } from './Slots';
 
 interface Props {
 	board: Board;

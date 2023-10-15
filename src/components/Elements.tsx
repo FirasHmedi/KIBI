@@ -1,6 +1,6 @@
+import CancelIcon from '@mui/icons-material/Cancel';
 import { airColor, centerStyle, earthColor, fireColor, violet, waterColor } from '../styles/Style';
 import { AIR, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
-import CancelIcon from '@mui/icons-material/Cancel';
 
 export const Seperator = ({ h }: { h?: string }) => {
 	const height = h ?? '2vh';

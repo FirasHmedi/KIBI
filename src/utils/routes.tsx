@@ -1,16 +1,16 @@
+import MenuIcon from '@mui/icons-material/Menu';
+import { get, ref } from 'firebase/database';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Sidebar from '../components/Sidebar';
+import { SignUpButton } from '../components/SignUpButton';
+import { auth, db } from '../firebase';
 import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
-import { appStyle, centerStyle, violet } from '../styles/Style';
-import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
-import MenuIcon from '@mui/icons-material/Menu';
-import Sidebar from '../components/Sidebar';
 import { SignIn } from '../pages/registration/SignIn';
 import { SignUp } from '../pages/registration/SignUp';
-import { auth, db } from '../firebase';
-import { get, ref } from 'firebase/database';
-import { SignUpButton } from '../components/SignUpButton';
-import { useNavigate } from 'react-router-dom';
+import { appStyle, centerStyle, violet } from '../styles/Style';
+import { GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH } from './data';
 
 const Layout = ({ children }: any) => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);

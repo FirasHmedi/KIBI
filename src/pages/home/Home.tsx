@@ -2,11 +2,11 @@ import shuffle from 'lodash/shuffle';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { buttonStyle, centerStyle, flexRowStyle, violet } from '../../styles/Style';
-import { ENV_MAX_LOAD, INITIAL_HP, PREPARE, GAMES_PATH } from '../../utils/data';
-import { PlayerType } from '../../utils/interface';
-import { getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/helpers';
 import { setItem } from '../../backend/db';
+import { buttonStyle, centerStyle, flexRowStyle, violet } from '../../styles/Style';
+import { ENV_MAX_LOAD, GAMES_PATH, INITIAL_HP, PREPARE } from '../../utils/data';
+import { getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/helpers';
+import { PlayerType } from '../../utils/interface';
 
 function Home() {
 	const navigate = useNavigate();

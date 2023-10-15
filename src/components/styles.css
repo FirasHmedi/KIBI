@@ -1,31 +1,31 @@
 .up-transition {
-  animation: up 0.7s ease-in-out;
+	animation: up 0.7s ease-in-out;
 }
 
 .down-transition {
-  animation: down 0.7s ease-in-out;
+	animation: down 0.7s ease-in-out;
 }
 
 @keyframes up {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+	0% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-20px);
+	}
+	100% {
+		transform: translateY(0);
+	}
 }
 
 @keyframes down {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(20px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+	0% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(20px);
+	}
+	100% {
+		transform: translateY(0);
+	}
 }

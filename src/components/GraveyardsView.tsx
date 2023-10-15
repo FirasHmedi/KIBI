@@ -1,3 +1,4 @@
+import CancelIcon from '@mui/icons-material/Cancel';
 import React, { useState } from 'react';
 import {
 	alertStyle,
@@ -8,7 +9,6 @@ import {
 	violet,
 } from '../styles/Style';
 import { DeckSlot } from './Slots';
-import CancelIcon from '@mui/icons-material/Cancel';
 
 export const PowerGraveyard = ({
 	cardsIds,
