@@ -340,7 +340,7 @@ export function GameView({
 
 	const finishRound = async () => {
 		setShowCountDown(false);
-		await addSnapShot(gameId);
+		// await addSnapShot(gameId);
 		await doubleTankAP(gameId, playerType, false);
 		await enableAttackingAndPlayingPowerCards(gameId, playerType);
 		await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));

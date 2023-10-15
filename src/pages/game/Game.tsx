@@ -1,4 +1,3 @@
-import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameContainer } from '../../components/GameContainer';
@@ -7,7 +6,7 @@ import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
 import { GAMES_PATH, RUNNING } from '../../utils/data';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
-import { subscribeToItems, setItem, getBoardPath } from '../../backend/db';
+import { subscribeToItems, setItem } from '../../backend/db';
 
 function GamePage() {
 	const location = useLocation();
@@ -25,10 +24,7 @@ function GamePage() {
 	useEffect(() => {
 		if (spectator) return;
 
-		if (game?.one?.cardsIds?.length === 9 && game?.two?.cardsIds?.length === 9 && !isGameRunning(game?.status)) {
-			const powerNotChoosed = (game.initialPowers ?? [])?.find(
-				id => id !== game?.one?.cardsIds[8] || id !== game?.two?.cardsIds[8],
-			);
+		if (game?.one?.cardsIds?.length === 12 && game?.two?.cardsIds?.length === 12 && !isGameRunning(game?.status)) {
 			setItem(GAMES_PATH + gameId, {
 				status: RUNNING,
 				round: {
@@ -36,11 +32,6 @@ function GamePage() {
 					nb: 1,
 				},
 			});
-			if (isEmpty(powerNotChoosed)) {
-				setItem(getBoardPath(gameId), {
-					mainDeck: [powerNotChoosed, ...game.board.mainDeck],
-				});
-			}
 		}
 	}, [game]);
 

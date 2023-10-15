@@ -50,24 +50,6 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 		setIdSelected(undefined);
 	};
 
-	const submitTestCards = async () => {
-		if (myCards.length === 8) return;
-		const cardsIds = (
-			playerType === PlayerType.ONE
-				? ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 8)
-				: ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16)
-		).map(animal => animal.id);
-
-		await setItem(getGamePath(gameId) + `${playerType}`, {
-			cardsIds: cardsIds,
-		});
-
-		const playerToSelect = changePlayerToSelect ? playerType : getOpponentIdFromCurrentId(playerType);
-		await setItem(getGamePath(gameId), {
-			playerToSelect,
-		});
-	};
-
 	const submitRandomSelection = async () => {
 		const oneCardsIds: string[] = [];
 		const twoCardsIds: string[] = [];
@@ -93,8 +75,8 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 			index < 6 ? oneCardsIds.push(id) : twoCardsIds.push(id);
 		});
 
-		oneCardsIds.push(powerCards![1]);
-		twoCardsIds.push(powerCards![2]);
+		oneCardsIds.push(...(powerCards ?? []).filter((_, index) => index < 4));
+		twoCardsIds.push(...(powerCards ?? []).filter((_, index) => index >= 4));
 
 		await setItem(getGamePath(gameId) + PlayerType.ONE, {
 			cardsIds: oneCardsIds,
@@ -182,17 +164,6 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 				disabled={playerToSelect !== playerType && !!idSelected}
 				onClick={() => submitCard()}>
 				CHOOSE
-			</button>
-			<button
-				style={{
-					...buttonStyle,
-					backgroundColor: playerToSelect !== playerType ? neutralColor : 'red',
-					padding: 4,
-					fontSize: 14,
-				}}
-				disabled={playerToSelect !== playerType}
-				onClick={() => submitTestCards()}>
-				TEST CHOOSE
 			</button>
 			<button
 				style={{

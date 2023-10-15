@@ -16,7 +16,7 @@ function Home() {
 	const createGame = async () => {
 		const gameId = uuidv4();
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
-		const initialPowers = mainDeck.splice(-3, 3);
+		const initialPowers = mainDeck.splice(-8, 8);
 
 		await setItem(GAMES_PATH + gameId, {
 			status: PREPARE,

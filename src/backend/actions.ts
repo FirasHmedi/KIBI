@@ -171,27 +171,6 @@ export const activateJokersAbilities = async (gameId: string, playerDType: Playe
 	}
 };
 
-/* export const activateTankAndAttackerAbilities = async (
-	gameId: string,
-	playerDType: PlayerType,
-	slots: SlotType[] = [],
-) => {
-	const elementType = await getElementType(gameId);
-	for (let i = 0; i < slots.length; i++) {
-		const cardId = slots[i]?.cardId;
-		if (!!cardId && isAnimalCard(cardId)) {
-			const animal = getAnimalCard(cardId)!;
-			if (animal?.role === TANK && animal?.clan === elementType) {
-				await add1Hp(gameId, playerDType);
-			}
-
-			if (animal.role === ATTACKER && animal.clan === elementType) {
-				await minus1Hp(gameId, getOpponentIdFromCurrentId(playerDType));
-			}
-		}
-	}
-}; */
-
 export const getElementType = async (gameId: string): Promise<ClanName> => {
 	return await getItemsOnce(getBoardPath(gameId) + 'elementType');
 };
