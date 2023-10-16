@@ -70,7 +70,7 @@ export const PowerBoardSlot = ({
 				...boardSlotStyle,
 				backgroundColor: violet,
 				justifyContent: 'space-evenly',
-				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : `0 0 1.5px 2.5px ${violet}`,
+				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
 				...bigStyle,
 			}}
 			onClick={() => select()}>
@@ -123,7 +123,7 @@ export const AnimalBoardSlot = ({
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
-	isDoubleAP: boolean;
+	isDoubleAP?: boolean;
 }) => {
 	const { clan, name, role, ability } = getAnimalCard(cardId)!;
 	if (!name || !clan || !role) return <></>;
