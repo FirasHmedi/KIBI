@@ -11,8 +11,10 @@ interface Props {
 	board: Board;
 	roundNb: number;
 	isMyRound: boolean;
-	isDoubleCurrentAP?: boolean;
-	isDoubleOpponentAP?: boolean;
+	tankIdWithDoubleAPOfCurr?: string;
+	attackerIdWithDoubleHPOfCurr?: string;
+	tankIdWithDoubleAPOfOpp?: string;
+	attackerIdWithDoubleHPOfOpp?: string;
 	selectedCurrentPSlotNb?: number;
 	selectedOppSlotsNbs?: number[];
 	selectOppSlotsNbs: (slotNb: number) => void;
@@ -35,8 +37,10 @@ export const BoardView = ({
 	roundNb,
 	selectedGYPower,
 	setSelectedGYPower,
-	isDoubleCurrentAP = false,
-	isDoubleOpponentAP = false,
+	tankIdWithDoubleAPOfCurr,
+	attackerIdWithDoubleHPOfCurr,
+	tankIdWithDoubleAPOfOpp,
+	attackerIdWithDoubleHPOfOpp,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 	const selectedCurrSlots = !isNil(selectedCurrentPSlotNb) ? [selectedCurrentPSlotNb!] : [];
@@ -60,7 +64,8 @@ export const BoardView = ({
 					selectedSlots={selectedOppSlotsNbs}
 					opponent={true}
 					elementType={elementType}
-					isDoubleAP={isDoubleOpponentAP}
+					tankIdWithDoubleAP={tankIdWithDoubleAPOfOpp}
+					attackerIdWithDoubleHP={attackerIdWithDoubleHPOfOpp}
 				/>
 				<Seperator />
 				<BoardSlots
@@ -69,7 +74,8 @@ export const BoardView = ({
 					selectedSlots={selectedCurrSlots}
 					current={true}
 					elementType={elementType}
-					isDoubleAP={isDoubleCurrentAP}
+					tankIdWithDoubleAP={tankIdWithDoubleAPOfCurr}
+					attackerIdWithDoubleHP={attackerIdWithDoubleHPOfCurr}
 				/>
 			</div>
 

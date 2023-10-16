@@ -1,6 +1,6 @@
 import isNil from 'lodash/isNil';
 import { ClanName } from '../utils/data';
-import { isAnimalCard, isPowerCard } from '../utils/helpers';
+import { isAnimalCard, isAttacker, isPowerCard, isTank } from '../utils/helpers';
 import { PlayerType } from '../utils/interface';
 import { activateJokerAbility } from './actions';
 import { getBoardPath, getGamePath, getItemsOnce, setItem } from './db';
@@ -78,6 +78,18 @@ export const removePlayerAnimalFromBoard = async (
 		await setItem(getBoardPath(gameId) + playerType, {
 			[`${slotNumber}`]: { cardId: 'empty', canAttack: false },
 		});
+		if (isTank(slot.cardId)) {
+			const tankId = await getItemsOnce(getGamePath(gameId) + playerType + '/tankIdWithDoubleAP');
+			if (tankId === slot.cardId) {
+				await setItem(getGamePath(gameId) + playerType, { tankIdWithDoubleAP: null });
+			}
+		}
+		if (isAttacker(slot.cardId)) {
+			const attackerId = await getItemsOnce(getGamePath(gameId) + playerType + '/attackerIdWithDoubleHP');
+			if (attackerId === slot.cardId) {
+				await setItem(getGamePath(gameId) + playerType, { attackerIdWithDoubleHP: null });
+			}
+		}
 		return true;
 	}
 	return false;

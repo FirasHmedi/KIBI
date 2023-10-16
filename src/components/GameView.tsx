@@ -8,6 +8,7 @@ import {
 	cancelAttacks,
 	cancelUsingPowerCards,
 	changeElement,
+	doubleAttackerHP,
 	doubleTankAP,
 	draw2Cards,
 	resetBoard,
@@ -35,7 +36,7 @@ import {
 } from '../backend/actions';
 import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
 import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
-import { ANIMALS_POINTS, ClanName, EMPTY, KING, ROUND_DURATION, TANK, envCardsIds } from '../utils/data';
+import { ANIMALS_POINTS, ATTACKER, ClanName, EMPTY, KING, ROUND_DURATION, TANK, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
 	getOpponentIdFromCurrentId,
@@ -46,6 +47,7 @@ import {
 	isAttacker,
 	isKing,
 	isPowerCard,
+	isTank,
 	waitFor,
 } from '../utils/helpers';
 import { Board, Player, Round } from '../utils/interface';
@@ -202,6 +204,12 @@ export function GameView({
 			case 'switch-2-randoms':
 				if ((currentPlayer.cardsIds ?? []).length < 2 || (opponentPlayer.cardsIds ?? []).length < 2) return false;
 				break;
+			case 'double-tank-ap':
+				if (!isTank(idInCurrPSlot)) return false;
+				break;
+			case 'double-attacker-hp':
+				if (!isAttacker(idInCurrPSlot)) return false;
+				break;
 		}
 		console.log('card is playable');
 		return true;
@@ -265,7 +273,10 @@ export function GameView({
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
 			case 'double-tank-ap':
-				await doubleTankAP(gameId, playerType, true);
+				await doubleTankAP(gameId, playerType, idInCurrPSlot);
+				break;
+			case 'double-attacker-hp':
+				await doubleAttackerHP(gameId, playerType, idInCurrPSlot);
 				break;
 			case 'charge-element':
 				await setElementLoad(gameId, playerType, 3);
@@ -339,7 +350,6 @@ export function GameView({
 	const finishRound = async () => {
 		setShowCountDown(false);
 		// await addSnapShot(gameId);
-		await doubleTankAP(gameId, playerType, false);
 		await enableAttackingAndPlayingPowerCards(gameId, playerType);
 		await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
 		await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
@@ -361,10 +371,17 @@ export function GameView({
 		const animalD = getAnimalCard(idsInOppPSlots[0]);
 		if (!animalA || !animalD) return;
 
-		if (
-			!(animalA.role === TANK && currentPlayer.isDoubleAP) &&
-			ANIMALS_POINTS[animalA.role].ap < ANIMALS_POINTS[animalD.role].hp
-		) {
+		const animalAAP =
+			animalA.role === TANK && currentPlayer?.tankIdWithDoubleAP === idInCurrPSlot
+				? ANIMALS_POINTS[animalA.role].ap * 2
+				: ANIMALS_POINTS[animalA.role].ap;
+
+		const animalDHP =
+			animalD.role === ATTACKER && opponentPlayer?.attackerIdWithDoubleHP === idsInOppPSlots[0]
+				? ANIMALS_POINTS[animalD.role].hp * 2
+				: ANIMALS_POINTS[animalD.role].hp;
+
+		if (animalAAP < animalDHP) {
 			return;
 		}
 
@@ -382,7 +399,8 @@ export function GameView({
 		if (!isAttackOwnerEnabled) return;
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, true);
-		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), idInCurrPSlot, currentPlayer.isDoubleAP);
+		const isDoubleAP = currentPlayer.tankIdWithDoubleAP === idInCurrPSlot;
+		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), idInCurrPSlot, isDoubleAP);
 		await waitFor(500);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
 	};
@@ -412,8 +430,10 @@ export function GameView({
 				selectedGYPower={selectedGYPower}
 				setSelectedGYPower={setSelectedGYPower}
 				roundNb={round.nb}
-				isDoubleOpponentAP={opponentPlayer.isDoubleAP}
-				isDoubleCurrentAP={currentPlayer.isDoubleAP}
+				tankIdWithDoubleAPOfCurr={currentPlayer.tankIdWithDoubleAP}
+				attackerIdWithDoubleHPOfCurr={currentPlayer.attackerIdWithDoubleHP}
+				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
+				attackerIdWithDoubleHPOfOpp={opponentPlayer.attackerIdWithDoubleHP}
 				isMyRound={isMyRound}
 			/>
 

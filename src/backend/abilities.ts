@@ -186,6 +186,10 @@ export const resetBoard = async (
 	await changeElement(gameId, NEUTRAL);
 };
 
-export const doubleTankAP = async (gameId: string, playerType: PlayerType, isDoubleAP: boolean) => {
-	await setItem(getGamePath(gameId) + playerType, { isDoubleAP });
+export const doubleTankAP = async (gameId: string, playerType: PlayerType, tankIdWithDoubleAP: string) => {
+	await setItem(getGamePath(gameId) + playerType, { tankIdWithDoubleAP });
+};
+
+export const doubleAttackerHP = async (gameId: string, playerType: PlayerType, attackerIdWithDoubleHP: string) => {
+	await setItem(getGamePath(gameId) + playerType, { attackerIdWithDoubleHP });
 };
