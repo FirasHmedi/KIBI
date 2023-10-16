@@ -6,6 +6,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonIcon from '@mui/icons-material/Person';
 import ClawIcon from '@mui/icons-material/Pets';
 import ProgressBar from '@ramonak/react-progress-bar';
+import isEmpty from 'lodash/isEmpty';
 import { useRef, useState } from 'react';
 import SwordIcon from '../assets/icons/sword-small-violet.png';
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
@@ -46,7 +47,6 @@ export const CurrentPView = ({
 	const playCardRef = useRef<any>();
 
 	const isMyRound = round?.player === playerType;
-	const disableEnv = !isMyRound || player.envLoadNb !== 3;
 	const [disablePlayButton, setDisablePlayButton] = useState(false);
 
 	const isPlayCardEnabled =
@@ -185,7 +185,7 @@ const PlayerDataView = ({
 	setElement?: any;
 	isMyRound?: boolean;
 }) => {
-	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack, envLoadNb } = player;
+	const { hp, playerType, canPlayPowers, attackerIdWithDoubleHP, tankIdWithDoubleAP, canAttack, envLoadNb } = player;
 	const batteryStyle = { color: violet, width: '2.8vw', height: 'auto' };
 
 	return (
@@ -242,7 +242,8 @@ const PlayerDataView = ({
 				<h5>Blocked from playing power cards</h5>
 			) : null}
 
-			{isDoubleAP && <h5>TANK AP is doubled </h5>}
+			{!isEmpty(attackerIdWithDoubleHP) && <h5>ATTACKER HP is doubled </h5>}
+			{!isEmpty(tankIdWithDoubleAP) && <h5>TANK AP is doubled </h5>}
 		</div>
 	);
 };
