@@ -25,8 +25,6 @@ import {
 	attackAnimal,
 	attackOwner,
 	changeHasAttacked,
-	enableAttackForOpponentAnimals,
-	enableAttackingAndPlayingPowerCards,
 	placeAnimalOnBoard,
 	placeKingOnBoard,
 	placeKingWithoutSacrifice,
@@ -34,7 +32,7 @@ import {
 	setPowerCardAsActive,
 } from '../backend/actions';
 import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
-import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
+import { addPowerToGraveYard } from '../backend/unitActions';
 import { ANIMALS_POINTS, ClanName, EMPTY, KING, ROUND_DURATION, TANK, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
@@ -341,19 +339,27 @@ export function GameView({
 	};
 
 	const finishRound = async () => {
-		setShowCountDown(false);
-		await enableAttackingAndPlayingPowerCards(gameId, playerType);
-		await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
-		await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-		await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-		setNbCardsToPlay(2);
-		setHasAttacked(false);
-		setCanPlaceKingWithoutSacrifice(false);
-		setSelectedGYAnimals([]);
-		setSelectedGYPower([]);
-		setSelectedCurrPSlotNb(undefined);
-		setSelectedOppSlotsNbs([]);
-		setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
+		try {
+			setShowCountDown(false);
+			const requestOptions = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ gameId, playerType }),
+			};
+
+			await fetch('https://europe-west1-kibi-143dd.cloudfunctions.net/finishRound', requestOptions);
+
+			setNbCardsToPlay(2);
+			setHasAttacked(false);
+			setCanPlaceKingWithoutSacrifice(false);
+			setSelectedGYAnimals([]);
+			setSelectedGYPower([]);
+			setSelectedCurrPSlotNb(undefined);
+			setSelectedOppSlotsNbs([]);
+			setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	const attackOppAnimal = async () => {
