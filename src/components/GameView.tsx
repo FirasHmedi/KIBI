@@ -8,7 +8,6 @@ import {
 	cancelAttacks,
 	cancelUsingPowerCards,
 	changeElement,
-	doubleAttackerHP,
 	doubleTankAP,
 	draw2Cards,
 	resetBoard,
@@ -36,7 +35,7 @@ import {
 } from '../backend/actions';
 import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
 import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
-import { ANIMALS_POINTS, ATTACKER, ClanName, EMPTY, KING, ROUND_DURATION, TANK, envCardsIds } from '../utils/data';
+import { ANIMALS_POINTS, ClanName, EMPTY, KING, ROUND_DURATION, TANK, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
 	getOpponentIdFromCurrentId,
@@ -207,9 +206,6 @@ export function GameView({
 			case 'double-tank-ap':
 				if (!isTank(idInCurrPSlot)) return false;
 				break;
-			case 'double-attacker-hp':
-				if (!isAttacker(idInCurrPSlot)) return false;
-				break;
 		}
 		console.log('card is playable');
 		return true;
@@ -274,9 +270,6 @@ export function GameView({
 				break;
 			case 'double-tank-ap':
 				await doubleTankAP(gameId, playerType, idInCurrPSlot);
-				break;
-			case 'double-attacker-hp':
-				await doubleAttackerHP(gameId, playerType, idInCurrPSlot);
 				break;
 			case 'charge-element':
 				await setElementLoad(gameId, playerType, 3);
@@ -349,7 +342,6 @@ export function GameView({
 
 	const finishRound = async () => {
 		setShowCountDown(false);
-		// await addSnapShot(gameId);
 		await enableAttackingAndPlayingPowerCards(gameId, playerType);
 		await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
 		await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
@@ -376,10 +368,7 @@ export function GameView({
 				? ANIMALS_POINTS[animalA.role].ap * 2
 				: ANIMALS_POINTS[animalA.role].ap;
 
-		const animalDHP =
-			animalD.role === ATTACKER && opponentPlayer?.attackerIdWithDoubleHP === idsInOppPSlots[0]
-				? ANIMALS_POINTS[animalD.role].hp * 2
-				: ANIMALS_POINTS[animalD.role].hp;
+		const animalDHP = ANIMALS_POINTS[animalD.role].hp;
 
 		if (animalAAP < animalDHP) {
 			return;
@@ -431,9 +420,7 @@ export function GameView({
 				setSelectedGYPower={setSelectedGYPower}
 				roundNb={round.nb}
 				tankIdWithDoubleAPOfCurr={currentPlayer.tankIdWithDoubleAP}
-				attackerIdWithDoubleHPOfCurr={currentPlayer.attackerIdWithDoubleHP}
 				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
-				attackerIdWithDoubleHPOfOpp={opponentPlayer.attackerIdWithDoubleHP}
 				isMyRound={isMyRound}
 			/>
 

@@ -12,9 +12,7 @@ interface Props {
 	roundNb: number;
 	isMyRound: boolean;
 	tankIdWithDoubleAPOfCurr?: string;
-	attackerIdWithDoubleHPOfCurr?: string;
 	tankIdWithDoubleAPOfOpp?: string;
-	attackerIdWithDoubleHPOfOpp?: string;
 	selectedCurrentPSlotNb?: number;
 	selectedOppSlotsNbs?: number[];
 	selectOppSlotsNbs: (slotNb: number) => void;
@@ -38,9 +36,7 @@ export const BoardView = ({
 	selectedGYPower,
 	setSelectedGYPower,
 	tankIdWithDoubleAPOfCurr,
-	attackerIdWithDoubleHPOfCurr,
 	tankIdWithDoubleAPOfOpp,
-	attackerIdWithDoubleHPOfOpp,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 	const selectedCurrSlots = !isNil(selectedCurrentPSlotNb) ? [selectedCurrentPSlotNb!] : [];
@@ -65,7 +61,6 @@ export const BoardView = ({
 					opponent={true}
 					elementType={elementType}
 					tankIdWithDoubleAP={tankIdWithDoubleAPOfOpp}
-					attackerIdWithDoubleHP={attackerIdWithDoubleHPOfOpp}
 				/>
 				<Seperator />
 				<BoardSlots
@@ -75,7 +70,6 @@ export const BoardView = ({
 					current={true}
 					elementType={elementType}
 					tankIdWithDoubleAP={tankIdWithDoubleAPOfCurr}
-					attackerIdWithDoubleHP={attackerIdWithDoubleHPOfCurr}
 				/>
 			</div>
 

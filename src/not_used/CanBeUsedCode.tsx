@@ -97,4 +97,15 @@ export const GeneralTestData = {
 	</button>
 */
 
+/*
+	"double-attacker-hp": {
+		"description": "Double health points of an Attacker",
+		"name": "Double HP of an Attacker"
+	}
+
+	export const doubleAttackerHP = async (gameId: string, playerType: PlayerType, attackerIdWithDoubleHP: string) => {
+	await setItem(getGamePath(gameId) + playerType, { attackerIdWithDoubleHP });
+};
+*/
+
 export {};

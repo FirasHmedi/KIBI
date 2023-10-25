@@ -46,7 +46,6 @@ export interface Player {
 	playerName?: string;
 	canPlayPowers: boolean;
 	canAttack: boolean;
-	attackerIdWithDoubleHP?: string;
 	tankIdWithDoubleAP?: string;
 	envLoadNb: number;
 }

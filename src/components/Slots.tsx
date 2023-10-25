@@ -13,7 +13,7 @@ import {
 	selectedColor,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_POINTS, ATTACKER, CLANS, ClanName, TANK, animalsPics, elementsIcons, rolesIcons } from '../utils/data';
+import { ANIMALS_POINTS, CLANS, ClanName, TANK, animalsPics, elementsIcons, rolesIcons } from '../utils/data';
 import { getAnimalCard, getPowerCard, isAnimalCard, isAnimalInEnv, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
@@ -40,7 +40,6 @@ interface SlotProps {
 	nb?: number;
 	graveyard?: boolean;
 	tankIdWithDoubleAP?: string;
-	attackerIdWithDoubleHP?: string;
 }
 
 interface DeckSlotProps {
@@ -119,13 +118,11 @@ export const AnimalBoardSlot = ({
 	cardId,
 	select,
 	selected,
-	attackerIdWithDoubleHP,
 	tankIdWithDoubleAP,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
-	attackerIdWithDoubleHP?: string;
 	tankIdWithDoubleAP?: string;
 }) => {
 	const { clan, name, role, ability } = getAnimalCard(cardId)!;
@@ -133,7 +130,6 @@ export const AnimalBoardSlot = ({
 
 	const { hp, ap } = ANIMALS_POINTS[role];
 	const isTankDoubleAP = role === TANK && cardId === tankIdWithDoubleAP;
-	const isAttackerDoubleAP = role === ATTACKER && cardId === attackerIdWithDoubleHP;
 	const roleTooltipContent = ability;
 	const roleTooltipId = `role-anchor${cardId}`;
 
@@ -168,7 +164,7 @@ export const AnimalBoardSlot = ({
 				<Tooltip anchorSelect={`#${roleTooltipId}`} content={roleTooltipContent} style={{ width: '10vw' }} />
 				<img id={roleTooltipId} src={rolesIcons[role]} style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
 				<div style={{ ...centerStyle }}>
-					<h4>{isAttackerDoubleAP ? hp * 2 : hp}</h4>
+					<h4>{hp}</h4>
 					<FavoriteIcon style={{ color: 'white', width: '0.8vw' }} />
 				</div>
 			</div>
@@ -220,21 +216,13 @@ export const AnimalDeckSlot = ({
 	);
 };
 
-export const BoardSlot = ({
-	cardId,
-	selected,
-	selectSlot,
-	nb,
-	attackerIdWithDoubleHP,
-	tankIdWithDoubleAP,
-}: SlotProps) => {
+export const BoardSlot = ({ cardId, selected, selectSlot, nb, tankIdWithDoubleAP }: SlotProps) => {
 	if (!!cardId && isAnimalCard(cardId)) {
 		return (
 			<AnimalBoardSlot
 				cardId={cardId}
 				select={() => selectSlot(nb)}
 				selected={selected}
-				attackerIdWithDoubleHP={attackerIdWithDoubleHP}
 				tankIdWithDoubleAP={tankIdWithDoubleAP}
 			/>
 		);
@@ -322,7 +310,6 @@ export const BoardSlots = ({
 	current,
 	elementType,
 	tankIdWithDoubleAP,
-	attackerIdWithDoubleHP,
 }: {
 	slots: SlotType[];
 	selectedSlots: number[];
@@ -331,7 +318,6 @@ export const BoardSlots = ({
 	current?: boolean;
 	elementType?: ClanName;
 	tankIdWithDoubleAP?: string;
-	attackerIdWithDoubleHP?: string;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -356,7 +342,6 @@ export const BoardSlots = ({
 						<BoardSlot
 							nb={index}
 							tankIdWithDoubleAP={tankIdWithDoubleAP}
-							attackerIdWithDoubleHP={attackerIdWithDoubleHP}
 							selectSlot={selectSlot}
 							cardId={slot?.cardId}
 							selected={selectedSlots.includes(index)}

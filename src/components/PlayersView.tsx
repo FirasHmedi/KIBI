@@ -185,7 +185,7 @@ const PlayerDataView = ({
 	setElement?: any;
 	isMyRound?: boolean;
 }) => {
-	const { hp, playerType, canPlayPowers, attackerIdWithDoubleHP, tankIdWithDoubleAP, canAttack, envLoadNb } = player;
+	const { hp, playerType, canPlayPowers, tankIdWithDoubleAP, canAttack, envLoadNb } = player;
 	const batteryStyle = { color: violet, width: '2.8vw', height: 'auto' };
 
 	return (
@@ -242,7 +242,6 @@ const PlayerDataView = ({
 				<h5>Blocked from playing power cards</h5>
 			) : null}
 
-			{!isEmpty(attackerIdWithDoubleHP) && <h5>ATTACKER HP is doubled </h5>}
 			{!isEmpty(tankIdWithDoubleAP) && <h5>TANK AP is doubled </h5>}
 		</div>
 	);
