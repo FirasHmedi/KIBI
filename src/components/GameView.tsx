@@ -93,6 +93,13 @@ export function GameView({
 	useEffect(() => {
 		if (round.nb >= 3 && isMyRound) {
 			setNbCardsToPlay(2);
+			setHasAttacked(false);
+			setCanPlaceKingWithoutSacrifice(false);
+			setSelectedGYAnimals([]);
+			setSelectedGYPower([]);
+			setSelectedCurrPSlotNb(undefined);
+			setSelectedOppSlotsNbs([]);
+			setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
 		}
 	}, [round.nb]);
 
@@ -374,17 +381,7 @@ export function GameView({
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ gameId, playerType }),
 			};
-
 			await fetch('https://europe-west1-kibi-143dd.cloudfunctions.net/finishRound', requestOptions);
-
-			setNbCardsToPlay(2);
-			setHasAttacked(false);
-			setCanPlaceKingWithoutSacrifice(false);
-			setSelectedGYAnimals([]);
-			setSelectedGYPower([]);
-			setSelectedCurrPSlotNb(undefined);
-			setSelectedOppSlotsNbs([]);
-			setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
 		} catch (e) {
 			console.error(e);
 		}
@@ -405,8 +402,6 @@ export function GameView({
 	};
 
 	const attackOppAnimal = async () => {
-		if (!isAttackAnimalEnabled) return;
-
 		const animalA = getAnimalCard(idInCurrPSlot);
 		const animalD = getAnimalCard(idsInOppPSlots[0]);
 		if (!animalA || !animalD) return;
@@ -433,7 +428,6 @@ export function GameView({
 	};
 
 	const attackOppHp = async () => {
-		if (!isAttackOwnerEnabled) return;
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, true);
 		const isDoubleAP = currentPlayer.tankIdWithDoubleAP === idInCurrPSlot;
