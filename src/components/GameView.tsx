@@ -391,7 +391,11 @@ export function GameView({
 	};
 
 	const attack = async () => {
-		if (isAttackOwnerEnabled && isAttackerAbilityActive && !isAnimalCard(idsInOppPSlots[0])) {
+		if (isAttackerAbilityActive && isAnimalCard(idsInOppPSlots[0]) && isAttackAnimalEnabled) {
+			await attackOppAnimal();
+			return;
+		}
+		if (isAttackOwnerEnabled) {
 			await attackOppHp();
 			return;
 		}
