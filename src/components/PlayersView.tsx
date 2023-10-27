@@ -3,7 +3,6 @@ import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
 import BatteryCharging80Icon from '@mui/icons-material/BatteryCharging80';
 import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import PersonIcon from '@mui/icons-material/Person';
 import ClawIcon from '@mui/icons-material/Pets';
 import ProgressBar from '@ramonak/react-progress-bar';
 import isEmpty from 'lodash/isEmpty';
@@ -23,6 +22,7 @@ export const CurrentPView = ({
 	finishRound,
 	attackOpponentAnimal,
 	attackOppHp,
+	attack,
 	isAttackAnimalEnabled,
 	isAttackOwnerEnabled,
 	nbCardsToPlay,
@@ -34,6 +34,7 @@ export const CurrentPView = ({
 	playCard: (cardId?: string) => Promise<void>;
 	finishRound: () => void;
 	attackOpponentAnimal: () => void;
+	attack: () => void;
 	attackOppHp: () => void;
 	isAttackAnimalEnabled: boolean;
 	isAttackOwnerEnabled: boolean;
@@ -64,6 +65,8 @@ export const CurrentPView = ({
 		setDisablePlayButton(false);
 	};
 
+	const canAttack = isAttackAnimalEnabled || isAttackOwnerEnabled;
+
 	return (
 		<div
 			style={{
@@ -80,31 +83,27 @@ export const CurrentPView = ({
 							justifyContent: 'center',
 							position: 'absolute',
 							right: '29vw',
-							bottom: '30vh',
+							bottom: '34vh',
 							gap: 40,
 							width: '10vw',
 						}}>
 						<button
 							style={{
 								fontWeight: 'bold',
-								color: !isAttackOwnerEnabled ? 'grey' : violet,
+								color: !canAttack ? 'grey' : violet,
 								...centerStyle,
 							}}
-							disabled={!isAttackOwnerEnabled}
-							onClick={() => attackOppHp()}>
-							<img src={SwordIcon} style={{ width: 28 }}></img>
-							<PersonIcon style={{ width: '2vw', height: 'auto', color: !isAttackOwnerEnabled ? 'grey' : violet }} />
-						</button>
-						<button
-							style={{
-								fontWeight: 'bold',
-								color: !isAttackAnimalEnabled ? 'grey' : violet,
-								...centerStyle,
-							}}
-							disabled={!isAttackAnimalEnabled}
-							onClick={() => attackOpponentAnimal()}>
-							<img src={SwordIcon} style={{ width: 28 }}></img>
-							<ClawIcon style={{ width: '2vw', height: 'auto', color: !isAttackAnimalEnabled ? 'grey' : violet }} />
+							disabled={!canAttack}
+							onClick={() => attack()}>
+							<img
+								src={SwordIcon}
+								style={{
+									width: 28,
+									filter: !canAttack
+										? 'invert(50%) sepia(0%) saturate(1120%) hue-rotate(152deg) brightness(101%) contrast(86%)'
+										: undefined,
+								}}></img>
+							<ClawIcon style={{ width: '2vw', height: 'auto', color: !canAttack ? 'grey' : violet }} />
 						</button>
 					</div>
 
@@ -215,7 +214,7 @@ const PlayerDataView = ({
 					height='1vh'
 					baseBgColor={'grey'}
 					isLabelVisible={false}
-					completed={hp}></ProgressBar>
+					completed={hp ?? 0}></ProgressBar>
 			</div>
 
 			<button

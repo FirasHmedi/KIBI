@@ -145,7 +145,7 @@ export const setPowerCardAsActive = async (gameId: string, playerType: PlayerTyp
 	}
 	await removeCardFromPlayerDeck(gameId, playerType, cardId);
 	await setActivePowerCard(gameId, cardId);
-	await waitFor(1200);
+	await waitFor(700);
 	await setActivePowerCard(gameId, '');
 };
 

@@ -40,6 +40,8 @@ export function GameContainer({
 
 		const p1 = { ...game[PlayerType.ONE], playerType: PlayerType.ONE };
 		const p2 = { ...game[PlayerType.TWO], playerType: PlayerType.TWO };
+		p1.cardsIds = p1.cardsIds ?? [];
+		p2.cardsIds = p2.cardsIds ?? [];
 
 		if (playerType === PlayerType.ONE) {
 			setCurrPlayer(p1);

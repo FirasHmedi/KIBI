@@ -108,4 +108,25 @@ export const GeneralTestData = {
 };
 */
 
+/*
+<button
+	style={{
+		fontWeight: 'bold',
+		color: !isAttackOwnerEnabled ? 'grey' : violet,
+		...centerStyle,
+	}}
+	disabled={!isAttackOwnerEnabled}
+	onClick={() => attackOppHp()}>
+	<img
+		src={SwordIcon}
+		style={{
+			width: 28,
+			filter: !isAttackOwnerEnabled
+				? 'invert(50%) sepia(0%) saturate(1120%) hue-rotate(152deg) brightness(101%) contrast(86%)'
+				: undefined,
+		}}></img>
+	<PersonIcon style={{ width: '2vw', height: 'auto', color: !isAttackOwnerEnabled ? 'grey' : violet }} />
+</button>
+*/
+
 export {};

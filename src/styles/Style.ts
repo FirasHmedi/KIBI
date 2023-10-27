@@ -64,8 +64,8 @@ export const boardSlotStyle: React.CSSProperties = {
 	borderRadius: 5,
 	color: 'white',
 	fontSize: '0.85em',
-	height: '18vh',
-	width: '7.5vw',
+	height: '7.5rem',
+	width: '6rem',
 	flexShrink: 0,
 };
 
@@ -74,8 +74,8 @@ export const deckSlotStyle: React.CSSProperties = {
 	borderRadius: 5,
 	color: 'white',
 	fontSize: '0.85em',
-	height: '14.5vh',
-	width: '6vw',
+	height: '6.5rem',
+	width: '5rem',
 	flexShrink: 0,
 	border: 'solid 3px #95a5a6',
 };
