@@ -65,7 +65,7 @@ export const boardSlotStyle: React.CSSProperties = {
 	color: 'white',
 	fontSize: '0.85em',
 	height: '7.5rem',
-	width: '6.5rem',
+	width: '7rem',
 	flexShrink: 0,
 };
 
