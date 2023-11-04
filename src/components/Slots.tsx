@@ -144,7 +144,7 @@ export const AnimalBoardSlot = ({
 			{!!name && name?.toLowerCase() in animalsPics && (
 				<img
 					src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-					style={{ height: '12vh', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+					style={{ height: '6rem', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 			)}
 
 			<div
@@ -153,9 +153,9 @@ export const AnimalBoardSlot = ({
 					width: '100%',
 					justifyContent: 'space-around',
 					alignItems: 'center',
-					fontSize: '1.1em',
+					fontSize: '1rem',
 					backgroundColor: CLANS[clan!]?.color,
-					height: '4vh',
+					height: '2rem',
 				}}>
 				<div style={{ ...centerStyle }}>
 					<h4>{isTankDoubleAP ? ap * 2 : ap}</h4>
@@ -330,7 +330,7 @@ export const BoardSlots = ({
 		<div
 			style={{
 				...centerStyle,
-				width: '25vw',
+				width: '24rem',
 				justifyContent: 'space-evenly',
 			}}>
 			{compoundSlots.map((slot, index) => (

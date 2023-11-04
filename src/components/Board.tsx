@@ -73,7 +73,7 @@ export const BoardView = ({
 				/>
 			</div>
 
-			<div style={{ position: 'absolute', left: '34vw' }}>
+			<div style={{ position: 'absolute', left: '31vw' }}>
 				<ElementSlot elementType={elementType} />
 			</div>
 
@@ -101,7 +101,7 @@ export const BoardView = ({
 };
 
 const ActiveCardSlot = ({ cardId }: { cardId: string }) => (
-	<div style={{ position: 'absolute', left: '25vw' }}>
+	<div style={{ position: 'absolute', left: '22vw' }}>
 		<DeckSlot cardId={cardId} />
 	</div>
 );
