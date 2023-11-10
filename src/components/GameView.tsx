@@ -1,7 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
 import { flexColumnStyle, violet } from '../styles/Style';
-
 import isNil from 'lodash/isNil';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import {
@@ -25,6 +24,7 @@ import {
 	attackAnimal,
 	attackOwner,
 	changeHasAttacked,
+	drawCardFromMainDeck,
 	enableAttackForOpponentAnimals,
 	enableAttackingAndPlayingPowerCards,
 	placeAnimalOnBoard,
@@ -38,6 +38,7 @@ import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
 import { ANIMALS_POINTS, ClanName, EMPTY, KING, ROUND_DURATION, TANK, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
+	getCard,
 	getOpponentIdFromCurrentId,
 	getOriginalCardId,
 	getPowerCard,
@@ -49,10 +50,11 @@ import {
 	isTank,
 	waitFor,
 } from '../utils/helpers';
-import { Board, Player, Round } from '../utils/interface';
+import {  Board, Card, Player, PlayerType, Round } from '../utils/interface';
 import { BoardView } from './Board';
 import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
+import { BotV0 } from '../GameBot/BotActions';
 
 interface GameViewProps {
 	round: Round;
@@ -91,6 +93,7 @@ export function GameView({
 	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
 
 	const isMyRound = round.player === playerType;
+	
 
 	useEffect(() => {
 		if (round.nb >= 3 && isMyRound) {
@@ -374,19 +377,43 @@ export function GameView({
 		setShowEnvPopup(false);
 		await activateJokersAbilities(gameId, playerType, currentPSlots);
 	};
+	const finishRoundPlayer = async () => {
+		setShowCountDown(false);
+		await enableAttackingAndPlayingPowerCards(gameId, playerType);
+		await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
+		await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+		await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+	}
+	const finishRoundBot = async () => {
+		setShowCountDown(false);
+		await enableAttackingAndPlayingPowerCards(gameId, playerType);
+		await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
+		await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+		await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+		console.log(round.nb);
+		await BotV0(opponentPlayer,gameId,elementType,opponentPSlots,round.nb);
+		await drawCardFromMainDeck(gameId,  getOpponentIdFromCurrentId(playerType))
+		await enableAttackingAndPlayingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
+		await addOneRound(gameId, playerType);
+		await enableAttackForOpponentAnimals(gameId,playerType,currentPSlots);
+		await activateJokersAbilities(gameId, playerType, currentPSlots);
+	}
 
 	const finishRound = async () => {
 		try {
-			setShowCountDown(false);
-			await enableAttackingAndPlayingPowerCards(gameId, playerType);
-			await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
-			await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-			await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+			if(opponentPlayer.playerName === 'bot')
+			{
+			await finishRoundBot();
+			}
+			else {
+				await finishRoundPlayer();
+			}
 		} catch (e) {
 			console.error(e);
 		}
 	};
-
+	
+	
 	const attack = async () => {
 		if (isAttackerAbilityActive && isAnimalCard(idsInOppPSlots[0]) && isAttackAnimalEnabled) {
 			await attackOppAnimal();
@@ -479,6 +506,7 @@ export function GameView({
 				nbCardsToPlay={nbCardsToPlay}
 				setElement={setElement}
 				spectator={spectator}
+				gameId={gameId}
 			/>
 
 			{showCountDown && (
@@ -499,3 +527,6 @@ export function GameView({
 		</div>
 	);
 }
+
+
+

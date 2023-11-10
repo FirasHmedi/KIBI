@@ -50,6 +50,7 @@ export interface Player {
 	envLoadNb: number;
 }
 
+	
 export interface Game {
 	board: Board;
 	status: string;

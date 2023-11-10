@@ -7,12 +7,14 @@ import ClawIcon from '@mui/icons-material/Pets';
 import ProgressBar from '@ramonak/react-progress-bar';
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { Tooltip } from 'react-tooltip';
 import SwordIcon from '../assets/icons/sword-small-violet.png';
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP } from '../utils/data';
 import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
-import { Player, Round } from '../utils/interface';
+import { Player, PlayerType, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
 
@@ -27,6 +29,7 @@ export const CurrentPView = ({
 	nbCardsToPlay,
 	setElement,
 	spectator,
+	gameId,
 }: {
 	player: Player;
 	round: Round;
@@ -40,6 +43,7 @@ export const CurrentPView = ({
 	nbCardsToPlay: number;
 	setElement: () => void;
 	spectator?: boolean;
+	gameId: String
 }) => {
 	const { playerType, canPlayPowers, canAttack } = player;
 	const cardsIds = player.cardsIds ?? [];
@@ -48,6 +52,7 @@ export const CurrentPView = ({
 
 	const isMyRound = round?.player === playerType;
 	const [disablePlayButton, setDisablePlayButton] = useState(false);
+	const navigate = useNavigate();
 
 	const isPlayCardEnabled =
 		nbCardsToPlay >= 1 &&
@@ -152,7 +157,7 @@ export const CurrentPView = ({
 								color: !isMyRound ? 'grey' : violet,
 							}}
 							disabled={!isMyRound}
-							onClick={() => finishRound()}>
+							onClick={() => finishRound() }>
 							FINISH
 						</button>
 					</div>
