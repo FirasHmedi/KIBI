@@ -52,7 +52,6 @@ export const CurrentPView = ({
 
 	const isMyRound = round?.player === playerType;
 	const [disablePlayButton, setDisablePlayButton] = useState(false);
-	const navigate = useNavigate();
 
 	const isPlayCardEnabled =
 		nbCardsToPlay >= 1 &&

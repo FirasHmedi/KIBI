@@ -114,11 +114,12 @@ export const switch2RandomCards = async (gameId: string) => {
 	await setPlayerDeck(gameId, 'two', [...twoCards, oneCardFirst, oneCardSecond]);
 };
 
-export const changeElement = async (gameId: string, elementType: ClanName, playerType?: PlayerType) => {
-	await changeElementUnitAction(gameId, elementType);
+export const changeElement = async (gameId: string, elementType: ClanName, playerType?: PlayerType)  => {
+	 await changeElementUnitAction(gameId, elementType);
 	if (playerType) {
 		setElementLoad(gameId, playerType, 0);
 	}
+	
 };
 
 export const sacrificeAnimalToGet3Hp = async (
@@ -189,3 +190,8 @@ export const resetBoard = async (
 export const doubleTankAP = async (gameId: string, playerType: PlayerType, tankIdWithDoubleAP: string) => {
 	await setItem(getGamePath(gameId) + playerType, { tankIdWithDoubleAP });
 };
+
+
+
+
+
