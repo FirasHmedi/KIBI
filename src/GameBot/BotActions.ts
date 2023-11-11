@@ -162,7 +162,7 @@ const playKingForBot = async (
 
 const getSlotsAsArray = async (gameId: string): Promise<SlotType[]> => {
   const slotsSnapshot = await get(child(ref(db), `/games/${gameId}/board/one`));
-  
+  console.log("searching for opponent animal");
   // Assuming each slot is stored as a property in the snapshot's data
   if (slotsSnapshot.exists()) {
     const slotsData = slotsSnapshot.val();
@@ -184,6 +184,7 @@ const getDefendingAnimalIdAndSlot = async (
   gameId:string
 ): Promise<{ animalDId: string; slotDNumber: number } | null> => {
   // Define the priority for the roles
+  console.log("bonjour")
   const rolePriority = ["king", "attacker", "joker", "tank"];
   const slots = await getSlotsAsArray(gameId);
   // Convert slots to a list of slots with their index
@@ -221,16 +222,24 @@ const botAttack = async (
 ) => {
   if (roundNB > 1) {
     // Assuming the bot can't attack in the first round
-    const ownerHasNoAnimals = opponentPSlots.every(
+    const slots = await getSlotsAsArray(gameId);
+  // Convert slots to a list of slots with their index
+    const indexedSlots = slots.map((slot, index) => ({ ...slot, index }));
+    const ownerHasNoAnimals = indexedSlots.every(
       (slot) => slot.cardId === "empty"
     );
+    console.log(Player.canAttack);
+    console.log(ownerHasNoAnimals)
 
     if (Player.canAttack && !ownerHasNoAnimals) {
       // Create an array to store animals that can attack
       const animalsThatCanAttack: any[] = [];
+      console.log("passed from here1")
 
       // Add animals to the array based on priority
       BotSlots.forEach((slot, index) => {
+        console.log(BotSlots)
+        console.log(opponentPSlots)
         const animalCard = getAnimalCard(slot.cardId);
         if (animalCard && slot.canAttack) {
           if (animalCard.role === "king") {
@@ -248,7 +257,7 @@ const botAttack = async (
         const animal = getAnimalCard(animalToAttackWith.cardId);
 
         if (target && animal) {
-                  changeElement(gameId, animal.clan);
+          changeElement(gameId, animal.clan);
 
           await attackAnimal(
             gameId,

@@ -392,7 +392,7 @@ export function GameView({
 		await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 		console.log(round.nb);
 		await BotV0(opponentPlayer,gameId,elementType,opponentPSlots,round.nb,currentPSlots);
-		await drawCardFromMainDeck(gameId,  getOpponentIdFromCurrentId(playerType))
+		await drawCardFromMainDeck(gameId,  PlayerType.TWO)
 		await enableAttackingAndPlayingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
 		await addOneRound(gameId, playerType);
 		await enableAttackForOpponentAnimals(gameId,playerType,currentPSlots);
