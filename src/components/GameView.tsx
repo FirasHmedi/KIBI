@@ -446,7 +446,7 @@ export function GameView({
 				paddingTop: '1vh',
 				paddingBottom: '1vh',
 			}}>
-			<OpponentPView player={opponentPlayer} />
+			<OpponentPView player={opponentPlayer} spectator={spectator} />
 
 			{!spectator && showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
 

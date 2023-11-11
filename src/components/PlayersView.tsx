@@ -166,7 +166,7 @@ export const CurrentPView = ({
 	);
 };
 
-export const OpponentPView = ({ player }: { player: Player }) => {
+export const OpponentPView = ({ player, spectator }: { player: Player; spectator?: boolean }) => {
 	return (
 		<div
 			style={{
@@ -176,7 +176,7 @@ export const OpponentPView = ({ player }: { player: Player }) => {
 				justifyContent: 'center',
 			}}>
 			<PlayerDataView player={player} />
-			<OpponentPDeck cardsNb={player?.cardsIds?.length} />
+			<OpponentPDeck cardsIds={player?.cardsIds} spectator={spectator} />
 			<EmptyElement />
 		</div>
 	);

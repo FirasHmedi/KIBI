@@ -25,19 +25,25 @@ export const CurrentPDeck = ({ cardsIds = [], setSelectedId, selectedId }: Curre
 	);
 };
 
-export const OpponentPDeck = ({ cardsNb = 0 }: { cardsNb: number }) => (
+export const OpponentPDeck = ({ cardsIds = [], spectator }: { cardsIds: string[]; spectator?: boolean }) => (
 	<div
 		style={{
 			...flexRowStyle,
 			width: '40vw',
 			overflowY: 'auto',
-			justifyContent: 'center',
+			justifyContent: !spectator ? 'center' : undefined,
 		}}>
-		{[...Array(cardsNb).keys()].map((_, index) => (
-			<div key={index} style={{ marginRight: 6 }}>
-				<SlotBack />
-			</div>
-		))}
+		{!spectator
+			? [...Array(cardsIds.length).keys()].map((_, index) => (
+					<div key={index} style={{ marginRight: 6 }}>
+						<SlotBack />
+					</div>
+			  ))
+			: cardsIds.map((cardId, index) => (
+					<div style={{ marginRight: 8 }} key={index}>
+						<DeckSlot cardId={cardId} />
+					</div>
+			  ))}
 	</div>
 );
 
