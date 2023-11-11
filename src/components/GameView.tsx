@@ -201,11 +201,10 @@ export function GameView({
 	};
 
 	const isPowerCardPlayable = (cardId: string) => {
-		console.log('isPowerCardPlayable ', cardId);
 		switch (getOriginalCardId(cardId!)) {
 			case 'rev-any-anim-1hp':
 				const slotNbForRevive = getCurrSlotNb();
-				if (isNil(slotNbForRevive) || isEmpty(selectedGYAnimals) || selectedGYAnimals?.length != 1) return false;
+				if (isNil(slotNbForRevive) || isEmpty(board.animalGY)) return false;
 				break;
 			case 'steal-anim-3hp':
 				const slotNbForSteal = getCurrSlotNb();
@@ -240,7 +239,6 @@ export function GameView({
 				if (isEmpty(board.powerGY)) return false;
 				break;
 		}
-		console.log('card is playable');
 		return true;
 	};
 

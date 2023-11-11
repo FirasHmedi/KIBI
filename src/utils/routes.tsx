@@ -62,9 +62,9 @@ const Layout = ({ children }: any) => {
 				<button style={{ display: 'flex', alignItems: 'center' }} onClick={toggleSidebar}>
 					<MenuIcon style={{ color: violet, paddingLeft: '1vw' }} />
 				</button>
-				<button onClick={() => navigate('/')}>
+				<a href={'/'} style={{ color: violet }}>
 					<h4 style={{ paddingLeft: '1vw', margin: 0 }}>KIBI</h4>
-				</button>
+				</a>
 
 				<div style={{ marginLeft: 'auto', marginRight: '1vw', display: 'flex', gap: 10 }}>
 					<button onClick={() => navigate(CARDS_PATH)}>

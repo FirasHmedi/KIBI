@@ -117,26 +117,45 @@ export const Graveyard = ({
 				<div style={{ height: '15vh' }} />
 			)}
 			{isPopupOpen && (
-				<div style={graveyardPopupContainer} onClick={() => closeCardSelectionPopup()}>
-					<button style={closeButtonStyle} onClick={closeCardSelectionPopup}>
-						<CancelIcon style={{ color: 'white', width: '3vw', height: 'auto' }} />
-					</button>
-					<div style={graveyardPopupContent}>
-						{cardsIds.map((cardId, index) => (
-							<div
-								key={index}
-								onClick={e => {
-									e.stopPropagation();
-									selectCardsPolished(cardId);
-								}}>
-								<DeckSlot cardId={cardId} selected={selectedIds.includes(cardId)} />
-							</div>
-						))}
-					</div>
-				</div>
+				<GraveyardPopup
+					cardsIds={cardsIds}
+					selectedIds={selectedIds}
+					selectCardsPolished={selectCardsPolished}
+					closeCardSelectionPopup={closeCardSelectionPopup}
+				/>
 			)}
-			<div style={{ ...alertStyle, display: showAlert ? 'block' : 'none' }}>
-				You are allowed to choose only two cards.
+			<div style={{ ...alertStyle, display: showAlert ? 'block' : 'none' }}>Choose only two cards.</div>
+		</div>
+	);
+};
+
+export const GraveyardPopup = ({
+	cardsIds = [],
+	selectedIds = [],
+	selectCardsPolished,
+	closeCardSelectionPopup,
+}: {
+	cardsIds: string[];
+	selectedIds: string[];
+	selectCardsPolished: (cardId: string) => void;
+	closeCardSelectionPopup: any;
+}) => {
+	return (
+		<div style={graveyardPopupContainer} onClick={() => closeCardSelectionPopup()}>
+			<button style={closeButtonStyle} onClick={closeCardSelectionPopup}>
+				<CancelIcon style={{ color: 'white', width: '3vw', height: 'auto' }} />
+			</button>
+			<div style={graveyardPopupContent}>
+				{cardsIds.map((cardId, index) => (
+					<div
+						key={index}
+						onClick={e => {
+							e.stopPropagation();
+							selectCardsPolished(cardId);
+						}}>
+						<DeckSlot cardId={cardId} selected={selectedIds.includes(cardId)} />
+					</div>
+				))}
 			</div>
 		</div>
 	);
