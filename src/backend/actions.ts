@@ -60,7 +60,6 @@ export const placeKingOnBoard = async (
 	kingId: string,
 	sacrificedAnimalId: string,
 	slotNb: number,
-	elementType?: string,
 ) => {
 	const king = getAnimalCard(kingId);
 	const sacrificedAnimal = getAnimalCard(sacrificedAnimalId);
