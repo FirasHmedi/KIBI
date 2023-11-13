@@ -1,9 +1,8 @@
 import isEmpty from 'lodash/isEmpty';
-import { useEffect, useState } from 'react';
-import { flexColumnStyle, violet } from '../styles/Style';
-
 import isNil from 'lodash/isNil';
+import { useEffect, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { executeBotTurn } from '../GameBot/BotActions';
 import {
 	cancelAttacks,
 	cancelUsingPowerCards,
@@ -25,6 +24,7 @@ import {
 	attackAnimal,
 	attackOwner,
 	changeHasAttacked,
+	drawCardFromMainDeck,
 	enableAttackForOpponentAnimals,
 	enableAttackingAndPlayingPowerCards,
 	placeAnimalOnBoard,
@@ -35,6 +35,7 @@ import {
 } from '../backend/actions';
 import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
 import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
+import { flexColumnStyle, violet } from '../styles/Style';
 import { ANIMALS_POINTS, ClanName, EMPTY, KING, ROUND_DURATION, TANK, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
@@ -49,7 +50,7 @@ import {
 	isTank,
 	waitFor,
 } from '../utils/helpers';
-import { Board, Player, Round } from '../utils/interface';
+import { Board, Player, PlayerType, Round } from '../utils/interface';
 import { BoardView } from './Board';
 import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
@@ -373,6 +374,17 @@ export function GameView({
 		await activateJokersAbilities(gameId, playerType, currentPSlots);
 	};
 
+	const finishRoundBot = async () => {
+		//setElementLoad(gameId, PlayerType.TWO, 1);
+		await executeBotTurn(gameId);
+		await drawCardFromMainDeck(gameId, PlayerType.TWO);
+		await enableAttackingAndPlayingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
+		await addOneRound(gameId, playerType);
+		await enableAttackForOpponentAnimals(gameId, playerType, currentPSlots);
+		await activateJokersAbilities(gameId, playerType, currentPSlots);
+		setElementLoad(gameId, PlayerType.ONE, 1);
+	};
+
 	const finishRound = async () => {
 		try {
 			setShowCountDown(false);
@@ -380,6 +392,9 @@ export function GameView({
 			await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
 			await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 			await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+			if (opponentPlayer.playerName === 'bot') {
+				await finishRoundBot();
+			}
 		} catch (e) {
 			console.error(e);
 		}

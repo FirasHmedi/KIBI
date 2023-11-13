@@ -2,9 +2,9 @@ import shuffle from 'lodash/shuffle';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { setItem } from '../../backend/db';
+import { getGamePath, setItem } from '../../backend/db';
 import { buttonStyle, centerStyle, flexRowStyle, violet } from '../../styles/Style';
-import { ENV_MAX_LOAD, GAMES_PATH, INITIAL_HP, PREPARE } from '../../utils/data';
+import { ANIMALS_CARDS, ENV_MAX_LOAD, GAMES_PATH, INITIAL_HP, KING, PREPARE } from '../../utils/data';
 import { getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/helpers';
 import { PlayerType } from '../../utils/interface';
 
@@ -35,6 +35,89 @@ function Home() {
 			initialPowers: initialPowers,
 		});
 
+		setDisabledButton(true);
+		navigate('/game/' + gameId, {
+			state: {
+				gameId: gameId,
+				playerName: 'player1',
+				playerType: PlayerType.ONE,
+			},
+		});
+	};
+
+	const submitRandomSelection = async (gameId: string, powerCards: string[]) => {
+		const oneCardsIds: string[] = [];
+		const twoCardsIds: string[] = [];
+		let i = 0,
+			j = 0;
+		const animalsWithoutKings = shuffle(ANIMALS_CARDS)
+			.filter(({ role, id }) => {
+				if (role === KING) {
+					if (i < 2) {
+						oneCardsIds.push(id);
+						i++;
+					} else if (j < 2) {
+						twoCardsIds.push(id);
+						j++;
+					}
+					return false;
+				}
+				return true;
+			})
+			.map(animal => animal.id);
+
+		animalsWithoutKings.forEach((id, index) => {
+			index < 6 ? oneCardsIds.push(id) : twoCardsIds.push(id);
+		});
+
+		oneCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index < 4));
+		twoCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index >= 4));
+
+		await setItem(getGamePath(gameId) + PlayerType.ONE, {
+			cardsIds: oneCardsIds,
+		});
+
+		await setItem(getGamePath(gameId) + PlayerType.TWO, {
+			cardsIds: twoCardsIds,
+		});
+
+		await setItem(getGamePath(gameId), {
+			playerToSelect: PlayerType.ONE,
+		});
+	};
+
+	const playWithGameBot = async () => {
+		const gameId = uuidv4();
+		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
+		const initialPowers = mainDeck.splice(-8, 8);
+
+		await setItem(GAMES_PATH + gameId, {
+			status: PREPARE,
+			one: {
+				hp: INITIAL_HP,
+				playerName: 'player1',
+				canAttack: true,
+				canPlayPowers: true,
+				status: PREPARE,
+				envLoadNb: ENV_MAX_LOAD,
+			},
+			board: {
+				mainDeck,
+			},
+			playerToSelect: PlayerType.ONE,
+			initialPowers: initialPowers,
+		});
+		if (gameId.length === 0) return;
+		await setItem(GAMES_PATH + gameId + '/two', {
+			hp: INITIAL_HP,
+			playerName: 'bot',
+			canAttack: true,
+			canPlayPowers: true,
+			status: PREPARE,
+			envLoadNb: ENV_MAX_LOAD,
+		});
+
+		await submitRandomSelection(gameId, initialPowers);
 		setDisabledButton(true);
 		navigate('/game/' + gameId, {
 			state: {
@@ -88,7 +171,12 @@ function Home() {
 				<button style={{ ...buttonStyle, fontSize: '1em', padding: 10 }} disabled={false} onClick={() => createGame()}>
 					Create a game
 				</button>
-
+				<button
+					style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
+					disabled={disabledButton}
+					onClick={playWithGameBot}>
+					Play with Gamebot
+				</button>
 				<div style={centerStyle}>
 					<input
 						type='text'
