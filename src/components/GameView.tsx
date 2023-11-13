@@ -54,7 +54,7 @@ import {  Board, Card, Player, PlayerType, Round } from '../utils/interface';
 import { BoardView } from './Board';
 import { ElementPopup } from './Elements';
 import { CurrentPView, OpponentPView } from './PlayersView';
-import { BotV0 } from '../GameBot/BotActions';
+import { executeBotTurn } from '../GameBot/BotActions';
 
 interface GameViewProps {
 	round: Round;
@@ -373,41 +373,38 @@ export function GameView({
 			setShowEnvPopup(false);
 			return;
 		}
+		
 		await changeElement(gameId, elementType, playerType);
 		setShowEnvPopup(false);
 		await activateJokersAbilities(gameId, playerType, currentPSlots);
 	};
-	const finishRoundPlayer = async () => {
-		setShowCountDown(false);
-		await enableAttackingAndPlayingPowerCards(gameId, playerType);
-		await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
-		await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-		await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-	}
+	
 	const finishRoundBot = async () => {
-		setShowCountDown(false);
-		await enableAttackingAndPlayingPowerCards(gameId, playerType);
-		await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
-		await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-		await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-		console.log(round.nb);
-		await BotV0(opponentPlayer,gameId,elementType,opponentPSlots,round.nb,currentPSlots);
+		//setElementLoad(gameId, PlayerType.TWO, 1);
+		await executeBotTurn(gameId);
 		await drawCardFromMainDeck(gameId,  PlayerType.TWO)
 		await enableAttackingAndPlayingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
 		await addOneRound(gameId, playerType);
 		await enableAttackForOpponentAnimals(gameId,playerType,currentPSlots);
 		await activateJokersAbilities(gameId, playerType, currentPSlots);
+		setElementLoad(gameId, PlayerType.ONE, 1);
+
 	}
 
 	const finishRound = async () => {
 		try {
+			setShowCountDown(false);
+			await enableAttackingAndPlayingPowerCards(gameId, playerType);
+			await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
+			await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+			await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 			if(opponentPlayer.playerName === 'bot')
 			{
+
 			await finishRoundBot();
+
 			}
-			else {
-				await finishRoundPlayer();
-			}
+			
 		} catch (e) {
 			console.error(e);
 		}
