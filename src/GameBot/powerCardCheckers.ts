@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash";
 import { getBoardPath, getItemsOnce } from "../backend/db";
 import { getAnimalCard, isAnimalCard, isAttacker, isKing } from "../utils/helpers";
 import { getBotDeck, getBotSlots, getElementfromDb, getPlayerSlots } from "./datafromDB";
@@ -49,6 +50,7 @@ export const canPlayReviveAnimalCard = async (gameId:string) => {
     const botDeck = await getBotDeck(gameId);
     const botGY = await getItemsOnce('/games/' + gameId + '/board/powerGY'); 
     const currentElement = await getElementfromDb(gameId);
+    if(  !botGY || botGY === undefined||botGY.length === 0) return false;
 
     const hasEmptySlot = botSlots.some((slot: { cardId: string | undefined; }) => !isAnimalCard(slot?.cardId));
 
@@ -65,31 +67,35 @@ export const canPlayReviveAnimalCard = async (gameId:string) => {
 
 export const canPlayReviveLastPowerCard = async (gameId:string) => {
     const powerGY: string[] = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
+    if (powerGY === undefined)
+    {return false;}
+    console.log("in canPlayReviveLastPowerCard")
+    console.log(powerGY);
 	const lastPowerCard = powerGY[powerGY.length - 1];
 
-    const eligiblePowerCards = ["2hp","block-pow","block-att","place-king","rev-any-anim-1hp","2-anim-gy", "draw-2"];
+    const eligiblePowerCards = ["one-2hp","one-block-pow","one-block-att","one-place-king","one-rev-any-anim-1hp","one-2-anim-gy", "one-draw-2","two-2hp","two-block-pow","two-block-att","two-place-king","two-rev-any-anim-1hp","two-2-anim-gy", "two-draw-2"];
 
-    return eligiblePowerCards.includes(lastPowerCard);
+    return eligiblePowerCards.includes(lastPowerCard) && !isEmpty(powerGY);
 };
 
 export const canPlayReviveAnyPowerCard = async (gameId:string) => {
-    const powerCards = await getItemsOnce('/games/' + gameId + '/board/powerGY'); 
+    const powerCards = await getItemsOnce('/games/' + gameId + '/board/powerGY');
     const botSlots = await getBotSlots(gameId); 
-
+    if (!powerCards) return false
     return powerCards.some((card: { type: any; hp: number; }) => {
         switch (card.type) {
-            case 'Steal Animal':
+            case 'one-steal-anim-3hp':
                 return card.hp >= 7;
-            case 'Revive Animal':
+            case 'one-rev-any-anim-1hp':
                 return card.hp >= 5;
-            case '+2hp':
+            case 'one-2hp':
                 return card.hp >= 2;
-            case 'Sacrifice Animal':
+            case 'one-sacrif-anim-3hp':
                 return card.hp >= 2 && botSlots.filter((slot: { cardId: string | undefined; }) => isAnimalCard(slot.cardId)).length >= 2;
-            case 'Block Attack':
-            case 'Block Power':
-            case 'Return 2 Animals':
-            case 'Draw 2 Cards':
+            case 'one-block-att':
+            case 'one-block-pow':
+            case 'one-2-anim-gy':
+            case 'draw-2':
                 return true;
             default:
                 return false;

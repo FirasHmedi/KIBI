@@ -6,11 +6,15 @@ import { ATTACKER, JOKER, KING, TANK } from '../utils/data';
 import { getAnimalCard, isAnimalCard } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import { getBotDeck, getBotSlots, getElementfromDb, getPlayerSlots, getRoundNb } from './datafromDB';
+import { playPowerCardForBot } from './playpowerCards';
 
 const isKing = (cardId: string): boolean => {
 	const KingIds = ['9-a', '13-a', '1-a', '5-a'];
 	return KingIds.includes(cardId);
 };
+function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
 
 const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => {
 	const roundNb = await getRoundNb(gameId);
@@ -32,9 +36,10 @@ const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => 
 			let cardPlaced = false;
 			// Try to find an empty slot for the current card.
 			for (let j = 0; j < 3 && !cardPlaced; j++) {
-				if (!isAnimalCard(botSlots[j]?.cardId) && isAnimalCard(selectedCards[i])) {
+				if ((botSlots[j].cardId==="empty") && isAnimalCard(selectedCards[i])) {
 					console.log(`Placing card ${selectedCards[i]} at slot ${j}`);
 					await placeAnimalOnBoard(gameId, PlayerType.TWO, j, selectedCards[i], elementType);
+					await delay(1000);
 					cardPlaced = true;
 				} else {
 					console.log('this slot is occupied');
@@ -76,7 +81,7 @@ const canPlayKing = async (botSlots: SlotType[], cardIds: string[]) => {
 const playKingForBot = async (gameId: string) => {
 	const roundNB = await getRoundNb(gameId);
 	if (!roundNB || roundNB <= 2) {
-		return;
+		return false ;
 	}
 
 	const botSlots = await getBotSlots(gameId);
@@ -280,9 +285,19 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const roundNB = await getRoundNb(gameId);
 	const bot = await getItemsOnce('/games/' + gameId + '/two');
 	const kingPlayed = await playKingForBot(gameId);
-	const cardsToPick = roundNB === 2 ? 3 : kingPlayed ? 1 : 2;
-	const allowedCardIds = ['10-a', '11-a', '12-a', '14-a', '15-a', '16-a', '2-a', '3-a', '4-a', '6-a', '7-a', '8-a'];
+	console.log(kingPlayed);
+	let cardsToPick : number;
+	if(roundNB>2 ) cardsToPick = 2; else cardsToPick = 3;
+	if (kingPlayed) cardsToPick --; 
 
+	console.log(cardsToPick);
+	const allowedCardIds = ['10-a', '11-a', '12-a', '14-a', '15-a', '16-a', '2-a', '3-a', '4-a', '6-a', '7-a', '8-a'];
+	if (roundNB>2 && bot.canPlayPowers===true){
+		if (await playPowerCardForBot(gameId) === true ){
+			cardsToPick--;
+		}
+	}
+	console.log(cardsToPick);
 	const validCards = (bot?.cardsIds ?? []).filter((cardId: string) => allowedCardIds.includes(cardId));
 	if (!isEmpty(validCards)) {
 		const selectedCards: string[] = shuffle(validCards).slice(0, cardsToPick) ?? [];
