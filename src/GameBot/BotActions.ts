@@ -285,12 +285,10 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const roundNB = await getRoundNb(gameId);
 	const bot = await getItemsOnce('/games/' + gameId + '/two');
 	const kingPlayed = await playKingForBot(gameId);
-	console.log(kingPlayed);
 	let cardsToPick : number;
 	if(roundNB>2 ) cardsToPick = 2; else cardsToPick = 3;
 	if (kingPlayed) cardsToPick --; 
 
-	console.log(cardsToPick);
 	const allowedCardIds = ['10-a', '11-a', '12-a', '14-a', '15-a', '16-a', '2-a', '3-a', '4-a', '6-a', '7-a', '8-a'];
 	if (roundNB>2 && bot.canPlayPowers===true){
 		if (await playPowerCardForBot(gameId) === true ){

@@ -113,7 +113,6 @@ const isPowerCardPlayable = async (cardId: string,gameId:string) => {
             break;
         case 'place-2-anim-1-hp':
             const Animals = botDeck.filter((id: string) => isAnimalCard(id));
-            console.log(Animals);
             if (Animals.length < 2 || !Animals) return false;
             break;
         case 'double-tank-ap':
@@ -145,7 +144,6 @@ const getFirstKingIdInDeck = (botdeck: string []) => {
 const playPowerCard = async (cardId: string, gameId: string) => {
   const botDeck = await getBotDeck(gameId);
   const botSlots = await getBotSlots(gameId);
-  console.log(botSlots)
   const playerSlots = await getPlayerSlots(gameId);
   const animalGY: string[] = await getItemsOnce(getBoardPath(gameId) + "animalGY");
   const powerGY: string[] = await getItemsOnce(getBoardPath(gameId) + "powerGY");
@@ -175,7 +173,7 @@ const playPowerCard = async (cardId: string, gameId: string) => {
       );
       break;
     case "steal-anim-3hp":
-      const slotNbForSteal = getFirstNonEmptySlotIndex(playerSlots);
+      /*const slotNbForSteal = getFirstNonEmptySlotIndex(playerSlots);
       console.log(slotNbForSteal)
       console.log(playerSlots[slotNbForSteal][1])
       const slotNbforplacing = getFirstEmptySlotIndex(botSlots);
@@ -187,7 +185,7 @@ const playPowerCard = async (cardId: string, gameId: string) => {
         playerSlots[slotNbForSteal][1],
         slotNbForSteal,
         slotNbforplacing!
-      );
+      );*/
       break;
     case "switch-decks":
       await minus1Hp(gameId, PlayerType.TWO);
@@ -198,10 +196,6 @@ const playPowerCard = async (cardId: string, gameId: string) => {
       break;
     case "sacrif-anim-3hp":
       const selectedCurrPSlotNb = await getFirstNonEmptySlotAndAnimalId(botSlots);
-      console.log("rani lehna");
-      console.log(selectedCurrPSlotNb);
-      console.log(botSlots[selectedCurrPSlotNb][1]);
-      console.log()
       await sacrificeAnimalToGet3Hp(
         gameId,
         PlayerType.TWO,
@@ -269,7 +263,7 @@ const getBotPowerCards = async (gameId: string) => {
     "one-2-anim-gy",
     "one-rev-any-anim-1hp",
     "one-place-2-anim-1-hp",
-    "one-steal-anim-3hp",
+    //"one-steal-anim-3hp",
     "one-double-tank-ap",
     "one-switch-2-randoms",
     "one-switch-decks",
@@ -286,7 +280,7 @@ const getBotPowerCards = async (gameId: string) => {
     "two-2-anim-gy",
     "two-rev-any-anim-1hp",
     "two-place-2-anim-1-hp",
-    "two-steal-anim-3hp",
+    //"two-steal-anim-3hp",
     "two-double-tank-ap",
     "two-switch-2-randoms",
     "two-switch-decks",
@@ -296,11 +290,9 @@ const getBotPowerCards = async (gameId: string) => {
   ];
 
   const botDeck = await getBotDeck(gameId);
-  console.log(botDeck);
   const botPowerCards = botDeck.filter((card: string) =>
     powerIds.includes(card)
   );
-  console.log(botPowerCards);
   return botPowerCards;
 };
 
@@ -316,7 +308,7 @@ const orderPowerCards = (powerCards: string[]) => {
     "one-2-anim-gy",
     "one-rev-any-anim-1hp",
     "one-place-2-anim-1-hp",
-    "one-steal-anim-3hp",
+    //"one-steal-anim-3hp",
     "one-double-tank-ap",
     "one-switch-2-randoms",
     "one-switch-decks",
@@ -333,7 +325,7 @@ const orderPowerCards = (powerCards: string[]) => {
     "two-2-anim-gy",
     "two-rev-any-anim-1hp",
     "two-place-2-anim-1-hp",
-    "two-steal-anim-3hp",
+    //"two-steal-anim-3hp",
     "two-double-tank-ap",
     "two-switch-2-randoms",
     "two-switch-decks",
@@ -351,10 +343,7 @@ const orderPowerCards = (powerCards: string[]) => {
 
 export const playPowerCardForBot = async (gameId: any) => {
   const powerCards = await getBotPowerCards(gameId);
-  console.log(powerCards);
   const orderedPowerCards = orderPowerCards(powerCards);
-  console.log("cards ordered");
-  console.log(orderedPowerCards);
   return await playPowerCardslogic(gameId, orderedPowerCards);
 };
 
@@ -373,7 +362,6 @@ const playPowerCardslogic = async (gameId: string, PowerCards: string[]) => {
     console.log("the gamebot has no powerCards to play");
     return false;
   } else {
-    console.log("here");
     for (const cardId of PowerCards) {
       console.log(cardId);
       console.log(await isPowerCardPlayable(cardId,gameId));
