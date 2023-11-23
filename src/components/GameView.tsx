@@ -375,9 +375,7 @@ export function GameView({
 	};
 
 	const finishRoundBot = async () => {
-		//setElementLoad(gameId, PlayerType.TWO, 1);
 		await executeBotTurn(gameId);
-		await drawCardFromMainDeck(gameId, PlayerType.TWO);
 		await enableAttackingAndPlayingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
 		await addOneRound(gameId, playerType);
 		await enableAttackForOpponentAnimals(gameId, playerType, currentPSlots);
@@ -393,6 +391,7 @@ export function GameView({
 			await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 			await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 			if (opponentPlayer.playerName === 'bot') {
+				await drawCardFromMainDeck(gameId, PlayerType.TWO);
 				await finishRoundBot();
 			}
 		} catch (e) {

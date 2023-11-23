@@ -13,12 +13,13 @@ const isKing = (cardId: string): boolean => {
 	return KingIds.includes(cardId);
 };
 function delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => {
 	const roundNb = await getRoundNb(gameId);
 	const elementType = await getElementfromDb(gameId);
+
 	if (roundNb === 2) {
 		//round 2 the bot have no choice except placing three animals on board
 		for (let i = 0; i < 3; i++) {
@@ -27,8 +28,11 @@ const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => 
 				await placeAnimalOnBoard(gameId, PlayerType.TWO, i, selectedCards[i], elementType);
 			}
 		}
-	} else if (!isEmpty(selectedCards)) {
-		const nbCardsToPlay = roundNb === 1 ? 3 : 2;
+		return;
+	}
+
+	if (!isEmpty(selectedCards)) {
+		const nbCardsToPlay = 2;
 		const botSlots = ((await getBotSlots(gameId)) ?? []) as SlotType[];
 		const emptySlots = botSlots.filter((slot: SlotType) => !isAnimalCard(slot?.cardId));
 
@@ -36,7 +40,7 @@ const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => 
 			let cardPlaced = false;
 			// Try to find an empty slot for the current card.
 			for (let j = 0; j < 3 && !cardPlaced; j++) {
-				if ((botSlots[j].cardId==="empty") && isAnimalCard(selectedCards[i])) {
+				if (botSlots[j].cardId === 'empty' && isAnimalCard(selectedCards[i])) {
 					console.log(`Placing card ${selectedCards[i]} at slot ${j}`);
 					await placeAnimalOnBoard(gameId, PlayerType.TWO, j, selectedCards[i], elementType);
 					await delay(1000);
@@ -81,7 +85,7 @@ const canPlayKing = async (botSlots: SlotType[], cardIds: string[]) => {
 const playKingForBot = async (gameId: string) => {
 	const roundNB = await getRoundNb(gameId);
 	if (!roundNB || roundNB <= 2) {
-		return false ;
+		return false;
 	}
 
 	const botSlots = await getBotSlots(gameId);
@@ -144,60 +148,71 @@ const getDefendingAnimalIdAndSlot = async (
 };
 
 const botAttack = async (gameId: string) => {
-	const roundNB = await getRoundNb(gameId);
-	const elementType = await getElementfromDb(gameId);
-	const BotSlots = await getBotSlots(gameId);
-	if (roundNB > 2) {
-		const slots = await getPlayerSlots(gameId);
-		const ownerHasNoAnimals = slots.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
+	const roundNB = (await getRoundNb(gameId)) ?? 0;
+	if (roundNB < 2) {
+		console.log("the bot can't attack");
+		return;
+	}
+	const BotSlots = (await getBotSlots(gameId)) ?? [];
+	const slots = await getPlayerSlots(gameId);
+	const ownerHasNoAnimals = slots.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
 
-		const player = await getItemsOnce('/games/' + gameId + '/two');
-		if (player.canAttack && !ownerHasNoAnimals) {
-			// Create an array to store animals that can attack
-			const animalsThatCanAttack: any[] = [];
-			// Add animals to the array based on priority
-			BotSlots.forEach((slot: SlotType, index: any) => {
-				const animalCard = getAnimalCard(slot?.cardId);
-				if (animalCard && slot.canAttack) {
-					if (animalCard.role === KING) {
-						animalsThatCanAttack.unshift(index); // King gets the highest priority
-					} else {
-						animalsThatCanAttack.push(index); // Other animals get lower priority
-					}
-				}
-			});
-			// Attack with the highest priority animal
-			if (animalsThatCanAttack.length > 0) {
-				const slotIndexToAttackWith = animalsThatCanAttack[0];
-				const animalToAttackWith = BotSlots[slotIndexToAttackWith];
-				const target = await getDefendingAnimalIdAndSlot(gameId);
-				const animal = getAnimalCard(animalToAttackWith?.cardId);
+	const player = await getItemsOnce('/games/' + gameId + '/two');
+	if (!player.canAttack || ownerHasNoAnimals) {
+		return;
+	}
 
-				if (target && animal) {
-					const envLoadNb = await getItemsOnce('/games/' + gameId + '/two/envLoadNb');
-					const currentElement = await getElementfromDb(gameId);
-					if (envLoadNb === 3 && animal?.clan !== currentElement) {
-						changeElement(gameId, animal.clan, PlayerType.TWO);
-					}
-					await attackAnimal(gameId, PlayerType.TWO, animalToAttackWith?.cardId, target.animalDId, target.slotDNumber);
-					// If the attacking animal is a king and it's in its element, attempt to attack a second animal
-					if (animal?.role === KING && elementType === animal.clan) {
-						// Find a second target for the king to attack
-						const secondTarget = await getDefendingAnimalIdAndSlot(gameId);
-						if (secondTarget) {
-							await attackAnimal(
-								gameId,
-								PlayerType.TWO,
-								animalToAttackWith?.cardId,
-								secondTarget.animalDId,
-								secondTarget.slotDNumber,
-							);
-						}
-					}
-				}
+	const animalsThatCanAttack: any[] = [];
+	// Add animals to the array based on priority
+	BotSlots.forEach((slot: SlotType, index: number) => {
+		const animalCard = getAnimalCard(slot?.cardId);
+		if (animalCard && slot.canAttack) {
+			if (animalCard.role === KING) {
+				animalsThatCanAttack.unshift(index); // King gets the highest priority
+			} else {
+				animalsThatCanAttack.push(index); // Other animals get lower priority
 			}
 		}
-	} else console.log("the bot can't attack");
+	});
+
+	if (isEmpty(animalsThatCanAttack)) {
+		return;
+	}
+
+	// Attack with the highest priority animal
+	const slotIndexToAttackWith = animalsThatCanAttack[0];
+	const animalToAttackWith = BotSlots[slotIndexToAttackWith];
+	const target = await getDefendingAnimalIdAndSlot(gameId);
+	const animal = getAnimalCard(animalToAttackWith?.cardId);
+
+	if (!target || !animal) {
+		return;
+	}
+
+	const envLoadNb = await getItemsOnce('/games/' + gameId + '/two/envLoadNb');
+	let currentElement = await getElementfromDb(gameId);
+	if (envLoadNb === 3 && animal?.clan !== currentElement) {
+		changeElement(gameId, animal.clan, PlayerType.TWO);
+		currentElement = animal.clan;
+	}
+
+	await attackAnimal(gameId, PlayerType.TWO, animalToAttackWith?.cardId, target.animalDId, target.slotDNumber);
+	// If the attacking animal is a king and it's in its element, attempt to attack a second animal
+	if (animal?.role !== KING || currentElement !== animal.clan) {
+		return;
+	}
+	// Find a second target for the king to attack
+	const secondTarget = await getDefendingAnimalIdAndSlot(gameId);
+	if (!secondTarget) {
+		return;
+	}
+	await attackAnimal(
+		gameId,
+		PlayerType.TWO,
+		animalToAttackWith?.cardId,
+		secondTarget.animalDId,
+		secondTarget.slotDNumber,
+	);
 };
 
 const attemptAttackplayer = async (gameId: string) => {
@@ -285,24 +300,41 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const roundNB = await getRoundNb(gameId);
 	const bot = await getItemsOnce('/games/' + gameId + '/two');
 	const kingPlayed = await playKingForBot(gameId);
-	let cardsToPick : number;
-	if(roundNB>2 ) cardsToPick = 2; else cardsToPick = 3;
-	if (kingPlayed) cardsToPick --; 
+	let cardsToPick = roundNB > 2 ? 2 : 3;
 
-	const allowedCardIds = ['10-a', '11-a', '12-a', '14-a', '15-a', '16-a', '2-a', '3-a', '4-a', '6-a', '7-a', '8-a'];
-	if (roundNB>2 && bot.canPlayPowers===true){
-		if (await playPowerCardForBot(gameId) === true ){
+	if (kingPlayed) cardsToPick--;
+
+	if (roundNB > 2 && bot.canPlayPowers === true) {
+		const isPowerCardPlayed = await playPowerCardForBot(gameId);
+		if (isPowerCardPlayed) {
 			cardsToPick--;
 		}
 	}
-	console.log(cardsToPick);
-	const validCards = (bot?.cardsIds ?? []).filter((cardId: string) => allowedCardIds.includes(cardId));
+	console.log('cardsToPick: ', cardsToPick);
+
+	const allowedAnimalsCardIds = [
+		'10-a',
+		'11-a',
+		'12-a',
+		'14-a',
+		'15-a',
+		'16-a',
+		'2-a',
+		'3-a',
+		'4-a',
+		'6-a',
+		'7-a',
+		'8-a',
+	];
+
+	const validCards = (bot?.cardsIds ?? []).filter((cardId: string) => allowedAnimalsCardIds.includes(cardId));
+
 	if (!isEmpty(validCards)) {
 		const selectedCards: string[] = shuffle(validCards).slice(0, cardsToPick) ?? [];
 		await playAnimalCardForBot(selectedCards, gameId);
 	}
+
 	if (bot?.canAttack) {
-		// await setElementForBot(gameId);
 		const attempt = await attemptAttackplayer(gameId);
 		if (!attempt) {
 			await botAttack(gameId);

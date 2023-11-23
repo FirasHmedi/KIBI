@@ -1,4 +1,5 @@
 import { getItemsOnce } from '../backend/db';
+import { NEUTRAL } from '../utils/data';
 
 export const getBotSlots = async (gameId: string) => {
 	let slots = await getItemsOnce('/games/' + gameId + '/board/two');
@@ -26,5 +27,5 @@ export const getPlayerDeck = async (gameId: string) => {
 
 export const getElementfromDb = async (gameId: string) => {
 	let element = await getItemsOnce('/games/' + gameId + '/board/elementType');
-	return element;
+	return element ?? NEUTRAL;
 };
