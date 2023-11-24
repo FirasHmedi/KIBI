@@ -7,10 +7,11 @@ import ClawIcon from '@mui/icons-material/Pets';
 import ProgressBar from '@ramonak/react-progress-bar';
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { Tooltip } from 'react-tooltip';
 import SwordIcon from '../assets/icons/sword-small-violet.png';
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
-import { INITIAL_HP } from '../utils/data';
+import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
 import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
@@ -27,6 +28,7 @@ export const CurrentPView = ({
 	nbCardsToPlay,
 	setElement,
 	spectator,
+	showCountDown,
 }: {
 	player: Player;
 	round: Round;
@@ -40,6 +42,7 @@ export const CurrentPView = ({
 	nbCardsToPlay: number;
 	setElement: () => void;
 	spectator?: boolean;
+	showCountDown?: boolean;
 }) => {
 	const { playerType, canPlayPowers, canAttack } = player;
 	const cardsIds = player.cardsIds ?? [];
@@ -75,6 +78,113 @@ export const CurrentPView = ({
 			? 'Blocked from attacking'
 			: "Animal is not selected or can't attack";
 
+	const Buttons = () => {
+		if (spectator) {
+			return <></>;
+		}
+		return (
+			<>
+				<div
+					style={{
+						...flexColumnStyle,
+						justifyContent: 'center',
+						position: 'absolute',
+						right: '29vw',
+						bottom: '34vh',
+						gap: 40,
+						width: '10vw',
+					}}>
+					{!isAttackEnabled && <Tooltip anchorSelect={`#${tooltipId}`} content={description} />}
+
+					<button
+						style={{
+							fontWeight: 'bold',
+							color: !isAttackEnabled ? 'grey' : violet,
+							...centerStyle,
+						}}
+						id={tooltipId}
+						disabled={!isAttackEnabled}
+						onClick={() => attack()}>
+						<img
+							src={SwordIcon}
+							style={{
+								width: 28,
+								filter: !isAttackEnabled
+									? 'invert(50%) sepia(0%) saturate(1120%) hue-rotate(152deg) brightness(101%) contrast(86%)'
+									: undefined,
+							}}></img>
+						<ClawIcon style={{ width: '2vw', height: 'auto', color: !isAttackEnabled ? 'grey' : violet }} />
+					</button>
+				</div>
+
+				<div
+					style={{
+						...flexColumnStyle,
+						position: 'absolute',
+						right: '21vw',
+						bottom: '10vh',
+						width: '10vw',
+						height: '3vh',
+						gap: 8,
+						alignItems: 'center',
+					}}>
+					{!!nbCardsToPlay && isMyRound && (
+						<h6 style={{ color: violet, width: '6vw', fontSize: '0.7em' }}>{nbCardsToPlay} cards to play</h6>
+					)}
+					<button
+						ref={playCardRef}
+						style={{
+							fontWeight: 'bold',
+							minWidth: '4vw',
+							fontSize: '0.8em',
+							color: !isPlayCardEnabled ? 'grey' : violet,
+						}}
+						disabled={!isPlayCardEnabled}
+						onClick={() => playCardWithButtonControl()}>
+						PLAY CARD
+					</button>
+				</div>
+				<div
+					style={{
+						position: 'absolute',
+						right: '16vw',
+						bottom: '8vh',
+						...flexRowStyle,
+						height: '3vh',
+						alignItems: 'center',
+						justifyContent: 'flex-start',
+						width: '6vw',
+					}}>
+					<button
+						style={{
+							fontWeight: 'bold',
+							minWidth: '4vw',
+							fontSize: '0.8em',
+							color: !isMyRound ? 'grey' : violet,
+						}}
+						disabled={!isMyRound}
+						onClick={() => finishRound()}>
+						FINISH
+					</button>
+					{!showCountDown && (
+						<CountdownCircleTimer
+							isPlaying
+							duration={ROUND_DURATION}
+							colors={`#8e44ad`}
+							onComplete={() => {
+								finishRound();
+							}}
+							size={28}
+							strokeLinecap='butt'
+							strokeWidth={1.2}>
+							{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
+						</CountdownCircleTimer>
+					)}
+				</div>
+			</>
+		);
+	};
+
 	return (
 		<div
 			style={{
@@ -83,82 +193,7 @@ export const CurrentPView = ({
 				width: '100%',
 				justifyContent: 'center',
 			}}>
-			{!spectator && (
-				<>
-					<div
-						style={{
-							...flexColumnStyle,
-							justifyContent: 'center',
-							position: 'absolute',
-							right: '29vw',
-							bottom: '34vh',
-							gap: 40,
-							width: '10vw',
-						}}>
-						{!isAttackEnabled && <Tooltip anchorSelect={`#${tooltipId}`} content={description} />}
-
-						<button
-							style={{
-								fontWeight: 'bold',
-								color: !isAttackEnabled ? 'grey' : violet,
-								...centerStyle,
-							}}
-							id={tooltipId}
-							disabled={!isAttackEnabled}
-							onClick={() => attack()}>
-							<img
-								src={SwordIcon}
-								style={{
-									width: 28,
-									filter: !isAttackEnabled
-										? 'invert(50%) sepia(0%) saturate(1120%) hue-rotate(152deg) brightness(101%) contrast(86%)'
-										: undefined,
-								}}></img>
-							<ClawIcon style={{ width: '2vw', height: 'auto', color: !isAttackEnabled ? 'grey' : violet }} />
-						</button>
-					</div>
-
-					<div
-						style={{
-							...flexColumnStyle,
-							position: 'absolute',
-							right: '21vw',
-							bottom: '10vh',
-							width: '10vw',
-							gap: 8,
-						}}>
-						{!!nbCardsToPlay && isMyRound && (
-							<h6 style={{ color: violet, width: '6vw', fontSize: '0.7em' }}>{nbCardsToPlay} cards to play</h6>
-						)}
-						<button
-							ref={playCardRef}
-							style={{
-								fontWeight: 'bold',
-								minWidth: '4vw',
-								fontSize: '0.8em',
-								color: !isPlayCardEnabled ? 'grey' : violet,
-							}}
-							disabled={!isPlayCardEnabled}
-							onClick={() => playCardWithButtonControl()}>
-							PLAY CARD
-						</button>
-					</div>
-					<div style={{ position: 'absolute', right: '15vw', bottom: '10vh', width: '10vw' }}>
-						<button
-							style={{
-								fontWeight: 'bold',
-								minWidth: '4vw',
-								fontSize: '0.8em',
-								color: !isMyRound ? 'grey' : violet,
-							}}
-							disabled={!isMyRound}
-							onClick={() => finishRound()}>
-							FINISH
-						</button>
-					</div>
-				</>
-			)}
-
+			<Buttons />
 			<PlayerDataView player={player} setElement={setElement} isMyRound={isMyRound} isMe={true} />
 			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
 			<EmptyElement />

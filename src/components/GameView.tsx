@@ -1,7 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { useEffect, useState } from 'react';
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { executeBotTurn } from '../GameBot/BotActions';
 import {
 	cancelAttacks,
@@ -35,8 +34,8 @@ import {
 } from '../backend/actions';
 import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
 import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
-import { flexColumnStyle, violet } from '../styles/Style';
-import { ANIMALS_POINTS, ClanName, EMPTY, KING, ROUND_DURATION, TANK, envCardsIds } from '../utils/data';
+import { flexColumnStyle } from '../styles/Style';
+import { ANIMALS_POINTS, ClanName, EMPTY, KING, TANK, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
 	getOpponentIdFromCurrentId,
@@ -53,6 +52,7 @@ import {
 import { Board, Player, PlayerType, Round } from '../utils/interface';
 import { BoardView } from './Board';
 import { ElementPopup } from './Elements';
+import { GraveyardPopup } from './GraveyardsView';
 import { CurrentPView, OpponentPView } from './PlayersView';
 
 interface GameViewProps {
@@ -90,8 +90,10 @@ export function GameView({
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
 	const [hasAttacked, setHasAttacked] = useState(false);
 	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
-
+	const [openPopup, setOpenpup] = useState(false);
 	const isMyRound = round.player === playerType;
+	const [cardsIdsForPopup, setCardsIdsForPopup] = useState([]);
+	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState([]);
 
 	useEffect(() => {
 		if (round.nb >= 3 && isMyRound) {
@@ -242,6 +244,9 @@ export function GameView({
 		}
 		return true;
 	};
+
+	const selectCardForPopup = () => {};
+	const closePopup = () => {};
 
 	const playPowerCard = async (cardId: string) => {
 		if (!isPowerCardPlayable(cardId)) {
@@ -432,7 +437,9 @@ export function GameView({
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, true);
 		await attackAnimal(gameId, playerType, idInCurrPSlot, idsInOppPSlots[0], selectedOppSlotsNbs[0]!);
-		if (animalA.role === KING && animalA.clan === elementType && isAnimalCard(idsInOppPSlots[1])) {
+		const canSecondAttackWithKing =
+			animalA.role === KING && animalA.clan === elementType && isAnimalCard(idsInOppPSlots[1]);
+		if (canSecondAttackWithKing) {
 			await attackAnimal(gameId, playerType, idInCurrPSlot, idsInOppPSlots[1], selectedOppSlotsNbs[1]!);
 		}
 		await waitFor(300);
@@ -491,22 +498,16 @@ export function GameView({
 				nbCardsToPlay={nbCardsToPlay}
 				setElement={setElement}
 				spectator={spectator}
+				showCountDown={showCountDown}
 			/>
 
-			{showCountDown && (
-				<div style={{ position: 'absolute', right: '12vw', bottom: '9vh' }}>
-					<CountdownCircleTimer
-						isPlaying
-						duration={ROUND_DURATION}
-						colors={`#8e44ad`}
-						onComplete={() => {
-							finishRound();
-						}}
-						size={42}
-						strokeWidth={3}>
-						{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
-					</CountdownCircleTimer>
-				</div>
+			{openPopup && (
+				<GraveyardPopup
+					cardsIds={cardsIdsForPopup}
+					selectedIds={selectedCardsIdsForPopup}
+					selectCardsPolished={() => selectCardForPopup}
+					closeCardSelectionPopup={() => closePopup}
+				/>
 			)}
 		</div>
 	);
