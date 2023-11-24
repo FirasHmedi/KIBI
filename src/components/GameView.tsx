@@ -353,9 +353,7 @@ export function GameView({
 		setSelectedCardsIdsForPopup([]);
 		setCardsIdsForPopup([]);
 
-		if (getOriginalCardId(activePowerCard.current) != 'place-king') {
-			setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
-		}
+		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 
 		activePowerCard.current = '';
 	};
