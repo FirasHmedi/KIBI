@@ -17,14 +17,13 @@ import { placeAnimalOnBoard, setElementLoad, setPowerCardAsActive } from '../bac
 import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
 import { getBoardPath, getItemsOnce } from '../backend/db';
 import { addPowerToGraveYard } from '../backend/unitActions';
-import { getOriginalCardId, getPowerCard, isAnimalCard, isKing, isTank } from '../utils/helpers';
+import { getOriginalCardId, getPowerCard, isKing, isTank } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import { getBotDeck, getBotSlots, getElementfromDb, getPlayerDeck, getPlayerSlots } from './datafromDB';
 import {
 	canPlayChargeTheElementCard,
 	canPlayDoubleApTankCard,
 	canPlayPlaceKingCard,
-	canPlayPlaceTwoAnimalsCard,
 	canPlayResetBoardCard,
 	canPlayReviveAnimalCard,
 	canPlayReviveAnyPowerCard,
@@ -89,10 +88,6 @@ const isPowerCardPlayable = async (cardId: string, gameId: string) => {
 			break;
 		case 'steal-anim-3hp':
 			if (bot.hp < 4) return false;
-			break;
-		case 'place-2-anim-1-hp':
-			const Animals = botDeck.filter((id: string) => isAnimalCard(id));
-			if (Animals.length < 2 || !Animals) return false;
 			break;
 		case 'double-tank-ap':
 			if (!botSlots.find((slot: { cardId: string | undefined }) => slot && isTank(slot?.cardId))) {
@@ -207,10 +202,6 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 		case 'charge-element':
 			await setElementLoad(gameId, PlayerType.TWO, 3);
 			break;
-		case 'place-2-anim-1-hp':
-			// TODO
-			//await minus1Hp(gameId, PlayerType.TWO);
-			break;
 	}
 
 	await addPowerToGraveYard(gameId, cardId!);
@@ -227,7 +218,6 @@ const getBotPowerCards = async (gameId: string) => {
 		'one-charge-element',
 		'one-2-anim-gy',
 		'one-rev-any-anim-1hp',
-		'one-place-2-anim-1-hp',
 		//"one-steal-anim-3hp",
 		'one-double-tank-ap',
 		'one-switch-2-randoms',
@@ -244,7 +234,6 @@ const getBotPowerCards = async (gameId: string) => {
 		'two-charge-element',
 		'two-2-anim-gy',
 		'two-rev-any-anim-1hp',
-		'two-place-2-anim-1-hp',
 		//"two-steal-anim-3hp",
 		'two-double-tank-ap',
 		'two-switch-2-randoms',
@@ -270,7 +259,6 @@ const orderPowerCards = (powerCards: string[]) => {
 		'one-charge-element',
 		'one-2-anim-gy',
 		'one-rev-any-anim-1hp',
-		'one-place-2-anim-1-hp',
 		//"one-steal-anim-3hp",
 		'one-double-tank-ap',
 		'one-switch-2-randoms',
@@ -287,7 +275,6 @@ const orderPowerCards = (powerCards: string[]) => {
 		'two-charge-element',
 		'two-2-anim-gy',
 		'two-rev-any-anim-1hp',
-		'two-place-2-anim-1-hp',
 		//"two-steal-anim-3hp",
 		'two-double-tank-ap',
 		'two-switch-2-randoms',
@@ -361,13 +348,6 @@ const playPowerCardlogic = async (gameId: string, powerCards: string[]) => {
 				if (await canPlayReviveAnimalCard(gameId)) {
 					await playPowerCard(cardId, gameId);
 					return false;
-				}
-				break;
-			case 'place-2-anim-1-hp':
-				if (await canPlayPlaceTwoAnimalsCard(gameId)) {
-					await playPowerCard(cardId, gameId);
-					return false;
-					// TODO
 				}
 				break;
 			case 'steal-anim-3hp':

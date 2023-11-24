@@ -1,7 +1,6 @@
 import CancelIcon from '@mui/icons-material/Cancel';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
-	alertStyle,
 	closeButtonStyle,
 	graveyardPopupContainer,
 	graveyardPopupContent,
@@ -10,87 +9,16 @@ import {
 } from '../styles/Style';
 import { DeckSlot } from './Slots';
 
-export const PowerGraveyard = ({
-	cardsIds,
-	selectedIds,
-	selectIds,
-	isMyRound,
-}: {
-	cardsIds: string[];
-	selectedIds?: string[];
-	selectIds?: React.Dispatch<React.SetStateAction<string[]>>;
-	isMyRound: boolean;
-}) => {
-	return (
-		<Graveyard
-			name={'Power graveyard'}
-			cardsIds={cardsIds}
-			selectIds={selectIds}
-			selectedIds={selectedIds}
-			singleSelect={true}
-			isMyRound={isMyRound}
-		/>
-	);
+export const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
+	return <Graveyard name={'Power graveyard'} cardsIds={cardsIds} />;
 };
 
-export const AnimalGraveyard = ({
-	cardsIds,
-	selectIds,
-	selectedIds,
-	isMyRound,
-}: {
-	cardsIds: string[];
-	selectIds?: React.Dispatch<React.SetStateAction<string[]>>;
-	selectedIds?: string[];
-	isMyRound: boolean;
-}) => {
-	return (
-		<Graveyard
-			name={'Animal graveyard'}
-			cardsIds={cardsIds}
-			selectIds={selectIds}
-			selectedIds={selectedIds}
-			isMyRound={isMyRound}
-		/>
-	);
+export const AnimalGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
+	return <Graveyard name={'Animal graveyard'} cardsIds={cardsIds} />;
 };
 
-export const Graveyard = ({
-	name,
-	cardsIds = [],
-	selectIds,
-	selectedIds = [],
-	singleSelect = false,
-	isMyRound,
-}: {
-	name: string;
-	cardsIds: string[];
-	isMyRound: boolean;
-	selectIds?: React.Dispatch<React.SetStateAction<string[]>>;
-	selectedIds?: string[];
-	singleSelect?: boolean;
-}) => {
+export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: string[] }) => {
 	const [isPopupOpen, setPopupOpen] = useState(false);
-	const [showAlert, setShowAlert] = useState(false);
-
-	const selectCardsPolished = async (cardId: string) => {
-		if (!selectIds || !isMyRound) return;
-
-		if (selectedIds.includes(cardId)) {
-			selectIds(ids => ids?.filter(id => cardId !== id));
-		} else {
-			if (singleSelect) {
-				selectIds([cardId]);
-			} else {
-				if (selectedIds.length < 2) {
-					selectIds(ids => [...(ids ?? []), cardId]);
-				} else {
-					setShowAlert(true);
-					setTimeout(() => setShowAlert(false), 3000);
-				}
-			}
-		}
-	};
 
 	const openCardSelectionPopup = () => setPopupOpen(true);
 	const closeCardSelectionPopup = () => setPopupOpen(false);
@@ -108,23 +36,12 @@ export const Graveyard = ({
 			</h5>
 			{cardsIds.length > 0 ? (
 				<div onClick={openCardSelectionPopup} style={topCardStyle}>
-					<DeckSlot
-						cardId={cardsIds[cardsIds?.length - 1]}
-						selected={selectedIds.includes(cardsIds[cardsIds?.length - 1])}
-					/>
+					<DeckSlot cardId={cardsIds[cardsIds?.length - 1]} />
 				</div>
 			) : (
 				<div style={{ height: '15vh' }} />
 			)}
-			{isPopupOpen && (
-				<GraveyardPopup
-					cardsIds={cardsIds}
-					selectedIds={selectedIds}
-					selectCardsPolished={selectCardsPolished}
-					closeCardSelectionPopup={closeCardSelectionPopup}
-				/>
-			)}
-			<div style={{ ...alertStyle, display: showAlert ? 'block' : 'none' }}>Choose only two cards.</div>
+			{isPopupOpen && <GraveyardPopup cardsIds={cardsIds} closeCardSelectionPopup={closeCardSelectionPopup} />}
 		</div>
 	);
 };
@@ -134,14 +51,20 @@ export const GraveyardPopup = ({
 	selectedIds = [],
 	selectCardsPolished,
 	closeCardSelectionPopup,
+	dropClose = true,
 }: {
 	cardsIds: string[];
-	selectedIds: string[];
-	selectCardsPolished: (cardId: string) => void;
-	closeCardSelectionPopup: any;
+	selectedIds?: string[];
+	selectCardsPolished?: (cardId: string) => void;
+	closeCardSelectionPopup?: any;
+	dropClose?: boolean;
 }) => {
 	return (
-		<div style={graveyardPopupContainer} onClick={() => closeCardSelectionPopup()}>
+		<div
+			style={graveyardPopupContainer}
+			onClick={() => {
+				if (dropClose) closeCardSelectionPopup();
+			}}>
 			<button style={closeButtonStyle} onClick={closeCardSelectionPopup}>
 				<CancelIcon style={{ color: 'white', width: '3vw', height: 'auto' }} />
 			</button>
@@ -151,9 +74,11 @@ export const GraveyardPopup = ({
 						key={index}
 						onClick={e => {
 							e.stopPropagation();
-							selectCardsPolished(cardId);
+							if (!!selectCardsPolished) {
+								selectCardsPolished(cardId);
+							}
 						}}>
-						<DeckSlot cardId={cardId} selected={selectedIds.includes(cardId)} />
+						<DeckSlot cardId={cardId} selected={selectedIds?.includes(cardId)} />
 					</div>
 				))}
 			</div>

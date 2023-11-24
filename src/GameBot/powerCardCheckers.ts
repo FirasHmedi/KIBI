@@ -78,8 +78,6 @@ export const canPlayReviveLastPowerCard = async (gameId: string) => {
 	if (powerGY === undefined) {
 		return false;
 	}
-	console.log('in canPlayReviveLastPowerCard');
-	console.log(powerGY);
 	const lastPowerCard = powerGY[powerGY.length - 1];
 
 	const eligiblePowerCards = [

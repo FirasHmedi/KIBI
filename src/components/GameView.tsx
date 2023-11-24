@@ -1,6 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { executeBotTurn } from '../GameBot/BotActions';
 import {
 	cancelAttacks,
@@ -80,8 +80,6 @@ export function GameView({
 
 	const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
 	const [selectedOppSlotsNbs, setSelectedOppSlotsNbs] = useState<number[]>([]);
-	const [selectedGYAnimals, setSelectedGYAnimals] = useState<string[]>([]);
-	const [selectedGYPower, setSelectedGYPower] = useState<string[]>([]);
 	const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
 	const [canPlaceKingWithoutSacrifice, setCanPlaceKingWithoutSacrifice] = useState<boolean>(false);
 	const playerType = currentPlayer.playerType!;
@@ -90,18 +88,18 @@ export function GameView({
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
 	const [hasAttacked, setHasAttacked] = useState(false);
 	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
-	const [openPopup, setOpenpup] = useState(false);
+	const [openGY, setOpenGY] = useState(false);
+	const [cardsIdsForPopup, setCardsIdsForPopup] = useState<string[]>([]);
+	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
+	const activePowerCard = useRef('');
+
 	const isMyRound = round.player === playerType;
-	const [cardsIdsForPopup, setCardsIdsForPopup] = useState([]);
-	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState([]);
 
 	useEffect(() => {
 		if (round.nb >= 3 && isMyRound) {
 			setNbCardsToPlay(2);
 			setHasAttacked(false);
 			setCanPlaceKingWithoutSacrifice(false);
-			setSelectedGYAnimals([]);
-			setSelectedGYPower([]);
 			setSelectedCurrPSlotNb(undefined);
 			setSelectedOppSlotsNbs([]);
 			setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
@@ -223,14 +221,10 @@ export function GameView({
 				if (isNil(selectedCurrPSlotNb) || idInCurrPSlot === EMPTY) return false;
 				break;
 			case '2-anim-gy':
-				if (selectedGYAnimals?.length != 2) return false;
+				if (isEmpty(board?.animalGY) || board.animalGY?.length < 2) return false;
 				break;
 			case 'rev-any-pow-1hp':
-				if (isEmpty(selectedGYPower) || selectedGYPower.length != 1) return false;
-				break;
-			case 'place-2-anim-1-hp':
-				const currPAnimals = currentPlayer.cardsIds.filter(id => isAnimalCard(id));
-				if (currPAnimals.length < 2) return false;
+				if (isEmpty(board?.powerGY)) return false;
 				break;
 			case 'switch-2-randoms':
 				if (currentPlayer.cardsIds.length < 2 || opponentPlayer.cardsIds.length < 2) return false;
@@ -245,8 +239,35 @@ export function GameView({
 		return true;
 	};
 
-	const selectCardForPopup = () => {};
-	const closePopup = () => {};
+	const closePopupAndProcessPowerCard = async () => {
+		setOpenGY(false);
+		await processPostPowerCardPlay();
+	};
+
+	const selectCardForPopup = async (cardId: string) => {
+		if (isEmpty(cardId)) {
+			return;
+		}
+		if (getOriginalCardId(activePowerCard.current) === '2-anim-gy' && isEmpty(selectedCardsIdsForPopup)) {
+			setSelectedCardsIdsForPopup([cardId]);
+			return;
+		}
+		setOpenGY(false);
+		switch (getOriginalCardId(activePowerCard.current)) {
+			case 'rev-any-pow-1hp':
+				await reviveAnyPowerFor1hp(gameId, playerType, cardId);
+				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
+				break;
+			case 'rev-any-anim-1hp':
+				const slotNbForRevive = getCurrSlotNb();
+				await sacrifice1HpToReviveAnyAnimal(gameId, playerType, cardId, slotNbForRevive!);
+				break;
+			case '2-anim-gy':
+				await return2animalsFromGYToDeck(gameId, playerType, [...selectedCardsIdsForPopup, cardId]);
+				break;
+		}
+		await processPostPowerCardPlay();
+	};
 
 	const playPowerCard = async (cardId: string) => {
 		if (!isPowerCardPlayable(cardId)) {
@@ -256,6 +277,8 @@ export function GameView({
 		const { name } = getPowerCard(cardId)!;
 
 		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
+		activePowerCard.current = cardId;
+
 		console.log('executing power card');
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
@@ -266,13 +289,13 @@ export function GameView({
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
 			case 'rev-any-pow-1hp':
-				await reviveAnyPowerFor1hp(gameId, playerType, selectedGYPower[0]);
-				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
-				break;
+				setCardsIdsForPopup(board.powerGY);
+				setOpenGY(true);
+				return;
 			case 'rev-any-anim-1hp':
-				const slotNbForRevive = getCurrSlotNb();
-				await sacrifice1HpToReviveAnyAnimal(gameId, playerType, selectedGYAnimals![0], slotNbForRevive!);
-				break;
+				setCardsIdsForPopup(board.animalGY);
+				setOpenGY(true);
+				return;
 			case 'steal-anim-3hp':
 				const slotNbForSteal = getCurrSlotNb();
 				await sacrifice3HpToSteal(gameId, playerType, idsInOppPSlots[0], selectedOppSlotsNbs[0]!, slotNbForSteal!);
@@ -294,8 +317,9 @@ export function GameView({
 				await draw2Cards(gameId, playerType);
 				break;
 			case '2-anim-gy':
-				await return2animalsFromGYToDeck(gameId, playerType, selectedGYAnimals);
-				break;
+				setCardsIdsForPopup(board.animalGY);
+				setOpenGY(true);
+				return;
 			case 'block-pow':
 				await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
 				break;
@@ -313,27 +337,27 @@ export function GameView({
 			case 'charge-element':
 				await setElementLoad(gameId, playerType, 3);
 				break;
-			case 'place-2-anim-1-hp':
-				await minus1Hp(gameId, playerType);
-				setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay ?? 0) + 2);
-				setTwoAnimalsToPlace(2);
-				break;
 		}
+		await processPostPowerCardPlay();
+	};
 
-		await addPowerToGraveYard(gameId, cardId!);
+	const processPostPowerCardPlay = async () => {
+		await addPowerToGraveYard(gameId, activePowerCard.current);
 
-		if (envCardsIds.includes(getOriginalCardId(cardId!))) {
+		if (envCardsIds.includes(getOriginalCardId(activePowerCard.current!))) {
 			setShowEnvPopup(true);
 		}
 
-		setSelectedGYAnimals([]);
-		setSelectedGYPower([]);
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedOppSlotsNbs([]);
+		setSelectedCardsIdsForPopup([]);
+		setCardsIdsForPopup([]);
 
-		if (cardId != 'place-king') {
+		if (getOriginalCardId(activePowerCard.current) != 'place-king') {
 			setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 		}
+
+		activePowerCard.current = '';
 	};
 
 	const setElement = () => {
@@ -345,15 +369,6 @@ export function GameView({
 		console.log({ playerType }, { cardId }, { selectedCurrPSlotNb }, { round });
 		if (isEmpty(cardId) || isEmpty(playerType)) {
 			return;
-		}
-
-		if (!isEmpty(selectedGYPower) && cardId !== selectedGYPower[0] && getOriginalCardId(cardId) !== 'rev-any-pow-1hp') {
-			console.log({ selectedGYPower }, getOriginalCardId(cardId));
-			return;
-		}
-
-		if (selectedGYPower[0] === cardId) {
-			setSelectedGYPower([]);
 		}
 
 		if (isAnimalCard(cardId)) {
@@ -395,7 +410,7 @@ export function GameView({
 			await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
 			await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 			await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
-			if (opponentPlayer.playerName === 'bot') {
+			if (opponentPlayer?.playerName === 'bot') {
 				await drawCardFromMainDeck(gameId, PlayerType.TWO);
 				await finishRoundBot();
 			}
@@ -462,8 +477,8 @@ export function GameView({
 				width: '100%',
 				height: '90vh',
 				justifyContent: 'space-between',
-				paddingTop: '1vh',
-				paddingBottom: '1vh',
+				paddingTop: '5vh',
+				paddingBottom: '5vh',
 			}}>
 			<OpponentPView player={opponentPlayer} spectator={spectator} />
 
@@ -475,10 +490,6 @@ export function GameView({
 				selectCurrentSlot={selectCurrSlotNb}
 				selectedOppSlotsNbs={selectedOppSlotsNbs}
 				selectOppSlotsNbs={selectOppSlotsNbs}
-				selectedGYAnimals={selectedGYAnimals}
-				setSelectedGYAnimals={setSelectedGYAnimals}
-				selectedGYPower={selectedGYPower}
-				setSelectedGYPower={setSelectedGYPower}
 				roundNb={round.nb}
 				tankIdWithDoubleAPOfCurr={currentPlayer.tankIdWithDoubleAP}
 				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
@@ -501,12 +512,13 @@ export function GameView({
 				showCountDown={showCountDown}
 			/>
 
-			{openPopup && (
+			{openGY && (
 				<GraveyardPopup
 					cardsIds={cardsIdsForPopup}
 					selectedIds={selectedCardsIdsForPopup}
-					selectCardsPolished={() => selectCardForPopup}
-					closeCardSelectionPopup={() => closePopup}
+					selectCardsPolished={selectCardForPopup}
+					closeCardSelectionPopup={closePopupAndProcessPowerCard}
+					dropClose={false}
 				/>
 			)}
 		</div>

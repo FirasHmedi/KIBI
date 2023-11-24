@@ -31,10 +31,6 @@
 		"description": "Place an active king",
 		"name": "Place an active king on board"
 	},
-	"place-2-anim-1-hp": {
-		"description": "Place 2 animals for 1hp",
-		"name": "Place 2 animals for 1hp"
-	},
 	"rev-last-pow": {
 		"description": "Activate last power card used (activate directly)",
 		"name": "Activate last power card used"

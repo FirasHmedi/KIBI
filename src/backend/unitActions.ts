@@ -56,16 +56,16 @@ export const removeCardFromPlayerDeck = async (gameId: string, playerType: strin
 
 export const addAnimalToGraveYard = async (gameId: string, animalId: string) => {
 	if (!isAnimalCard(animalId)) return;
-	const animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
-	const index = !!animalGY ? animalGY.length : 0;
-	await setItem(getBoardPath(gameId) + 'animalGY', { [`${index}`]: animalId });
+	const animalGY = (await getItemsOnce(getBoardPath(gameId) + 'animalGY')) ?? [];
+	const cardIndex = animalGY.length;
+	await setItem(getBoardPath(gameId) + 'animalGY', { [`${cardIndex}`]: animalId });
 };
 
 export const addPowerToGraveYard = async (gameId: string, powerId: string) => {
 	if (!isPowerCard(powerId)) return;
-	const powerGY = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
-	const index = powerGY ? powerGY.length : 0;
-	await setItem(getBoardPath(gameId) + 'powerGY', { [`${index}`]: powerId });
+	const powerGY = (await getItemsOnce(getBoardPath(gameId) + 'powerGY')) ?? [];
+	const cardIndex = powerGY.length;
+	await setItem(getBoardPath(gameId) + 'powerGY', { [`${cardIndex}`]: powerId });
 };
 
 export const removePlayerAnimalFromBoard = async (

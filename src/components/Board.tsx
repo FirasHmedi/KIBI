@@ -17,24 +17,15 @@ interface Props {
 	selectedOppSlotsNbs?: number[];
 	selectOppSlotsNbs: (slotNb: number) => void;
 	selectCurrentSlot: (slotNb: number) => void;
-	selectedGYAnimals: string[];
-	setSelectedGYAnimals: React.Dispatch<React.SetStateAction<string[]>>;
-	selectedGYPower: string[];
-	setSelectedGYPower: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export const BoardView = ({
 	board,
-	isMyRound,
 	selectCurrentSlot,
 	selectOppSlotsNbs,
 	selectedOppSlotsNbs = [],
 	selectedCurrentPSlotNb,
-	selectedGYAnimals,
-	setSelectedGYAnimals,
 	roundNb,
-	selectedGYPower,
-	setSelectedGYPower,
 	tankIdWithDoubleAPOfCurr,
 	tankIdWithDoubleAPOfOpp,
 }: Props) => {
@@ -82,19 +73,9 @@ export const BoardView = ({
 				<Seperator />
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator />
-				<AnimalGraveyard
-					isMyRound={isMyRound}
-					cardsIds={animalGY}
-					selectIds={setSelectedGYAnimals}
-					selectedIds={selectedGYAnimals}
-				/>
+				<AnimalGraveyard cardsIds={animalGY} />
 				<Seperator />
-				<PowerGraveyard
-					isMyRound={isMyRound}
-					cardsIds={powerGY}
-					selectIds={setSelectedGYPower}
-					selectedIds={selectedGYPower}
-				/>
+				<PowerGraveyard cardsIds={powerGY} />
 			</div>
 		</div>
 	);
