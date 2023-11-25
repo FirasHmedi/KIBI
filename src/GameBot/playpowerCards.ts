@@ -76,16 +76,16 @@ const isPowerCardPlayable = async (cardId: string, gameId: string) => {
 			if (!botDeck.some((cardId: any) => isKing(cardId))) return false;
 			break;
 		case 'rev-any-anim-1hp':
-			if (!animalGY || bot.hp < 2 || animalGY.length === 0) return false;
+			if (isEmpty(animalGY) || bot.hp < 2 ) return false;
 			break;
 		case '2-anim-gy':
-			if (!animalGY || animalGY.length < 2) return false;
+			if (isEmpty(animalGY) || animalGY.length < 2) return false;
 			break;
 		case 'rev-last-pow':
-			if (!powerGY || powerGY.length === 0) return false;
+			if (isEmpty(powerGY)) return false;
 			break;
 		case 'rev-any-pow-1hp':
-			if (!powerGY || powerGY.length === 0 || bot.hp < 2) return false;
+			if (isEmpty(powerGY) || bot.hp < 2) return false;
 			break;
 		case 'steal-anim-3hp':
 			const emptybotslots = getFirstEmptySlotIndex(botSlots);
@@ -96,7 +96,7 @@ const isPowerCardPlayable = async (cardId: string, gameId: string) => {
 			if (Animals.length < 2 || !Animals) return false;
 			break;
 		case 'double-tank-ap':
-			if (!botSlots.find((slot: { cardId: string | undefined }) => slot && isTank(getOriginalCardId(slot?.cardId)))) {
+			if (!botSlots.find((slot: { cardId: string | undefined }) => slot && isTank(slot?.cardId))) {
 				return false;
 			}
 			break;

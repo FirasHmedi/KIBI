@@ -181,6 +181,7 @@ const botAttack = async (gameId: string) => {
 const kings: number[] = [];
 const attackers: number[] = [];
 const jokers: number[] = [];
+const tanks: number[] = [];
 
 // Parcourir chaque slot et classer les animaux
 BotSlots.forEach((slot: SlotType, index: number) => {
@@ -196,13 +197,16 @@ BotSlots.forEach((slot: SlotType, index: number) => {
             case JOKER:
                 jokers.push(index);
                 break;
+			case TANK:
+				tanks.push(index)
+
             // Ajoutez des cas supplémentaires ici si nécessaire
         }
     }
 });
 
 // Fusionner les tableaux dans l'ordre [KING, ATTACKER, ATTACKER, JOKER]
-const animalsThatCanAttack = [...kings, ...attackers, ...jokers];
+const animalsThatCanAttack = [...kings, ...attackers,...tanks, ...jokers];
 
 	if (isEmpty(animalsThatCanAttack)) {
 		console.log("the bot haven't animals to attack with")
