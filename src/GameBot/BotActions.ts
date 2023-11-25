@@ -8,7 +8,7 @@ import { PlayerType, SlotType } from '../utils/interface';
 import { getBotDeck, getBotSlots, getElementfromDb, getPlayerSlots, getRoundNb } from './datafromDB';
 import { playPowerCardForBot } from './playpowerCards';
 
-const isKing = (cardId: string): boolean => {
+export const isKing = (cardId: string): boolean => {
 	const KingIds = ['9-a', '13-a', '1-a', '5-a'];
 	return KingIds.includes(cardId);
 };
@@ -16,7 +16,7 @@ function delay(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => {
+export const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => {
 	const roundNb = await getRoundNb(gameId);
 	const elementType = await getElementfromDb(gameId);
 
@@ -33,7 +33,7 @@ const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => 
 
 	if (!isEmpty(selectedCards)) {
 		const nbCardsToPlay = 2;
-		const botSlots = ((await getBotSlots(gameId)) ?? []) as SlotType[];
+		let botSlots = ((await getBotSlots(gameId)) ?? []) as SlotType[];
 		const emptySlots = botSlots.filter((slot: SlotType) => !isAnimalCard(slot?.cardId));
 
 		for (let i = 0; i < Math.min(nbCardsToPlay, emptySlots.length); i++) {
@@ -45,6 +45,7 @@ const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => 
 					await placeAnimalOnBoard(gameId, PlayerType.TWO, j, selectedCards[i], elementType);
 					await delay(1000);
 					cardPlaced = true;
+					botSlots = await getBotSlots(gameId);
 				} else {
 					console.log('this slot is occupied');
 				}
@@ -88,8 +89,8 @@ const playKingForBot = async (gameId: string) => {
 		return false;
 	}
 
-	const botSlots = await getBotSlots(gameId);
-	const playerDeck = await getBotDeck(gameId);
+	const botSlots = await getBotSlots(gameId) ?? [];
+	const playerDeck = await getBotDeck(gameId) ?? [];
 	const canplayking = await canPlayKing(botSlots, playerDeck);
 	if (!canplayking) {
 		console.log("Bot couldn't play any king cards this turn.");
@@ -108,15 +109,20 @@ const playKingForBot = async (gameId: string) => {
 			return animal && animal.clan === kingClan;
 		});
 		// Logic to sacrifice the animal and play the king goes here
-		await placeKingOnBoard(
-			gameId,
-			PlayerType.TWO,
-			kingCard,
-			botSlots[slotIndexToSacrifice]?.cardId,
-			slotIndexToSacrifice,
-		);
-		return true; // King was successfully played
+		if(slotIndexToSacrifice!== -1)
+		{
+			await placeKingOnBoard(
+				gameId,
+				PlayerType.TWO,
+				kingCard,
+				botSlots[slotIndexToSacrifice]?.cardId,
+				slotIndexToSacrifice,
+			);
+			return true; // King was successfully played
+		}
+		
 	}
+	return false;
 };
 
 const getDefendingAnimalIdAndSlot = async (
@@ -153,14 +159,16 @@ const botAttack = async (gameId: string) => {
 		console.log("the bot can't attack");
 		return;
 	}
-	const BotSlots = (await getBotSlots(gameId)) ?? [];
+	
 	const slots = await getPlayerSlots(gameId);
 	const ownerHasNoAnimals = slots.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
-
 	const player = await getItemsOnce('/games/' + gameId + '/two');
+	console.log(player.canAttack);
 	if (!player.canAttack || ownerHasNoAnimals) {
+		console.log("bot can't attack");
 		return;
 	}
+	const BotSlots = (await getBotSlots(gameId)) ?? [];
 
 	const animalsThatCanAttack: any[] = [];
 	// Add animals to the array based on priority
@@ -301,7 +309,7 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const bot = await getItemsOnce('/games/' + gameId + '/two');
 	const kingPlayed = await playKingForBot(gameId);
 	let cardsToPick = roundNB > 2 ? 2 : 3;
-
+	console.log(kingPlayed);
 	if (kingPlayed) cardsToPick--;
 
 	if (roundNB > 2 && bot.canPlayPowers === true) {

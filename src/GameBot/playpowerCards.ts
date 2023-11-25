@@ -1,3 +1,4 @@
+import { getElementType } from './../backend/actions';
 import { isEmpty } from 'lodash';
 import {
 	cancelAttacks,
@@ -9,6 +10,7 @@ import {
 	reviveAnyPowerFor1hp,
 	reviveLastPower,
 	sacrifice1HpToReviveAnyAnimal,
+	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
 	switch2RandomCards,
 	switchDeck,
@@ -40,13 +42,11 @@ const getFirstTankId = (botSlots: SlotType[]) => {
 };
 
 const getFirstEmptySlotIndex = (botSlots: SlotType[]) => {
-	return botSlots.findIndex(slot => !slot || !slot?.cardId || slot.cardId === 'empty');
+	return botSlots.findIndex(slot => isEmpty(slot)  || slot.cardId === 'empty');
 };
 
 const getFirstNonEmptySlotIndex = (playerSlots: SlotType[]) => {
-	const nonEmptySlotIndex = playerSlots.findIndex(slot => slot && slot.cardId !== 'empty');
-	console.log(nonEmptySlotIndex);
-
+	const nonEmptySlotIndex = playerSlots.findIndex(slot => !isEmpty(slot) || slot.cardId !== "empty");
 	return nonEmptySlotIndex;
 };
 
@@ -88,14 +88,15 @@ const isPowerCardPlayable = async (cardId: string, gameId: string) => {
 			if (!powerGY || powerGY.length === 0 || bot.hp < 2) return false;
 			break;
 		case 'steal-anim-3hp':
-			if (bot.hp < 4) return false;
+			const emptybotslots = getFirstEmptySlotIndex(botSlots);
+			if (bot.hp < 4  && emptybotslots !== -1) return false;
 			break;
 		case 'place-2-anim-1-hp':
 			const Animals = botDeck.filter((id: string) => isAnimalCard(id));
 			if (Animals.length < 2 || !Animals) return false;
 			break;
 		case 'double-tank-ap':
-			if (!botSlots.find((slot: { cardId: string | undefined }) => slot && isTank(slot?.cardId))) {
+			if (!botSlots.find((slot: { cardId: string | undefined }) => slot && isTank(getOriginalCardId(slot?.cardId)))) {
 				return false;
 			}
 			break;
@@ -119,6 +120,36 @@ const getFirstKingIdInDeck = (botdeck: string[]) => {
 	// Retourner l'ID du "King", ou null si aucun "King" n'est trouvé
 	return kingCard;
 };
+const placeTwoAnimals = async (gameId:string) => {
+	const botslots = await getBotSlots(gameId)
+	const elementType = await getElementType(gameId);
+	const botDeck = await getBotDeck(gameId);
+	const nonKingCards = botDeck.filter((cardId: string | undefined)  => !isKing(cardId));
+	const cardsToPlay = nonKingCards.slice(0, 2);
+	
+	for (let i = 0; i < 3; i++) {
+		if (isEmpty(botslots[i]) || botslots[i].cardId ==="empty") {
+			console.log(`Placing card ${cardsToPlay[i]} at slot ${i}`);
+			await placeAnimalOnBoard(gameId, PlayerType.TWO, i, cardsToPlay[i], elementType);
+		}
+	}
+
+}
+const stealAnimalCardforbot = async (gameId:string, playerSlots : SlotType[], botSlots : SlotType[]) => {
+    const slotNbForSteal = getFirstNonEmptySlotIndex(playerSlots);
+    console.log('Slot Number to Steal from:', slotNbForSteal);
+    const slotNbforplacing = getFirstEmptySlotIndex(botSlots);
+    console.log('Slot Number for Placing:', slotNbforplacing);
+    const cardToSteal = playerSlots[slotNbForSteal].cardId;
+    await sacrifice3HpToSteal(
+        gameId,
+        PlayerType.TWO, 
+        cardToSteal,
+        slotNbForSteal,
+        slotNbforplacing
+    );
+
+};
 
 const playPowerCard = async (cardId: string, gameId: string) => {
 	const botDeck = (await getBotDeck(gameId)) ?? [];
@@ -129,7 +160,6 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 
 	const { name } = getPowerCard(cardId)!;
 	await setPowerCardAsActive(gameId, PlayerType.TWO, cardId!, name!);
-
 	console.log('executing power card');
 	switch (getOriginalCardId(cardId!)) {
 		case 'block-att':
@@ -140,26 +170,13 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 			break;
 		case 'rev-any-pow-1hp':
 			await reviveAnyPowerFor1hp(gameId, PlayerType.TWO, powerGY[0]);
-			//setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 			break;
 		case 'rev-any-anim-1hp':
 			const slotNbForRevive = getFirstEmptySlotIndex(botSlots);
 			await sacrifice1HpToReviveAnyAnimal(gameId, PlayerType.TWO, animalGY[0], slotNbForRevive!);
 			break;
 		case 'steal-anim-3hp':
-			/*const slotNbForSteal = getFirstNonEmptySlotIndex(playerSlots);
-      console.log(slotNbForSteal)
-      console.log(playerSlots[slotNbForSteal][1])
-      const slotNbforplacing = getFirstEmptySlotIndex(botSlots);
-      console.log(slotNbforplacing)
-
-      await sacrifice3HpToSteal(
-        gameId,
-        PlayerType.TWO,
-        playerSlots[slotNbForSteal][1],
-        slotNbForSteal,
-        slotNbforplacing!
-      );*/
+			await stealAnimalCardforbot(gameId,playerSlots,botSlots);
 			break;
 		case 'switch-decks':
 			await minus1Hp(gameId, PlayerType.TWO);
@@ -169,7 +186,8 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 			await switch2RandomCards(gameId);
 			break;
 		case 'sacrif-anim-3hp':
-			const selectedCurrPSlotNb = await getFirstNonEmptySlotAndAnimalId(botSlots);
+			const selectedCurrPSlotNb = await getFirstNonEmptySlotIndex(botSlots);
+
 			const element = await getElementfromDb(gameId);
 			await sacrificeAnimalToGet3Hp(
 				gameId,
@@ -198,7 +216,8 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 		case 'place-king':
 			const king = getFirstKingIdInDeck(botDeck);
 			const elementType = await getElementfromDb(gameId);
-			await placeAnimalOnBoard(gameId, PlayerType.TWO, 0, king!, elementType);
+			const slot = getFirstEmptySlotIndex (botSlots);
+			await placeAnimalOnBoard(gameId, PlayerType.TWO, slot, king!, elementType);
 			break;
 		case 'double-tank-ap':
 			const tankId = getFirstTankId(botSlots);
@@ -208,8 +227,8 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 			await setElementLoad(gameId, PlayerType.TWO, 3);
 			break;
 		case 'place-2-anim-1-hp':
-			// TODO
-			//await minus1Hp(gameId, PlayerType.TWO);
+			await minus1Hp(gameId, PlayerType.TWO);
+			await placeTwoAnimals(gameId);
 			break;
 	}
 
@@ -223,12 +242,12 @@ const getBotPowerCards = async (gameId: string) => {
 		'one-2hp',
 		'one-block-att',
 		'one-block-pow',
-		'one-draw-2',
+        'one-draw-2',
 		'one-charge-element',
 		'one-2-anim-gy',
 		'one-rev-any-anim-1hp',
 		'one-place-2-anim-1-hp',
-		//"one-steal-anim-3hp",
+		"one-steal-anim-3hp",
 		'one-double-tank-ap',
 		'one-switch-2-randoms',
 		'one-switch-decks',
@@ -245,7 +264,7 @@ const getBotPowerCards = async (gameId: string) => {
 		'two-2-anim-gy',
 		'two-rev-any-anim-1hp',
 		'two-place-2-anim-1-hp',
-		//"two-steal-anim-3hp",
+		"two-steal-anim-3hp",
 		'two-double-tank-ap',
 		'two-switch-2-randoms',
 		'two-switch-decks',
@@ -266,12 +285,12 @@ const orderPowerCards = (powerCards: string[]) => {
 		'one-2hp',
 		'one-block-att',
 		'one-block-pow',
-		'one-draw-2',
+        'one-draw-2',
 		'one-charge-element',
 		'one-2-anim-gy',
 		'one-rev-any-anim-1hp',
 		'one-place-2-anim-1-hp',
-		//"one-steal-anim-3hp",
+		"one-steal-anim-3hp",
 		'one-double-tank-ap',
 		'one-switch-2-randoms',
 		'one-switch-decks',
@@ -288,7 +307,7 @@ const orderPowerCards = (powerCards: string[]) => {
 		'two-2-anim-gy',
 		'two-rev-any-anim-1hp',
 		'two-place-2-anim-1-hp',
-		//"two-steal-anim-3hp",
+		"two-steal-anim-3hp",
 		'two-double-tank-ap',
 		'two-switch-2-randoms',
 		'two-switch-decks',
@@ -329,7 +348,7 @@ const playPowerCardlogic = async (gameId: string, powerCards: string[]) => {
 		const isPowerCardPlayableVar = await isPowerCardPlayable(cardId, gameId);
 
 		if (!isPowerCardPlayableVar) {
-			return false;
+			continue; 
 		}
 		console.log('cardId to be played', cardId);
 
@@ -352,6 +371,7 @@ const playPowerCardlogic = async (gameId: string, powerCards: string[]) => {
 				}
 				break;
 			case 'charge-element':
+				console.log(await canPlayChargeTheElementCard(gameId));
 				if (await canPlayChargeTheElementCard(gameId)) {
 					await playPowerCard(cardId, gameId);
 					return true;
@@ -367,7 +387,6 @@ const playPowerCardlogic = async (gameId: string, powerCards: string[]) => {
 				if (await canPlayPlaceTwoAnimalsCard(gameId)) {
 					await playPowerCard(cardId, gameId);
 					return false;
-					// TODO
 				}
 				break;
 			case 'steal-anim-3hp':

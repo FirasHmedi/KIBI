@@ -50,7 +50,7 @@ export const canPlayReviveAnimalCard = async (gameId: string) => {
 	const botDeck = await getBotDeck(gameId);
 	const botGY = await getItemsOnce('/games/' + gameId + '/board/powerGY');
 	const currentElement = await getElementfromDb(gameId);
-	if (!botGY || botGY === undefined || botGY.length === 0) return false;
+	if (isEmpty(botGY)) return false;
 
 	const hasEmptySlot = botSlots.some((slot: { cardId: string | undefined }) => !isAnimalCard(slot?.cardId));
 
@@ -75,7 +75,7 @@ export const canPlayReviveAnimalCard = async (gameId: string) => {
 
 export const canPlayReviveLastPowerCard = async (gameId: string) => {
 	const powerGY: string[] = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
-	if (powerGY === undefined) {
+	if (isEmpty(powerGY)) {
 		return false;
 	}
 	console.log('in canPlayReviveLastPowerCard');
@@ -134,6 +134,7 @@ export const canPlayStealAnimalCard = async (gameId: string) => {
 	const botHP = await getItemsOnce('/games/' + gameId + '/board/two/hp');
 	const botSlots = await getBotSlots(gameId);
 	const opponentSlots = await getPlayerSlots(gameId);
+	if (isEmpty(botSlots)|| isEmpty(opponentSlots)){return false;}
 
 	if (botHP < 6) {
 		return false;
@@ -142,6 +143,8 @@ export const canPlayStealAnimalCard = async (gameId: string) => {
 	if (botSlots.some((slot: { cardId: string | undefined }) => isKing(slot?.cardId))) {
 		return false;
 	}
+	console.log(opponentSlots);
+	console.log(botSlots);
 
 	const opponentHasKing = opponentSlots.some((slot: { cardId: string | undefined }) => isKing(slot?.cardId));
 
