@@ -3,22 +3,6 @@ import isNil from 'lodash/isNil';
 import { useEffect, useRef, useState } from 'react';
 import { executeBotTurn } from '../GameBot/BotActions';
 import {
-	cancelAttacks,
-	cancelUsingPowerCards,
-	changeElement,
-	doubleTankAP,
-	draw2Cards,
-	resetBoard,
-	return2animalsFromGYToDeck,
-	reviveAnyPowerFor1hp,
-	reviveLastPower,
-	sacrifice1HpToReviveAnyAnimal,
-	sacrifice3HpToSteal,
-	sacrificeAnimalToGet3Hp,
-	switch2RandomCards,
-	switchDeck,
-} from '../backend/abilities';
-import {
 	activateJokersAbilities,
 	attackAnimal,
 	attackOwner,
@@ -33,6 +17,23 @@ import {
 	setPowerCardAsActive,
 } from '../backend/actions';
 import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
+import {
+	cancelAttacks,
+	cancelUsingPowerCards,
+	changeElement,
+	doubleTankAP,
+	draw2Cards,
+	resetBoard,
+	return2animalsFromGYToDeck,
+	reviveAnyPowerFor1hp,
+	reviveLastPower,
+	sacrifice1HpToReviveAnyAnimal,
+	sacrifice3HpToSteal,
+	sacrificeAnimalToGet3Hp,
+	stealPowerCardFor2hp,
+	switch2Cards,
+	switchDeck,
+} from '../backend/powers';
 import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
 import { flexColumnStyle } from '../styles/Style';
 import { ANIMALS_POINTS, ClanName, EMPTY, KING, TANK, envCardsIds } from '../utils/data';
@@ -52,7 +53,7 @@ import {
 import { Board, Player, PlayerType, Round } from '../utils/interface';
 import { BoardView } from './Board';
 import { ElementPopup } from './Elements';
-import { GraveyardPopup } from './GraveyardsView';
+import { CardsPopup } from './GraveyardsView';
 import { CurrentPView, OpponentPView } from './PlayersView';
 
 interface GameViewProps {
@@ -88,12 +89,13 @@ export function GameView({
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
 	const [hasAttacked, setHasAttacked] = useState(false);
 	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
-	const [openGY, setOpenGY] = useState(false);
+	const [openCardsPopup, setOpenCardsPopup] = useState(false);
 	const [cardsIdsForPopup, setCardsIdsForPopup] = useState<string[]>([]);
 	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
 	const activePowerCard = useRef('');
 
 	const isMyRound = round.player === playerType;
+	const POWER_CARDS_WITH_2_SELECTS = ['2-anim-gy', 'switch-2-cards'];
 
 	useEffect(() => {
 		if (round.nb >= 3 && isMyRound) {
@@ -125,7 +127,8 @@ export function GameView({
 		isAnimalCard(opponentPSlots[1]?.cardId) &&
 		isAnimalCard(opponentPSlots[2]?.cardId);
 
-	const isAttackerAbilityActive = isAttacker(idInCurrPSlot) && isAnimalInEnv(idInCurrPSlot, elementType);
+	const isAttackerAbilityActive =
+		isAttacker(idInCurrPSlot) && isAnimalInEnv(idInCurrPSlot, elementType);
 
 	const isAttackOwnerEnabled =
 		round.nb >= 3 &&
@@ -148,7 +151,9 @@ export function GameView({
 
 	const selectOppSlotsNbs = async (slotNb: number) => {
 		if (!isKing(idInCurrPSlot)) {
-			setSelectedOppSlotsNbs(selectedSlotsNbs => (selectedSlotsNbs.includes(slotNb) ? [] : [slotNb]));
+			setSelectedOppSlotsNbs(selectedSlotsNbs =>
+				selectedSlotsNbs.includes(slotNb) ? [] : [slotNb],
+			);
 			return;
 		}
 
@@ -185,7 +190,11 @@ export function GameView({
 
 		if (role === KING) {
 			const sacrificedAnimal = getAnimalCard(idInCurrPSlot);
-			if (twoAnimalsToPlace === 0 && !canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
+			if (
+				twoAnimalsToPlace === 0 &&
+				!canPlaceKingWithoutSacrifice &&
+				sacrificedAnimal?.clan !== clan
+			) {
 				return;
 			}
 			await handlePlacingKing(cardId);
@@ -212,9 +221,13 @@ export function GameView({
 				if (
 					isNil(slotNbForSteal) ||
 					selectedOppSlotsNbs?.length != 1 ||
-					!idsInOppPSlots[0] ||
-					idsInOppPSlots[0] === EMPTY
+					!isAnimalCard(idsInOppPSlots[0]) ||
+					currentPlayer.hp < 3
 				)
+					return false;
+				break;
+			case 'steal-pow-2hp':
+				if (!(opponentPlayer.cardsIds ?? []).some(id => isPowerCard(id)) || currentPlayer.hp < 2)
 					return false;
 				break;
 			case 'sacrif-anim-3hp':
@@ -226,7 +239,7 @@ export function GameView({
 			case 'rev-any-pow-1hp':
 				if (isEmpty(board?.powerGY)) return false;
 				break;
-			case 'switch-2-randoms':
+			case 'switch-2-cards':
 				if (currentPlayer.cardsIds.length < 2 || opponentPlayer.cardsIds.length < 2) return false;
 				break;
 			case 'double-tank-ap':
@@ -240,7 +253,7 @@ export function GameView({
 	};
 
 	const closePopupAndProcessPowerCard = async () => {
-		setOpenGY(false);
+		setOpenCardsPopup(false);
 		await processPostPowerCardPlay();
 	};
 
@@ -248,11 +261,14 @@ export function GameView({
 		if (isEmpty(cardId)) {
 			return;
 		}
-		if (getOriginalCardId(activePowerCard.current) === '2-anim-gy' && isEmpty(selectedCardsIdsForPopup)) {
+		if (
+			POWER_CARDS_WITH_2_SELECTS.includes(getOriginalCardId(activePowerCard.current)) &&
+			isEmpty(selectedCardsIdsForPopup)
+		) {
 			setSelectedCardsIdsForPopup([cardId]);
 			return;
 		}
-		setOpenGY(false);
+		setOpenCardsPopup(false);
 		switch (getOriginalCardId(activePowerCard.current)) {
 			case 'rev-any-pow-1hp':
 				await reviveAnyPowerFor1hp(gameId, playerType, cardId);
@@ -264,6 +280,13 @@ export function GameView({
 				break;
 			case '2-anim-gy':
 				await return2animalsFromGYToDeck(gameId, playerType, [...selectedCardsIdsForPopup, cardId]);
+				break;
+			case 'steal-pow-2hp':
+				await stealPowerCardFor2hp(gameId, playerType, cardId);
+				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
+				break;
+			case 'switch-2-cards':
+				await switch2Cards(gameId, playerType, [...selectedCardsIdsForPopup, cardId]);
 				break;
 		}
 		await processPostPowerCardPlay();
@@ -290,25 +313,43 @@ export function GameView({
 				break;
 			case 'rev-any-pow-1hp':
 				setCardsIdsForPopup(board.powerGY);
-				setOpenGY(true);
+				setOpenCardsPopup(true);
 				return;
 			case 'rev-any-anim-1hp':
 				setCardsIdsForPopup(board.animalGY);
-				setOpenGY(true);
+				setOpenCardsPopup(true);
+				return;
+			case 'steal-pow-2hp':
+				const powerCardsIds = opponentPlayer.cardsIds.filter(id => isPowerCard(id));
+				setCardsIdsForPopup(powerCardsIds);
+				setOpenCardsPopup(true);
 				return;
 			case 'steal-anim-3hp':
 				const slotNbForSteal = getCurrSlotNb();
-				await sacrifice3HpToSteal(gameId, playerType, idsInOppPSlots[0], selectedOppSlotsNbs[0]!, slotNbForSteal!);
+				await sacrifice3HpToSteal(
+					gameId,
+					playerType,
+					idsInOppPSlots[0],
+					selectedOppSlotsNbs[0]!,
+					slotNbForSteal!,
+				);
 				break;
 			case 'switch-decks':
 				await minus1Hp(gameId, playerType);
 				await switchDeck(gameId);
 				break;
-			case 'switch-2-randoms':
-				await switch2RandomCards(gameId);
-				break;
+			case 'switch-2-cards':
+				setCardsIdsForPopup(currentPlayer.cardsIds);
+				setOpenCardsPopup(true);
+				return;
 			case 'sacrif-anim-3hp':
-				await sacrificeAnimalToGet3Hp(gameId, playerType, idInCurrPSlot, selectedCurrPSlotNb, elementType);
+				await sacrificeAnimalToGet3Hp(
+					gameId,
+					playerType,
+					idInCurrPSlot,
+					selectedCurrPSlotNb,
+					elementType,
+				);
 				break;
 			case '2hp':
 				await add2Hp(gameId, playerType);
@@ -318,7 +359,7 @@ export function GameView({
 				break;
 			case '2-anim-gy':
 				setCardsIdsForPopup(board.animalGY);
-				setOpenGY(true);
+				setOpenCardsPopup(true);
 				return;
 			case 'block-pow':
 				await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
@@ -406,7 +447,11 @@ export function GameView({
 			setShowCountDown(false);
 			await enableAttackingAndPlayingPowerCards(gameId, playerType);
 			await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
-			await enableAttackForOpponentAnimals(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
+			await enableAttackForOpponentAnimals(
+				gameId,
+				getOpponentIdFromCurrentId(playerType),
+				opponentPSlots,
+			);
 			await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 			if (opponentPlayer?.playerName === 'bot') {
 				await drawCardFromMainDeck(gameId, PlayerType.TWO);
@@ -449,11 +494,23 @@ export function GameView({
 
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, true);
-		await attackAnimal(gameId, playerType, idInCurrPSlot, idsInOppPSlots[0], selectedOppSlotsNbs[0]!);
+		await attackAnimal(
+			gameId,
+			playerType,
+			idInCurrPSlot,
+			idsInOppPSlots[0],
+			selectedOppSlotsNbs[0]!,
+		);
 		const canSecondAttackWithKing =
 			animalA.role === KING && animalA.clan === elementType && isAnimalCard(idsInOppPSlots[1]);
 		if (canSecondAttackWithKing) {
-			await attackAnimal(gameId, playerType, idInCurrPSlot, idsInOppPSlots[1], selectedOppSlotsNbs[1]!);
+			await attackAnimal(
+				gameId,
+				playerType,
+				idInCurrPSlot,
+				idsInOppPSlots[1],
+				selectedOppSlotsNbs[1]!,
+			);
 		}
 		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
@@ -510,8 +567,8 @@ export function GameView({
 				showCountDown={showCountDown}
 			/>
 
-			{openGY && (
-				<GraveyardPopup
+			{openCardsPopup && (
+				<CardsPopup
 					cardsIds={cardsIdsForPopup}
 					selectedIds={selectedCardsIdsForPopup}
 					selectCardsPolished={selectCardForPopup}

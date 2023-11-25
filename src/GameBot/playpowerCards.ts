@@ -1,4 +1,7 @@
 import { isEmpty } from 'lodash';
+import { placeAnimalOnBoard, setElementLoad, setPowerCardAsActive } from '../backend/actions';
+import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
+import { getBoardPath, getItemsOnce } from '../backend/db';
 import {
 	cancelAttacks,
 	cancelUsingPowerCards,
@@ -12,14 +15,17 @@ import {
 	sacrificeAnimalToGet3Hp,
 	switch2RandomCards,
 	switchDeck,
-} from '../backend/abilities';
-import { placeAnimalOnBoard, setElementLoad, setPowerCardAsActive } from '../backend/actions';
-import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
-import { getBoardPath, getItemsOnce } from '../backend/db';
+} from '../backend/powers';
 import { addPowerToGraveYard } from '../backend/unitActions';
 import { getOriginalCardId, getPowerCard, isKing, isTank } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
-import { getBotDeck, getBotSlots, getElementfromDb, getPlayerDeck, getPlayerSlots } from './datafromDB';
+import {
+	getBotDeck,
+	getBotSlots,
+	getElementfromDb,
+	getPlayerDeck,
+	getPlayerSlots,
+} from './datafromDB';
 import {
 	canPlayChargeTheElementCard,
 	canPlayDoubleApTankCard,
@@ -94,7 +100,7 @@ const isPowerCardPlayable = async (cardId: string, gameId: string) => {
 				return false;
 			}
 			break;
-		case 'switch-2-randoms':
+		case 'switch-2-cards':
 			if (botDeck.length < 2 || playerDeck.length < 2) return false;
 			break;
 		case 'switch-decks':
@@ -160,7 +166,7 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 			await minus1Hp(gameId, PlayerType.TWO);
 			await switchDeck(gameId);
 			break;
-		case 'switch-2-randoms':
+		case 'switch-2-cards':
 			await switch2RandomCards(gameId);
 			break;
 		case 'sacrif-anim-3hp':
@@ -220,7 +226,7 @@ const getBotPowerCards = async (gameId: string) => {
 		'one-rev-any-anim-1hp',
 		//"one-steal-anim-3hp",
 		'one-double-tank-ap',
-		'one-switch-2-randoms',
+		'one-switch-2-cards',
 		'one-switch-decks',
 		'one-sacrif-anim-3hp',
 		'one-reset-board',
@@ -236,7 +242,7 @@ const getBotPowerCards = async (gameId: string) => {
 		'two-rev-any-anim-1hp',
 		//"two-steal-anim-3hp",
 		'two-double-tank-ap',
-		'two-switch-2-randoms',
+		'two-switch-2-cards',
 		'two-switch-decks',
 		'two-sacrif-anim-3hp',
 		'two-reset-board',
@@ -261,7 +267,7 @@ const orderPowerCards = (powerCards: string[]) => {
 		'one-rev-any-anim-1hp',
 		//"one-steal-anim-3hp",
 		'one-double-tank-ap',
-		'one-switch-2-randoms',
+		'one-switch-2-cards',
 		'one-switch-decks',
 		'one-sacrif-anim-3hp',
 		'one-reset-board',
@@ -277,7 +283,7 @@ const orderPowerCards = (powerCards: string[]) => {
 		'two-rev-any-anim-1hp',
 		//"two-steal-anim-3hp",
 		'two-double-tank-ap',
-		'two-switch-2-randoms',
+		'two-switch-2-cards',
 		'two-switch-decks',
 		'two-sacrif-anim-3hp',
 		'two-reset-board',
@@ -389,7 +395,7 @@ const playPowerCardlogic = async (gameId: string, powerCards: string[]) => {
 			case '2-anim-gy':
 				await playPowerCard(cardId, gameId);
 				return true;
-			case 'switch-2-randoms':
+			case 'switch-2-cards':
 				await playPowerCard(cardId, gameId);
 				return true;
 		}

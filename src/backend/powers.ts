@@ -1,12 +1,13 @@
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
+import { getOpponentIdFromCurrentId } from '../utils/helpers';
 import { drawCardFromMainDeck, setElementLoad } from './actions';
 
 import { getBoardPath, getGamePath, getItemsOnce, setItem } from './db';
 
-import { shuffle } from 'lodash';
+import { sampleSize, shuffle } from 'lodash';
 import { ClanName, EMPTY, NEUTRAL } from '../utils/data';
-import { getOpponentIdFromCurrentId, getPowerCard, isAnimalCard } from '../utils/helpers';
+import { getPowerCard, isAnimalCard } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import {
 	addAnimalToBoard,
@@ -27,6 +28,22 @@ import {
 	setPlayerDeck,
 } from './unitActions';
 
+export const stealPowerCardFor2hp = async (
+	gameId: string,
+	playerType: PlayerType,
+	cardId: string,
+) => {
+	const opponentType = getOpponentIdFromCurrentId(playerType);
+	const opponentCards: string[] = (await getPLayerCards(gameId, opponentType)) ?? [];
+	const playerCards: string[] = (await getPLayerCards(gameId, playerType)) ?? [];
+	await setPlayerDeck(
+		gameId,
+		opponentType,
+		opponentCards.filter(id => id !== cardId),
+	);
+	await setPlayerDeck(gameId, playerType, [...playerCards, cardId]);
+};
+
 export const cancelAttacks = async (gameId: string, playerType: PlayerType) => {
 	await changeCanAttackVar(gameId, playerType, false);
 };
@@ -40,7 +57,11 @@ export const reviveLastPower = async (gameId: string, playerType: PlayerType) =>
 	}
 };
 
-export const reviveAnyPowerFor1hp = async (gameId: string, playerType: PlayerType, cardId: string) => {
+export const reviveAnyPowerFor1hp = async (
+	gameId: string,
+	playerType: PlayerType,
+	cardId: string,
+) => {
 	if (!getPowerCard(cardId)) {
 		return;
 	}
@@ -77,7 +98,11 @@ export const sacrifice3HpToSteal = async (
 	await addAnimalToBoard(gameId, playerType, mySlotNb, animalId, true);
 };
 
-export const sacrifice1HpToReviveLastAnimal = async (gameId: string, playerType: PlayerType, slotNb?: number) => {
+export const sacrifice1HpToReviveLastAnimal = async (
+	gameId: string,
+	playerType: PlayerType,
+	slotNb?: number,
+) => {
 	if (isNil(slotNb) || !playerType) return;
 	await removeHpFromPlayer(gameId, playerType, 1);
 
@@ -97,24 +122,45 @@ export const switchHealth = async (gameId: string) => {
 };
 
 export const switchDeck = async (gameId: string) => {
-	const oneCards = (await getPLayerCards(gameId, 'one')) ?? [];
-	const twoCards = (await getPLayerCards(gameId, 'two')) ?? [];
+	const oneCards = await getPLayerCards(gameId, 'one');
+	const twoCards = await getPLayerCards(gameId, 'two');
 	await setPlayerDeck(gameId, 'one', twoCards);
 	await setPlayerDeck(gameId, 'two', oneCards);
 };
 
 export const switch2RandomCards = async (gameId: string) => {
-	const oneCards = shuffle((await getPLayerCards(gameId, 'one')) ?? []);
-	const twoCards = shuffle((await getPLayerCards(gameId, 'two')) ?? []);
-	const oneCardFirst = oneCards.shift();
-	const oneCardSecond = oneCards.shift();
-	const twoCardFirst = twoCards.shift();
-	const twoCardSecond = twoCards.shift();
+	const oneCards = shuffle(await getPLayerCards(gameId, 'one'));
+	const twoCards = shuffle(await getPLayerCards(gameId, 'two'));
+	const oneCardFirst = oneCards.shift()!;
+	const oneCardSecond = oneCards.shift()!;
+	const twoCardFirst = twoCards.shift()!;
+	const twoCardSecond = twoCards.shift()!;
 	await setPlayerDeck(gameId, 'one', [...oneCards, twoCardFirst, twoCardSecond]);
 	await setPlayerDeck(gameId, 'two', [...twoCards, oneCardFirst, oneCardSecond]);
 };
 
-export const changeElement = async (gameId: string, elementType: ClanName, playerType?: PlayerType) => {
+export const switch2Cards = async (gameId: string, playerType: PlayerType, cardsIds: string[]) => {
+	const opponentType = getOpponentIdFromCurrentId(playerType);
+	const opponentCards = await getPLayerCards(gameId, opponentType);
+	const playerCards = await getPLayerCards(gameId, playerType);
+	const twoCardsFromPlayerDeck = sampleSize(playerCards, 2);
+	const newPlayerDeck = [
+		...playerCards.filter(id => !twoCardsFromPlayerDeck.includes(id)),
+		...cardsIds,
+	];
+	const newOpponentDeck = [
+		...opponentCards.filter(id => !cardsIds.includes(id)),
+		...twoCardsFromPlayerDeck,
+	];
+	await setPlayerDeck(gameId, playerType, newPlayerDeck);
+	await setPlayerDeck(gameId, opponentType, newOpponentDeck);
+};
+
+export const changeElement = async (
+	gameId: string,
+	elementType: ClanName,
+	playerType?: PlayerType,
+) => {
 	await changeElementUnitAction(gameId, elementType);
 	if (playerType) {
 		setElementLoad(gameId, playerType, 0);
@@ -149,7 +195,11 @@ export const draw2Cards = async (gameId: string, playerType: PlayerType) => {
 	await drawCardFromMainDeck(gameId, playerType);
 };
 
-export const return2animalsFromGYToDeck = async (gameId: string, playerType: PlayerType, animalsIds: string[] = []) => {
+export const return2animalsFromGYToDeck = async (
+	gameId: string,
+	playerType: PlayerType,
+	animalsIds: string[] = [],
+) => {
 	if (animalsIds.length != 2) return;
 	await deleteAnimalCardsFromGraveYardByIds(gameId, animalsIds);
 	await addCardsToPlayerDeck(gameId, playerType, animalsIds);
@@ -159,7 +209,11 @@ export const cancelUsingPowerCards = async (gameId: string, playerType: PlayerTy
 	await changeUsingPowerCardsVar(gameId, playerType, false);
 };
 
-export const returnOneAnimalFromGYToDeck = async (gameId: string, playerType: PlayerType, animalId?: string) => {
+export const returnOneAnimalFromGYToDeck = async (
+	gameId: string,
+	playerType: PlayerType,
+	animalId?: string,
+) => {
 	if (!animalId) return;
 	await deleteAnimalCardFromGraveYardById(gameId, animalId);
 	await addCardsToPlayerDeck(gameId, playerType, [animalId]);
@@ -180,12 +234,18 @@ export const resetBoard = async (
 	for (let i = 0; i < 3; i++) {
 		await removePlayerAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), i);
 		if (!isEmpty(opponentPSlots[i]?.cardId) && opponentPSlots[i]?.cardId !== EMPTY) {
-			await addCardsToPlayerDeck(gameId, getOpponentIdFromCurrentId(playerType), [opponentPSlots[i]?.cardId]);
+			await addCardsToPlayerDeck(gameId, getOpponentIdFromCurrentId(playerType), [
+				opponentPSlots[i]?.cardId,
+			]);
 		}
 	}
 	await changeElement(gameId, NEUTRAL);
 };
 
-export const doubleTankAP = async (gameId: string, playerType: PlayerType, tankIdWithDoubleAP: string) => {
+export const doubleTankAP = async (
+	gameId: string,
+	playerType: PlayerType,
+	tankIdWithDoubleAP: string,
+) => {
 	await setItem(getGamePath(gameId) + playerType, { tankIdWithDoubleAP });
 };

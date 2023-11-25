@@ -41,12 +41,14 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 			) : (
 				<div style={{ height: '15vh' }} />
 			)}
-			{isPopupOpen && <GraveyardPopup cardsIds={cardsIds} closeCardSelectionPopup={closeCardSelectionPopup} />}
+			{isPopupOpen && (
+				<CardsPopup cardsIds={cardsIds} closeCardSelectionPopup={closeCardSelectionPopup} />
+			)}
 		</div>
 	);
 };
 
-export const GraveyardPopup = ({
+export const CardsPopup = ({
 	cardsIds = [],
 	selectedIds = [],
 	selectCardsPolished,
