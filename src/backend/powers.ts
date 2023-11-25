@@ -9,6 +9,7 @@ import { sampleSize, shuffle } from 'lodash';
 import { ClanName, EMPTY, NEUTRAL } from '../utils/data';
 import { getPowerCard, isAnimalCard } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
+import { minus2Hp } from './animalsAbilities';
 import {
 	addAnimalToBoard,
 	addAnimalToGraveYard,
@@ -33,6 +34,7 @@ export const stealPowerCardFor2hp = async (
 	playerType: PlayerType,
 	cardId: string,
 ) => {
+	await minus2Hp(gameId, playerType);
 	const opponentType = getOpponentIdFromCurrentId(playerType);
 	const opponentCards: string[] = (await getPLayerCards(gameId, opponentType)) ?? [];
 	const playerCards: string[] = (await getPLayerCards(gameId, playerType)) ?? [];
@@ -150,7 +152,7 @@ export const switch2Cards = async (
 	const playerCards = await getPLayerCards(gameId, playerType);
 	const twoCardsFromOpponentDeck = sampleSize(opponentCards, 2);
 	const newPlayerDeck = [
-		...playerCards.filter(id => !cardsIds.includes(id) || id !== cardId),
+		...playerCards.filter(id => !cardsIds.includes(id) && id !== cardId),
 		...twoCardsFromOpponentDeck,
 	];
 	const newOpponentDeck = [
