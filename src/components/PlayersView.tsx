@@ -119,67 +119,58 @@ export const CurrentPView = ({
 
 				<div
 					style={{
-						...flexColumnStyle,
 						position: 'absolute',
-						right: '21vw',
-						bottom: '10vh',
-						width: '10vw',
-						height: '3vh',
-						gap: 8,
-						alignItems: 'center',
+						right: '15vw',
+						bottom: '13vh',
+						...flexRowStyle,
+						alignItems: 'flex-end',
+						justifyContent: 'center',
 					}}>
-					{!!nbCardsToPlay && isMyRound && (
-						<h6 style={{ color: violet, width: '6vw', fontSize: '0.7em' }}>{nbCardsToPlay} cards to play</h6>
-					)}
 					<button
 						ref={playCardRef}
 						style={{
 							fontWeight: 'bold',
-							minWidth: '4vw',
+							minWidth: '8vw',
 							fontSize: '0.8em',
 							color: !isPlayCardEnabled ? 'grey' : violet,
 						}}
 						disabled={!isPlayCardEnabled}
 						onClick={() => playCardWithButtonControl()}>
-						PLAY CARD
+						PLAY CARD {!!nbCardsToPlay && isMyRound && <span>({nbCardsToPlay})</span>}
 					</button>
-				</div>
-				<div
-					style={{
-						position: 'absolute',
-						right: '16vw',
-						bottom: '8vh',
-						...flexRowStyle,
-						height: '3vh',
-						alignItems: 'center',
-						justifyContent: 'flex-start',
-						width: '6vw',
-					}}>
-					<button
+					<div
 						style={{
-							fontWeight: 'bold',
-							minWidth: '4vw',
-							fontSize: '0.8em',
-							color: !isMyRound ? 'grey' : violet,
-						}}
-						disabled={!isMyRound}
-						onClick={() => finishRound()}>
-						FINISH
-					</button>
-					{!showCountDown && (
-						<CountdownCircleTimer
-							isPlaying
-							duration={ROUND_DURATION}
-							colors={`#8e44ad`}
-							onComplete={() => {
-								finishRound();
+							...flexRowStyle,
+							alignItems: 'flex-end',
+							justifyContent: 'flex-start',
+							width: '6vw',
+						}}>
+						<button
+							style={{
+								fontWeight: 'bold',
+								minWidth: '4vw',
+								fontSize: '0.8em',
+								color: !isMyRound ? 'grey' : violet,
 							}}
-							size={28}
-							strokeLinecap='butt'
-							strokeWidth={1.2}>
-							{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
-						</CountdownCircleTimer>
-					)}
+							disabled={!isMyRound}
+							onClick={() => finishRound()}>
+							FINISH
+						</button>
+						{showCountDown && (
+							<CountdownCircleTimer
+								isPlaying
+								duration={ROUND_DURATION}
+								colors={`#8e44ad`}
+								onComplete={() => {
+									finishRound();
+								}}
+								size={24}
+								strokeLinecap='butt'
+								strokeWidth={0.5}>
+								{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
+							</CountdownCircleTimer>
+						)}
+					</div>
 				</div>
 			</>
 		);
@@ -284,7 +275,7 @@ const PlayerDataView = ({
 				<ProgressBar
 					bgColor={violet}
 					maxCompleted={hp > INITIAL_HP ? hp : INITIAL_HP}
-					width='5vw'
+					width='4vw'
 					height='1.1vh'
 					baseBgColor={'grey'}
 					isLabelVisible={false}

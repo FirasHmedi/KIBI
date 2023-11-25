@@ -129,4 +129,23 @@ export const GeneralTestData = {
 </button>
 */
 
+/*
+
+	"place-2-anim-1-hp": {
+		"description": "Place 2 animals for 1hp",
+		"name": "Place 2 animals for 1hp"
+	},
+
+	case 'place-2-anim-1-hp':
+	await minus1Hp(gameId, playerType);
+	setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay ?? 0) + 2);
+	setTwoAnimalsToPlace(2);
+	break;
+
+	case 'place-2-anim-1-hp':
+	const currPAnimals = currentPlayer.cardsIds.filter(id => isAnimalCard(id));
+	if (currPAnimals.length < 2) return false;
+	break;
+	*/
+
 export {};

@@ -31,12 +31,8 @@
 		"description": "Place an active king",
 		"name": "Place an active king on board"
 	},
-	"place-2-anim-1-hp": {
-		"description": "Place 2 animals for 1hp",
-		"name": "Place 2 animals for 1hp"
-	},
 	"rev-last-pow": {
-		"description": "Activate last power card used (activate directly)",
+		"description": "Activate last power card used directly",
 		"name": "Activate last power card used"
 	},
 	"rev-any-pow-1hp": {
@@ -51,13 +47,17 @@
 		"description": "Sacrifice 3 hp to switch side of an opponent animal",
 		"name": "Steal animal opponent for 3hp"
 	},
+	"steal-pow-2hp": {
+		"description": "Sacrifice 2hp to steal power card from opponent deck, activate directly",
+		"name": "Steal power card for 2hp"
+	},
 	"switch-decks": {
 		"description": "Switch deck with opponent for 1hp",
 		"name": "Switch decks of players for 1hp"
 	},
-	"switch-2-randoms": {
-		"description": "Switch 2 random cards with opponent",
-		"name": "Switch 2 random cards  with opponent"
+	"switch-2-cards": {
+		"description": "Switch 2 cards with opponent",
+		"name": "Switch 2 cards  with opponent"
 	},
 	"sacrif-anim-3hp": {
 		"description": "Sacrifice an animal to get 3hp",

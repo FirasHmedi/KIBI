@@ -18,7 +18,7 @@ export const GAMES_PATH = 'games/';
 
 export const ROUND_DURATION = 80; //60
 
-export const INITIAL_HP = 6;
+export const INITIAL_HP = 7;
 
 export const ENV_MAX_LOAD = 3; // each turn get 1
 
@@ -152,7 +152,9 @@ export const ANIMALS_CARDS_IDS: string[] = getKeysArrayFromJson(animalsCardsJson
 export const POWERS_CARDS_IDS: string[] = getKeysArrayFromJson(powerCardsJson);
 
 export const ANIMALS_CARDS: AnimalCard[] = getArrayFromJson(animalsCardsJson);
-export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(JSON.stringify(animalsCardsJson));
+export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(
+	JSON.stringify(animalsCardsJson),
+);
 
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);

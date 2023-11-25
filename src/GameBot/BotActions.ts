@@ -1,11 +1,22 @@
 import { isEmpty, isNil, shuffle } from 'lodash';
-import { changeElement } from '../backend/abilities';
-import { attackAnimal, attackOwner, placeAnimalOnBoard, placeKingOnBoard } from '../backend/actions';
+import {
+	attackAnimal,
+	attackOwner,
+	placeAnimalOnBoard,
+	placeKingOnBoard,
+} from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
 import { ANIMALS_POINTS, ATTACKER, JOKER, KING, TANK } from '../utils/data';
 import { getAnimalCard, getOriginalCardId, isAnimalCard } from '../utils/helpers';
+import { changeElement } from '../backend/powers';
 import { PlayerType, SlotType } from '../utils/interface';
-import { getBotDeck, getBotSlots, getElementfromDb, getPlayerSlots, getRoundNb } from './datafromDB';
+import {
+	getBotDeck,
+	getBotSlots,
+	getElementfromDb,
+	getPlayerSlots,
+	getRoundNb,
+} from './datafromDB';
 import { playPowerCardForBot } from './playpowerCards';
 
 export const isKing = (cardId: string): boolean => {
@@ -183,7 +194,6 @@ const attackers: number[] = [];
 const jokers: number[] = [];
 const tanks: number[] = [];
 
-// Parcourir chaque slot et classer les animaux
 BotSlots.forEach((slot: SlotType, index: number) => {
     const animalCard = getAnimalCard(slot?.cardId);
     if (animalCard && slot.canAttack) {
@@ -200,12 +210,10 @@ BotSlots.forEach((slot: SlotType, index: number) => {
 			case TANK:
 				tanks.push(index)
 
-            // Ajoutez des cas supplémentaires ici si nécessaire
         }
     }
 });
 
-// Fusionner les tableaux dans l'ordre [KING, ATTACKER, ATTACKER, JOKER]
 const animalsThatCanAttack = [...kings, ...attackers,...tanks, ...jokers];
 
 	if (isEmpty(animalsThatCanAttack)) {
@@ -230,7 +238,13 @@ const animalsThatCanAttack = [...kings, ...attackers,...tanks, ...jokers];
 		currentElement = animal.clan;
 	}
 
-	await attackAnimal(gameId, PlayerType.TWO, animalToAttackWith?.cardId, target.animalDId, target.slotDNumber);
+	await attackAnimal(
+		gameId,
+		PlayerType.TWO,
+		animalToAttackWith?.cardId,
+		target.animalDId,
+		target.slotDNumber,
+	);
 	// If the attacking animal is a king and it's in its element, attempt to attack a second animal
 	if (animal?.role !== KING || currentElement !== animal.clan) {
 		return;
@@ -255,7 +269,8 @@ const attemptAttackplayer = async (gameId: string) => {
 	const playerSlots = (await getPlayerSlots(gameId)) ?? [];
 	const elementType = await getElementfromDb(gameId);
 	// Check if the owner has less than 3 animals or no animals at all
-	const ownerHasFewerThanThreeAnimals = playerSlots.filter((slot: SlotType) => isAnimalCard(slot?.cardId)).length < 3;
+	const ownerHasFewerThanThreeAnimals =
+		playerSlots.filter((slot: SlotType) => isAnimalCard(slot?.cardId)).length < 3;
 	const ownerHasNoAnimals = playerSlots.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
 	if (ownerHasNoAnimals) {
 		const rolePriority = [KING, ATTACKER, TANK, JOKER];
@@ -361,7 +376,9 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 		'8-a',
 	];
 
-	const validCards = (bot?.cardsIds ?? []).filter((cardId: string) => allowedAnimalsCardIds.includes(cardId));
+	const validCards = (bot?.cardsIds ?? []).filter((cardId: string) =>
+		allowedAnimalsCardIds.includes(cardId),
+	);
 
 	if (!isEmpty(validCards)) {
 		const selectedCards: string[] = shuffle(validCards).slice(0, cardsToPick) ?? [];

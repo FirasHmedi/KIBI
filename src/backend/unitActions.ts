@@ -41,14 +41,22 @@ export const addAnimalToBoard = async (
 	await activateJokerAbility(gameId, animalId, playerType);
 };
 
-export const addCardsToPlayerDeck = async (gameId: string, playerType: string, cardsIds: string[] = []) => {
+export const addCardsToPlayerDeck = async (
+	gameId: string,
+	playerType: string,
+	cardsIds: string[] = [],
+) => {
 	const existantCardsIds = await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
 	await setItem(getGamePath(gameId) + playerType + '/', {
 		cardsIds: [...(existantCardsIds ?? []), ...cardsIds],
 	});
 };
 
-export const removeCardFromPlayerDeck = async (gameId: string, playerType: string, cardId: string) => {
+export const removeCardFromPlayerDeck = async (
+	gameId: string,
+	playerType: string,
+	cardId: string,
+) => {
 	let cardsIds = await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
 	cardsIds = cardsIds.filter((id: string) => id != cardId);
 	await setItem(getGamePath(gameId) + playerType, { cardsIds: cardsIds });
@@ -56,16 +64,16 @@ export const removeCardFromPlayerDeck = async (gameId: string, playerType: strin
 
 export const addAnimalToGraveYard = async (gameId: string, animalId: string) => {
 	if (!isAnimalCard(animalId)) return;
-	const animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
-	const index = !!animalGY ? animalGY.length : 0;
-	await setItem(getBoardPath(gameId) + 'animalGY', { [`${index}`]: animalId });
+	const animalGY = (await getItemsOnce(getBoardPath(gameId) + 'animalGY')) ?? [];
+	const cardIndex = animalGY.length;
+	await setItem(getBoardPath(gameId) + 'animalGY', { [`${cardIndex}`]: animalId });
 };
 
 export const addPowerToGraveYard = async (gameId: string, powerId: string) => {
 	if (!isPowerCard(powerId)) return;
-	const powerGY = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
-	const index = powerGY ? powerGY.length : 0;
-	await setItem(getBoardPath(gameId) + 'powerGY', { [`${index}`]: powerId });
+	const powerGY = (await getItemsOnce(getBoardPath(gameId) + 'powerGY')) ?? [];
+	const cardIndex = powerGY.length;
+	await setItem(getBoardPath(gameId) + 'powerGY', { [`${cardIndex}`]: powerId });
 };
 
 export const removePlayerAnimalFromBoard = async (
@@ -144,7 +152,11 @@ export const changeCanAttackVarOfSlot = async (
 	});
 };
 
-export const changeUsingPowerCardsVar = async (gameId: string, playerType: string, value: boolean) => {
+export const changeUsingPowerCardsVar = async (
+	gameId: string,
+	playerType: string,
+	value: boolean,
+) => {
 	await setItem(getGamePath(gameId) + playerType, { canPlayPowers: value });
 };
 
@@ -171,7 +183,10 @@ export const deleteAnimalCardFromGraveYardById = async (gameId: string, animalId
 	await setItem(getBoardPath(gameId), { animalGY: animalGY });
 };
 
-export const deleteAnimalCardsFromGraveYardByIds = async (gameId: string, animalsIds: string[] = []) => {
+export const deleteAnimalCardsFromGraveYardByIds = async (
+	gameId: string,
+	animalsIds: string[] = [],
+) => {
 	let animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
 	animalGY = (animalGY ?? []).filter((id: string) => !animalsIds.includes(id));
 	await setItem(getBoardPath(gameId), { animalGY: animalGY });
@@ -188,7 +203,7 @@ export const deleteAnimalCardFromGraveYardByIndex = async (gameId: string, index
 	await setItem(getBoardPath(gameId), { animalGY: animalGY });
 };
 
-export const getPLayerHealth = async (gameId: string, playerType: string) => {
+export const getPLayerHealth = async (gameId: string, playerType: string): Promise<number> => {
 	return await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
 };
 
@@ -196,8 +211,8 @@ export const changePLayerHealth = async (gameId: string, playerType: string, hp:
 	await setItem(getGamePath(gameId) + playerType, { hp: hp });
 };
 
-export const getPLayerCards = async (gameId: string, playerType: string) => {
-	return await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
+export const getPLayerCards = async (gameId: string, playerType: string): Promise<string[]> => {
+	return (await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds')) ?? [];
 };
 
 export const setPlayerDeck = async (gameId: string, playerType: string, cardsIds: string[]) => {
