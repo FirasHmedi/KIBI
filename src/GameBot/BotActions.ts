@@ -2,8 +2,8 @@ import { isEmpty, isNil, shuffle } from 'lodash';
 import { changeElement } from '../backend/abilities';
 import { attackAnimal, attackOwner, placeAnimalOnBoard, placeKingOnBoard } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
-import { ATTACKER, JOKER, KING, TANK } from '../utils/data';
-import { getAnimalCard, isAnimalCard } from '../utils/helpers';
+import { ANIMALS_POINTS, ATTACKER, JOKER, KING, TANK } from '../utils/data';
+import { getAnimalCard, getOriginalCardId, isAnimalCard } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import { getBotDeck, getBotSlots, getElementfromDb, getPlayerSlots, getRoundNb } from './datafromDB';
 import { playPowerCardForBot } from './playpowerCards';
@@ -126,8 +126,14 @@ const playKingForBot = async (gameId: string) => {
 };
 
 const getDefendingAnimalIdAndSlot = async (
-	gameId: string,
+	gameId: string,cardId : string
 ): Promise<{ animalDId: string; slotDNumber: number } | null> => {
+	const attacker = getAnimalCard(cardId);
+	console.log(attacker);
+	if(!attacker)
+	{return null;}
+	const attackerAP = ANIMALS_POINTS[attacker.role].ap;
+
 	// Define the priority for the roles
 	const rolePriority = [KING, ATTACKER, JOKER, TANK];
 	const slots = await getPlayerSlots(gameId);
@@ -140,9 +146,9 @@ const getDefendingAnimalIdAndSlot = async (
 	// Find the first slot that has an animal card and matches the role priority
 	for (const role of rolePriority) {
 		const foundSlot = indexedSlots.find((slot: SlotType) => {
-			const animalCard = getAnimalCard(slot?.cardId);
-			return animalCard && animalCard.role === role;
-		});
+            const defendingAnimal = getAnimalCard(slot?.cardId);
+            return defendingAnimal && defendingAnimal.role === role && ANIMALS_POINTS[defendingAnimal.role].hp <= attackerAP;
+        });
 
 		if (foundSlot) {
 			return { animalDId: foundSlot?.cardId, slotDNumber: foundSlot.index };
@@ -152,6 +158,8 @@ const getDefendingAnimalIdAndSlot = async (
 	// Return null if no valid defending animal is found
 	return null;
 };
+
+
 
 const botAttack = async (gameId: string) => {
 	const roundNB = (await getRoundNb(gameId)) ?? 0;
@@ -170,27 +178,41 @@ const botAttack = async (gameId: string) => {
 	}
 	const BotSlots = (await getBotSlots(gameId)) ?? [];
 
-	const animalsThatCanAttack: any[] = [];
-	// Add animals to the array based on priority
-	BotSlots.forEach((slot: SlotType, index: number) => {
-		const animalCard = getAnimalCard(slot?.cardId);
-		if (animalCard && slot.canAttack) {
-			if (animalCard.role === KING) {
-				animalsThatCanAttack.unshift(index); // King gets the highest priority
-			} else {
-				animalsThatCanAttack.push(index); // Other animals get lower priority
-			}
-		}
-	});
+const kings: number[] = [];
+const attackers: number[] = [];
+const jokers: number[] = [];
+
+// Parcourir chaque slot et classer les animaux
+BotSlots.forEach((slot: SlotType, index: number) => {
+    const animalCard = getAnimalCard(slot?.cardId);
+    if (animalCard && slot.canAttack) {
+        switch (animalCard.role) {
+            case KING:
+                kings.push(index);
+                break;
+            case ATTACKER:
+                attackers.push(index);
+                break;
+            case JOKER:
+                jokers.push(index);
+                break;
+            // Ajoutez des cas supplémentaires ici si nécessaire
+        }
+    }
+});
+
+// Fusionner les tableaux dans l'ordre [KING, ATTACKER, ATTACKER, JOKER]
+const animalsThatCanAttack = [...kings, ...attackers, ...jokers];
 
 	if (isEmpty(animalsThatCanAttack)) {
+		console.log("the bot haven't animals to attack with")
 		return;
 	}
 
 	// Attack with the highest priority animal
 	const slotIndexToAttackWith = animalsThatCanAttack[0];
 	const animalToAttackWith = BotSlots[slotIndexToAttackWith];
-	const target = await getDefendingAnimalIdAndSlot(gameId);
+	const target = await getDefendingAnimalIdAndSlot(gameId,animalToAttackWith.cardId);
 	const animal = getAnimalCard(animalToAttackWith?.cardId);
 
 	if (!target || !animal) {
@@ -210,7 +232,7 @@ const botAttack = async (gameId: string) => {
 		return;
 	}
 	// Find a second target for the king to attack
-	const secondTarget = await getDefendingAnimalIdAndSlot(gameId);
+	const secondTarget = await getDefendingAnimalIdAndSlot(gameId,animalToAttackWith.cardId);
 	if (!secondTarget) {
 		return;
 	}

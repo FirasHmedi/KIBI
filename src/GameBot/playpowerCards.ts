@@ -46,7 +46,7 @@ const getFirstEmptySlotIndex = (botSlots: SlotType[]) => {
 };
 
 const getFirstNonEmptySlotIndex = (playerSlots: SlotType[]) => {
-	const nonEmptySlotIndex = playerSlots.findIndex(slot => !isEmpty(slot) || slot.cardId !== "empty");
+	const nonEmptySlotIndex = playerSlots.findIndex(slot => !isEmpty(slot) && slot.cardId !== "empty");
 	return nonEmptySlotIndex;
 };
 
