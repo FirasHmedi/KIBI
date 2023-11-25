@@ -139,18 +139,23 @@ export const switch2RandomCards = async (gameId: string) => {
 	await setPlayerDeck(gameId, 'two', [...twoCards, oneCardFirst, oneCardSecond]);
 };
 
-export const switch2Cards = async (gameId: string, playerType: PlayerType, cardsIds: string[]) => {
+export const switch2Cards = async (
+	gameId: string,
+	playerType: PlayerType,
+	cardId: string,
+	cardsIds: string[],
+) => {
 	const opponentType = getOpponentIdFromCurrentId(playerType);
 	const opponentCards = await getPLayerCards(gameId, opponentType);
 	const playerCards = await getPLayerCards(gameId, playerType);
 	const twoCardsFromPlayerDeck = sampleSize(playerCards, 2);
 	const newPlayerDeck = [
-		...playerCards.filter(id => !twoCardsFromPlayerDeck.includes(id)),
-		...cardsIds,
+		...playerCards.filter(id => !cardsIds.includes(id) || id !== cardId),
+		...twoCardsFromPlayerDeck,
 	];
 	const newOpponentDeck = [
-		...opponentCards.filter(id => !cardsIds.includes(id)),
-		...twoCardsFromPlayerDeck,
+		...opponentCards.filter(id => !twoCardsFromPlayerDeck.includes(id)),
+		...cardsIds,
 	];
 	await setPlayerDeck(gameId, playerType, newPlayerDeck);
 	await setPlayerDeck(gameId, opponentType, newOpponentDeck);

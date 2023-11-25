@@ -286,7 +286,10 @@ export function GameView({
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
 			case 'switch-2-cards':
-				await switch2Cards(gameId, playerType, [...selectedCardsIdsForPopup, cardId]);
+				await switch2Cards(gameId, playerType, activePowerCard.current, [
+					...selectedCardsIdsForPopup,
+					cardId,
+				]);
 				break;
 		}
 		await processPostPowerCardPlay();
