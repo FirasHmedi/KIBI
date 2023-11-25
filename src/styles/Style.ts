@@ -120,7 +120,7 @@ export const graveyardPopupContainer: React.CSSProperties = {
 	left: 0,
 	height: '100%',
 	width: '100%',
-	backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	backgroundColor: 'rgba(0, 0, 0, 0.7)',
 	zIndex: 1,
 };
 
@@ -129,20 +129,19 @@ export const graveyardPopupContent: React.CSSProperties = {
 	left: '50%',
 	top: '50%',
 	transform: 'translate(-50%, -50%)',
-	width: '40vw',
+	width: '32vw',
 	display: 'flex',
 	flexDirection: 'row',
 	flexWrap: 'wrap',
 	justifyContent: 'center',
-	gap: '1vw',
+	gap: '1.5vw',
 	backgroundColor: 'transparent',
-	padding: '1vw',
 };
 
 export const closeButtonStyle: React.CSSProperties = {
 	position: 'absolute',
-	top: '0.5vw',
-	right: '0.5vw',
+	top: '1vw',
+	right: '1vw',
 };
 
 export const topCardStyle: React.CSSProperties = {
