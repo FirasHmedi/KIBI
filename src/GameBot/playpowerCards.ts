@@ -1,4 +1,4 @@
-import { getElementType } from './../backend/actions';
+import {getElementType, placeKingWithoutSacrifice} from './../backend/actions';
 import { isEmpty } from 'lodash';
 import { placeAnimalOnBoard, setElementLoad, setPowerCardAsActive } from '../backend/actions';
 import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
@@ -217,9 +217,8 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 			break;
 		case 'place-king':
 			const king = getFirstKingIdInDeck(botDeck);
-			const elementType = await getElementfromDb(gameId);
 			const slot = getFirstEmptySlotIndex (botSlots);
-			await placeAnimalOnBoard(gameId, PlayerType.TWO, slot, king!, elementType);
+			await placeKingWithoutSacrifice(gameId, PlayerType.TWO, king!,slot);
 			break;
 		case 'double-tank-ap':
 			const tankId = getFirstTankId(botSlots);
@@ -418,7 +417,7 @@ const playPowerCardlogic = async (gameId: string, powerCards: string[]) => {
 			case 'place-king':
 				if (await canPlayPlaceKingCard(gameId)) {
 					await playPowerCard(cardId, gameId);
-					return false;
+					return true;
 				}
 				break;
 			case '2-anim-gy':

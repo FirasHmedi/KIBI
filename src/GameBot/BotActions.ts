@@ -180,7 +180,7 @@ const botAttack = async (gameId: string) => {
 	}
 	
 	const slots = await getPlayerSlots(gameId);
-	const ownerHasNoAnimals = slots.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
+	const ownerHasNoAnimals = slots?.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
 	const player = await getItemsOnce('/games/' + gameId + '/two');
 	console.log(player.canAttack);
 	if (!player.canAttack || ownerHasNoAnimals) {

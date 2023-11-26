@@ -23,9 +23,9 @@ export const canPlayResetBoardCard = async (gameId: string) => {
 	const botSlots = await getBotSlots(gameId);
 	const opponentSlots = await getPlayerSlots(gameId);
 
-	const botHasNoAnimalsOnBoard = botSlots.every((slot: { cardId: string }) => !isAnimalCard(slot?.cardId));
+	const botHasNoAnimalsOnBoard = botSlots?.every((slot: { cardId: string }) => !isAnimalCard(slot?.cardId));
 
-	const opponentHasAnimalsOnBoard = opponentSlots.some((slot: { cardId: string | undefined }) =>
+	const opponentHasAnimalsOnBoard = opponentSlots?.some((slot: { cardId: string | undefined }) =>
 		isAnimalCard(slot?.cardId),
 	);
 
