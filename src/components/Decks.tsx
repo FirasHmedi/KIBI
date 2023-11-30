@@ -8,7 +8,8 @@ interface CurrentPDeckProps {
 }
 
 export const CurrentPDeck = ({ cardsIds = [], setSelectedId, selectedId }: CurrentPDeckProps) => {
-	const selectCard = (cardId: string) => (cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId));
+	const selectCard = (cardId: string) =>
+		cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId);
 	return (
 		<div
 			style={{
@@ -25,7 +26,13 @@ export const CurrentPDeck = ({ cardsIds = [], setSelectedId, selectedId }: Curre
 	);
 };
 
-export const OpponentPDeck = ({ cardsIds = [], spectator }: { cardsIds: string[]; spectator?: boolean }) => (
+export const OpponentPDeck = ({
+	cardsIds = [],
+	spectator,
+}: {
+	cardsIds: string[];
+	spectator?: boolean;
+}) => (
 	<div
 		style={{
 			...flexRowStyle,
@@ -50,7 +57,7 @@ export const OpponentPDeck = ({ cardsIds = [], spectator }: { cardsIds: string[]
 export const MainDeck = ({ nbCards = 0 }: { nbCards: number }) => {
 	return (
 		<div style={{ width: '17vw', ...flexColumnStyle, color: violet, gap: 2 }}>
-			<h5>Main Deck #{nbCards} </h5>
+			<h5>Main Deck ({nbCards}) </h5>
 			<SlotBack />
 		</div>
 	);

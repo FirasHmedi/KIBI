@@ -1,9 +1,11 @@
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useState } from 'react';
 import {
+	boardSlotStyle,
 	closeButtonStyle,
 	graveyardPopupContainer,
 	graveyardPopupContent,
+	neutralColor,
 	topCardStyle,
 	violet,
 } from '../styles/Style';
@@ -32,14 +34,19 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 				color: violet,
 			}}>
 			<h5 style={{ marginBottom: 4 }}>
-				{name} #{cardsIds.length}
+				{name} ({cardsIds.length})
 			</h5>
 			{cardsIds.length > 0 ? (
 				<div onClick={openCardSelectionPopup} style={topCardStyle}>
 					<DeckSlot cardId={cardsIds[cardsIds?.length - 1]} />
 				</div>
 			) : (
-				<div style={{ height: '15vh' }} />
+				<div
+					style={{
+						...boardSlotStyle,
+						backgroundColor: neutralColor,
+						justifyContent: 'center',
+					}}></div>
 			)}
 			{isPopupOpen && (
 				<CardsPopup cardsIds={cardsIds} closeCardSelectionPopup={closeCardSelectionPopup} />

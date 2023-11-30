@@ -7,7 +7,11 @@ export const Seperator = ({ h }: { h?: string }) => {
 	return <div style={{ height }} />;
 };
 
-export const ElementPopup = ({ changeElement }: { changeElement: (elementType?: ClanName) => void }) => (
+export const ElementPopup = ({
+	changeElement,
+}: {
+	changeElement: (elementType?: ClanName) => void;
+}) => (
 	<div
 		style={{
 			position: 'absolute',
@@ -18,7 +22,9 @@ export const ElementPopup = ({ changeElement }: { changeElement: (elementType?: 
 			backgroundColor: 'rgba(0, 0, 0, 0.6)',
 			zIndex: 1,
 		}}>
-		<button style={{ position: 'absolute', right: '35vw', top: '25vh' }} onClick={() => changeElement()}>
+		<button
+			style={{ position: 'absolute', right: '35vw', top: '25vh' }}
+			onClick={() => changeElement()}>
 			<CancelIcon style={{ color: 'white', width: '3vw', height: 'auto' }} />
 		</button>
 		<div
@@ -35,14 +41,26 @@ export const ElementPopup = ({ changeElement }: { changeElement: (elementType?: 
 			}}>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
 				<div
-					style={{ width: '10vw', height: '10vw', backgroundColor: fireColor, ...centerStyle, zIndex: 11 }}
+					style={{
+						width: '10vw',
+						height: '10vw',
+						backgroundColor: fireColor,
+						...centerStyle,
+						zIndex: 11,
+					}}
 					onClick={() => changeElement('fire')}>
 					<img
 						src={elementsIcons[FIRE]}
 						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 				</div>
 				<div
-					style={{ width: '10vw', height: '10vw', backgroundColor: airColor, ...centerStyle, zIndex: 11 }}
+					style={{
+						width: '10vw',
+						height: '10vw',
+						backgroundColor: airColor,
+						...centerStyle,
+						zIndex: 11,
+					}}
 					onClick={() => changeElement('air')}>
 					<img
 						src={elementsIcons[AIR]}
@@ -64,7 +82,13 @@ export const ElementPopup = ({ changeElement }: { changeElement: (elementType?: 
 						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 				</div>
 				<div
-					style={{ width: '10vw', height: '10vw', backgroundColor: earthColor, ...centerStyle, zIndex: 11 }}
+					style={{
+						width: '10vw',
+						height: '10vw',
+						backgroundColor: earthColor,
+						...centerStyle,
+						zIndex: 11,
+					}}
 					onClick={() => changeElement('earth')}>
 					<img
 						src={elementsIcons[EARTH]}
@@ -83,6 +107,6 @@ export const RoundView = ({ nb = 1 }: { nb: number }) => (
 			fontWeight: 'bold',
 			color: violet,
 		}}>
-		ROUND #{Math.floor(nb / 2)}
+		ROUND ({Math.floor(nb / 2)})
 	</div>
 );

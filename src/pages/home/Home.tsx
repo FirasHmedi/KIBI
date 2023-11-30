@@ -1,10 +1,21 @@
+import ComputerIcon from '@mui/icons-material/Computer';
+import PersonIcon from '@mui/icons-material/Person';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import shuffle from 'lodash/shuffle';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { getGamePath, setItem } from '../../backend/db';
 import { buttonStyle, centerStyle, flexRowStyle, violet } from '../../styles/Style';
-import { ANIMALS_CARDS, ENV_MAX_LOAD, GAMES_PATH, INITIAL_HP, KING, PREPARE } from '../../utils/data';
+import {
+	ANIMALS_CARDS,
+	ENV_MAX_LOAD,
+	GAMES_PATH,
+	INITIAL_HP,
+	KING,
+	PREPARE,
+} from '../../utils/data';
 import { getMainDeckFirstHalf, getMainDeckSecondHalf } from '../../utils/helpers';
 import { PlayerType } from '../../utils/interface';
 
@@ -166,17 +177,28 @@ function Home() {
 				style={{
 					...centerStyle,
 					flexDirection: 'column',
-					gap: 4,
+					gap: 20,
 				}}>
-				<button style={{ ...buttonStyle, fontSize: '1em', padding: 10 }} disabled={false} onClick={() => createGame()}>
-					Create a game
-				</button>
-				<button
-					style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
-					disabled={disabledButton}
-					onClick={playWithGameBot}>
-					Play with Gamebot
-				</button>
+				<div style={{ ...centerStyle, gap: 15 }}>
+					<button
+						style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
+						disabled={false}
+						onClick={() => createGame()}>
+						<PersonIcon />
+					</button>
+					<button
+						style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
+						disabled={disabledButton}
+						onClick={playWithGameBot}>
+						<ComputerIcon />
+					</button>
+					<button
+						style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
+						disabled={disabledButton}
+						onClick={() => joinGameAsSpectator()}>
+						<VisibilityIcon style={{ color: 'white' }} />
+					</button>
+				</div>
 				<div style={centerStyle}>
 					<input
 						type='text'
@@ -195,18 +217,12 @@ function Home() {
 						disabled={disabledButton}
 						onChange={e => setGameId(e.target.value)}
 					/>
-					<div style={{ width: '20vw', ...flexRowStyle, gap: 10 }}>
+					<div style={{ width: '20vw', ...flexRowStyle, gap: 15 }}>
 						<button
-							style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
+							style={{ ...buttonStyle, fontSize: '1em', padding: 10, minWidth: '3vw' }}
 							disabled={disabledButton}
 							onClick={() => joinGameAsPlayer()}>
-							Join as second player
-						</button>
-						<button
-							style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
-							disabled={disabledButton}
-							onClick={() => joinGameAsSpectator()}>
-							Join as watcher
+							<PersonAddIcon style={{ color: 'white' }} />
 						</button>
 					</div>
 				</div>

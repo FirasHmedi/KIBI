@@ -1,4 +1,3 @@
-import shuffle from 'lodash/shuffle';
 import { useState } from 'react';
 import { getGamePath, setItem } from '../backend/db';
 import {
@@ -10,7 +9,7 @@ import {
 	selectedColor,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, KING, rolesIcons } from '../utils/data';
+import { ANIMALS_CARDS, ANIMALS_POINTS, CLANS, rolesIcons } from '../utils/data';
 import { getOpponentIdFromCurrentId } from '../utils/helpers';
 import { AnimalCard, PlayerType } from '../utils/interface';
 import { PowerBoardSlot } from './Slots';
@@ -24,7 +23,14 @@ interface Props {
 	powerCards?: string[];
 }
 
-export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, playerToSelect, powerCards }: Props) => {
+export const SharedSelection = ({
+	playerType,
+	gameId,
+	oneCards,
+	twoCards,
+	playerToSelect,
+	powerCards,
+}: Props) => {
 	const [idSelected, setIdSelected] = useState<string>();
 	const myCards = playerType === PlayerType.ONE ? oneCards : twoCards;
 	const oppCards = playerType === PlayerType.ONE ? twoCards : oneCards;
@@ -43,52 +49,13 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 			cardsIds: [...myCards, idSelected],
 		});
 
-		const playerToSelect = changePlayerToSelect ? playerType : getOpponentIdFromCurrentId(playerType);
+		const playerToSelect = changePlayerToSelect
+			? playerType
+			: getOpponentIdFromCurrentId(playerType);
 		await setItem(getGamePath(gameId), {
 			playerToSelect,
 		});
 		setIdSelected(undefined);
-	};
-
-	const submitRandomSelection = async () => {
-		const oneCardsIds: string[] = [];
-		const twoCardsIds: string[] = [];
-		let i = 0,
-			j = 0;
-		const animalsWithoutKings = shuffle(ANIMALS_CARDS)
-			.filter(({ role, id }) => {
-				if (role === KING) {
-					if (i < 2) {
-						oneCardsIds.push(id);
-						i++;
-					} else if (j < 2) {
-						twoCardsIds.push(id);
-						j++;
-					}
-					return false;
-				}
-				return true;
-			})
-			.map(animal => animal.id);
-
-		animalsWithoutKings.forEach((id, index) => {
-			index < 6 ? oneCardsIds.push(id) : twoCardsIds.push(id);
-		});
-
-		oneCardsIds.push(...(powerCards ?? []).filter((_, index) => index < 4));
-		twoCardsIds.push(...(powerCards ?? []).filter((_, index) => index >= 4));
-
-		await setItem(getGamePath(gameId) + PlayerType.ONE, {
-			cardsIds: oneCardsIds,
-		});
-
-		await setItem(getGamePath(gameId) + PlayerType.TWO, {
-			cardsIds: twoCardsIds,
-		});
-
-		await setItem(getGamePath(gameId), {
-			playerToSelect: PlayerType.ONE,
-		});
 	};
 
 	return (
@@ -102,7 +69,11 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 				gap: 16,
 				marginTop: 10,
 			}}>
-			{playerToSelect === playerType ? <h4>Your turn to choose a card</h4> : <h4>Opponent turn to choose a card</h4>}
+			{playerToSelect === playerType ? (
+				<h4>Your turn to choose a card</h4>
+			) : (
+				<h4>Opponent turn to choose a card</h4>
+			)}
 			{!switchCardsTypes ? (
 				<>
 					<div
@@ -111,16 +82,18 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 							justifyContent: 'space-between',
 							gap: 8,
 						}}>
-						{ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 8).map((animal: AnimalCard, index: number) => (
-							<AnimalSelectionSlot
-								key={index}
-								animal={animal}
-								idSelected={idSelected}
-								toggleAnimalSelection={selectCard}
-								myCards={myCards}
-								oppCards={oppCards}
-							/>
-						))}
+						{ANIMALS_CARDS.filter((_, index) => index >= 0 && index < 8).map(
+							(animal: AnimalCard, index: number) => (
+								<AnimalSelectionSlot
+									key={index}
+									animal={animal}
+									idSelected={idSelected}
+									toggleAnimalSelection={selectCard}
+									myCards={myCards}
+									oppCards={oppCards}
+								/>
+							),
+						)}
 					</div>
 					<div
 						style={{
@@ -128,16 +101,18 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 							justifyContent: 'space-between',
 							gap: 8,
 						}}>
-						{ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16).map((animal: AnimalCard, index: number) => (
-							<AnimalSelectionSlot
-								key={index}
-								animal={animal}
-								idSelected={idSelected}
-								toggleAnimalSelection={selectCard}
-								myCards={myCards}
-								oppCards={oppCards}
-							/>
-						))}
+						{ANIMALS_CARDS.filter((_, index) => index >= 8 && index < 16).map(
+							(animal: AnimalCard, index: number) => (
+								<AnimalSelectionSlot
+									key={index}
+									animal={animal}
+									idSelected={idSelected}
+									toggleAnimalSelection={selectCard}
+									myCards={myCards}
+									oppCards={oppCards}
+								/>
+							),
+						)}
 					</div>
 				</>
 			) : (
@@ -165,17 +140,6 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 				onClick={() => submitCard()}>
 				CHOOSE
 			</button>
-			<button
-				style={{
-					...buttonStyle,
-					backgroundColor: playerType !== PlayerType.ONE ? neutralColor : violet,
-					padding: 4,
-					fontSize: 14,
-				}}
-				disabled={playerType !== PlayerType.ONE}
-				onClick={() => submitRandomSelection()}>
-				RANDOM SELECTION
-			</button>
 			<div style={{ position: 'absolute', bottom: '2vh', left: '2vw' }}>
 				<h4 style={{ padding: 2 }}>{playerType}</h4>
 			</div>
@@ -186,7 +150,13 @@ export const SharedSelection = ({ playerType, gameId, oneCards, twoCards, player
 const PowerSelectionSlot = ({ id, idSelected, selectCard, myCards = [], oppCards = [] }: any) => {
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-			{myCards.includes(id) ? <h5>For me</h5> : oppCards.includes(id) ? <h5>For Opponent</h5> : <h5></h5>}
+			{myCards.includes(id) ? (
+				<h5>For me</h5>
+			) : oppCards.includes(id) ? (
+				<h5>For Opponent</h5>
+			) : (
+				<h5></h5>
+			)}
 			<PowerBoardSlot
 				cardId={id}
 				selected={idSelected === id}
@@ -199,11 +169,23 @@ const PowerSelectionSlot = ({ id, idSelected, selectCard, myCards = [], oppCards
 	);
 };
 
-const AnimalSelectionSlot = ({ animal, idSelected, toggleAnimalSelection, myCards = [], oppCards = [] }: any) => {
+const AnimalSelectionSlot = ({
+	animal,
+	idSelected,
+	toggleAnimalSelection,
+	myCards = [],
+	oppCards = [],
+}: any) => {
 	const { id, name, clan, role, ability }: AnimalCard = animal;
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-			{myCards.includes(id) ? <h5>For me</h5> : oppCards.includes(id) ? <h5>For Opponent</h5> : <h5></h5>}
+			{myCards.includes(id) ? (
+				<h5>For me</h5>
+			) : oppCards.includes(id) ? (
+				<h5>For Opponent</h5>
+			) : (
+				<h5></h5>
+			)}
 			<div
 				key={id}
 				style={{
@@ -211,7 +193,11 @@ const AnimalSelectionSlot = ({ animal, idSelected, toggleAnimalSelection, myCard
 					border: 'solid 4px #95a5a6',
 					borderRadius: 5,
 					borderColor:
-						idSelected === id ? selectedColor : myCards.includes(id) || oppCards.includes(id) ? violet : neutralColor,
+						idSelected === id
+							? selectedColor
+							: myCards.includes(id) || oppCards.includes(id)
+							? violet
+							: neutralColor,
 					backgroundColor: CLANS[clan].color,
 					color: 'white',
 					fontSize: '1.3em',
@@ -232,7 +218,9 @@ const AnimalSelectionSlot = ({ animal, idSelected, toggleAnimalSelection, myCard
 						paddingBottom: 4,
 					}}>
 					<h6 style={{ fontSize: '0.5em' }}>{ANIMALS_POINTS[role].ap} AP</h6>
-					<img src={rolesIcons[role]} style={{ width: 22, filter: 'brightness(0) invert(1)' }}></img>
+					<img
+						src={rolesIcons[role]}
+						style={{ width: 22, filter: 'brightness(0) invert(1)' }}></img>
 					<h6 style={{ fontSize: '0.5em' }}>{ANIMALS_POINTS[role].hp} HP</h6>
 				</div>
 			</div>
