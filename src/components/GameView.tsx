@@ -185,7 +185,7 @@ export function GameView({
 		return selectedCurrPSlotNb != null ? selectedCurrPSlotNb : nb;
 	};
 
-	const playAnimalCard = async (cardId: string): Promise<void> => {
+	const playAnimalCard = async (cardId: string, slotNb?: number): Promise<void> => {
 		const { role, clan } = getAnimalCard(cardId)!;
 
 		if (role === KING) {
@@ -199,10 +199,10 @@ export function GameView({
 			}
 			await handlePlacingKing(cardId);
 		} else {
-			const slotNb = getCurrSlotNb();
 			if (isNil(slotNb)) {
 				return;
 			}
+			console.log('hey gameview slotnb', slotNb);
 			await placeAnimalOnBoard(gameId, playerType, slotNb, cardId, elementType);
 		}
 
@@ -407,7 +407,7 @@ export function GameView({
 		setShowEnvPopup(true);
 	};
 
-	const playCard = async (cardId?: string) => {
+	const playCard = async (cardId?: string, slotnb?: number) => {
 		console.log({ playerType }, { cardId }, { selectedCurrPSlotNb }, { round });
 		if (isEmpty(cardId) || isEmpty(playerType)) {
 			return;
@@ -415,7 +415,7 @@ export function GameView({
 
 		if (isAnimalCard(cardId)) {
 			console.log('will play animal card');
-			await playAnimalCard(cardId!);
+			await playAnimalCard(cardId!, slotnb);
 			return;
 		}
 
@@ -552,6 +552,8 @@ export function GameView({
 				tankIdWithDoubleAPOfCurr={currentPlayer.tankIdWithDoubleAP}
 				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
 				isMyRound={isMyRound}
+				playCard={playCard}
+				gameId={gameId}
 			/>
 
 			<CurrentPView

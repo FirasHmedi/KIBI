@@ -11,7 +11,8 @@ function Sidebar() {
 					</li>
 					<li>
 						<h6>
-							Animals cannot attack on the first round except the king and animals that revive it from the graveyard
+							Animals cannot attack on the first round except the king and animals that revive it
+							from the graveyard
 						</h6>
 					</li>
 					<li>

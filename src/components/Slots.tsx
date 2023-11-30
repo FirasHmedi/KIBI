@@ -1,6 +1,8 @@
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import InfoIcon from '@mui/icons-material/Info';
+import { useState } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
 import { Tooltip } from 'react-tooltip';
 import attIcon from '../assets/icons/att.png';
 import noAttIcon from '../assets/icons/no-att.png';
@@ -13,10 +15,28 @@ import {
 	selectedColor,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_POINTS, CLANS, ClanName, TANK, animalsPics, elementsIcons, rolesIcons } from '../utils/data';
-import { getAnimalCard, getPowerCard, isAnimalCard, isAnimalInEnv, isPowerCard } from '../utils/helpers';
+import {
+	ANIMALS_POINTS,
+	CLANS,
+	ClanName,
+	TANK,
+	animalsPics,
+	elementsIcons,
+	rolesIcons,
+} from '../utils/data';
+import {
+	getAnimalCard,
+	getPowerCard,
+	isAnimalCard,
+	isAnimalInEnv,
+	isPowerCard,
+} from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
+interface DropItem {
+	id: string;
+	// Ajoutez ici d'autres propriétés si nécessaire
+}
 
 export const SlotBack = () => (
 	<div
@@ -40,6 +60,9 @@ interface SlotProps {
 	nb?: number;
 	graveyard?: boolean;
 	tankIdWithDoubleAP?: string;
+	playCard: any;
+	gameId: any;
+	elementType: any;
 }
 
 interface DeckSlotProps {
@@ -63,7 +86,9 @@ export const PowerBoardSlot = ({
 }) => {
 	const { name, description } = getPowerCard(cardId) ?? {};
 	const tooltipId = `power-deck-anchor${cardId}`;
-	const bigStyle: React.CSSProperties = !!isBigStyle ? { height: '20vh', width: '8vw', fontSize: '1em' } : {};
+	const bigStyle: React.CSSProperties = !!isBigStyle
+		? { height: '20vh', width: '8vw', fontSize: '1em' }
+		: {};
 	return (
 		<div
 			style={{
@@ -94,7 +119,9 @@ export const PowerDeckSlot = ({
 }) => {
 	const { name, description } = getPowerCard(cardId) ?? {};
 	const tooltipId = `power-deck-anchor${cardId}`;
-	const bigStyle: React.CSSProperties = !!isBigStyle ? { height: '20vh', width: '8vw', fontSize: '1em' } : {};
+	const bigStyle: React.CSSProperties = !!isBigStyle
+		? { height: '20vh', width: '8vw', fontSize: '1em' }
+		: {};
 	return (
 		<div
 			style={{
@@ -119,12 +146,17 @@ export const AnimalBoardSlot = ({
 	select,
 	selected,
 	tankIdWithDoubleAP,
-}: {
+}: //droppedItem,
+{
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
 	tankIdWithDoubleAP?: string;
+	//droppedItem: DropItem | null;
 }) => {
+	//console.log('in son of son');
+	console.log(cardId);
+
 	const { clan, name, role, ability } = getAnimalCard(cardId)!;
 	if (!name || !clan || !role) return <></>;
 
@@ -138,13 +170,19 @@ export const AnimalBoardSlot = ({
 			style={{
 				...boardSlotStyle,
 				justifyContent: 'space-between',
-				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : `0 0 1px 2px ${CLANS[clan!]?.color}`,
+				boxShadow: selected
+					? `0 0 1.5px 2.5px ${selectedColor}`
+					: `0 0 1px 2px ${CLANS[clan!]?.color}`,
 			}}
 			onClick={() => select()}>
 			{!!name && name?.toLowerCase() in animalsPics && (
 				<img
 					src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-					style={{ height: '6rem', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+					style={{
+						height: '6rem',
+						backgroundSize: 'cover',
+						backgroundPosition: 'center',
+					}}></img>
 			)}
 
 			<div
@@ -161,8 +199,15 @@ export const AnimalBoardSlot = ({
 					<h4>{isTankDoubleAP ? ap * 2 : ap}</h4>
 					<FitnessCenterIcon style={{ color: 'white', width: '0.8vw' }} />
 				</div>
-				<Tooltip anchorSelect={`#${roleTooltipId}`} content={roleTooltipContent} style={{ width: '10vw' }} />
-				<img id={roleTooltipId} src={rolesIcons[role]} style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
+				<Tooltip
+					anchorSelect={`#${roleTooltipId}`}
+					content={roleTooltipContent}
+					style={{ width: '10vw' }}
+				/>
+				<img
+					id={roleTooltipId}
+					src={rolesIcons[role]}
+					style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
 				<div style={{ ...centerStyle }}>
 					<h4>{hp}</h4>
 					<FavoriteIcon style={{ color: 'white', width: '0.8vw' }} />
@@ -181,10 +226,18 @@ export const AnimalDeckSlot = ({
 	select: () => void;
 	selected?: boolean;
 }) => {
+	const [{ isDragging }, drag] = useDrag(() => ({
+		type: 'animalcard',
+		item: { id: cardId },
+		collect: monitor => {
+			return { isDragging: !!monitor.isDragging() };
+		},
+	}));
 	const { clan, name, ability, role } = getAnimalCard(cardId)!;
 	const { hp, ap } = ANIMALS_POINTS[role];
 	return (
 		<div
+			ref={drag}
 			style={{
 				...deckSlotStyle,
 				backgroundColor: CLANS[clan!]?.color,
@@ -216,20 +269,45 @@ export const AnimalDeckSlot = ({
 	);
 };
 
-export const BoardSlot = ({ cardId, selected, selectSlot, nb, tankIdWithDoubleAP }: SlotProps) => {
-	if (!!cardId && isAnimalCard(cardId)) {
+export const BoardSlot = ({
+	cardId,
+	selected,
+	selectSlot,
+	nb,
+	tankIdWithDoubleAP,
+	playCard,
+	gameId,
+	elementType,
+}: SlotProps) => {
+	const [droppedItem, setDroppedItem] = useState<DropItem | null>(null);
+	const [, drop] = useDrop({
+		accept: 'animalcard',
+		drop: (item: DropItem) => {
+			console.log(item.id);
+			console.log('nombere de slot', nb);
+			//playCard(item.id, nb);
+			//placeAnimalOnBoard(gameId, PlayerType.TWO, nb!, droppedItem?.id!, elementType);
+			setDroppedItem(item);
+		},
+	});
+
+	//console.log('in board slot');
+	//console.log(droppedItem?.id);
+	if (isAnimalCard(cardId)) {
 		return (
-			<AnimalBoardSlot
-				cardId={cardId}
-				select={() => selectSlot(nb)}
-				selected={selected}
-				tankIdWithDoubleAP={tankIdWithDoubleAP}
-			/>
+			<div>
+				<AnimalBoardSlot
+					cardId={cardId!}
+					select={() => selectSlot(nb)}
+					selected={selected}
+					tankIdWithDoubleAP={tankIdWithDoubleAP}
+				/>
+			</div>
 		);
 	}
-
 	return (
 		<div
+			ref={drop}
 			style={{
 				...boardSlotStyle,
 				backgroundColor: neutralColor,
@@ -284,7 +362,11 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => (
 		{elementType !== 'neutral' && (
 			<img
 				src={elementsIcons[elementType!]}
-				style={{ height: '5vh', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+				style={{
+					height: '5vh',
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+				}}></img>
 		)}
 	</div>
 );
@@ -310,6 +392,8 @@ export const BoardSlots = ({
 	current,
 	elementType,
 	tankIdWithDoubleAP,
+	playCard,
+	gameId,
 }: {
 	slots: SlotType[];
 	selectedSlots: number[];
@@ -318,6 +402,8 @@ export const BoardSlots = ({
 	current?: boolean;
 	elementType?: ClanName;
 	tankIdWithDoubleAP?: string;
+	playCard?: any;
+	gameId?: string;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -335,7 +421,10 @@ export const BoardSlots = ({
 			}}>
 			{compoundSlots.map((slot, index) => (
 				<div key={index}>
-					<div className={slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined}>
+					<div
+						className={
+							slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
+						}>
 						{current && <CanAttackIconsView slot={slot} />}
 					</div>
 					<div style={isAnimalInEnv(slot?.cardId, elementType) ? glow : undefined}>
@@ -345,6 +434,9 @@ export const BoardSlots = ({
 							selectSlot={selectSlot}
 							cardId={slot?.cardId}
 							selected={selectedSlots.includes(index)}
+							playCard={playCard}
+							gameId={gameId}
+							elementType={elementType}
 						/>
 					</div>
 					{opponent && <CanAttackIconsView slot={slot} />}
@@ -353,3 +445,142 @@ export const BoardSlots = ({
 		</div>
 	);
 };
+/*
+export const BoardSlots = ({
+	slots,
+	selectedSlots,
+	selectSlot,
+	opponent,
+	current,
+	elementType,
+	tankIdWithDoubleAP,
+	
+
+}: {
+	slots: SlotType[];
+	selectedSlots: number[];
+	selectSlot: (slotNb: number) => void;
+	opponent?: boolean;
+	current?: boolean;
+	elementType?: ClanName;
+	tankIdWithDoubleAP?: string;
+	
+}) => {
+	const [droppedItem, setDroppedItem] = useState<DropItem | null>(null);;
+	const [, drop] = useDrop({
+        accept: "animalcard",
+        drop: (item: DropItem) => {
+			console.log(item);
+			setDroppedItem(item);
+    }})
+	console.log("in board slots")
+	console.log(droppedItem?.id);
+	const compoundSlots = [slots[0], slots[1], slots[2]];
+	// @ts-ignore
+	const mainColor = elementType == 'neutral' ? 'transparent' : CLANS[elementType].color;
+	const glow = {
+		boxShadow: ` 0 0 0.5vw 0.25vw ${mainColor}`,
+		borderRadius: 5,
+	};
+	return (
+		<div
+			style={{
+				...centerStyle,
+				width: '24rem',
+				justifyContent: 'space-evenly',
+			}}>
+			{compoundSlots.map((slot, index) => (
+				<div key={index} ref = {drop}>
+					<div className={slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined}>
+						{current && <CanAttackIconsView slot={slot} />}
+					</div>
+					<div style={isAnimalInEnv(slot?.cardId, elementType) ? glow : undefined }  >
+						<BoardSlot
+							nb={index}
+							tankIdWithDoubleAP={tankIdWithDoubleAP}
+							selectSlot={selectSlot}
+							cardId={slot?.cardId}
+							selected={selectedSlots.includes(index)}
+							droppedItem={droppedItem}
+						/>
+					</div>
+					{opponent && <CanAttackIconsView slot={slot} />}
+				</div>
+			))}
+		</div>
+	);
+};
+*/
+/*
+
+export const BoardSlots = ({
+	slots,
+	selectedSlots,
+	selectSlot,
+	opponent,
+	current,
+	elementType,
+	tankIdWithDoubleAP,
+	
+
+}: {
+	slots: SlotType[];
+	selectedSlots: number[];
+	selectSlot: (slotNb: number) => void;
+	opponent?: boolean;
+	current?: boolean;
+	elementType?: ClanName;
+	tankIdWithDoubleAP?: string;
+	
+}) => {
+
+    // Cette fonction pourrait être utilisée pour gérer la mise à jour de l'état après un drop
+    const handleDrop = (slotIndex:number  , droppedItemId: any) => {
+        console.log(`Animal avec ID ${droppedItemId} déposé sur slot ${slotIndex}`);
+        // Ici, vous pouvez mettre à jour l'état de votre jeu pour refléter le changement
+        selectSlot(slotIndex!);
+    };
+	const [droppedItem, setDroppedItem] = useState<DropItem>();;
+
+    return (
+        <div style={{
+            ...centerStyle,
+            width: '24rem',
+            justifyContent: 'space-evenly',
+        }}>
+            {slots.map((slot: { cardId: string | undefined; }, index: number ) => {
+                // Créer un gestionnaire de drop pour chaque slot
+                const [, drop] = useDrop({
+                    accept: "animalcard",
+                    drop: (item:DropItem) => {
+                        // item est l'objet passé par useDrag (contient l'ID de l'animal)
+                        handleDrop(index!,item);
+						setDroppedItem(item);
+                    },
+                    collect: monitor => ({
+                        isOver: !!monitor.isOver(),
+                    }),
+                });
+
+                return (
+                    <div key={index} ref={drop} style={{
+                        ...boardSlotStyle,
+                        boxShadow: selectedSlots.includes(index) ? `0 0 1.5px 2.5px ${selectedColor}` : 'none',
+                    }}>
+                        <BoardSlot
+						
+							cardId={droppedItem?.id}
+                            selected={selectedSlots.includes(index)}
+							selectSlot={() => selectSlot(index)}
+							nb={index}
+							tankIdWithDoubleAP={tankIdWithDoubleAP}
+                            
+                            
+                        />
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+*/

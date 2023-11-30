@@ -4,6 +4,8 @@ import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
 import { isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
+import {DndProvider} from 'react-dnd';
+import {HTML5Backend} from 'react-dnd-html5-backend'
 
 export function GameContainer({
 	game,
@@ -82,15 +84,17 @@ export function GameContainer({
 	if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer || !round) return <></>;
 
 	return (
-		<GameView
-			round={round}
-			gameId={gameId}
-			board={board}
-			opponentPlayer={opponentPlayer}
-			currentPlayer={currentPlayer}
-			spectator={spectator}
-			showCountDown={showCountDown}
-			setShowCountDown={setShowCountDown}
-		/>
+		
+		<DndProvider backend={HTML5Backend}><GameView
+		round={round}
+		gameId={gameId}
+		board={board}
+		opponentPlayer={opponentPlayer}
+		currentPlayer={currentPlayer}
+		spectator={spectator}
+		showCountDown={showCountDown}
+		setShowCountDown={setShowCountDown}
+	/></DndProvider>
+			
 	);
 }
