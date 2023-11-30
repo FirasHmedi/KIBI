@@ -408,13 +408,12 @@ export function GameView({
 	};
 
 	const playCard = async (cardId?: string, slotnb?: number) => {
-		console.log({ playerType }, { cardId }, { selectedCurrPSlotNb }, { round });
+		console.log({ playerType }, { cardId }, { round });
 		if (isEmpty(cardId) || isEmpty(playerType)) {
 			return;
 		}
 
 		if (isAnimalCard(cardId)) {
-			console.log('will play animal card');
 			await playAnimalCard(cardId!, slotnb);
 			return;
 		}
@@ -553,7 +552,6 @@ export function GameView({
 				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
 				isMyRound={isMyRound}
 				playCard={playCard}
-				gameId={gameId}
 			/>
 
 			<CurrentPView

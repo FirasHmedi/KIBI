@@ -1,7 +1,6 @@
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import InfoIcon from '@mui/icons-material/Info';
-import { useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { Tooltip } from 'react-tooltip';
 import attIcon from '../assets/icons/att.png';
@@ -152,11 +151,7 @@ export const AnimalBoardSlot = ({
 	select: () => void;
 	selected?: boolean;
 	tankIdWithDoubleAP?: string;
-	//droppedItem: DropItem | null;
 }) => {
-	//console.log('in son of son');
-	console.log(cardId);
-
 	const { clan, name, role, ability } = getAnimalCard(cardId)!;
 	if (!name || !clan || !role) return <></>;
 
@@ -226,13 +221,14 @@ export const AnimalDeckSlot = ({
 	select: () => void;
 	selected?: boolean;
 }) => {
-	const [{ isDragging }, drag] = useDrag(() => ({
-		type: 'animalcard',
-		item: { id: cardId },
-		collect: monitor => {
-			return { isDragging: !!monitor.isDragging() };
-		},
-	}));
+	const [, drag] = useDrag(
+		() => ({
+			type: 'animalcard',
+			item: { id: cardId },
+			collect: monitor => ({ isDragging: !!monitor.getItem() }),
+		}),
+		[cardId],
+	);
 	const { clan, name, ability, role } = getAnimalCard(cardId)!;
 	const { hp, ap } = ANIMALS_POINTS[role];
 	return (
@@ -276,23 +272,17 @@ export const BoardSlot = ({
 	nb,
 	tankIdWithDoubleAP,
 	playCard,
-	gameId,
-	elementType,
 }: SlotProps) => {
-	const [droppedItem, setDroppedItem] = useState<DropItem | null>(null);
-	const [, drop] = useDrop({
-		accept: 'animalcard',
-		drop: (item: DropItem) => {
-			console.log(item.id);
-			console.log('nombere de slot', nb);
-			//playCard(item.id, nb);
-			//placeAnimalOnBoard(gameId, PlayerType.TWO, nb!, droppedItem?.id!, elementType);
-			setDroppedItem(item);
+	const [, drop] = useDrop(
+		{
+			accept: 'animalcard',
+			drop: (item: DropItem) => {
+				playCard(item.id, nb);
+			},
 		},
-	});
+		[cardId],
+	);
 
-	//console.log('in board slot');
-	//console.log(droppedItem?.id);
 	if (isAnimalCard(cardId)) {
 		return (
 			<div>
