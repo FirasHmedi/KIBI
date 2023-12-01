@@ -3,20 +3,20 @@
 		"ability": "Attacks Twice",
 		"clan": "air",
 		"description": "king of air clan",
-		"name": "Eagle",
+		"name": "Lion",
 		"role": "king"
 	},
 	"10-a": {
 		"clan": "air",
 		"description": "attacker of air clan",
-		"name": "Bee",
+		"name": "Bull",
 		"role": "attacker",
 		"ability": "Attacks Opponent"
 	},
 	"11-a": {
 		"clan": "air",
 		"description": "tank of air clan",
-		"name": "Ostrich",
+		"name": "Elephant",
 		"role": "tank",
 		"ability": "+1hp to owner when it attacks"
 	},
@@ -24,27 +24,27 @@
 		"ability": "Return dead animal to deck",
 		"clan": "air",
 		"description": "joker of air clan",
-		"name": "Crow",
+		"name": "Monkey",
 		"role": "joker"
 	},
 	"13-a": {
 		"ability": "Attacks Twice",
 		"clan": "fire",
 		"description": "king of fire clan",
-		"name": "Dragon",
+		"name": "Lion",
 		"role": "king"
 	},
 	"14-a": {
 		"clan": "fire",
 		"description": "attacker of fire clan",
-		"name": "Phoenix",
+		"name": "Bull",
 		"role": "attacker",
 		"ability": "Attacks Opponent"
 	},
 	"15-a": {
 		"clan": "fire",
 		"description": "tank of fire clan",
-		"name": "Bear",
+		"name": "Elephant",
 		"role": "tank",
 		"ability": "+1hp to owner when it attacks"
 	},
@@ -52,7 +52,7 @@
 		"ability": "Return random power card",
 		"clan": "fire",
 		"description": "joker of fire clan",
-		"name": "Fox",
+		"name": "Monkey",
 		"role": "joker"
 	},
 	"1-a": {
@@ -65,7 +65,7 @@
 	"2-a": {
 		"clan": "earth",
 		"description": "attacker of earth clan",
-		"name": "Badger",
+		"name": "Bull",
 		"role": "attacker",
 		"ability": "Attacks Opponent"
 	},
@@ -80,27 +80,27 @@
 		"ability": "Send opponent card to graveyard",
 		"clan": "earth",
 		"description": "joker of earth clan",
-		"name": "Snake",
+		"name": "Monkey",
 		"role": "joker"
 	},
 	"5-a": {
 		"ability": "Attacks Twice",
 		"clan": "water",
 		"description": "king of water clan",
-		"name": "Orca",
+		"name": "Lion",
 		"role": "king"
 	},
 	"6-a": {
 		"clan": "water",
 		"description": "attacker of water clan",
-		"name": "Shark",
+		"name": "Bull",
 		"role": "attacker",
 		"ability": "Attacks Opponent"
 	},
 	"7-a": {
 		"clan": "water",
 		"description": "tank of water clan",
-		"name": "Whale",
+		"name": "Elephant",
 		"role": "tank",
 		"ability": "+1hp to owner when it attacks"
 	},
@@ -108,7 +108,7 @@
 		"ability": "Draw 1 card",
 		"clan": "water",
 		"description": "joker of water clan",
-		"name": "Jellyfish",
+		"name": "Monkey",
 		"role": "joker"
 	}
 }

@@ -135,6 +135,8 @@ export const animalsPics = {
 	jellyfish: jellyfish,
 	fox: fox,
 	whale: whale,
+	monkey: fox,
+	bull: badger,
 };
 
 export const ALL_CARDS_OBJECT: Record<string, AllCards> = {
