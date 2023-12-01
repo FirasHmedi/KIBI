@@ -18,6 +18,7 @@ interface Props {
 	selectOppSlotsNbs: (slotNb: number) => void;
 	selectCurrentSlot: (slotNb: number) => void;
 	playCard: any;
+	canPlacekingWithoutSacrifice?:boolean;
 }
 
 export const BoardView = ({
@@ -30,6 +31,7 @@ export const BoardView = ({
 	tankIdWithDoubleAPOfCurr,
 	tankIdWithDoubleAPOfOpp,
 	playCard,
+	canPlacekingWithoutSacrifice,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } =
 		board;
@@ -66,6 +68,7 @@ export const BoardView = ({
 					tankIdWithDoubleAP={tankIdWithDoubleAPOfCurr}
 					playCard={playCard}
 					round={round}
+					canPlacekingWithoutSacrifice={canPlacekingWithoutSacrifice}
 				/>
 			</div>
 

@@ -60,8 +60,8 @@ interface SlotProps {
 	graveyard?: boolean;
 	tankIdWithDoubleAP?: string;
 	playCard: any;
-	elementType: any;
 	round?: Round;
+	canPlacekingWithoutSacrifice?:boolean;
 }
 
 interface DeckSlotProps {
@@ -276,6 +276,7 @@ export const BoardSlot = ({
 	tankIdWithDoubleAP,
 	playCard,
 	round,
+	canPlacekingWithoutSacrifice,
 }: SlotProps) => {
 	const [, drop] = useDrop(
 		{
@@ -284,12 +285,12 @@ export const BoardSlot = ({
 				playCard(item.id, nb);
 			},
 		},
-		[cardId, round],
+		[cardId, round,canPlacekingWithoutSacrifice],
 	);
 
 	if (isAnimalCard(cardId)) {
 		return (
-			<div>
+			<div ref={drop}> 
 				<AnimalBoardSlot
 					cardId={cardId!}
 					select={() => selectSlot(nb)}
@@ -395,6 +396,7 @@ export const BoardSlots = ({
 	tankIdWithDoubleAP,
 	playCard,
 	round,
+	canPlacekingWithoutSacrifice,
 }: {
 	slots: SlotType[];
 	selectedSlots: number[];
@@ -405,6 +407,7 @@ export const BoardSlots = ({
 	tankIdWithDoubleAP?: string;
 	playCard?: any;
 	round?: Round;
+	canPlacekingWithoutSacrifice?:boolean;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -437,7 +440,7 @@ export const BoardSlots = ({
 							selected={selectedSlots.includes(index)}
 							playCard={playCard}
 							round={round}
-							elementType={elementType}
+							canPlacekingWithoutSacrifice={canPlacekingWithoutSacrifice}
 						/>
 					</div>
 					{opponent && <CanAttackIconsView slot={slot} />}

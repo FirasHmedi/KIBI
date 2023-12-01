@@ -165,12 +165,12 @@ export function GameView({
 		);
 	};
 
-	const handlePlacingKing = async (cardId: string): Promise<void> => {
+	const handlePlacingKing = async (cardId: string,slotNb?:number,animalIdInSlotNb?:string): Promise<void> => {
 		if (canPlaceKingWithoutSacrifice) {
-			await placeKingWithoutSacrifice(gameId, playerType, cardId, selectedCurrPSlotNb!);
+			await placeKingWithoutSacrifice(gameId, playerType, cardId, slotNb!);
 			setCanPlaceKingWithoutSacrifice(false);
 		} else {
-			await placeKingOnBoard(gameId, playerType, cardId, idInCurrPSlot, selectedCurrPSlotNb!);
+			await placeKingOnBoard(gameId, playerType, cardId, animalIdInSlotNb!, slotNb!);
 		}
 	};
 
@@ -186,13 +186,16 @@ export function GameView({
 
 	const playAnimalCard = async (cardId: string, slotNb?: number): Promise<void> => {
 		const { role, clan } = getAnimalCard(cardId)!;
-
+		console.log(canPlaceKingWithoutSacrifice)
+		
 		if (role === KING) {
-			const sacrificedAnimal = getAnimalCard(idInCurrPSlot);
+			const animalIdInSlotNb = currentPSlots[slotNb!]?.cardId;
+			
+			const sacrificedAnimal = getAnimalCard(animalIdInSlotNb);
 			if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
 				return;
 			}
-			await handlePlacingKing(cardId);
+			await handlePlacingKing(cardId,slotNb,animalIdInSlotNb);
 		} else {
 			if (isNil(slotNb)) {
 				return;
@@ -546,6 +549,7 @@ export function GameView({
 				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
 				isMyRound={isMyRound}
 				playCard={playCard}
+				canPlacekingWithoutSacrifice={canPlaceKingWithoutSacrifice}
 			/>
 
 			<CurrentPView
