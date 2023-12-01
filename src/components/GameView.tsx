@@ -165,12 +165,16 @@ export function GameView({
 		);
 	};
 
-	const handlePlacingKing = async (cardId: string): Promise<void> => {
+	const handlePlacingKing = async (
+		cardId: string,
+		slotNb?: number,
+		animalIdInSlotNb?: string,
+	): Promise<void> => {
 		if (canPlaceKingWithoutSacrifice) {
-			await placeKingWithoutSacrifice(gameId, playerType, cardId, selectedCurrPSlotNb!);
+			await placeKingWithoutSacrifice(gameId, playerType, cardId, slotNb!);
 			setCanPlaceKingWithoutSacrifice(false);
 		} else {
-			await placeKingOnBoard(gameId, playerType, cardId, idInCurrPSlot, selectedCurrPSlotNb!);
+			await placeKingOnBoard(gameId, playerType, cardId, animalIdInSlotNb!, slotNb!);
 		}
 	};
 
@@ -188,11 +192,13 @@ export function GameView({
 		const { role, clan } = getAnimalCard(cardId)!;
 
 		if (role === KING) {
-			const sacrificedAnimal = getAnimalCard(idInCurrPSlot);
+			const animalIdInSlotNb = currentPSlots[slotNb!]?.cardId;
+
+			const sacrificedAnimal = getAnimalCard(animalIdInSlotNb);
 			if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
 				return;
 			}
-			await handlePlacingKing(cardId);
+			await handlePlacingKing(cardId, slotNb, animalIdInSlotNb);
 		} else {
 			if (isNil(slotNb)) {
 				return;
@@ -429,7 +435,6 @@ export function GameView({
 	const finishRoundBot = async () => {
 		await executeBotTurn(gameId);
 		await enableAttackingAndPlayingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
-		console.log('put player round');
 		await addOneRound(gameId, playerType);
 		await enableAttackForOpponentAnimals(gameId, playerType, currentPSlots);
 		await activateJokersAbilities(gameId, playerType, currentPSlots);
@@ -449,9 +454,7 @@ export function GameView({
 			await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 			if (opponentPlayer?.playerName === 'bot') {
 				await drawCardFromMainDeck(gameId, PlayerType.TWO);
-				console.log('bot will play');
 				await finishRoundBot();
-				console.log('bot finished');
 			}
 		} catch (e) {
 			console.error(e);
@@ -546,6 +549,7 @@ export function GameView({
 				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
 				isMyRound={isMyRound}
 				playCard={playCard}
+				canPlacekingWithoutSacrifice={canPlaceKingWithoutSacrifice}
 			/>
 
 			<CurrentPView
