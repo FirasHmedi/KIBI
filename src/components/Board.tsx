@@ -1,6 +1,5 @@
 import isNil from 'lodash/isNil';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
-import { isPowerCard } from '../utils/helpers';
 import { Board, Round } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { RoundView, Seperator } from './Elements';
@@ -41,7 +40,7 @@ export const BoardView = ({
 				...centerStyle,
 				flexDirection: 'row',
 			}}>
-			{isPowerCard(activeCardId) && <ActiveCardSlot cardId={activeCardId!} />}
+			<ActiveCardSlot cardId={activeCardId!} />
 
 			<div
 				style={{

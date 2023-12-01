@@ -1,11 +1,10 @@
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useState } from 'react';
 import {
-	boardSlotStyle,
 	closeButtonStyle,
+	deckSlotStyle,
 	graveyardPopupContainer,
 	graveyardPopupContent,
-	neutralColor,
 	topCardStyle,
 	violet,
 } from '../styles/Style';
@@ -43,8 +42,8 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 			) : (
 				<div
 					style={{
-						...boardSlotStyle,
-						backgroundColor: neutralColor,
+						...deckSlotStyle,
+						border: `dotted 3px ${violet}`,
 						justifyContent: 'center',
 					}}></div>
 			)}

@@ -9,7 +9,6 @@ import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { Tooltip } from 'react-tooltip';
-import SwordIcon from '../assets/icons/sword-small-violet.png';
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
 import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
@@ -105,14 +104,6 @@ export const CurrentPView = ({
 						id={tooltipId}
 						disabled={!isAttackEnabled}
 						onClick={() => attack()}>
-						<img
-							src={SwordIcon}
-							style={{
-								width: 28,
-								filter: !isAttackEnabled
-									? 'invert(50%) sepia(0%) saturate(1120%) hue-rotate(152deg) brightness(101%) contrast(86%)'
-									: undefined,
-							}}></img>
 						<ClawIcon
 							style={{ width: '2vw', height: 'auto', color: !isAttackEnabled ? 'grey' : violet }}
 						/>

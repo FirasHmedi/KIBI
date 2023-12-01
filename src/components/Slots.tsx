@@ -10,7 +10,6 @@ import {
 	centerStyle,
 	deckSlotStyle,
 	flexRowStyle,
-	neutralColor,
 	selectedColor,
 	violet,
 } from '../styles/Style';
@@ -146,8 +145,7 @@ export const AnimalBoardSlot = ({
 	select,
 	selected,
 	tankIdWithDoubleAP,
-}: //droppedItem,
-{
+}: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
@@ -230,7 +228,7 @@ export const AnimalDeckSlot = ({
 			item: { id: cardId },
 			collect: monitor => ({ isDragging: !!monitor.getItem() }),
 		}),
-		[cardId, round],
+		[cardId],
 	);
 	const { clan, name, ability, role } = getAnimalCard(cardId)!;
 	const { hp, ap } = ANIMALS_POINTS[role];
@@ -304,8 +302,8 @@ export const BoardSlot = ({
 			ref={drop}
 			style={{
 				...boardSlotStyle,
-				backgroundColor: neutralColor,
 				justifyContent: 'center',
+				border: `dashed 2px ${violet}`,
 				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
 			}}
 			onClick={() => selectSlot(nb)}></div>
@@ -338,39 +336,46 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, round }: DeckSlotPr
 		<div
 			style={{
 				...deckSlotStyle,
-				backgroundColor: neutralColor,
 				justifyContent: 'center',
-				borderColor: selected ? selectedColor : neutralColor,
+				border: `dotted 3px ${violet}`,
+				borderColor: selected ? violet : undefined,
+				color: violet,
+				fontSize: '0.7em',
 			}}
-			onClick={() => selectSlotPolished()}></div>
+			onClick={() => selectSlotPolished()}>
+			Power card
+		</div>
 	);
 };
 
-export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => (
-	<div
-		style={{
-			...centerStyle,
-			borderRadius: 5,
-			backgroundColor: CLANS[elementType!]?.color,
-			color: 'white',
-			flexDirection: 'column',
-			height: '3vw',
-			width: '3vw',
-			justifyContent: 'center',
-			flexShrink: 0,
-			fontSize: '0.6em',
-		}}>
-		{elementType !== 'neutral' && (
-			<img
-				src={elementsIcons[elementType!]}
-				style={{
-					height: '5vh',
-					backgroundSize: 'cover',
-					backgroundPosition: 'center',
-				}}></img>
-		)}
-	</div>
-);
+export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
+	return (
+		<div
+			style={{
+				...centerStyle,
+				borderRadius: 5,
+				backgroundColor: elementType !== 'neutral' ? CLANS[elementType!]?.color : undefined,
+				border: elementType === 'neutral' ? `dotted 3px ${violet}` : undefined,
+				color: 'white',
+				flexDirection: 'column',
+				height: '3vw',
+				width: '3vw',
+				justifyContent: 'center',
+				flexShrink: 0,
+				fontSize: '0.6em',
+			}}>
+			{elementType !== 'neutral' && (
+				<img
+					src={elementsIcons[elementType!]}
+					style={{
+						height: '5vh',
+						backgroundSize: 'cover',
+						backgroundPosition: 'center',
+					}}></img>
+			)}
+		</div>
+	);
+};
 
 const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
 	const val = 24;
