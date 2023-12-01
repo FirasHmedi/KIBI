@@ -347,7 +347,7 @@ export const setElementForBot = async (gameId: string): Promise<boolean> => {
 
 export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const roundNB = await getRoundNb(gameId);
-	const bot = await getItemsOnce('/games/' + gameId + '/two');
+	let bot = await getItemsOnce('/games/' + gameId + '/two');
 	const kingPlayed = await playKingForBot(gameId);
 	let cardsToPick = roundNB > 2 ? 2 : 3;
 	console.log(kingPlayed);
@@ -359,8 +359,8 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 			cardsToPick--;
 		}
 	}
+	bot = await getItemsOnce('/games/' + gameId + '/two');
 	console.log('cardsToPick: ', cardsToPick);
-
 	const allowedAnimalsCardIds = [
 		'10-a',
 		'11-a',
