@@ -88,7 +88,6 @@ export function GameView({
 	const idInCurrPSlot = currentPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
 	const [hasAttacked, setHasAttacked] = useState(false);
-	const [twoAnimalsToPlace, setTwoAnimalsToPlace] = useState<number>(0);
 	const [openCardsPopup, setOpenCardsPopup] = useState(false);
 	const [cardsIdsForPopup, setCardsIdsForPopup] = useState<string[]>([]);
 	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
@@ -185,28 +184,22 @@ export function GameView({
 		return selectedCurrPSlotNb != null ? selectedCurrPSlotNb : nb;
 	};
 
-	const playAnimalCard = async (cardId: string): Promise<void> => {
+	const playAnimalCard = async (cardId: string, slotNb?: number): Promise<void> => {
 		const { role, clan } = getAnimalCard(cardId)!;
 
 		if (role === KING) {
 			const sacrificedAnimal = getAnimalCard(idInCurrPSlot);
-			if (
-				twoAnimalsToPlace === 0 &&
-				!canPlaceKingWithoutSacrifice &&
-				sacrificedAnimal?.clan !== clan
-			) {
+			if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
 				return;
 			}
 			await handlePlacingKing(cardId);
 		} else {
-			const slotNb = getCurrSlotNb();
 			if (isNil(slotNb)) {
 				return;
 			}
 			await placeAnimalOnBoard(gameId, playerType, slotNb, cardId, elementType);
 		}
 
-		setTwoAnimalsToPlace(animalsNb => (animalsNb > 1 ? animalsNb - 1 : 0));
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 	};
 
@@ -305,7 +298,7 @@ export function GameView({
 		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
 		activePowerCard.current = cardId;
 
-		console.log('executing power card');
+		console.log('executing power card ', cardId);
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
 				await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
@@ -407,19 +400,16 @@ export function GameView({
 		setShowEnvPopup(true);
 	};
 
-	const playCard = async (cardId?: string) => {
-		console.log({ playerType }, { cardId }, { selectedCurrPSlotNb }, { round });
-		if (isEmpty(cardId) || isEmpty(playerType)) {
+	const playCard = async (cardId?: string, slotnb?: number) => {
+		console.log({ playerType }, { cardId }, { round });
+		if (isEmpty(cardId) || isEmpty(playerType) || nbCardsToPlay === 0 || !isMyRound) {
 			return;
 		}
 
 		if (isAnimalCard(cardId)) {
-			console.log('will play animal card');
-			await playAnimalCard(cardId!);
+			await playAnimalCard(cardId!, slotnb);
 			return;
 		}
-
-		if (twoAnimalsToPlace > 0) return;
 
 		if (isPowerCard(cardId)) {
 			await playPowerCard(cardId!);
@@ -439,10 +429,11 @@ export function GameView({
 	const finishRoundBot = async () => {
 		await executeBotTurn(gameId);
 		await enableAttackingAndPlayingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
+		console.log('put player round');
 		await addOneRound(gameId, playerType);
 		await enableAttackForOpponentAnimals(gameId, playerType, currentPSlots);
 		await activateJokersAbilities(gameId, playerType, currentPSlots);
-		setElementLoad(gameId, PlayerType.ONE, 1);
+		await setElementLoad(gameId, PlayerType.ONE, 1);
 	};
 
 	const finishRound = async () => {
@@ -458,7 +449,9 @@ export function GameView({
 			await activateJokersAbilities(gameId, getOpponentIdFromCurrentId(playerType), opponentPSlots);
 			if (opponentPlayer?.playerName === 'bot') {
 				await drawCardFromMainDeck(gameId, PlayerType.TWO);
+				console.log('bot will play');
 				await finishRoundBot();
+				console.log('bot finished');
 			}
 		} catch (e) {
 			console.error(e);
@@ -552,6 +545,7 @@ export function GameView({
 				tankIdWithDoubleAPOfCurr={currentPlayer.tankIdWithDoubleAP}
 				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
 				isMyRound={isMyRound}
+				playCard={playCard}
 			/>
 
 			<CurrentPView

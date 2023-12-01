@@ -1,6 +1,7 @@
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import InfoIcon from '@mui/icons-material/Info';
+import { useDrag, useDrop } from 'react-dnd';
 import { Tooltip } from 'react-tooltip';
 import attIcon from '../assets/icons/att.png';
 import noAttIcon from '../assets/icons/no-att.png';
@@ -13,10 +14,28 @@ import {
 	selectedColor,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_POINTS, CLANS, ClanName, TANK, animalsPics, elementsIcons, rolesIcons } from '../utils/data';
-import { getAnimalCard, getPowerCard, isAnimalCard, isAnimalInEnv, isPowerCard } from '../utils/helpers';
-import { SlotType } from '../utils/interface';
+import {
+	ANIMALS_POINTS,
+	CLANS,
+	ClanName,
+	TANK,
+	animalsPics,
+	elementsIcons,
+	rolesIcons,
+} from '../utils/data';
+import {
+	getAnimalCard,
+	getPowerCard,
+	isAnimalCard,
+	isAnimalInEnv,
+	isPowerCard,
+} from '../utils/helpers';
+import { Round, SlotType } from '../utils/interface';
 import './styles.css';
+interface DropItem {
+	id: string;
+	// Ajoutez ici d'autres propriétés si nécessaire
+}
 
 export const SlotBack = () => (
 	<div
@@ -40,6 +59,9 @@ interface SlotProps {
 	nb?: number;
 	graveyard?: boolean;
 	tankIdWithDoubleAP?: string;
+	playCard: any;
+	gameId: any;
+	elementType: any;
 }
 
 interface DeckSlotProps {
@@ -48,6 +70,7 @@ interface DeckSlotProps {
 	selectSlot?: (slotNb?: number) => void;
 	nb?: number;
 	graveyard?: boolean;
+	round?: Round;
 }
 
 export const PowerBoardSlot = ({
@@ -63,7 +86,9 @@ export const PowerBoardSlot = ({
 }) => {
 	const { name, description } = getPowerCard(cardId) ?? {};
 	const tooltipId = `power-deck-anchor${cardId}`;
-	const bigStyle: React.CSSProperties = !!isBigStyle ? { height: '20vh', width: '8vw', fontSize: '1em' } : {};
+	const bigStyle: React.CSSProperties = !!isBigStyle
+		? { height: '20vh', width: '8vw', fontSize: '1em' }
+		: {};
 	return (
 		<div
 			style={{
@@ -94,7 +119,9 @@ export const PowerDeckSlot = ({
 }) => {
 	const { name, description } = getPowerCard(cardId) ?? {};
 	const tooltipId = `power-deck-anchor${cardId}`;
-	const bigStyle: React.CSSProperties = !!isBigStyle ? { height: '20vh', width: '8vw', fontSize: '1em' } : {};
+	const bigStyle: React.CSSProperties = !!isBigStyle
+		? { height: '20vh', width: '8vw', fontSize: '1em' }
+		: {};
 	return (
 		<div
 			style={{
@@ -119,7 +146,8 @@ export const AnimalBoardSlot = ({
 	select,
 	selected,
 	tankIdWithDoubleAP,
-}: {
+}: //droppedItem,
+{
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
@@ -138,13 +166,19 @@ export const AnimalBoardSlot = ({
 			style={{
 				...boardSlotStyle,
 				justifyContent: 'space-between',
-				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : `0 0 1px 2px ${CLANS[clan!]?.color}`,
+				boxShadow: selected
+					? `0 0 1.5px 2.5px ${selectedColor}`
+					: `0 0 1px 2px ${CLANS[clan!]?.color}`,
 			}}
 			onClick={() => select()}>
 			{!!name && name?.toLowerCase() in animalsPics && (
 				<img
 					src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-					style={{ height: '6rem', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+					style={{
+						height: '6rem',
+						backgroundSize: 'cover',
+						backgroundPosition: 'center',
+					}}></img>
 			)}
 
 			<div
@@ -161,8 +195,15 @@ export const AnimalBoardSlot = ({
 					<h4>{isTankDoubleAP ? ap * 2 : ap}</h4>
 					<FitnessCenterIcon style={{ color: 'white', width: '0.8vw' }} />
 				</div>
-				<Tooltip anchorSelect={`#${roleTooltipId}`} content={roleTooltipContent} style={{ width: '10vw' }} />
-				<img id={roleTooltipId} src={rolesIcons[role]} style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
+				<Tooltip
+					anchorSelect={`#${roleTooltipId}`}
+					content={roleTooltipContent}
+					style={{ width: '10vw' }}
+				/>
+				<img
+					id={roleTooltipId}
+					src={rolesIcons[role]}
+					style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
 				<div style={{ ...centerStyle }}>
 					<h4>{hp}</h4>
 					<FavoriteIcon style={{ color: 'white', width: '0.8vw' }} />
@@ -176,15 +217,26 @@ export const AnimalDeckSlot = ({
 	cardId,
 	select,
 	selected,
+	round,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
+	round: Round;
 }) => {
+	const [, drag] = useDrag(
+		() => ({
+			type: 'animalcard',
+			item: { id: cardId },
+			collect: monitor => ({ isDragging: !!monitor.getItem() }),
+		}),
+		[cardId, round],
+	);
 	const { clan, name, ability, role } = getAnimalCard(cardId)!;
 	const { hp, ap } = ANIMALS_POINTS[role];
 	return (
 		<div
+			ref={drag}
 			style={{
 				...deckSlotStyle,
 				backgroundColor: CLANS[clan!]?.color,
@@ -216,20 +268,39 @@ export const AnimalDeckSlot = ({
 	);
 };
 
-export const BoardSlot = ({ cardId, selected, selectSlot, nb, tankIdWithDoubleAP }: SlotProps) => {
-	if (!!cardId && isAnimalCard(cardId)) {
+export const BoardSlot = ({
+	cardId,
+	selected,
+	selectSlot,
+	nb,
+	tankIdWithDoubleAP,
+	playCard,
+}: SlotProps) => {
+	const [, drop] = useDrop(
+		{
+			accept: 'animalcard',
+			drop: (item: DropItem) => {
+				playCard(item.id, nb);
+			},
+		},
+		[cardId],
+	);
+
+	if (isAnimalCard(cardId)) {
 		return (
-			<AnimalBoardSlot
-				cardId={cardId}
-				select={() => selectSlot(nb)}
-				selected={selected}
-				tankIdWithDoubleAP={tankIdWithDoubleAP}
-			/>
+			<div>
+				<AnimalBoardSlot
+					cardId={cardId!}
+					select={() => selectSlot(nb)}
+					selected={selected}
+					tankIdWithDoubleAP={tankIdWithDoubleAP}
+				/>
+			</div>
 		);
 	}
-
 	return (
 		<div
+			ref={drop}
 			style={{
 				...boardSlotStyle,
 				backgroundColor: neutralColor,
@@ -240,7 +311,7 @@ export const BoardSlot = ({ cardId, selected, selectSlot, nb, tankIdWithDoubleAP
 	);
 };
 
-export const DeckSlot = ({ cardId, selected, selectSlot, nb }: DeckSlotProps) => {
+export const DeckSlot = ({ cardId, selected, selectSlot, nb, round }: DeckSlotProps) => {
 	const selectSlotPolished = () => {
 		if (!!selectSlot) {
 			selected ? selectSlot(undefined) : selectSlot(nb);
@@ -248,7 +319,14 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb }: DeckSlotProps) =>
 	};
 
 	if (cardId && isAnimalCard(cardId)) {
-		return <AnimalDeckSlot cardId={cardId} select={selectSlotPolished} selected={selected} />;
+		return (
+			<AnimalDeckSlot
+				cardId={cardId}
+				select={selectSlotPolished}
+				selected={selected}
+				round={round!}
+			/>
+		);
 	}
 
 	if (cardId && isPowerCard(cardId)) {
@@ -284,7 +362,11 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => (
 		{elementType !== 'neutral' && (
 			<img
 				src={elementsIcons[elementType!]}
-				style={{ height: '5vh', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+				style={{
+					height: '5vh',
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+				}}></img>
 		)}
 	</div>
 );
@@ -310,6 +392,8 @@ export const BoardSlots = ({
 	current,
 	elementType,
 	tankIdWithDoubleAP,
+	playCard,
+	gameId,
 }: {
 	slots: SlotType[];
 	selectedSlots: number[];
@@ -318,6 +402,8 @@ export const BoardSlots = ({
 	current?: boolean;
 	elementType?: ClanName;
 	tankIdWithDoubleAP?: string;
+	playCard?: any;
+	gameId?: string;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -335,7 +421,10 @@ export const BoardSlots = ({
 			}}>
 			{compoundSlots.map((slot, index) => (
 				<div key={index}>
-					<div className={slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined}>
+					<div
+						className={
+							slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
+						}>
 						{current && <CanAttackIconsView slot={slot} />}
 					</div>
 					<div style={isAnimalInEnv(slot?.cardId, elementType) ? glow : undefined}>
@@ -345,6 +434,9 @@ export const BoardSlots = ({
 							selectSlot={selectSlot}
 							cardId={slot?.cardId}
 							selected={selectedSlots.includes(index)}
+							playCard={playCard}
+							gameId={gameId}
+							elementType={elementType}
 						/>
 					</div>
 					{opponent && <CanAttackIconsView slot={slot} />}

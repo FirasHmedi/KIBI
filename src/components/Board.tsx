@@ -17,6 +17,7 @@ interface Props {
 	selectedOppSlotsNbs?: number[];
 	selectOppSlotsNbs: (slotNb: number) => void;
 	selectCurrentSlot: (slotNb: number) => void;
+	playCard: any;
 }
 
 export const BoardView = ({
@@ -28,8 +29,10 @@ export const BoardView = ({
 	roundNb,
 	tankIdWithDoubleAPOfCurr,
 	tankIdWithDoubleAPOfOpp,
+	playCard,
 }: Props) => {
-	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } = board;
+	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } =
+		board;
 	const selectedCurrSlots = !isNil(selectedCurrentPSlotNb) ? [selectedCurrentPSlotNb!] : [];
 
 	return (
@@ -61,6 +64,7 @@ export const BoardView = ({
 					current={true}
 					elementType={elementType}
 					tankIdWithDoubleAP={tankIdWithDoubleAPOfCurr}
+					playCard={playCard}
 				/>
 			</div>
 

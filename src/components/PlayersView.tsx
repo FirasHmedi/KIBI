@@ -113,7 +113,9 @@ export const CurrentPView = ({
 									? 'invert(50%) sepia(0%) saturate(1120%) hue-rotate(152deg) brightness(101%) contrast(86%)'
 									: undefined,
 							}}></img>
-						<ClawIcon style={{ width: '2vw', height: 'auto', color: !isAttackEnabled ? 'grey' : violet }} />
+						<ClawIcon
+							style={{ width: '2vw', height: 'auto', color: !isAttackEnabled ? 'grey' : violet }}
+						/>
 					</button>
 				</div>
 
@@ -186,7 +188,12 @@ export const CurrentPView = ({
 			}}>
 			<Buttons />
 			<PlayerDataView player={player} setElement={setElement} isMyRound={isMyRound} isMe={true} />
-			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
+			<CurrentPDeck
+				round={round}
+				cardsIds={cardsIds}
+				selectedId={selectedId}
+				setSelectedId={setSelectedId}
+			/>
 			<EmptyElement />
 		</div>
 	);

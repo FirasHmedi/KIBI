@@ -1,5 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
 import { isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
@@ -67,7 +69,12 @@ export function GameContainer({
 		}
 		setRound(newRound);
 
-		if (isEmpty(gameBoard?.mainDeck) && round?.player === playerType && !isEmpty(gameBoard?.powerGY) && !spectator) {
+		if (
+			isEmpty(gameBoard?.mainDeck) &&
+			round?.player === playerType &&
+			!isEmpty(gameBoard?.powerGY) &&
+			!spectator
+		) {
 			revertMainDeck(gameId);
 		}
 	}, [game]);
@@ -79,18 +86,21 @@ export function GameContainer({
 		}
 	};
 
-	if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer || !round) return <></>;
+	if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer || !round)
+		return <></>;
 
 	return (
-		<GameView
-			round={round}
-			gameId={gameId}
-			board={board}
-			opponentPlayer={opponentPlayer}
-			currentPlayer={currentPlayer}
-			spectator={spectator}
-			showCountDown={showCountDown}
-			setShowCountDown={setShowCountDown}
-		/>
+		<DndProvider backend={HTML5Backend}>
+			<GameView
+				round={game.round}
+				gameId={gameId}
+				board={board}
+				opponentPlayer={opponentPlayer}
+				currentPlayer={currentPlayer}
+				spectator={spectator}
+				showCountDown={showCountDown}
+				setShowCountDown={setShowCountDown}
+			/>
+		</DndProvider>
 	);
 }
