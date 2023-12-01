@@ -60,8 +60,8 @@ interface SlotProps {
 	graveyard?: boolean;
 	tankIdWithDoubleAP?: string;
 	playCard: any;
-	gameId: any;
 	elementType: any;
+	round?: Round;
 }
 
 interface DeckSlotProps {
@@ -275,6 +275,7 @@ export const BoardSlot = ({
 	nb,
 	tankIdWithDoubleAP,
 	playCard,
+	round,
 }: SlotProps) => {
 	const [, drop] = useDrop(
 		{
@@ -283,7 +284,7 @@ export const BoardSlot = ({
 				playCard(item.id, nb);
 			},
 		},
-		[cardId],
+		[cardId, round],
 	);
 
 	if (isAnimalCard(cardId)) {
@@ -393,7 +394,7 @@ export const BoardSlots = ({
 	elementType,
 	tankIdWithDoubleAP,
 	playCard,
-	gameId,
+	round,
 }: {
 	slots: SlotType[];
 	selectedSlots: number[];
@@ -403,7 +404,7 @@ export const BoardSlots = ({
 	elementType?: ClanName;
 	tankIdWithDoubleAP?: string;
 	playCard?: any;
-	gameId?: string;
+	round?: Round;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -435,7 +436,7 @@ export const BoardSlots = ({
 							cardId={slot?.cardId}
 							selected={selectedSlots.includes(index)}
 							playCard={playCard}
-							gameId={gameId}
+							round={round}
 							elementType={elementType}
 						/>
 					</div>

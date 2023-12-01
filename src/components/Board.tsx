@@ -1,7 +1,7 @@
 import isNil from 'lodash/isNil';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { isPowerCard } from '../utils/helpers';
-import { Board } from '../utils/interface';
+import { Board, Round } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { RoundView, Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
@@ -9,7 +9,7 @@ import { BoardSlots, DeckSlot, ElementSlot } from './Slots';
 
 interface Props {
 	board: Board;
-	roundNb: number;
+	round: Round;
 	isMyRound: boolean;
 	tankIdWithDoubleAPOfCurr?: string;
 	tankIdWithDoubleAPOfOpp?: string;
@@ -26,7 +26,7 @@ export const BoardView = ({
 	selectOppSlotsNbs,
 	selectedOppSlotsNbs = [],
 	selectedCurrentPSlotNb,
-	roundNb,
+	round,
 	tankIdWithDoubleAPOfCurr,
 	tankIdWithDoubleAPOfOpp,
 	playCard,
@@ -65,6 +65,7 @@ export const BoardView = ({
 					elementType={elementType}
 					tankIdWithDoubleAP={tankIdWithDoubleAPOfCurr}
 					playCard={playCard}
+					round={round}
 				/>
 			</div>
 
@@ -73,7 +74,7 @@ export const BoardView = ({
 			</div>
 
 			<div style={{ position: 'absolute', right: '3vw' }}>
-				<RoundView nb={roundNb} />
+				<RoundView nb={round.nb} />
 				<Seperator />
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator />
