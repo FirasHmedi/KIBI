@@ -4,7 +4,9 @@ import { Board, Round } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { RoundView, Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
-import { BoardSlots, DeckSlot, ElementSlot } from './Slots';
+import { BoardSlots, DeckSlot, DropItem, ElementSlot } from './Slots';
+import { useDrop } from 'react-dnd';
+import { useState } from 'react';
 
 interface Props {
 	board: Board;
@@ -18,6 +20,7 @@ interface Props {
 	selectCurrentSlot: (slotNb: number) => void;
 	playCard: any;
 	canPlacekingWithoutSacrifice?:boolean;
+	playPowerCard?:any;
 }
 
 export const BoardView = ({
@@ -31,6 +34,7 @@ export const BoardView = ({
 	tankIdWithDoubleAPOfOpp,
 	playCard,
 	canPlacekingWithoutSacrifice,
+	playPowerCard,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } =
 		board;
@@ -42,7 +46,10 @@ export const BoardView = ({
 				...centerStyle,
 				flexDirection: 'row',
 			}}>
-			<ActiveCardSlot cardId={activeCardId!} />
+			<ActiveCardSlot 
+			cardId={activeCardId!}
+			playPowerCard={playPowerCard}
+			/>
 
 			<div
 				style={{
@@ -88,8 +95,19 @@ export const BoardView = ({
 	);
 };
 
-const ActiveCardSlot = ({ cardId }: { cardId: string }) => (
-	<div style={{ position: 'absolute', left: '22vw' }}>
-		<DeckSlot cardId={cardId} />
-	</div>
-);
+const ActiveCardSlot = ({ cardId , playPowerCard }: { cardId: string; playPowerCard:any }) => {
+	const [, drop] = useDrop(
+		{	
+			accept: 'powercard',
+			drop: (item: DropItem) => {
+				console.log(item);
+				playPowerCard(item.id)
+			},
+		},
+		[cardId],
+	);
+	return(<div ref={drop} style={{ position: 'absolute', left: '22vw' }}>
+	<DeckSlot cardId={cardId} />
+</div>)
+	
+};

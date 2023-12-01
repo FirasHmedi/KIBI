@@ -550,6 +550,7 @@ export function GameView({
 				isMyRound={isMyRound}
 				playCard={playCard}
 				canPlacekingWithoutSacrifice={canPlaceKingWithoutSacrifice}
+				playPowerCard={playPowerCard}
 			/>
 
 			<CurrentPView
