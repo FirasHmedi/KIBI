@@ -439,7 +439,7 @@ export function GameView({
 		await addOneRound(gameId, playerType);
 		await enableAttackForOpponentAnimals(gameId, playerType, currentPSlots);
 		await activateJokersAbilities(gameId, playerType, currentPSlots);
-		setElementLoad(gameId, PlayerType.ONE, 1);
+		await setElementLoad(gameId, PlayerType.ONE, 1);
 	};
 
 	const finishRound = async () => {

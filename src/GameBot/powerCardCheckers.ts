@@ -1,12 +1,12 @@
-import { isEmpty } from 'lodash';
-import { getBoardPath, getItemsOnce } from '../backend/db';
-import { getAnimalCard, isAnimalCard, isAttacker, isKing } from '../utils/helpers';
-import { getBotDeck, getBotSlots, getElementfromDb, getPlayerSlots } from './datafromDB';
+import {isEmpty} from 'lodash';
+import {getBoardPath, getItemsOnce} from '../backend/db';
+import {getAnimalCard, isAnimalCard, isAttacker, isKing} from '../utils/helpers';
+import {getBotDeck, getBotSlots, getElementFromDb, getPlayerSlots} from './datafromDB';
 
 export const canAttackOwner = async (gameId: string) => {
 	const playerSlots = await getPlayerSlots(gameId);
 	const botSlots = await getBotSlots(gameId);
-	const currentElement = await getElementfromDb(gameId);
+	const currentElement = await getElementFromDb(gameId);
 
 	const playerBoardCondition =
 		playerSlots.filter((slot: { cardId: string | undefined }) => isAnimalCard(slot?.cardId)).length < 3;
@@ -49,7 +49,7 @@ export const canPlayReviveAnimalCard = async (gameId: string) => {
 	const botSlots = await getBotSlots(gameId);
 	const botDeck = await getBotDeck(gameId);
 	const botGY = await getItemsOnce('/games/' + gameId + '/board/powerGY');
-	const currentElement = await getElementfromDb(gameId);
+	const currentElement = await getElementFromDb(gameId);
 	if (isEmpty(botGY)) return false;
 
 	const hasEmptySlot = botSlots.some((slot: { cardId: string | undefined }) => !isAnimalCard(slot?.cardId));
@@ -141,11 +141,7 @@ export const canPlayStealAnimalCard = async (gameId: string) => {
 	if (botSlots.some((slot: { cardId: string | undefined }) => isKing(slot?.cardId))) {
 		return false;
 	}
-	console.log(opponentSlots);
-	console.log(botSlots);
-
 	const opponentHasKing = opponentSlots.some((slot: { cardId: string | undefined }) => isKing(slot?.cardId));
-
 	const botHasNoAttacker = !botSlots.some((slot: { cardId: string | undefined }) => isAttacker(slot?.cardId));
 	const opponentHasAttacker = opponentSlots.some((slot: { cardId: string | undefined }) => isAttacker(slot?.cardId));
 
@@ -171,14 +167,11 @@ const isTank = (cardId: string | undefined) => {
 
 export const canPlayDoubleApTankCard = async (gameId: string) => {
 	const botSlots = await getBotSlots(gameId);
-	const tankOnBoard = botSlots.some((slot: { cardId: string | undefined }) => isTank(slot?.cardId));
-
-	return tankOnBoard;
+	return botSlots.some((slot: { cardId: string | undefined }) => isTank(slot?.cardId));
 };
 
 export const canPlaySwitchDeckCard = async (gameId: string) => {
 	const botHP = await getItemsOnce('/games/' + gameId + '/board/two/hp');
-
 	return botHP >= 4;
 };
 
