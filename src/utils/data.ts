@@ -107,22 +107,23 @@ import bee from '/animals/bee.png';
 import crow from '/animals/crow.png';
 import dragon from '/animals/dragon.png';
 import eagle from '/animals/eagle.png';
-import elephant from '/animals/elephant.png';
 import fox from '/animals/fox.png';
 import jellyfish from '/animals/jellyfish.png';
-import lion from '/animals/lion.png';
 import orca from '/animals/orca.png';
 import ostrich from '/animals/ostrich.png';
 import phoenix from '/animals/phoenix.png';
 import shark from '/animals/shark.png';
 import snake from '/animals/snake.png';
 import whale from '/animals/whale.png';
+import bull from '/src/assets/icons/bull.svg';
+import elephant1 from '/src/assets/icons/elephant.svg';
+import lion1 from '/src/assets/icons/lion.svg';
+import monkey from '/src/assets/icons/monkey.svg';
 
 export const animalsPics = {
-	elephant: elephant,
+	elephant: elephant1,
 	bear: bear,
 	ostrich: ostrich,
-	lion: lion,
 	eagle: eagle,
 	orca: orca,
 	dragon: dragon,
@@ -135,8 +136,9 @@ export const animalsPics = {
 	jellyfish: jellyfish,
 	fox: fox,
 	whale: whale,
-	monkey: fox,
-	bull: badger,
+	monkey: monkey,
+	bull: bull,
+	lion: lion1,
 };
 
 export const ALL_CARDS_OBJECT: Record<string, AllCards> = {

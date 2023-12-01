@@ -17,7 +17,7 @@ interface Props {
 	selectOppSlotsNbs: (slotNb: number) => void;
 	selectCurrentSlot: (slotNb: number) => void;
 	playCard: any;
-	canPlacekingWithoutSacrifice?:boolean;
+	canPlacekingWithoutSacrifice?: boolean;
 }
 
 export const BoardView = ({
@@ -71,7 +71,7 @@ export const BoardView = ({
 				/>
 			</div>
 
-			<div style={{ position: 'absolute', left: '31vw' }}>
+			<div style={{ position: 'absolute', right: '30vw' }}>
 				<ElementSlot elementType={elementType} />
 			</div>
 
@@ -89,7 +89,7 @@ export const BoardView = ({
 };
 
 const ActiveCardSlot = ({ cardId }: { cardId: string }) => (
-	<div style={{ position: 'absolute', left: '22vw' }}>
+	<div style={{ position: 'absolute', left: '27vw' }}>
 		<DeckSlot cardId={cardId} />
 	</div>
 );

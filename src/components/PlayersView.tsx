@@ -88,7 +88,7 @@ export const CurrentPView = ({
 						...flexColumnStyle,
 						justifyContent: 'center',
 						position: 'absolute',
-						right: '29vw',
+						right: '27vw',
 						bottom: '34vh',
 						gap: 40,
 						width: '10vw',

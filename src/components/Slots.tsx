@@ -60,7 +60,7 @@ interface SlotProps {
 	tankIdWithDoubleAP?: string;
 	playCard: any;
 	round?: Round;
-	canPlacekingWithoutSacrifice?:boolean;
+	canPlacekingWithoutSacrifice?: boolean;
 }
 
 interface DeckSlotProps {
@@ -164,19 +164,25 @@ export const AnimalBoardSlot = ({
 			style={{
 				...boardSlotStyle,
 				justifyContent: 'space-between',
+				backgroundColor: CLANS[clan!]?.color,
 				boxShadow: selected
 					? `0 0 1.5px 2.5px ${selectedColor}`
 					: `0 0 1px 2px ${CLANS[clan!]?.color}`,
 			}}
 			onClick={() => select()}>
 			{!!name && name?.toLowerCase() in animalsPics && (
-				<img
-					src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
+				<div
 					style={{
-						height: '6rem',
-						backgroundSize: 'cover',
-						backgroundPosition: 'center',
-					}}></img>
+						height: '100%',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						textAlign: 'center',
+					}}>
+					<img
+						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
+						style={{ height: '5rem' }}></img>
+				</div>
 			)}
 
 			<div
@@ -283,12 +289,12 @@ export const BoardSlot = ({
 				playCard(item.id, nb);
 			},
 		},
-		[cardId, round,canPlacekingWithoutSacrifice],
+		[cardId, round, canPlacekingWithoutSacrifice],
 	);
 
 	if (isAnimalCard(cardId)) {
 		return (
-			<div ref={drop}> 
+			<div ref={drop}>
 				<AnimalBoardSlot
 					cardId={cardId!}
 					select={() => selectSlot(nb)}
@@ -412,7 +418,7 @@ export const BoardSlots = ({
 	tankIdWithDoubleAP?: string;
 	playCard?: any;
 	round?: Round;
-	canPlacekingWithoutSacrifice?:boolean;
+	canPlacekingWithoutSacrifice?: boolean;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -425,7 +431,7 @@ export const BoardSlots = ({
 		<div
 			style={{
 				...centerStyle,
-				width: '24rem',
+				width: '28rem',
 				justifyContent: 'space-evenly',
 			}}>
 			{compoundSlots.map((slot, index) => (
