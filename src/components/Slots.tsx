@@ -29,18 +29,19 @@ interface DropItem {
 	// Ajoutez ici d'autres propriétés si nécessaire
 }
 
-export const SlotBack = () => (
+export const SlotBack = ({ shadow }: { shadow?: boolean }) => (
 	<div
 		style={{
 			borderRadius: 5,
 			backgroundColor: violet,
 			color: 'white',
 			...centerStyle,
-			height: '6vh',
-			width: '2.5vw',
+			height: '7vh',
+			width: '3vw',
 			fontSize: '0.9em',
+			boxShadow: shadow ? '6px 6px 0px 0px #7f26a4' : undefined,
 		}}>
-		<h6>K</h6>
+		<h5>K</h5>
 	</div>
 );
 
@@ -427,13 +428,12 @@ export const BoardSlots = ({
 				justifyContent: 'space-evenly',
 			}}>
 			{compoundSlots.map((slot, index) => (
-				<div key={index}>
-					<div
-						className={
-							slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
-						}>
-						{current && <CanAttackIconsView slot={slot} />}
-					</div>
+				<div
+					key={index}
+					className={
+						slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
+					}>
+					<div>{current && <CanAttackIconsView slot={slot} />}</div>
 					<div style={isAnimalInEnv(slot?.cardId, elementType) ? glow : undefined}>
 						<BoardSlot
 							nb={index}

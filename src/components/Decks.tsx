@@ -63,9 +63,15 @@ export const OpponentPDeck = ({
 
 export const MainDeck = ({ nbCards = 0 }: { nbCards: number }) => {
 	return (
-		<div style={{ width: '17vw', ...flexColumnStyle, color: violet, gap: 2 }}>
+		<div
+			style={{
+				width: '17vw',
+				...flexColumnStyle,
+				color: violet,
+				gap: 2,
+			}}>
 			<h5>Main Deck ({nbCards}) </h5>
-			<SlotBack />
+			<SlotBack shadow />
 		</div>
 	);
 };

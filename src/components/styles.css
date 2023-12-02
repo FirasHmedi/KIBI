@@ -1,9 +1,9 @@
 .up-transition {
-	animation: up 0.7s ease-in-out;
+	animation: up 1s ease;
 }
 
 .down-transition {
-	animation: down 0.7s ease-in-out;
+	animation: down 1s ease;
 }
 
 @keyframes up {
@@ -11,7 +11,7 @@
 		transform: translateY(0);
 	}
 	50% {
-		transform: translateY(-20px);
+		transform: translateY(-40px);
 	}
 	100% {
 		transform: translateY(0);
@@ -23,7 +23,7 @@
 		transform: translateY(0);
 	}
 	50% {
-		transform: translateY(20px);
+		transform: translateY(40px);
 	}
 	100% {
 		transform: translateY(0);
