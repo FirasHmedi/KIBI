@@ -181,7 +181,7 @@ export const AnimalBoardSlot = ({
 					}}>
 					<img
 						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-						style={{ height: '5rem' }}></img>
+						style={{ width: '6rem', height: '6rem' }}></img>
 				</div>
 			)}
 
