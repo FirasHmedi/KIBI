@@ -36,7 +36,7 @@ import {
 } from '../backend/powers';
 import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
 import { flexColumnStyle } from '../styles/Style';
-import { ANIMALS_POINTS, ClanName, EMPTY, KING, TANK, envCardsIds } from '../utils/data';
+import { ANIMALS_POINTS, ClanName, EMPTY, JOKER, KING, TANK, envCardsIds } from '../utils/data';
 import {
 	getAnimalCard,
 	getOpponentIdFromCurrentId,
@@ -518,6 +518,17 @@ export function GameView({
 		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), idInCurrPSlot, isDoubleAP);
 		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
+	};
+
+	const activateMonkeysAbilities = async (playerInAction: PlayerType, slots: any[] = []) => {
+		var hasJokerInElement = false;
+		for (let i = 0; i < slots.length; i++) {
+			const animal = getAnimalCard(slots[i]?.cardId);
+			if (!!animal && animal.role === JOKER && animal.clan === board.elementType) {
+				hasJokerInElement = true;
+			}
+		}
+		if (!hasJokerInElement) return;
 	};
 
 	const localState = {

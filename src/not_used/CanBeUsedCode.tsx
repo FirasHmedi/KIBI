@@ -146,6 +146,11 @@ export const GeneralTestData = {
 	const currPAnimals = currentPlayer.cardsIds.filter(id => isAnimalCard(id));
 	if (currPAnimals.length < 2) return false;
 	break;
+
+	"steal-pow-2hp": {
+	"description": "Sacrifice 2hp to steal power card from opponent deck, activate directly",
+	"name": "Steal power card for 2hp"
+	},
 	*/
 
 export {};

@@ -49,7 +49,10 @@ export const placeAnimalOnBoard = async (
 	elementType?: string,
 ) => {
 	const animal = getAnimalCard(animalId);
-	await addInfoToLog(gameId, 'player ' + playerType + ' placed a ' + animal?.name + ' in slot ' + slotNb);
+	await addInfoToLog(
+		gameId,
+		'player ' + playerType + ' placed a ' + animal?.name + ' in slot ' + slotNb,
+	);
 	await removeCardFromPlayerDeck(gameId, playerType, animalId);
 	await addAnimalToBoard(gameId, playerType, slotNb, animalId, false, elementType);
 };
@@ -113,7 +116,11 @@ export const attackOwner = async (
 	await removeHpFromPlayer(gameId, playerDType, ap);
 };
 
-export const activateJokerAbility = async (gameId: string, jokerId: string, playerType: PlayerType) => {
+export const activateJokerAbility = async (
+	gameId: string,
+	jokerId: string,
+	playerType: PlayerType,
+) => {
 	const joker = getAnimalCard(jokerId);
 	if (!joker || joker.role != JOKER) return;
 
@@ -122,23 +129,28 @@ export const activateJokerAbility = async (gameId: string, jokerId: string, play
 
 	await addInfoToLog(gameId, joker.name + ' has activated his ability');
 
-	switch (joker.name) {
-		case 'Crow':
+	switch (elementType) {
+		case 'air':
 			await returnRandomAnimalCardToDeck(gameId, playerType);
 			break;
-		case 'Fox':
+		case 'fire':
 			await returnRandomPowerCardToDeck(gameId, playerType);
 			break;
-		case 'Snake':
+		case 'earth':
 			await sendRandomOpponentCardToGY(gameId, playerType);
 			break;
-		case 'Jellyfish':
+		case 'water':
 			await drawOneCard(gameId, playerType);
 			break;
 	}
 };
 
-export const setPowerCardAsActive = async (gameId: string, playerType: PlayerType, cardId: string, name?: string) => {
+export const setPowerCardAsActive = async (
+	gameId: string,
+	playerType: PlayerType,
+	cardId: string,
+	name?: string,
+) => {
 	if (name) {
 		await addInfoToLog(gameId, 'player ' + playerType + ' placed a ' + name);
 	}
@@ -160,7 +172,11 @@ export const enableAttackForOpponentAnimals = async (
 	}
 };
 
-export const activateJokersAbilities = async (gameId: string, playerDType: PlayerType, slots: SlotType[] = []) => {
+export const activateJokersAbilities = async (
+	gameId: string,
+	playerDType: PlayerType,
+	slots: SlotType[] = [],
+) => {
 	for (let i = 0; i < slots.length; i++) {
 		const cardId = slots[i]?.cardId;
 		if (isAnimalCard(cardId)) {
@@ -183,7 +199,12 @@ export const placeKingWithoutSacrifice = async (
 	await addAnimalToBoard(gameId, playerType, slotNb, kingId, true);
 };
 
-export const changeHasAttacked = async (gameId: string, playerType: PlayerType, slotNb: number, value: boolean) => {
+export const changeHasAttacked = async (
+	gameId: string,
+	playerType: PlayerType,
+	slotNb: number,
+	value: boolean,
+) => {
 	const slots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
 	const updatedSlots = [
 		slots[0] ?? { cardId: 'empty', canAttack: false },

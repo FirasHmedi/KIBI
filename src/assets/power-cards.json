@@ -47,10 +47,6 @@
 		"description": "Sacrifice 3 hp to switch side of an opponent animal",
 		"name": "Steal animal opponent for 3hp"
 	},
-	"steal-pow-2hp": {
-		"description": "Sacrifice 2hp to steal power card from opponent deck, activate directly",
-		"name": "Steal power card for 2hp"
-	},
 	"switch-decks": {
 		"description": "Switch deck with opponent for 1hp",
 		"name": "Switch decks of players for 1hp"
