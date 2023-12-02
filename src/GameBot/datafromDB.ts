@@ -1,31 +1,26 @@
-import { getItemsOnce } from '../backend/db';
-import { NEUTRAL } from '../utils/data';
+import {getItemsOnce} from '../backend/db';
+import {NEUTRAL} from '../utils/data';
 
 export const getBotSlots = async (gameId: string) => {
-	let slots = await getItemsOnce('/games/' + gameId + '/board/two');
-	return slots;
+	return await getItemsOnce('/games/' + gameId + '/board/two');
 };
 
 export const getPlayerSlots = async (gameId: string) => {
-	let slots = await getItemsOnce('/games/' + gameId + '/board/one');
-	return slots;
+	return await getItemsOnce('/games/' + gameId + '/board/one');
 };
 
 export const getRoundNb = async (gameId: string) => {
-	let RoundNb = await getItemsOnce('/games/' + gameId + '/round/nb');
-	return RoundNb;
+	return await getItemsOnce('/games/' + gameId + '/round/nb');
 };
 export const getBotDeck = async (gameId: string) => {
-	let BotDeck = await getItemsOnce('/games/' + gameId + '/two/cardsIds');
-	return BotDeck;
+	return await getItemsOnce('/games/' + gameId + '/two/cardsIds');
 };
 
 export const getPlayerDeck = async (gameId: string) => {
-	let playerDeck = await getItemsOnce('/games/' + gameId + '/one/cardsIds');
-	return playerDeck;
+	return await getItemsOnce('/games/' + gameId + '/one/cardsIds');
 };
 
-export const getElementfromDb = async (gameId: string) => {
+export const getElementFromDb = async (gameId: string) => {
 	let element = await getItemsOnce('/games/' + gameId + '/board/elementType');
 	return element ?? NEUTRAL;
 };

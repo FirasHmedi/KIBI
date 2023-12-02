@@ -6,20 +6,20 @@ import {
 	placeKingOnBoard,
 } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
-import { changeElement } from '../backend/powers';
-import { ATTACKER, JOKER, KING, TANK } from '../utils/data';
+import { ANIMALS_POINTS, ATTACKER, JOKER, KING, TANK } from '../utils/data';
 import { getAnimalCard, isAnimalCard } from '../utils/helpers';
+import { changeElement } from '../backend/powers';
 import { PlayerType, SlotType } from '../utils/interface';
 import {
 	getBotDeck,
 	getBotSlots,
-	getElementfromDb,
+	getElementFromDb,
 	getPlayerSlots,
 	getRoundNb,
 } from './datafromDB';
 import { playPowerCardForBot } from './playpowerCards';
 
-const isKing = (cardId: string): boolean => {
+export const isKing = (cardId: string): boolean => {
 	const KingIds = ['9-a', '13-a', '1-a', '5-a'];
 	return KingIds.includes(cardId);
 };
@@ -27,15 +27,13 @@ function delay(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => {
+export const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => {
 	const roundNb = await getRoundNb(gameId);
-	const elementType = await getElementfromDb(gameId);
+	const elementType = await getElementFromDb(gameId);
 
 	if (roundNb === 2) {
-		//round 2 the bot have no choice except placing three animals on board
 		for (let i = 0; i < 3; i++) {
 			if (isAnimalCard(selectedCards[i])) {
-				console.log(`Placing card ${selectedCards[i]} at slot ${i}`);
 				await placeAnimalOnBoard(gameId, PlayerType.TWO, i, selectedCards[i], elementType);
 			}
 		}
@@ -44,32 +42,26 @@ const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => 
 
 	if (!isEmpty(selectedCards)) {
 		const nbCardsToPlay = 2;
-		const botSlots = ((await getBotSlots(gameId)) ?? []) as SlotType[];
+		let botSlots = ((await getBotSlots(gameId)) ?? []) as SlotType[];
 		const emptySlots = botSlots.filter((slot: SlotType) => !isAnimalCard(slot?.cardId));
 
 		for (let i = 0; i < Math.min(nbCardsToPlay, emptySlots.length); i++) {
 			let cardPlaced = false;
-			// Try to find an empty slot for the current card.
 			for (let j = 0; j < 3 && !cardPlaced; j++) {
 				if (botSlots[j].cardId === 'empty' && isAnimalCard(selectedCards[i])) {
-					console.log(`Placing card ${selectedCards[i]} at slot ${j}`);
 					await placeAnimalOnBoard(gameId, PlayerType.TWO, j, selectedCards[i], elementType);
 					await delay(1000);
 					cardPlaced = true;
-				} else {
-					console.log('this slot is occupied');
+					botSlots = await getBotSlots(gameId);
 				}
 			}
-			// If no slot was found for the current card, break out of the loop.
 			if (!cardPlaced) {
-				console.log(`No empty slot found for card ${selectedCards[i]}`);
 				break;
 			}
 		}
 	}
 };
 
-//King checker
 const canPlayKing = async (botSlots: SlotType[], cardIds: string[]) => {
 	const isKingOnBoard = botSlots.some((slot: SlotType) => isKing(slot?.cardId));
 	if (isKingOnBoard) {
@@ -79,7 +71,6 @@ const canPlayKing = async (botSlots: SlotType[], cardIds: string[]) => {
 	const kingCards = cardIds.filter(cardId => isKing(cardId));
 	if (kingCards.length === 0) return false;
 
-	// Check if there's an animal on the board with the same clan as any of the kings
 	return botSlots.some((slot: SlotType) => {
 		if (!isAnimalCard(slot?.cardId)) return false;
 		const slotCard = getAnimalCard(slot?.cardId);
@@ -99,101 +90,114 @@ const playKingForBot = async (gameId: string) => {
 		return false;
 	}
 
-	const botSlots = await getBotSlots(gameId);
-	const playerDeck = await getBotDeck(gameId);
-	const canplayking = await canPlayKing(botSlots, playerDeck);
-	if (!canplayking) {
-		console.log("Bot couldn't play any king cards this turn.");
+	const botSlots = await getBotSlots(gameId) ?? [];
+	const playerDeck = await getBotDeck(gameId) ?? [];
+	const canplayKing = await canPlayKing(botSlots, playerDeck);
+	if (!canplayKing) {
 		return false;
 	}
 
 	const kingCards = playerDeck.filter(isKing);
-	// Iterate over all king cards to find a match on the board
 	for (const kingCard of kingCards) {
 		const kingClan = getAnimalCard(kingCard)?.clan;
-		// Search for a board slot with an animal of the same clan as the king
 		const filteredBotSlots = botSlots.filter((slot: SlotType) => slot && !isEmpty(slot?.cardId));
-
 		const slotIndexToSacrifice = filteredBotSlots.findIndex((slot: SlotType) => {
 			const animal = getAnimalCard(slot?.cardId);
 			return animal && animal.clan === kingClan;
 		});
-		// Logic to sacrifice the animal and play the king goes here
-		await placeKingOnBoard(
-			gameId,
-			PlayerType.TWO,
-			kingCard,
-			botSlots[slotIndexToSacrifice]?.cardId,
-			slotIndexToSacrifice,
-		);
-		return true; // King was successfully played
+		if(slotIndexToSacrifice!== -1)
+		{
+			await placeKingOnBoard(
+				gameId,
+				PlayerType.TWO,
+				kingCard,
+				botSlots[slotIndexToSacrifice]?.cardId,
+				slotIndexToSacrifice,
+			);
+			return true;
+		}
+		
 	}
+	return false;
 };
 
 const getDefendingAnimalIdAndSlot = async (
-	gameId: string,
+	gameId: string,cardId : string
 ): Promise<{ animalDId: string; slotDNumber: number } | null> => {
-	// Define the priority for the roles
+	const attacker = getAnimalCard(cardId);
+	if(!attacker)
+	{return null;}
+	const attackerAP = ANIMALS_POINTS[attacker.role].ap;
 	const rolePriority = [KING, ATTACKER, JOKER, TANK];
 	const slots = await getPlayerSlots(gameId);
-	// Convert slots to a list of slots with their index
 	const indexedSlots = slots.map((slot: any, index: any) => ({
 		...slot,
 		index,
 	}));
 
-	// Find the first slot that has an animal card and matches the role priority
 	for (const role of rolePriority) {
 		const foundSlot = indexedSlots.find((slot: SlotType) => {
-			const animalCard = getAnimalCard(slot?.cardId);
-			return animalCard && animalCard.role === role;
-		});
+            const defendingAnimal = getAnimalCard(slot?.cardId);
+            return defendingAnimal && defendingAnimal.role === role && ANIMALS_POINTS[defendingAnimal.role].hp <= attackerAP;
+        });
 
 		if (foundSlot) {
 			return { animalDId: foundSlot?.cardId, slotDNumber: foundSlot.index };
 		}
 	}
-
-	// Return null if no valid defending animal is found
 	return null;
 };
+
+
 
 const botAttack = async (gameId: string) => {
 	const roundNB = (await getRoundNb(gameId)) ?? 0;
 	if (roundNB < 2) {
-		console.log("the bot can't attack");
 		return;
 	}
-	const BotSlots = (await getBotSlots(gameId)) ?? [];
+	
 	const slots = await getPlayerSlots(gameId);
-	const ownerHasNoAnimals = slots.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
-
+	const ownerHasNoAnimals = slots?.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
 	const player = await getItemsOnce('/games/' + gameId + '/two');
 	if (!player.canAttack || ownerHasNoAnimals) {
 		return;
 	}
+	const BotSlots = (await getBotSlots(gameId)) ?? [];
 
-	const animalsThatCanAttack: any[] = [];
-	// Add animals to the array based on priority
-	BotSlots.forEach((slot: SlotType, index: number) => {
-		const animalCard = getAnimalCard(slot?.cardId);
-		if (animalCard && slot.canAttack) {
-			if (animalCard.role === KING) {
-				animalsThatCanAttack.unshift(index); // King gets the highest priority
-			} else {
-				animalsThatCanAttack.push(index); // Other animals get lower priority
-			}
-		}
-	});
+const kings: number[] = [];
+const attackers: number[] = [];
+const jokers: number[] = [];
+const tanks: number[] = [];
+
+BotSlots.forEach((slot: SlotType, index: number) => {
+    const animalCard = getAnimalCard(slot?.cardId);
+    if (animalCard && slot.canAttack) {
+        switch (animalCard.role) {
+            case KING:
+                kings.push(index);
+                break;
+            case ATTACKER:
+                attackers.push(index);
+                break;
+            case JOKER:
+                jokers.push(index);
+                break;
+			case TANK:
+				tanks.push(index)
+
+        }
+    }
+});
+
+const animalsThatCanAttack = [...kings, ...attackers,...tanks, ...jokers];
 
 	if (isEmpty(animalsThatCanAttack)) {
 		return;
 	}
 
-	// Attack with the highest priority animal
 	const slotIndexToAttackWith = animalsThatCanAttack[0];
 	const animalToAttackWith = BotSlots[slotIndexToAttackWith];
-	const target = await getDefendingAnimalIdAndSlot(gameId);
+	const target = await getDefendingAnimalIdAndSlot(gameId,animalToAttackWith.cardId);
 	const animal = getAnimalCard(animalToAttackWith?.cardId);
 
 	if (!target || !animal) {
@@ -201,9 +205,9 @@ const botAttack = async (gameId: string) => {
 	}
 
 	const envLoadNb = await getItemsOnce('/games/' + gameId + '/two/envLoadNb');
-	let currentElement = await getElementfromDb(gameId);
+	let currentElement = await getElementFromDb(gameId);
 	if (envLoadNb === 3 && animal?.clan !== currentElement) {
-		changeElement(gameId, animal.clan, PlayerType.TWO);
+		await changeElement(gameId, animal.clan, PlayerType.TWO);
 		currentElement = animal.clan;
 	}
 
@@ -214,12 +218,10 @@ const botAttack = async (gameId: string) => {
 		target.animalDId,
 		target.slotDNumber,
 	);
-	// If the attacking animal is a king and it's in its element, attempt to attack a second animal
 	if (animal?.role !== KING || currentElement !== animal.clan) {
 		return;
 	}
-	// Find a second target for the king to attack
-	const secondTarget = await getDefendingAnimalIdAndSlot(gameId);
+	const secondTarget = await getDefendingAnimalIdAndSlot(gameId,animalToAttackWith.cardId);
 	if (!secondTarget) {
 		return;
 	}
@@ -232,18 +234,15 @@ const botAttack = async (gameId: string) => {
 	);
 };
 
-const attemptAttackplayer = async (gameId: string) => {
-	//declare variable
+const attemptAttackPlayer = async (gameId: string) => {
 	const botSlots = (await getBotSlots(gameId)) ?? [];
 	const playerSlots = (await getPlayerSlots(gameId)) ?? [];
-	const elementType = await getElementfromDb(gameId);
-	// Check if the owner has less than 3 animals or no animals at all
+	const elementType = await getElementFromDb(gameId);
 	const ownerHasFewerThanThreeAnimals =
 		playerSlots.filter((slot: SlotType) => isAnimalCard(slot?.cardId)).length < 3;
 	const ownerHasNoAnimals = playerSlots.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
 	if (ownerHasNoAnimals) {
 		const rolePriority = [KING, ATTACKER, TANK, JOKER];
-		// Find the first animal that can attack based on the defined priority
 		const attackerIndex = rolePriority
 			.map(role =>
 				botSlots.findIndex((slot: SlotType) => {
@@ -253,7 +252,6 @@ const attemptAttackplayer = async (gameId: string) => {
 			)
 			.find(index => index !== -1);
 
-		// If there's an attacker, perform attack on owner
 		if (!isNil(attackerIndex)) {
 			const attackerSlot = botSlots[attackerIndex];
 			if (attackerSlot.canAttack) {
@@ -262,9 +260,7 @@ const attemptAttackplayer = async (gameId: string) => {
 			}
 		} else return false;
 	}
-	// If the attacker in element can attack the owner, perform the attack
 	else if (ownerHasFewerThanThreeAnimals) {
-		// Find an attacker in element
 		const attackerInElementIndex = botSlots.findIndex((slot: SlotType) => {
 			const animal = getAnimalCard(slot?.cardId);
 			return animal && animal.role === ATTACKER && animal.clan === elementType;
@@ -273,53 +269,19 @@ const attemptAttackplayer = async (gameId: string) => {
 			return false;
 		}
 		const attackerSlot = botSlots[attackerInElementIndex];
-		// Perform attack on owner
-		console.log(`Attacker ${attackerSlot?.cardId} is attacking the owner`);
 		await attackOwner(gameId, PlayerType.ONE, attackerSlot?.cardId!);
 		return true;
 	} else {
-		console.log("the bot can't attack the player 1");
 		return false;
 	}
 };
 
-//this function can be used for next
-export const setElementForBot = async (gameId: string): Promise<boolean> => {
-	const rolePriority = [KING, JOKER, ATTACKER, TANK];
-	const botSlots = await getBotSlots(gameId);
-
-	// Find the first animal on board that matches the priority and has a different element than the current one
-	for (const role of rolePriority) {
-		const slotIndex = botSlots.findIndex((slot: SlotType) => {
-			const animal = getAnimalCard(slot?.cardId);
-			return animal && animal.role === role;
-		});
-
-		if (slotIndex === -1) {
-			continue;
-		}
-
-		const animal = getAnimalCard(botSlots[slotIndex]?.cardId);
-		// Change the element to the one that matches the first found priority animal
-		console.log(`Changing element to ${animal!.clan} based on the ${role}`);
-		const envLoadNb = await getItemsOnce('/games/' + gameId + '/two/envLoadNb');
-		const currenntElement = await getElementfromDb(gameId);
-		if (envLoadNb === 3 && animal?.clan !== currenntElement) {
-			await changeElement(gameId, animal!.clan, PlayerType.TWO);
-			return true;
-		} else {
-			return false;
-		}
-	}
-	return false;
-};
 
 export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const roundNB = await getRoundNb(gameId);
-	const bot = await getItemsOnce('/games/' + gameId + '/two');
+	let bot = await getItemsOnce('/games/' + gameId + '/two');
 	const kingPlayed = await playKingForBot(gameId);
 	let cardsToPick = roundNB > 2 ? 2 : 3;
-
 	if (kingPlayed) cardsToPick--;
 
 	if (roundNB > 2 && bot.canPlayPowers === true) {
@@ -328,8 +290,8 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 			cardsToPick--;
 		}
 	}
-	console.log('cardsToPick: ', cardsToPick);
 
+	bot = await getItemsOnce('/games/' + gameId + '/two');
 	const allowedAnimalsCardIds = [
 		'10-a',
 		'11-a',
@@ -348,14 +310,13 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const validCards = (bot?.cardsIds ?? []).filter((cardId: string) =>
 		allowedAnimalsCardIds.includes(cardId),
 	);
-
 	if (!isEmpty(validCards)) {
 		const selectedCards: string[] = shuffle(validCards).slice(0, cardsToPick) ?? [];
 		await playAnimalCardForBot(selectedCards, gameId);
 	}
 
 	if (bot?.canAttack) {
-		const attempt = await attemptAttackplayer(gameId);
+		const attempt = await attemptAttackPlayer(gameId);
 		if (!attempt) {
 			await botAttack(gameId);
 		}
