@@ -1,13 +1,17 @@
-import ComputerIcon from '@mui/icons-material/Computer';
-import PersonIcon from '@mui/icons-material/Person';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import shuffle from 'lodash/shuffle';
 import { useState } from 'react';
+import { FaGamepad } from 'react-icons/fa';
+import { MdComputer, MdPerson, MdPersonAdd, MdVisibility } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { getGamePath, setItem } from '../../backend/db';
-import { buttonStyle, centerStyle, flexRowStyle, violet } from '../../styles/Style';
+import {
+	buttonStyle,
+	centerStyle,
+	flexRowStyle,
+	homeButtonsStyle,
+	violet,
+} from '../../styles/Style';
 import {
 	ANIMALS_CARDS,
 	ENV_MAX_LOAD,
@@ -181,22 +185,24 @@ function Home() {
 				}}>
 				<div style={{ ...centerStyle, gap: 15 }}>
 					<button
-						style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
+						style={{
+							...buttonStyle,
+							...homeButtonsStyle,
+						}}
 						disabled={false}
 						onClick={() => createGame()}>
-						<PersonIcon />
+						<FaGamepad />
+						<MdPerson />
 					</button>
 					<button
-						style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
+						style={{
+							...buttonStyle,
+							...homeButtonsStyle,
+						}}
 						disabled={disabledButton}
 						onClick={playWithGameBot}>
-						<ComputerIcon />
-					</button>
-					<button
-						style={{ ...buttonStyle, fontSize: '1em', padding: 10 }}
-						disabled={disabledButton}
-						onClick={() => joinGameAsSpectator()}>
-						<VisibilityIcon style={{ color: 'white' }} />
+						<FaGamepad />
+						<MdComputer />
 					</button>
 				</div>
 				<div style={centerStyle}>
@@ -207,7 +213,7 @@ function Home() {
 						style={{
 							padding: 10,
 							margin: 10,
-							width: '20vw',
+							width: '24vw',
 							height: '2vh',
 							borderRadius: 5,
 							borderWidth: 3,
@@ -219,10 +225,20 @@ function Home() {
 					/>
 					<div style={{ width: '20vw', ...flexRowStyle, gap: 15 }}>
 						<button
-							style={{ ...buttonStyle, fontSize: '1em', padding: 10, minWidth: '3vw' }}
+							style={{
+								...buttonStyle,
+								...homeButtonsStyle,
+							}}
 							disabled={disabledButton}
 							onClick={() => joinGameAsPlayer()}>
-							<PersonAddIcon style={{ color: 'white' }} />
+							<FaGamepad />
+							<MdPersonAdd />
+						</button>
+						<button
+							style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.7em' }}
+							disabled={disabledButton}
+							onClick={() => joinGameAsSpectator()}>
+							<MdVisibility />
 						</button>
 					</div>
 				</div>

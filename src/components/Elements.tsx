@@ -1,4 +1,4 @@
-import CancelIcon from '@mui/icons-material/Cancel';
+import { MdCancel } from 'react-icons/md';
 import { airColor, centerStyle, earthColor, fireColor, violet, waterColor } from '../styles/Style';
 import { AIR, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
 
@@ -25,7 +25,7 @@ export const ElementPopup = ({
 		<button
 			style={{ position: 'absolute', right: '35vw', top: '25vh' }}
 			onClick={() => changeElement()}>
-			<CancelIcon style={{ color: 'white', width: '3vw', height: 'auto' }} />
+			<MdCancel style={{ color: 'white', width: '3vw', height: 'auto' }} />
 		</button>
 		<div
 			style={{

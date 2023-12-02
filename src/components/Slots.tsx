@@ -1,6 +1,7 @@
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import InfoIcon from '@mui/icons-material/Info';
+import { FaHeart } from 'react-icons/fa';
+import { IoIosInformationCircle } from 'react-icons/io';
+import { TbSword } from 'react-icons/tb';
+
 import { useDrag, useDrop } from 'react-dnd';
 import { Tooltip } from 'react-tooltip';
 import attIcon from '../assets/icons/att.png';
@@ -13,15 +14,7 @@ import {
 	selectedColor,
 	violet,
 } from '../styles/Style';
-import {
-	ANIMALS_POINTS,
-	CLANS,
-	ClanName,
-	TANK,
-	animalsPics,
-	elementsIcons,
-	rolesIcons,
-} from '../utils/data';
+import { ANIMALS_POINTS, CLANS, ClanName, TANK, animalsPics, elementsIcons } from '../utils/data';
 import {
 	getAnimalCard,
 	getPowerCard,
@@ -100,7 +93,7 @@ export const PowerBoardSlot = ({
 			onClick={() => select()}>
 			<h6>{name?.toUpperCase()}</h6>
 			<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
-			<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.2vw' }} />
+			<IoIosInformationCircle id={tooltipId} style={{ color: 'white', width: '1.2vw' }} />
 		</div>
 	);
 };
@@ -134,7 +127,7 @@ export const PowerDeckSlot = ({
 			<h6>{name?.toUpperCase()}</h6>
 			<div>
 				<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
-				<InfoIcon id={tooltipId} style={{ color: 'white', width: '1.3vw' }} />
+				<IoIosInformationCircle id={tooltipId} style={{ color: 'white', width: '1.3vw' }} />
 			</div>
 		</div>
 	);
@@ -180,8 +173,15 @@ export const AnimalBoardSlot = ({
 						textAlign: 'center',
 					}}>
 					<img
+						id={roleTooltipId}
 						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-						style={{ width: '6rem', height: '6rem' }}></img>
+						style={{ width: '7rem', height: '5.5rem' }}></img>
+					<Tooltip
+						anchorSelect={`#${roleTooltipId}`}
+						content={roleTooltipContent}
+						style={{ width: '5vw' }}
+						place='bottom'
+					/>
 				</div>
 			)}
 
@@ -189,28 +189,20 @@ export const AnimalBoardSlot = ({
 				style={{
 					...flexRowStyle,
 					width: '100%',
-					justifyContent: 'space-around',
+					justifyContent: 'space-evenly',
 					alignItems: 'center',
-					fontSize: '1rem',
+					fontSize: '1.2rem',
 					backgroundColor: CLANS[clan!]?.color,
 					height: '2rem',
 				}}>
-				<div style={{ ...centerStyle }}>
+				<div style={{ ...centerStyle, gap: 2 }}>
 					<h4>{isTankDoubleAP ? ap * 2 : ap}</h4>
-					<FitnessCenterIcon style={{ color: 'white', width: '0.8vw' }} />
+					<TbSword />
 				</div>
-				<Tooltip
-					anchorSelect={`#${roleTooltipId}`}
-					content={roleTooltipContent}
-					style={{ width: '10vw' }}
-				/>
-				<img
-					id={roleTooltipId}
-					src={rolesIcons[role]}
-					style={{ width: 24, filter: 'brightness(0) invert(1)' }}></img>
-				<div style={{ ...centerStyle }}>
+
+				<div style={{ ...centerStyle, gap: 2 }}>
 					<h4>{hp}</h4>
-					<FavoriteIcon style={{ color: 'white', width: '0.8vw' }} />
+					<FaHeart />
 				</div>
 			</div>
 		</div>
@@ -254,18 +246,18 @@ export const AnimalDeckSlot = ({
 				style={{
 					...flexRowStyle,
 					width: '100%',
-					justifyContent: 'space-around',
+					justifyContent: 'space-evenly',
 					alignItems: 'center',
 					paddingBottom: 4,
+					fontSize: '0.9rem',
 				}}>
-				<div style={{ ...centerStyle }}>
+				<div style={{ ...centerStyle, gap: 2 }}>
 					<h4>{ap}</h4>
-					<FitnessCenterIcon style={{ color: 'white', width: '0.8vw' }} />
+					<TbSword />
 				</div>
-				<img src={rolesIcons[role]} style={{ width: 22, filter: 'brightness(0) invert(1)' }}></img>
-				<div style={{ ...centerStyle }}>
+				<div style={{ ...centerStyle, gap: 2 }}>
 					<h4>{hp}</h4>
-					<FavoriteIcon style={{ color: 'white', width: '0.8vw' }} />
+					<FaHeart />
 				</div>
 			</div>
 		</div>
@@ -310,7 +302,7 @@ export const BoardSlot = ({
 			style={{
 				...boardSlotStyle,
 				justifyContent: 'center',
-				border: `dashed 2px ${violet}`,
+				border: `solid 2px ${violet}`,
 				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
 			}}
 			onClick={() => selectSlot(nb)}></div>
@@ -344,7 +336,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, round }: DeckSlotPr
 			style={{
 				...deckSlotStyle,
 				justifyContent: 'center',
-				border: `dotted 3px ${violet}`,
+				border: `solid 3px ${violet}`,
 				borderColor: selected ? violet : undefined,
 				color: violet,
 				fontSize: '0.7em',
@@ -362,7 +354,7 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 				...centerStyle,
 				borderRadius: 5,
 				backgroundColor: elementType !== 'neutral' ? CLANS[elementType!]?.color : undefined,
-				border: elementType === 'neutral' ? `dotted 3px ${violet}` : undefined,
+				border: elementType === 'neutral' ? `solid 3px ${violet}` : undefined,
 				color: 'white',
 				flexDirection: 'column',
 				height: '3vw',
@@ -424,8 +416,8 @@ export const BoardSlots = ({
 	// @ts-ignore
 	const mainColor = elementType == 'neutral' ? 'transparent' : CLANS[elementType].color;
 	const glow = {
-		boxShadow: ` 0 0 0.5vw 0.25vw ${mainColor}`,
-		borderRadius: 5,
+		/*boxShadow: ` 0 0 0.2vw 0.12vw ${mainColor}`,
+		borderRadius: 5,*/
 	};
 	return (
 		<div

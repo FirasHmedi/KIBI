@@ -1,13 +1,15 @@
-import Battery0BarIcon from '@mui/icons-material/Battery0Bar';
-import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
-import BatteryCharging80Icon from '@mui/icons-material/BatteryCharging80';
-import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ClawIcon from '@mui/icons-material/Pets';
 import ProgressBar from '@ramonak/react-progress-bar';
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { FaHeart } from 'react-icons/fa';
+import { FaPaw } from 'react-icons/fa6';
+import {
+	MdBattery0Bar,
+	MdBatteryCharging20,
+	MdBatteryCharging80,
+	MdBatteryChargingFull,
+} from 'react-icons/md';
 import { Tooltip } from 'react-tooltip';
 import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
@@ -15,6 +17,21 @@ import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
+
+const CountDown = ({ finishRound }: any) => (
+	<CountdownCircleTimer
+		isPlaying
+		duration={ROUND_DURATION}
+		colors={`#8e44ad`}
+		onComplete={() => {
+			finishRound();
+		}}
+		size={24}
+		strokeLinecap='butt'
+		strokeWidth={0.5}>
+		{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
+	</CountdownCircleTimer>
+);
 
 export const CurrentPView = ({
 	player,
@@ -33,15 +50,13 @@ export const CurrentPView = ({
 	round: Round;
 	playCard: (cardId?: string) => Promise<void>;
 	finishRound: () => void;
-	attackOpponentAnimal: () => void;
 	attack: () => void;
-	attackOppHp: () => void;
 	isAttackAnimalEnabled: boolean;
 	isAttackOwnerEnabled: boolean;
 	nbCardsToPlay: number;
 	setElement: () => void;
 	spectator?: boolean;
-	showCountDown?: boolean;
+	showCountDown?: any;
 }) => {
 	const { playerType, canPlayPowers, canAttack } = player;
 	const cardsIds = player.cardsIds ?? [];
@@ -104,7 +119,7 @@ export const CurrentPView = ({
 						id={tooltipId}
 						disabled={!isAttackEnabled}
 						onClick={() => attack()}>
-						<ClawIcon
+						<FaPaw
 							style={{ width: '2vw', height: 'auto', color: !isAttackEnabled ? 'grey' : violet }}
 						/>
 					</button>
@@ -149,20 +164,6 @@ export const CurrentPView = ({
 							onClick={() => finishRound()}>
 							FINISH
 						</button>
-						{showCountDown && (
-							<CountdownCircleTimer
-								isPlaying
-								duration={ROUND_DURATION}
-								colors={`#8e44ad`}
-								onComplete={() => {
-									finishRound();
-								}}
-								size={24}
-								strokeLinecap='butt'
-								strokeWidth={0.5}>
-								{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
-							</CountdownCircleTimer>
-						)}
 					</div>
 				</div>
 			</>
@@ -178,7 +179,14 @@ export const CurrentPView = ({
 				justifyContent: 'center',
 			}}>
 			<Buttons />
-			<PlayerDataView player={player} setElement={setElement} isMyRound={isMyRound} isMe={true} />
+			<PlayerDataView
+				showCountDown={showCountDown}
+				player={player}
+				setElement={setElement}
+				isMyRound={isMyRound}
+				isMe={true}
+				finishRound
+			/>
 			<CurrentPDeck
 				round={round}
 				cardsIds={cardsIds}
@@ -215,11 +223,15 @@ const PlayerDataView = ({
 	setElement,
 	isMyRound,
 	isMe,
+	showCountDown,
+	finishRound,
 }: {
 	player: Player;
 	setElement?: any;
 	isMyRound?: boolean;
 	isMe?: boolean;
+	showCountDown?: any;
+	finishRound?: any;
 }) => {
 	const { hp, playerType, canPlayPowers, tankIdWithDoubleAP, canAttack, envLoadNb } = player;
 	const batteryStyle = { color: violet, width: '2.8vw', height: 'auto' };
@@ -254,10 +266,21 @@ const PlayerDataView = ({
 				width: '10vw',
 			}}>
 			{isMe && (
-				<div style={{ position: 'absolute', bottom: '4vh', right: '3vw' }}>
+				<div
+					style={{
+						position: 'absolute',
+						bottom: '4vh',
+						right: '3vw',
+						...flexRowStyle,
+						alignItems: 'center',
+						height: '4vh',
+						gap: 12,
+					}}>
+					{showCountDown?.current && <CountDown finishRound={finishRound} />}
 					<h4>{playerType?.toUpperCase()}</h4>
 				</div>
 			)}
+			<div style={{ position: 'absolute', bottom: '4vh', right: '8vw' }}></div>
 
 			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
 				<div style={{ ...flexRowStyle, justifyContent: 'center', alignItems: 'center' }}>
@@ -267,7 +290,7 @@ const PlayerDataView = ({
 						</div>
 					)}
 					<h4 style={{ fontSize: '1.3rem' }}>{hpRef.current}</h4>
-					<FavoriteIcon style={{ color: violet, width: '1.2vw' }} />
+					<FaHeart style={{ color: violet, width: '1.2vw' }} />
 				</div>
 
 				<ProgressBar
@@ -285,13 +308,13 @@ const PlayerDataView = ({
 				disabled={!(!!setElement && envLoadNb === 3 && isMyRound)}
 				onClick={() => setElement()}>
 				{envLoadNb === 3 ? (
-					<BatteryChargingFullIcon style={batteryStyle} />
+					<MdBatteryChargingFull style={batteryStyle} />
 				) : envLoadNb === 2 ? (
-					<BatteryCharging80Icon style={batteryStyle} />
+					<MdBatteryCharging80 style={batteryStyle} />
 				) : envLoadNb === 1 ? (
-					<BatteryCharging20Icon style={batteryStyle} />
+					<MdBatteryCharging20 style={batteryStyle} />
 				) : envLoadNb === 0 ? (
-					<Battery0BarIcon style={batteryStyle} />
+					<MdBattery0Bar style={batteryStyle} />
 				) : null}
 			</button>
 

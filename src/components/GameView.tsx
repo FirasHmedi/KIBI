@@ -63,8 +63,7 @@ interface GameViewProps {
 	opponentPlayer: Player;
 	currentPlayer: Player;
 	spectator?: boolean;
-	showCountDown: boolean;
-	setShowCountDown: any;
+	showCountDown: any;
 }
 
 export function GameView({
@@ -75,7 +74,6 @@ export function GameView({
 	currentPlayer,
 	spectator,
 	showCountDown,
-	setShowCountDown,
 }: GameViewProps) {
 	const { opponentPSlots, currentPSlots, elementType } = board;
 
@@ -443,7 +441,7 @@ export function GameView({
 
 	const finishRound = async () => {
 		try {
-			setShowCountDown(false);
+			showCountDown.current = false;
 			await enableAttackingAndPlayingPowerCards(gameId, playerType);
 			await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
 			await enableAttackForOpponentAnimals(
@@ -473,6 +471,8 @@ export function GameView({
 		if (isAttackAnimalEnabled) {
 			await attackOppAnimal();
 		}
+		setSelectedCurrPSlotNb(undefined);
+		setSelectedOppSlotsNbs([]);
 	};
 
 	const attackOppAnimal = async () => {
@@ -557,8 +557,6 @@ export function GameView({
 				round={round}
 				playCard={playCard}
 				finishRound={finishRound}
-				attackOpponentAnimal={attackOppAnimal}
-				attackOppHp={attackOppHp}
 				attack={attack}
 				isAttackAnimalEnabled={isAttackAnimalEnabled}
 				isAttackOwnerEnabled={isAttackOwnerEnabled}
@@ -567,7 +565,6 @@ export function GameView({
 				spectator={spectator}
 				showCountDown={showCountDown}
 			/>
-
 			{openCardsPopup && (
 				<CardsPopup
 					cardsIds={cardsIdsForPopup}

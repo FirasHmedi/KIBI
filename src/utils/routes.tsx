@@ -1,6 +1,6 @@
-import MenuIcon from '@mui/icons-material/Menu';
 import { get, ref } from 'firebase/database';
 import { useEffect, useState } from 'react';
+import { IoIosMenu } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { SignUpButton } from '../components/SignUpButton';
@@ -12,7 +12,14 @@ import { SignIn } from '../pages/registration/SignIn';
 import { SignUp } from '../pages/registration/SignUp';
 import Walkthrough from '../pages/walkthrough/Walkthrough';
 import { appStyle, centerStyle, violet } from '../styles/Style';
-import { CARDS_PATH, GAME_PATH, HOME_PATH, SIGNIN_PATH, SINGUP_PATH, WALKTHROUGH_PATH } from './data';
+import {
+	CARDS_PATH,
+	GAME_PATH,
+	HOME_PATH,
+	SIGNIN_PATH,
+	SINGUP_PATH,
+	WALKTHROUGH_PATH,
+} from './data';
 
 const Layout = ({ children }: any) => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -59,8 +66,10 @@ const Layout = ({ children }: any) => {
 					display: 'flex',
 					alignItems: 'center',
 				}}>
-				<button style={{ display: 'flex', alignItems: 'center' }} onClick={toggleSidebar}>
-					<MenuIcon style={{ color: violet, paddingLeft: '1vw' }} />
+				<button
+					style={{ display: 'flex', alignItems: 'center', fontSize: '1.6em' }}
+					onClick={toggleSidebar}>
+					<IoIosMenu style={{ color: violet, paddingLeft: '1vw' }} />
 				</button>
 				<a href={'/'} style={{ color: violet }}>
 					<h4 style={{ paddingLeft: '1vw', margin: 0 }}>KIBI</h4>

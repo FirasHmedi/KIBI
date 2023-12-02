@@ -59,6 +59,17 @@ export const buttonStyle: React.CSSProperties = {
 	minWidth: '4vw',
 };
 
+export const homeButtonsStyle: React.CSSProperties = {
+	fontSize: '1.5em',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	gap: 10,
+	padding: 12,
+	paddingLeft: 15,
+	paddingRight: 15,
+};
+
 export const boardSlotStyle: React.CSSProperties = {
 	...flexColumnStyle,
 	borderRadius: 5,

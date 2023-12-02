@@ -1,5 +1,5 @@
-import CancelIcon from '@mui/icons-material/Cancel';
 import { useState } from 'react';
+import { MdCancel } from 'react-icons/md';
 import {
 	closeButtonStyle,
 	deckSlotStyle,
@@ -43,7 +43,7 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 				<div
 					style={{
 						...deckSlotStyle,
-						border: `dotted 3px ${violet}`,
+						border: `solid 3px ${violet}`,
 						justifyContent: 'center',
 					}}></div>
 			)}
@@ -74,7 +74,7 @@ export const CardsPopup = ({
 				if (dropClose) closeCardSelectionPopup();
 			}}>
 			<button style={closeButtonStyle} onClick={closeCardSelectionPopup}>
-				<CancelIcon style={{ color: 'white', width: '3vw', height: 'auto' }} />
+				<MdCancel style={{ color: 'white', width: '3vw', height: 'auto' }} />
 			</button>
 			<div style={graveyardPopupContent}>
 				{cardsIds.map((cardId, index) => (

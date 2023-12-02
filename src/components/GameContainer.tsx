@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
@@ -22,7 +22,7 @@ export function GameContainer({
 	const [round, setRound] = useState<Round>();
 	const [currentPlayer, setCurrPlayer] = useState<Player>();
 	const [opponentPlayer, setOppPlayer] = useState<Player>();
-	const [showCountDown, setShowCountDown] = useState(false);
+	const showCountDown = useRef(false);
 
 	useEffect(() => {
 		if (!isGameRunning(game.status)) {
@@ -82,7 +82,7 @@ export function GameContainer({
 	const checkAndDrawCardFromMainDeck = ({ player, nb }: Round) => {
 		if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {
 			drawCardFromMainDeck(gameId, playerType).then();
-			setShowCountDown(true);
+			showCountDown.current = true;
 		}
 	};
 
@@ -99,7 +99,6 @@ export function GameContainer({
 				currentPlayer={currentPlayer}
 				spectator={spectator}
 				showCountDown={showCountDown}
-				setShowCountDown={setShowCountDown}
 			/>
 		</DndProvider>
 	);
