@@ -1,6 +1,6 @@
 import isNil from 'lodash/isNil';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
-import { Board, Round } from '../utils/interface';
+import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { RoundView, Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
@@ -8,7 +8,6 @@ import { BoardSlots, DeckSlot, ElementSlot } from './Slots';
 
 interface Props {
 	board: Board;
-	round: Round;
 	isMyRound: boolean;
 	tankIdWithDoubleAPOfCurr?: string;
 	tankIdWithDoubleAPOfOpp?: string;
@@ -17,7 +16,7 @@ interface Props {
 	selectOppSlotsNbs: (slotNb: number) => void;
 	selectCurrentSlot: (slotNb: number) => void;
 	playCard: any;
-	canPlacekingWithoutSacrifice?: boolean;
+	localState?: any;
 }
 
 export const BoardView = ({
@@ -26,11 +25,10 @@ export const BoardView = ({
 	selectOppSlotsNbs,
 	selectedOppSlotsNbs = [],
 	selectedCurrentPSlotNb,
-	round,
 	tankIdWithDoubleAPOfCurr,
 	tankIdWithDoubleAPOfOpp,
 	playCard,
-	canPlacekingWithoutSacrifice,
+	localState,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } =
 		board;
@@ -66,8 +64,7 @@ export const BoardView = ({
 					elementType={elementType}
 					tankIdWithDoubleAP={tankIdWithDoubleAPOfCurr}
 					playCard={playCard}
-					round={round}
-					canPlacekingWithoutSacrifice={canPlacekingWithoutSacrifice}
+					localState={localState}
 				/>
 			</div>
 
@@ -76,7 +73,7 @@ export const BoardView = ({
 			</div>
 
 			<div style={{ position: 'absolute', right: '3vw' }}>
-				<RoundView nb={round.nb} />
+				<RoundView nb={localState?.round?.nb} />
 				<Seperator />
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator />

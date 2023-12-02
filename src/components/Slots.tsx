@@ -53,8 +53,7 @@ interface SlotProps {
 	graveyard?: boolean;
 	tankIdWithDoubleAP?: string;
 	playCard: any;
-	round?: Round;
-	canPlacekingWithoutSacrifice?: boolean;
+	localState: any;
 }
 
 interface DeckSlotProps {
@@ -272,8 +271,7 @@ export const BoardSlot = ({
 	nb,
 	tankIdWithDoubleAP,
 	playCard,
-	round,
-	canPlacekingWithoutSacrifice,
+	localState,
 }: SlotProps) => {
 	const [, drop] = useDrop(
 		{
@@ -282,7 +280,7 @@ export const BoardSlot = ({
 				playCard(item.id, nb);
 			},
 		},
-		[cardId, round, canPlacekingWithoutSacrifice],
+		[cardId, localState],
 	);
 
 	if (isAnimalCard(cardId)) {
@@ -337,7 +335,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, round }: DeckSlotPr
 			style={{
 				...deckSlotStyle,
 				justifyContent: 'center',
-				border: `solid 3px ${violet}`,
+				border: `solid 2px ${violet}`,
 				borderColor: selected ? violet : undefined,
 				color: violet,
 				fontSize: '0.7em',
@@ -355,7 +353,7 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 				...centerStyle,
 				borderRadius: 5,
 				backgroundColor: elementType !== 'neutral' ? CLANS[elementType!]?.color : undefined,
-				border: elementType === 'neutral' ? `solid 3px ${violet}` : undefined,
+				border: elementType === 'neutral' ? `solid 2px ${violet}` : undefined,
 				color: 'white',
 				flexDirection: 'column',
 				height: '3vw',
@@ -399,8 +397,7 @@ export const BoardSlots = ({
 	elementType,
 	tankIdWithDoubleAP,
 	playCard,
-	round,
-	canPlacekingWithoutSacrifice,
+	localState,
 }: {
 	slots: SlotType[];
 	selectedSlots: number[];
@@ -410,15 +407,13 @@ export const BoardSlots = ({
 	elementType?: ClanName;
 	tankIdWithDoubleAP?: string;
 	playCard?: any;
-	round?: Round;
-	canPlacekingWithoutSacrifice?: boolean;
+	localState?: any;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
-	const mainColor = elementType == 'neutral' ? 'transparent' : CLANS[elementType].color;
+	// const mainColor = elementType == 'neutral' ? 'transparent' : CLANS[elementType].color;
 	const glow = {
-		/*boxShadow: ` 0 0 0.2vw 0.12vw ${mainColor}`,
-		borderRadius: 5,*/
+		/*boxShadow: ` 0 0 0.2vw 0.12vw ${mainColor}`, borderRadius: 5,*/
 	};
 	return (
 		<div
@@ -442,8 +437,7 @@ export const BoardSlots = ({
 							cardId={slot?.cardId}
 							selected={selectedSlots.includes(index)}
 							playCard={playCard}
-							round={round}
-							canPlacekingWithoutSacrifice={canPlacekingWithoutSacrifice}
+							localState={localState}
 						/>
 					</div>
 					{opponent && <CanAttackIconsView slot={slot} />}

@@ -405,7 +405,7 @@ export function GameView({
 	};
 
 	const playCard = async (cardId?: string, slotnb?: number) => {
-		console.log({ playerType }, { cardId }, { round });
+		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
 		if (isEmpty(cardId) || isEmpty(playerType) || nbCardsToPlay === 0 || !isMyRound) {
 			return;
 		}
@@ -524,6 +524,12 @@ export function GameView({
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
 	};
 
+	const localState = {
+		round: round,
+		canPlacekingWithoutSacrifice: canPlaceKingWithoutSacrifice,
+		nbCardsToPlay: nbCardsToPlay,
+	};
+
 	return (
 		<div
 			style={{
@@ -544,12 +550,11 @@ export function GameView({
 				selectCurrentSlot={selectCurrSlotNb}
 				selectedOppSlotsNbs={selectedOppSlotsNbs}
 				selectOppSlotsNbs={selectOppSlotsNbs}
-				round={round}
 				tankIdWithDoubleAPOfCurr={currentPlayer.tankIdWithDoubleAP}
 				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
 				isMyRound={isMyRound}
 				playCard={playCard}
-				canPlacekingWithoutSacrifice={canPlaceKingWithoutSacrifice}
+				localState={localState}
 			/>
 
 			<CurrentPView

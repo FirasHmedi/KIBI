@@ -43,7 +43,7 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 				<div
 					style={{
 						...deckSlotStyle,
-						border: `solid 3px ${violet}`,
+						border: `solid 2px ${violet}`,
 						justifyContent: 'center',
 					}}></div>
 			)}

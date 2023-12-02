@@ -185,7 +185,7 @@ export const CurrentPView = ({
 				setElement={setElement}
 				isMyRound={isMyRound}
 				isMe={true}
-				finishRound
+				finishRound={finishRound}
 			/>
 			<CurrentPDeck
 				round={round}
