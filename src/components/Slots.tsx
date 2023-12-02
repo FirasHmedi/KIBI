@@ -126,7 +126,8 @@ export const PowerDeckSlot = ({
 		? { height: '20vh', width: '8vw', fontSize: '1em' }
 		: {};
 	return (
-		<div ref ={drag}
+		<div
+			ref={drag}
 			style={{
 				...deckSlotStyle,
 				backgroundColor: violet,
@@ -360,7 +361,14 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive }: De
 	}
 
 	if (cardId && isPowerCard(cardId)) {
-		return <PowerDeckSlot cardId={cardId} select={selectSlotPolished} selected={selected} />;
+		return (
+			<PowerDeckSlot
+				cardId={cardId}
+				select={selectSlotPolished}
+				selected={selected}
+				isJokerActive={isJokerActive}
+			/>
+		);
 	}
 
 	return (
