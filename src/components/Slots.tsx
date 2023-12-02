@@ -11,6 +11,7 @@ import {
 	centerStyle,
 	deckSlotStyle,
 	flexRowStyle,
+	lightViolet,
 	selectedColor,
 	violet,
 } from '../styles/Style';
@@ -312,7 +313,7 @@ export const BoardSlot = ({
 			style={{
 				...boardSlotStyle,
 				justifyContent: 'center',
-				border: `solid 2px ${violet}`,
+				border: `solid 1px ${lightViolet}`,
 				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
 			}}
 			onClick={() => selectSlot(nb)}></div>
@@ -346,7 +347,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, round }: DeckSlotPr
 			style={{
 				...deckSlotStyle,
 				justifyContent: 'center',
-				border: `solid 2px ${violet}`,
+				border: `solid 1px ${lightViolet}`,
 				borderColor: selected ? violet : undefined,
 				color: violet,
 				fontSize: '0.7em',
@@ -364,7 +365,7 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 				...centerStyle,
 				borderRadius: 5,
 				backgroundColor: elementType !== 'neutral' ? CLANS[elementType!]?.color : undefined,
-				border: elementType === 'neutral' ? `solid 2px ${violet}` : undefined,
+				border: elementType === 'neutral' ? `solid 1px ${lightViolet}` : undefined,
 				color: 'white',
 				flexDirection: 'column',
 				height: '3vw',

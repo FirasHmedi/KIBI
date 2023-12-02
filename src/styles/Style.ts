@@ -3,7 +3,8 @@ export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
 export const black = '#000000';
 export const primaryBlue = '#2980b9';
-export const violet: string = '#8e44ad';
+export const violet = '#8e44ad';
+export const lightViolet = 'rgba(142, 68, 173, 0.6)';
 
 export const greyBackground = '#ecf0f1';
 

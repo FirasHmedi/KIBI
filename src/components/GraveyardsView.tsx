@@ -5,6 +5,7 @@ import {
 	deckSlotStyle,
 	graveyardPopupContainer,
 	graveyardPopupContent,
+	lightViolet,
 	topCardStyle,
 	violet,
 } from '../styles/Style';
@@ -43,7 +44,7 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 				<div
 					style={{
 						...deckSlotStyle,
-						border: `solid 2px ${violet}`,
+						border: `solid 1px ${lightViolet}`,
 						justifyContent: 'center',
 					}}></div>
 			)}
