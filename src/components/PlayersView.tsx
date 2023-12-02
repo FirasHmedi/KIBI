@@ -24,7 +24,7 @@ const CountDown = ({ finishRound }: any) => (
 		duration={ROUND_DURATION}
 		colors={`#8e44ad`}
 		onComplete={() => {
-			finishRound();
+			if (!!finishRound) finishRound();
 		}}
 		size={24}
 		strokeLinecap='butt'
@@ -276,7 +276,7 @@ const PlayerDataView = ({
 						height: '4vh',
 						gap: 12,
 					}}>
-					{showCountDown?.current && <CountDown finishRound={finishRound} />}
+					{showCountDown?.current && !!finishRound && <CountDown finishRound={finishRound} />}
 					<h4>{playerType?.toUpperCase()}</h4>
 				</div>
 			)}
