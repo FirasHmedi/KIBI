@@ -186,21 +186,17 @@ export function GameView({
 		return selectedCurrPSlotNb != null ? selectedCurrPSlotNb : nb;
 	};
 
-	const playAnimalCard = async (cardId: string, slotNb?: number): Promise<void> => {
+	const playAnimalCard = async (cardId: string, slotNb: number): Promise<void> => {
 		const { role, clan } = getAnimalCard(cardId)!;
 
 		if (role === KING) {
 			const animalIdInSlotNb = currentPSlots[slotNb!]?.cardId;
-
 			const sacrificedAnimal = getAnimalCard(animalIdInSlotNb);
 			if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
 				return;
 			}
 			await handlePlacingKing(cardId, slotNb, animalIdInSlotNb);
 		} else {
-			if (isNil(slotNb)) {
-				return;
-			}
 			await placeAnimalOnBoard(gameId, playerType, slotNb, cardId, elementType);
 		}
 
@@ -404,14 +400,14 @@ export function GameView({
 		setShowEnvPopup(true);
 	};
 
-	const playCard = async (cardId?: string, slotnb?: number) => {
+	const playCard = async (cardId?: string, slotNb?: number) => {
 		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
 		if (isEmpty(cardId) || isEmpty(playerType) || nbCardsToPlay === 0 || !isMyRound) {
 			return;
 		}
 
-		if (isAnimalCard(cardId)) {
-			await playAnimalCard(cardId!, slotnb);
+		if (isAnimalCard(cardId) && !isNil(slotNb)) {
+			await playAnimalCard(cardId!, slotNb);
 			return;
 		}
 
