@@ -230,6 +230,9 @@ export const AnimalDeckSlot = ({
 	);
 	const { clan, name, ability, role } = getAnimalCard(cardId)!;
 	const { hp, ap } = ANIMALS_POINTS[role];
+	const roleTooltipContent = ability;
+	const roleTooltipId = `role-anchor${cardId}`;
+
 	return (
 		<div
 			ref={drag}
@@ -240,8 +243,16 @@ export const AnimalDeckSlot = ({
 				borderColor: selected ? selectedColor : CLANS[clan!]?.color,
 			}}
 			onClick={() => select()}>
-			<h6 style={{ fontSize: '0.85em', paddingTop: 4 }}>{name?.toUpperCase()}</h6>
-			{ability && <h6 style={{ fontSize: '0.65em' }}>{ability}</h6>}
+			<img
+				id={roleTooltipId}
+				src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
+				style={{ width: '4.5rem', height: '4.5rem' }}></img>
+			<Tooltip
+				anchorSelect={`#${roleTooltipId}`}
+				content={roleTooltipContent}
+				style={{ width: '5vw' }}
+				place='bottom'
+			/>
 			<div
 				style={{
 					...flexRowStyle,
