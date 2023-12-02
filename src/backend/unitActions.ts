@@ -2,7 +2,6 @@ import isNil from 'lodash/isNil';
 import { ClanName } from '../utils/data';
 import { isAnimalCard, isPowerCard, isTank } from '../utils/helpers';
 import { PlayerType } from '../utils/interface';
-import { activateJokerAbility } from './actions';
 import { getBoardPath, getGamePath, getItemsOnce, setItem } from './db';
 
 export const setActivePowerCard = async (gameId: string, cardId?: string) => {
@@ -38,7 +37,7 @@ export const addAnimalToBoard = async (
 	];
 	updatedSlots[slotNb] = { cardId: animalId, canAttack };
 	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });
-	await activateJokerAbility(gameId, animalId, playerType);
+	//await activateJokerAbility(gameId, animalId, playerType);
 };
 
 export const addCardsToPlayerDeck = async (

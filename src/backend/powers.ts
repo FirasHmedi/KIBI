@@ -29,12 +29,11 @@ import {
 	setPlayerDeck,
 } from './unitActions';
 
-export const stealPowerCardFor2hp = async (
+export const stealCardFromOpponent = async (
 	gameId: string,
 	playerType: PlayerType,
 	cardId: string,
 ) => {
-	await minus2Hp(gameId, playerType);
 	const opponentType = getOpponentIdFromCurrentId(playerType);
 	const opponentCards: string[] = (await getPLayerCards(gameId, opponentType)) ?? [];
 	const playerCards: string[] = (await getPLayerCards(gameId, playerType)) ?? [];
@@ -44,6 +43,15 @@ export const stealPowerCardFor2hp = async (
 		opponentCards.filter(id => id !== cardId),
 	);
 	await setPlayerDeck(gameId, playerType, [...playerCards, cardId]);
+};
+
+export const stealPowerCardFor2hp = async (
+	gameId: string,
+	playerType: PlayerType,
+	cardId: string,
+) => {
+	await minus2Hp(gameId, playerType);
+	await stealCardFromOpponent(gameId, playerType, cardId);
 };
 
 export const cancelAttacks = async (gameId: string, playerType: PlayerType) => {

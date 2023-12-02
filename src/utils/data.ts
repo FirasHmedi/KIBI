@@ -58,7 +58,6 @@ export const CLANS = {
 	},
 };
 
-export const envCardsIds = ['env-4', 'env-1', 'env-2', 'env-3'];
 export const ANIMALS_POINTS = {
 	king: {
 		ap: 2,

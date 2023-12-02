@@ -1,19 +1,18 @@
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
-import { Round } from '../utils/interface';
 import { DeckSlot, SlotBack } from './Slots';
 
 interface CurrentPDeckProps {
 	cardsIds: string[];
 	setSelectedId: (id?: string) => void;
 	selectedId?: string;
-	round?: Round;
+	isJokerActive?: boolean;
 }
 
 export const CurrentPDeck = ({
 	cardsIds = [],
 	setSelectedId,
 	selectedId,
-	round,
+	isJokerActive,
 }: CurrentPDeckProps) => {
 	const selectCard = (cardId: string) =>
 		cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId);
@@ -26,7 +25,11 @@ export const CurrentPDeck = ({
 			}}>
 			{cardsIds.map((cardId, index) => (
 				<div style={{ marginRight: 8 }} key={index} onClick={() => selectCard(cardId)}>
-					<DeckSlot cardId={cardId} selected={selectedId === cardId} round={round} />
+					<DeckSlot
+						cardId={cardId}
+						selected={selectedId === cardId}
+						isJokerActive={isJokerActive}
+					/>
 				</div>
 			))}
 		</div>

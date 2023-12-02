@@ -22,7 +22,8 @@ export const getCurrentPathName = () => {
 	return location.pathname;
 };
 
-export const isAnimalCard = (cardId?: string): boolean => !!cardId && ANIMAL_CARDS_OBJECT.hasOwnProperty(cardId);
+export const isAnimalCard = (cardId?: string): boolean =>
+	!!cardId && ANIMAL_CARDS_OBJECT.hasOwnProperty(cardId);
 
 export const isPowerCard = (cardId: string = ''): boolean =>
 	POWER_CARDS_OBJECT.hasOwnProperty(new String(cardId).substring(4));
@@ -66,6 +67,9 @@ export const getAnimalCard = (cardId?: string): AnimalCard | undefined => {
 
 export const isKing = (cardId?: string) => getAnimalCard(cardId)?.role === KING;
 export const isJoker = (cardId?: string) => getAnimalCard(cardId)?.role === JOKER;
+export const isJokerInElement = (cardId?: string, elementType?: ClanName) =>
+	getAnimalCard(cardId)?.role === JOKER && getAnimalCard(cardId)?.clan === elementType;
 export const isAttacker = (cardId?: string) => getAnimalCard(cardId)?.role === ATTACKER;
 export const isTank = (cardId?: string) => getAnimalCard(cardId)?.role === TANK;
-export const isAnimalInEnv = (cardId?: string, elementType?: ClanName) => elementType === getAnimalCard(cardId)?.clan;
+export const isAnimalInEnv = (cardId?: string, elementType?: ClanName) =>
+	elementType === getAnimalCard(cardId)?.clan;

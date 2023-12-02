@@ -23,7 +23,7 @@ import {
 	isAnimalInEnv,
 	isPowerCard,
 } from '../utils/helpers';
-import { Round, SlotType } from '../utils/interface';
+import { SlotType } from '../utils/interface';
 import './styles.css';
 interface DropItem {
 	id: string;
@@ -63,7 +63,7 @@ interface DeckSlotProps {
 	selectSlot?: (slotNb?: number) => void;
 	nb?: number;
 	graveyard?: boolean;
-	round?: Round;
+	isJokerActive?: boolean;
 }
 
 export const PowerBoardSlot = ({
@@ -104,11 +104,13 @@ export const PowerDeckSlot = ({
 	select,
 	selected,
 	isBigStyle,
+	isJokerActive,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
 	isBigStyle?: boolean;
+	isJokerActive?: boolean;
 }) => {
 	const { name, description } = getPowerCard(cardId) ?? {};
 	const tooltipId = `power-deck-anchor${cardId}`;
@@ -125,11 +127,17 @@ export const PowerDeckSlot = ({
 				...bigStyle,
 			}}
 			onClick={() => select()}>
-			<h6>{name?.toUpperCase()}</h6>
-			<div>
-				<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
-				<IoIosInformationCircle id={tooltipId} style={{ color: 'white', width: '1.3vw' }} />
-			</div>
+			{isJokerActive ? (
+				<h5>K</h5>
+			) : (
+				<>
+					<h6>{name?.toUpperCase()}</h6>
+					<div>
+						<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
+						<IoIosInformationCircle id={tooltipId} style={{ color: 'white', width: '1.3vw' }} />
+					</div>
+				</>
+			)}
 		</div>
 	);
 };
@@ -214,12 +222,12 @@ export const AnimalDeckSlot = ({
 	cardId,
 	select,
 	selected,
-	round,
+	isJokerActive,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
-	round: Round;
+	isJokerActive?: boolean;
 }) => {
 	const [, drag] = useDrag(
 		() => ({
@@ -244,34 +252,38 @@ export const AnimalDeckSlot = ({
 				borderColor: selected ? selectedColor : CLANS[clan!]?.color,
 			}}
 			onClick={() => select()}>
-			<img
-				id={roleTooltipId}
-				src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
-				style={{ width: '4.5rem', height: '4.5rem' }}></img>
-			<Tooltip
-				anchorSelect={`#${roleTooltipId}`}
-				content={roleTooltipContent}
-				style={{ width: '5vw' }}
-				place='bottom'
-			/>
-			<div
-				style={{
-					...flexRowStyle,
-					width: '100%',
-					justifyContent: 'space-evenly',
-					alignItems: 'center',
-					paddingBottom: 4,
-					fontSize: '0.9rem',
-				}}>
-				<div style={{ ...centerStyle, gap: 2 }}>
-					<h4>{ap}</h4>
-					<TbSword />
-				</div>
-				<div style={{ ...centerStyle, gap: 2 }}>
-					<h4>{hp}</h4>
-					<FaHeart />
-				</div>
-			</div>
+			{!isJokerActive && (
+				<>
+					<img
+						id={roleTooltipId}
+						src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
+						style={{ width: '4.5rem', height: '4.5rem' }}></img>
+					<Tooltip
+						anchorSelect={`#${roleTooltipId}`}
+						content={roleTooltipContent}
+						style={{ width: '5vw' }}
+						place='bottom'
+					/>
+					<div
+						style={{
+							...flexRowStyle,
+							width: '100%',
+							justifyContent: 'space-evenly',
+							alignItems: 'center',
+							paddingBottom: 4,
+							fontSize: '0.9rem',
+						}}>
+						<div style={{ ...centerStyle, gap: 2 }}>
+							<h4>{ap}</h4>
+							<TbSword />
+						</div>
+						<div style={{ ...centerStyle, gap: 2 }}>
+							<h4>{hp}</h4>
+							<FaHeart />
+						</div>
+					</div>
+				</>
+			)}
 		</div>
 	);
 };
@@ -289,7 +301,7 @@ export const BoardSlot = ({
 		{
 			accept: 'animalcard',
 			drop: (item: DropItem) => {
-				playCard(item.id, nb);
+				if (!!playCard) playCard(item.id, nb);
 			},
 		},
 		[cardId, localState],
@@ -320,7 +332,7 @@ export const BoardSlot = ({
 	);
 };
 
-export const DeckSlot = ({ cardId, selected, selectSlot, nb, round }: DeckSlotProps) => {
+export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive }: DeckSlotProps) => {
 	const selectSlotPolished = () => {
 		if (!!selectSlot) {
 			selected ? selectSlot(undefined) : selectSlot(nb);
@@ -333,7 +345,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, round }: DeckSlotPr
 				cardId={cardId}
 				select={selectSlotPolished}
 				selected={selected}
-				round={round!}
+				isJokerActive={isJokerActive}
 			/>
 		);
 	}

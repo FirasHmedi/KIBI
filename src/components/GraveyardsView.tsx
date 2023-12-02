@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { MdCancel } from 'react-icons/md';
 import {
+	centerStyle,
 	closeButtonStyle,
 	deckSlotStyle,
+	flexRowStyle,
 	graveyardPopupContainer,
 	graveyardPopupContent,
 	lightViolet,
@@ -10,6 +12,7 @@ import {
 	violet,
 } from '../styles/Style';
 import { DeckSlot } from './Slots';
+import monkey from '/src/assets/icons/monkey.svg';
 
 export const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
 	return <Graveyard name={'Power graveyard'} cardsIds={cardsIds} />;
@@ -61,12 +64,14 @@ export const CardsPopup = ({
 	selectCardsPolished,
 	closeCardSelectionPopup,
 	dropClose = true,
+	isJokerActive,
 }: {
 	cardsIds: string[];
 	selectedIds?: string[];
 	selectCardsPolished?: (cardId: string) => void;
 	closeCardSelectionPopup?: any;
 	dropClose?: boolean;
+	isJokerActive?: boolean;
 }) => {
 	return (
 		<div
@@ -77,6 +82,13 @@ export const CardsPopup = ({
 			<button style={closeButtonStyle} onClick={closeCardSelectionPopup}>
 				<MdCancel style={{ color: 'white', width: '3vw', height: 'auto' }} />
 			</button>
+			{isJokerActive && (
+				<div style={{ ...flexRowStyle, ...centerStyle, marginTop: 45, gap: 20 }}>
+					<img src={monkey} style={{ height: '3rem', width: '3rem' }}></img>
+					<h2 style={{ color: 'white' }}>Pick a card to steal</h2>
+				</div>
+			)}
+
 			<div style={graveyardPopupContent}>
 				{cardsIds.map((cardId, index) => (
 					<div
@@ -87,7 +99,11 @@ export const CardsPopup = ({
 								selectCardsPolished(cardId);
 							}
 						}}>
-						<DeckSlot cardId={cardId} selected={selectedIds?.includes(cardId)} />
+						<DeckSlot
+							cardId={cardId}
+							selected={selectedIds?.includes(cardId)}
+							isJokerActive={isJokerActive}
+						/>
 					</div>
 				))}
 			</div>
