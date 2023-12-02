@@ -1,10 +1,11 @@
 import isNil from 'lodash/isNil';
+import { useDrop } from 'react-dnd';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { RoundView, Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
-import { BoardSlots, DeckSlot, ElementSlot } from './Slots';
+import { BoardSlots, DeckSlot, DropItem, ElementSlot } from './Slots';
 
 interface Props {
 	board: Board;
@@ -40,7 +41,7 @@ export const BoardView = ({
 				...centerStyle,
 				flexDirection: 'row',
 			}}>
-			<ActiveCardSlot cardId={activeCardId!} />
+			<ActiveCardSlot cardId={activeCardId!} playCard={playCard} localState={localState} />
 
 			<div
 				style={{
@@ -85,8 +86,28 @@ export const BoardView = ({
 	);
 };
 
-const ActiveCardSlot = ({ cardId }: { cardId: string }) => (
-	<div style={{ position: 'absolute', left: '27vw' }}>
-		<DeckSlot cardId={cardId} />
-	</div>
-);
+const ActiveCardSlot = ({
+	cardId,
+	playCard,
+	localState,
+}: {
+	cardId: string;
+	playCard: any;
+	localState: any;
+}) => {
+	const [, drop] = useDrop(
+		{
+			accept: 'powercard',
+			drop: (item: DropItem) => {
+				console.log(item);
+				if (!!playCard) playCard(item.id);
+			},
+		},
+		[cardId, localState],
+	);
+	return (
+		<div ref={drop} style={{ position: 'absolute', left: '27vw' }}>
+			<DeckSlot cardId={cardId} />
+		</div>
+	);
+};

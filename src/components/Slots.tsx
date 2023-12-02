@@ -25,7 +25,7 @@ import {
 } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
-interface DropItem {
+export interface DropItem {
 	id: string;
 	// Ajoutez ici d'autres propriétés si nécessaire
 }
@@ -112,13 +112,21 @@ export const PowerDeckSlot = ({
 	isBigStyle?: boolean;
 	isJokerActive?: boolean;
 }) => {
+	const [, drag] = useDrag(
+		() => ({
+			type: 'powercard',
+			item: { id: cardId },
+			collect: monitor => ({ isDragging: !!monitor.getItem() }),
+		}),
+		[cardId],
+	);
 	const { name, description } = getPowerCard(cardId) ?? {};
 	const tooltipId = `power-deck-anchor${cardId}`;
 	const bigStyle: React.CSSProperties = !!isBigStyle
 		? { height: '20vh', width: '8vw', fontSize: '1em' }
 		: {};
 	return (
-		<div
+		<div ref ={drag}
 			style={{
 				...deckSlotStyle,
 				backgroundColor: violet,

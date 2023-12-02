@@ -572,6 +572,8 @@ export function GameView({
 		round: round,
 		canPlacekingWithoutSacrifice: canPlaceKingWithoutSacrifice,
 		nbCardsToPlay: nbCardsToPlay,
+		activePowerCard: activePowerCard,
+		board: board,
 	};
 
 	return (
