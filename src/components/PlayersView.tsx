@@ -187,12 +187,7 @@ export const CurrentPView = ({
 				isMe={true}
 				finishRound={finishRound}
 			/>
-			<CurrentPDeck
-				round={round}
-				cardsIds={cardsIds}
-				selectedId={selectedId}
-				setSelectedId={setSelectedId}
-			/>
+			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
 			<EmptyElement />
 		</div>
 	);

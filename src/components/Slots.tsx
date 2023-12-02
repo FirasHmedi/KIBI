@@ -182,19 +182,13 @@ export const AnimalBoardSlot = ({
 						textAlign: 'center',
 					}}>
 					<img
-						id={roleTooltipId}
 						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
 						style={{ width: '7rem', height: '5.5rem' }}></img>
-					<Tooltip
-						anchorSelect={`#${roleTooltipId}`}
-						content={roleTooltipContent}
-						style={{ width: '5vw' }}
-						place='bottom'
-					/>
 				</div>
 			)}
 
 			<div
+				id={roleTooltipId}
 				style={{
 					...flexRowStyle,
 					width: '100%',
@@ -213,6 +207,12 @@ export const AnimalBoardSlot = ({
 					<h4>{hp}</h4>
 					<FaHeart />
 				</div>
+				<Tooltip
+					anchorSelect={`#${roleTooltipId}`}
+					content={roleTooltipContent}
+					style={{ width: '5vw', fontSize: '0.7rem' }}
+					place='bottom'
+				/>
 			</div>
 		</div>
 	);
@@ -255,16 +255,11 @@ export const AnimalDeckSlot = ({
 			{!isJokerActive && (
 				<>
 					<img
-						id={roleTooltipId}
 						src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
 						style={{ width: '4.5rem', height: '4.5rem' }}></img>
-					<Tooltip
-						anchorSelect={`#${roleTooltipId}`}
-						content={roleTooltipContent}
-						style={{ width: '5vw' }}
-						place='bottom'
-					/>
+
 					<div
+						id={roleTooltipId}
 						style={{
 							...flexRowStyle,
 							width: '100%',
@@ -281,6 +276,12 @@ export const AnimalDeckSlot = ({
 							<h4>{hp}</h4>
 							<FaHeart />
 						</div>
+						<Tooltip
+							anchorSelect={`#${roleTooltipId}`}
+							content={roleTooltipContent}
+							style={{ width: '5vw', fontSize: '0.7rem' }}
+							place='bottom'
+						/>
 					</div>
 				</>
 			)}
