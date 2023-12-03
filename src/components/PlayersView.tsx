@@ -3,7 +3,6 @@ import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
-import { FaPaw } from 'react-icons/fa6';
 import {
 	MdBattery0Bar,
 	MdBatteryCharging20,
@@ -11,7 +10,7 @@ import {
 	MdBatteryChargingFull,
 } from 'react-icons/md';
 import { Tooltip } from 'react-tooltip';
-import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
+import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
 import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
@@ -110,7 +109,7 @@ export const CurrentPView = ({
 					}}>
 					{!isAttackEnabled && <Tooltip anchorSelect={`#${tooltipId}`} content={description} />}
 
-					<button
+					{/*<button
 						style={{
 							fontWeight: 'bold',
 							color: !isAttackEnabled ? 'grey' : violet,
@@ -122,7 +121,7 @@ export const CurrentPView = ({
 						<FaPaw
 							style={{ width: '2vw', height: 'auto', color: !isAttackEnabled ? 'grey' : violet }}
 						/>
-					</button>
+					</button>*/}
 				</div>
 
 				<div

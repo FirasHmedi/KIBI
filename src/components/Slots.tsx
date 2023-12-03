@@ -65,8 +65,9 @@ interface SlotProps {
 	tanksWithDoubleAP?: boolean;
 	playCard: any;
 	localState: any;
-	attackOppAnimal?: any;
+	attack?: any;
 	attackState?: any;
+	opponent?: boolean;
 }
 
 interface DeckSlotProps {
@@ -169,7 +170,7 @@ export const AnimalBoardSlot = ({
 	select,
 	selected,
 	tanksWithDoubleAP,
-	attackOppAnimal,
+	attack,
 	nb,
 	attackState,
 }: {
@@ -177,7 +178,7 @@ export const AnimalBoardSlot = ({
 	select: () => void;
 	selected?: boolean;
 	tanksWithDoubleAP?: boolean;
-	attackOppAnimal?: any;
+	attack?: any;
 	nb?: number;
 	attackState?: any;
 }) => {
@@ -196,7 +197,7 @@ export const AnimalBoardSlot = ({
 				console.log('animal', item.id, 'attacks', cardId);
 				const animalAId = item.id;
 				const animalDId = cardId;
-				attackOppAnimal(animalAId, animalDId, item.nb, nb);
+				attack(animalAId, animalDId, item.nb, nb);
 			},
 		},
 		[cardId, attackState],
@@ -356,8 +357,9 @@ export const BoardSlot = ({
 	tanksWithDoubleAP,
 	playCard,
 	localState,
-	attackOppAnimal,
+	attack,
 	attackState,
+	opponent,
 }: SlotProps) => {
 	const [, drop] = useDrop(
 		{
@@ -368,6 +370,18 @@ export const BoardSlot = ({
 		},
 		[cardId, localState],
 	);
+	const [, drop2] = useDrop(
+		{
+			accept: 'attackcard',
+			drop: (item: DropItem) => {
+				console.log('animal', item.id, 'attacks', cardId);
+				const animalAId = item.id;
+				const animalDId = cardId;
+				attack(animalAId, animalDId, item.nb, nb);
+			},
+		},
+		[cardId, attackState],
+	);
 
 	if (isAnimalCard(cardId)) {
 		return (
@@ -377,13 +391,28 @@ export const BoardSlot = ({
 					select={() => selectSlot(nb)}
 					selected={selected}
 					tanksWithDoubleAP={tanksWithDoubleAP}
-					attackOppAnimal={attackOppAnimal}
+					attack={attack}
 					nb={nb}
 					attackState={attackState}
 				/>
 			</div>
 		);
 	}
+
+	if (opponent) {
+		return (
+			<div
+				ref={drop2}
+				style={{
+					...boardSlotStyle,
+					justifyContent: 'center',
+					border: `solid 1px ${lightViolet}`,
+					boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
+				}}
+				onClick={() => selectSlot(nb)}></div>
+		);
+	}
+
 	return (
 		<div
 			ref={drop}
@@ -494,7 +523,7 @@ export const BoardSlots = ({
 	tanksWithDoubleAP,
 	playCard,
 	localState,
-	attackOppAnimal,
+	attack,
 	attackState,
 }: {
 	slots: SlotType[];
@@ -506,7 +535,7 @@ export const BoardSlots = ({
 	tanksWithDoubleAP?: boolean;
 	playCard?: any;
 	localState?: any;
-	attackOppAnimal?: any;
+	attack?: any;
 	attackState?: any;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
@@ -515,6 +544,11 @@ export const BoardSlots = ({
 	const glow = {
 		/*boxShadow: ` 0 0 0.2vw 0.12vw ${mainColor}`, borderRadius: 5,*/
 	};
+	/*
+className={
+		slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
+	}
+	*/
 	return (
 		<div
 			style={{
@@ -523,11 +557,7 @@ export const BoardSlots = ({
 				justifyContent: 'space-evenly',
 			}}>
 			{compoundSlots.map((slot, index) => (
-				<div
-					key={index}
-					className={
-						slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
-					}>
+				<div key={index}>
 					<div>{current && <CanAttackIconsView slot={slot} />}</div>
 					<div style={isAnimalInEnv(slot?.cardId, elementType) ? glow : undefined}>
 						<BoardSlot
@@ -538,8 +568,9 @@ export const BoardSlots = ({
 							selected={selectedSlots.includes(index)}
 							playCard={playCard}
 							localState={localState}
-							attackOppAnimal={attackOppAnimal}
+							attack={attack}
 							attackState={attackState}
+							opponent={opponent}
 						/>
 					</div>
 					{opponent && <CanAttackIconsView slot={slot} />}

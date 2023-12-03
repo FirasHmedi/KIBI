@@ -1,14 +1,14 @@
 import { isEmpty, isNil, shuffle } from 'lodash';
 import {
-	attackAnimal,
+	attackOppAnimal,
 	attackOwner,
 	placeAnimalOnBoard,
 	placeKingOnBoard,
 } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
+import { changeElement } from '../backend/powers';
 import { ANIMALS_POINTS, ATTACKER, JOKER, KING, TANK } from '../utils/data';
 import { getAnimalCard, isAnimalCard } from '../utils/helpers';
-import { changeElement } from '../backend/powers';
 import { PlayerType, SlotType } from '../utils/interface';
 import {
 	getBotDeck,
@@ -90,8 +90,8 @@ const playKingForBot = async (gameId: string) => {
 		return false;
 	}
 
-	const botSlots = await getBotSlots(gameId) ?? [];
-	const playerDeck = await getBotDeck(gameId) ?? [];
+	const botSlots = (await getBotSlots(gameId)) ?? [];
+	const playerDeck = (await getBotDeck(gameId)) ?? [];
 	const canplayKing = await canPlayKing(botSlots, playerDeck);
 	if (!canplayKing) {
 		return false;
@@ -105,8 +105,7 @@ const playKingForBot = async (gameId: string) => {
 			const animal = getAnimalCard(slot?.cardId);
 			return animal && animal.clan === kingClan;
 		});
-		if(slotIndexToSacrifice!== -1)
-		{
+		if (slotIndexToSacrifice !== -1) {
 			await placeKingOnBoard(
 				gameId,
 				PlayerType.TWO,
@@ -116,17 +115,18 @@ const playKingForBot = async (gameId: string) => {
 			);
 			return true;
 		}
-		
 	}
 	return false;
 };
 
 const getDefendingAnimalIdAndSlot = async (
-	gameId: string,cardId : string
+	gameId: string,
+	cardId: string,
 ): Promise<{ animalDId: string; slotDNumber: number } | null> => {
 	const attacker = getAnimalCard(cardId);
-	if(!attacker)
-	{return null;}
+	if (!attacker) {
+		return null;
+	}
 	const attackerAP = ANIMALS_POINTS[attacker.role].ap;
 	const rolePriority = [KING, ATTACKER, JOKER, TANK];
 	const slots = await getPlayerSlots(gameId);
@@ -137,9 +137,13 @@ const getDefendingAnimalIdAndSlot = async (
 
 	for (const role of rolePriority) {
 		const foundSlot = indexedSlots.find((slot: SlotType) => {
-            const defendingAnimal = getAnimalCard(slot?.cardId);
-            return defendingAnimal && defendingAnimal.role === role && ANIMALS_POINTS[defendingAnimal.role].hp <= attackerAP;
-        });
+			const defendingAnimal = getAnimalCard(slot?.cardId);
+			return (
+				defendingAnimal &&
+				defendingAnimal.role === role &&
+				ANIMALS_POINTS[defendingAnimal.role].hp <= attackerAP
+			);
+		});
 
 		if (foundSlot) {
 			return { animalDId: foundSlot?.cardId, slotDNumber: foundSlot.index };
@@ -148,14 +152,12 @@ const getDefendingAnimalIdAndSlot = async (
 	return null;
 };
 
-
-
 const botAttack = async (gameId: string) => {
 	const roundNB = (await getRoundNb(gameId)) ?? 0;
 	if (roundNB < 2) {
 		return;
 	}
-	
+
 	const slots = await getPlayerSlots(gameId);
 	const ownerHasNoAnimals = slots?.every((slot: SlotType) => !isAnimalCard(slot?.cardId));
 	const player = await getItemsOnce('/games/' + gameId + '/two');
@@ -164,32 +166,31 @@ const botAttack = async (gameId: string) => {
 	}
 	const BotSlots = (await getBotSlots(gameId)) ?? [];
 
-const kings: number[] = [];
-const attackers: number[] = [];
-const jokers: number[] = [];
-const tanks: number[] = [];
+	const kings: number[] = [];
+	const attackers: number[] = [];
+	const jokers: number[] = [];
+	const tanks: number[] = [];
 
-BotSlots.forEach((slot: SlotType, index: number) => {
-    const animalCard = getAnimalCard(slot?.cardId);
-    if (animalCard && slot.canAttack) {
-        switch (animalCard.role) {
-            case KING:
-                kings.push(index);
-                break;
-            case ATTACKER:
-                attackers.push(index);
-                break;
-            case JOKER:
-                jokers.push(index);
-                break;
-			case TANK:
-				tanks.push(index)
+	BotSlots.forEach((slot: SlotType, index: number) => {
+		const animalCard = getAnimalCard(slot?.cardId);
+		if (animalCard && slot.canAttack) {
+			switch (animalCard.role) {
+				case KING:
+					kings.push(index);
+					break;
+				case ATTACKER:
+					attackers.push(index);
+					break;
+				case JOKER:
+					jokers.push(index);
+					break;
+				case TANK:
+					tanks.push(index);
+			}
+		}
+	});
 
-        }
-    }
-});
-
-const animalsThatCanAttack = [...kings, ...attackers,...tanks, ...jokers];
+	const animalsThatCanAttack = [...kings, ...attackers, ...tanks, ...jokers];
 
 	if (isEmpty(animalsThatCanAttack)) {
 		return;
@@ -197,7 +198,7 @@ const animalsThatCanAttack = [...kings, ...attackers,...tanks, ...jokers];
 
 	const slotIndexToAttackWith = animalsThatCanAttack[0];
 	const animalToAttackWith = BotSlots[slotIndexToAttackWith];
-	const target = await getDefendingAnimalIdAndSlot(gameId,animalToAttackWith.cardId);
+	const target = await getDefendingAnimalIdAndSlot(gameId, animalToAttackWith.cardId);
 	const animal = getAnimalCard(animalToAttackWith?.cardId);
 
 	if (!target || !animal) {
@@ -211,7 +212,7 @@ const animalsThatCanAttack = [...kings, ...attackers,...tanks, ...jokers];
 		currentElement = animal.clan;
 	}
 
-	await attackAnimal(
+	await attackOppAnimal(
 		gameId,
 		PlayerType.TWO,
 		animalToAttackWith?.cardId,
@@ -221,11 +222,11 @@ const animalsThatCanAttack = [...kings, ...attackers,...tanks, ...jokers];
 	if (animal?.role !== KING || currentElement !== animal.clan) {
 		return;
 	}
-	const secondTarget = await getDefendingAnimalIdAndSlot(gameId,animalToAttackWith.cardId);
+	const secondTarget = await getDefendingAnimalIdAndSlot(gameId, animalToAttackWith.cardId);
 	if (!secondTarget) {
 		return;
 	}
-	await attackAnimal(
+	await attackOppAnimal(
 		gameId,
 		PlayerType.TWO,
 		animalToAttackWith?.cardId,
@@ -259,8 +260,7 @@ const attemptAttackPlayer = async (gameId: string) => {
 				return true;
 			}
 		} else return false;
-	}
-	else if (ownerHasFewerThanThreeAnimals) {
+	} else if (ownerHasFewerThanThreeAnimals) {
 		const attackerInElementIndex = botSlots.findIndex((slot: SlotType) => {
 			const animal = getAnimalCard(slot?.cardId);
 			return animal && animal.role === ATTACKER && animal.clan === elementType;
@@ -275,7 +275,6 @@ const attemptAttackPlayer = async (gameId: string) => {
 		return false;
 	}
 };
-
 
 export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const roundNB = await getRoundNb(gameId);

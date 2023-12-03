@@ -79,7 +79,7 @@ export const placeKingOnBoard = async (
 	}
 };
 
-export const attackAnimal = async (
+export const attackOppAnimal = async (
 	gameId: string,
 	playerType: PlayerType,
 	animalAId: string,
