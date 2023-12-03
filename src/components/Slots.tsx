@@ -33,8 +33,10 @@ import {
 } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
+import { useRef } from 'react';
 export interface DropItem {
 	id: string;
+	nb?:number;
 	// Ajoutez ici d'autres propriétés si nécessaire
 }
 
@@ -63,6 +65,10 @@ interface SlotProps {
 	tankIdWithDoubleAP?: string;
 	playCard: any;
 	localState: any;
+	attackOppAnimal?:any;
+	attackState?:any;
+	canKingAttackAgain?:any;
+	isAttackAnimalEnabled?:any;
 }
 
 interface DeckSlotProps {
@@ -165,22 +171,53 @@ export const AnimalBoardSlot = ({
 	select,
 	selected,
 	tankIdWithDoubleAP,
+	attackOppAnimal,
+	nb,
+	canKingAttackAgain,
+	isAttackAnimalEnabled,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
 	tankIdWithDoubleAP?: string;
+	attackOppAnimal?:any;
+	nb?:number;
+	canKingAttackAgain?:any;
+	isAttackAnimalEnabled?:any;
 }) => {
+	const [, drag] = useDrag(
+		() => ({
+			type: 'attackcard',
+			item: { id: cardId, nb: nb },
+			collect: monitor => ({ isDragging: !!monitor.getItem() }),
+		}),
+		[cardId,nb],
+	);
+	const [, drop] = useDrop(
+		{
+			accept: 'attackcard',
+			drop: (item: DropItem) => {
+				console.log("animal",item.id,"attacks",cardId);
+				const animalAId=item.id;
+				const animalDId=cardId;
+				attackOppAnimal(animalAId,animalDId,item.nb,nb)
+			},
+		},
+		[cardId,canKingAttackAgain,isAttackAnimalEnabled],
+	);
 	const { clan, name, role, ability } = getAnimalCard(cardId)!;
+
 	if (!name || !clan || !role) return <></>;
 
 	const { hp, ap } = ANIMALS_POINTS[role];
 	const isTankDoubleAP = role === TANK && cardId === tankIdWithDoubleAP;
 	const roleTooltipContent = ability;
 	const roleTooltipId = `role-anchor${cardId}`;
+	const ref = useRef(null);
+    drag(drop(ref));
 
 	return (
-		<div
+		<div ref={ref}
 			style={{
 				...boardSlotStyle,
 				justifyContent: 'space-between',
@@ -322,6 +359,9 @@ export const BoardSlot = ({
 	tankIdWithDoubleAP,
 	playCard,
 	localState,
+	attackOppAnimal,
+	canKingAttackAgain,
+	isAttackAnimalEnabled,
 }: SlotProps) => {
 	const [, drop] = useDrop(
 		{
@@ -341,6 +381,10 @@ export const BoardSlot = ({
 					select={() => selectSlot(nb)}
 					selected={selected}
 					tankIdWithDoubleAP={tankIdWithDoubleAP}
+					attackOppAnimal={attackOppAnimal}
+					nb={nb}
+					canKingAttackAgain={canKingAttackAgain}
+					isAttackAnimalEnabled={isAttackAnimalEnabled}
 				/>
 			</div>
 		);
@@ -455,6 +499,9 @@ export const BoardSlots = ({
 	tankIdWithDoubleAP,
 	playCard,
 	localState,
+	attackOppAnimal,
+	canKingAttackAgain,
+	isAttackAnimalEnabled,
 }: {
 	slots: SlotType[];
 	selectedSlots: number[];
@@ -465,6 +512,9 @@ export const BoardSlots = ({
 	tankIdWithDoubleAP?: string;
 	playCard?: any;
 	localState?: any;
+	attackOppAnimal?:any;
+	canKingAttackAgain?:any;
+	isAttackAnimalEnabled?:any;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -495,6 +545,9 @@ export const BoardSlots = ({
 							selected={selectedSlots.includes(index)}
 							playCard={playCard}
 							localState={localState}
+							attackOppAnimal={attackOppAnimal}
+							canKingAttackAgain={canKingAttackAgain}
+							isAttackAnimalEnabled={isAttackAnimalEnabled}
 						/>
 					</div>
 					{opponent && <CanAttackIconsView slot={slot} />}

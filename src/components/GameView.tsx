@@ -92,6 +92,7 @@ export function GameView({
 	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
 	const [isJokerActive, setIsJokerActive] = useState(false);
 	const activePowerCard = useRef('');
+	const canKingAttackAgain = useRef(false);
 
 	const isMyRound = round.player === playerType;
 	const POWER_CARDS_WITH_2_SELECTS = ['2-anim-gy', 'switch-2-cards'];
@@ -496,8 +497,7 @@ export function GameView({
 		}
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedOppSlotsNbs([]);
-	};
-
+	};/*
 	const attackOppAnimal = async () => {
 		const animalA = getAnimalCard(idInCurrPSlot);
 		const animalD = getAnimalCard(idsInOppPSlots[0]);
@@ -536,7 +536,48 @@ export function GameView({
 		}
 		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
+	};*/
+
+	const attackOppAnimal = async (curranimalId?:string,oppoanimalId?:string,currentslotnb?:number,opponentslotnb?:number) => {
+		if ( isAnimalCard(oppoanimalId) && isAttackAnimalEnabled) {return;}
+
+		const animalA = getAnimalCard(curranimalId);
+		const animalD = getAnimalCard(oppoanimalId);
+		if (!animalA || !animalD) return;
+		console.log("here");
+
+		const animalAAP =
+			animalA.role === TANK && currentPlayer?.tankIdWithDoubleAP === curranimalId
+				? ANIMALS_POINTS[animalA.role].ap * 2
+				: ANIMALS_POINTS[animalA.role].ap;
+
+		const animalDHP = ANIMALS_POINTS[animalD.role].hp;
+
+		if (animalAAP < animalDHP) {
+			return;
+		}
+
+		setHasAttacked(true);
+		await changeHasAttacked(gameId, playerType, currentslotnb!, true);
+		await attackAnimal(
+			gameId,
+			playerType,
+			curranimalId!,
+			oppoanimalId!,
+			opponentslotnb!,
+		);
+		console.log("canatackwithking",canKingAttackAgain.current)
+		const canSecondAttackWithKing = animalA.role === KING && animalA.clan === elementType && !canKingAttackAgain.current ;
+		 if (canSecondAttackWithKing) {
+			canKingAttackAgain.current=true;
+			return;
+		
+		}
+		await waitFor(300);
+		await changeHasAttacked(gameId, playerType, currentslotnb!, false);
+		canKingAttackAgain.current=false;
 	};
+
 
 	const attackOppHp = async () => {
 		setHasAttacked(true);
@@ -601,6 +642,9 @@ export function GameView({
 				isMyRound={isMyRound}
 				playCard={playCard}
 				localState={localState}
+				attackOppAnimal={attackOppAnimal}
+				canKingAttackAgain={canKingAttackAgain}
+				isAttackAnimalEnabled={isAttackAnimalEnabled}
 			/>
 
 			<CurrentPView

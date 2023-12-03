@@ -18,6 +18,9 @@ interface Props {
 	selectCurrentSlot: (slotNb: number) => void;
 	playCard: any;
 	localState?: any;
+	attackOppAnimal?:any;
+	canKingAttackAgain?:any;
+	isAttackAnimalEnabled?:any;
 }
 
 export const BoardView = ({
@@ -30,6 +33,9 @@ export const BoardView = ({
 	tankIdWithDoubleAPOfOpp,
 	playCard,
 	localState,
+	attackOppAnimal,
+	canKingAttackAgain,
+	isAttackAnimalEnabled,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } =
 		board;
@@ -55,6 +61,7 @@ export const BoardView = ({
 					opponent={true}
 					elementType={elementType}
 					tankIdWithDoubleAP={tankIdWithDoubleAPOfOpp}
+					attackOppAnimal={attackOppAnimal}
 				/>
 				<Seperator />
 				<BoardSlots
@@ -66,6 +73,9 @@ export const BoardView = ({
 					tankIdWithDoubleAP={tankIdWithDoubleAPOfCurr}
 					playCard={playCard}
 					localState={localState}
+					attackOppAnimal={attackOppAnimal}
+					canKingAttackAgain={canKingAttackAgain}
+					isAttackAnimalEnabled={isAttackAnimalEnabled}
 				/>
 			</div>
 
