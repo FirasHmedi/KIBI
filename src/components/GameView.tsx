@@ -20,7 +20,7 @@ import {
 	cancelAttacks,
 	cancelUsingPowerCards,
 	changeElement,
-	doubleTankAP,
+	doubleTanksAP,
 	draw2Cards,
 	resetBoard,
 	return2animalsFromGYToDeck,
@@ -47,8 +47,8 @@ import {
 	isAttacker,
 	isJokerInElement,
 	isKing,
+	isKingInElement,
 	isPowerCard,
-	isTank,
 	waitFor,
 } from '../utils/helpers';
 import { Board, Player, PlayerType, Round } from '../utils/interface';
@@ -246,9 +246,6 @@ export function GameView({
 			case 'switch-2-cards':
 				if (currentPlayer.cardsIds.length < 2 || opponentPlayer.cardsIds.length < 2) return false;
 				break;
-			case 'double-tank-ap':
-				if (!isTank(idInCurrPSlot)) return false;
-				break;
 			case 'rev-last-pow':
 				if (isEmpty(board.powerGY)) return false;
 				break;
@@ -397,8 +394,8 @@ export function GameView({
 				setCanPlaceKingWithoutSacrifice(true);
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
-			case 'double-tank-ap':
-				await doubleTankAP(gameId, playerType, idInCurrPSlot);
+			case 'double-tanks-ap':
+				await doubleTanksAP(gameId, playerType);
 				break;
 			case 'charge-element':
 				await setElementLoad(gameId, playerType, 3);
@@ -497,57 +494,33 @@ export function GameView({
 		}
 		setSelectedCurrPSlotNb(undefined);
 		setSelectedOppSlotsNbs([]);
-	};/*
-	const attackOppAnimal = async () => {
-		const animalA = getAnimalCard(idInCurrPSlot);
-		const animalD = getAnimalCard(idsInOppPSlots[0]);
-		if (!animalA || !animalD) return;
+	};
 
-		const animalAAP =
-			animalA.role === TANK && currentPlayer?.tankIdWithDoubleAP === idInCurrPSlot
-				? ANIMALS_POINTS[animalA.role].ap * 2
-				: ANIMALS_POINTS[animalA.role].ap;
+	const attackOppAnimal = async (
+		curranimalId?: string,
+		oppoanimalId?: string,
+		currentslotnb?: number,
+		opponentslotnb?: number,
+	) => {
+		const isAttackAnimalsEnabled =
+			round.nb >= 3 &&
+			isMyRound &&
+			currentPlayer.canAttack &&
+			!hasAttacked &&
+			currentPSlots[currentslotnb ?? 3]?.canAttack;
 
-		const animalDHP = ANIMALS_POINTS[animalD.role].hp;
+		console.log({ isAttackAnimalsEnabled });
 
-		if (animalAAP < animalDHP) {
+		if (!isAttackAnimalsEnabled) {
 			return;
 		}
-
-		setHasAttacked(true);
-		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, true);
-		await attackAnimal(
-			gameId,
-			playerType,
-			idInCurrPSlot,
-			idsInOppPSlots[0],
-			selectedOppSlotsNbs[0]!,
-		);
-		const canSecondAttackWithKing =
-			animalA.role === KING && animalA.clan === elementType && isAnimalCard(idsInOppPSlots[1]);
-		if (canSecondAttackWithKing) {
-			await attackAnimal(
-				gameId,
-				playerType,
-				idInCurrPSlot,
-				idsInOppPSlots[1],
-				selectedOppSlotsNbs[1]!,
-			);
-		}
-		await waitFor(300);
-		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
-	};*/
-
-	const attackOppAnimal = async (curranimalId?:string,oppoanimalId?:string,currentslotnb?:number,opponentslotnb?:number) => {
-		if ( isAnimalCard(oppoanimalId) && isAttackAnimalEnabled) {return;}
 
 		const animalA = getAnimalCard(curranimalId);
 		const animalD = getAnimalCard(oppoanimalId);
 		if (!animalA || !animalD) return;
-		console.log("here");
 
 		const animalAAP =
-			animalA.role === TANK && currentPlayer?.tankIdWithDoubleAP === curranimalId
+			animalA.role === TANK && currentPlayer?.tanksWithDoubleAP
 				? ANIMALS_POINTS[animalA.role].ap * 2
 				: ANIMALS_POINTS[animalA.role].ap;
 
@@ -559,30 +532,26 @@ export function GameView({
 
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, currentslotnb!, true);
-		await attackAnimal(
-			gameId,
-			playerType,
-			curranimalId!,
-			oppoanimalId!,
-			opponentslotnb!,
-		);
-		console.log("canatackwithking",canKingAttackAgain.current)
-		const canSecondAttackWithKing = animalA.role === KING && animalA.clan === elementType && !canKingAttackAgain.current ;
-		 if (canSecondAttackWithKing) {
-			canKingAttackAgain.current=true;
+		await attackAnimal(gameId, playerType, curranimalId!, oppoanimalId!, opponentslotnb!);
+
+		const canSecondAttackWithKing =
+			isKingInElement(curranimalId, elementType) && !canKingAttackAgain.current;
+		if (canSecondAttackWithKing) {
+			canKingAttackAgain.current = true;
+			setHasAttacked(false);
 			return;
-		
 		}
+
 		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, currentslotnb!, false);
-		canKingAttackAgain.current=false;
+		setHasAttacked(true);
+		canKingAttackAgain.current = false;
 	};
-
 
 	const attackOppHp = async () => {
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, true);
-		const isDoubleAP = currentPlayer.tankIdWithDoubleAP === idInCurrPSlot;
+		const isDoubleAP = currentPlayer.tanksWithDoubleAP;
 		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), idInCurrPSlot, isDoubleAP);
 		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, selectedCurrPSlotNb!, false);
@@ -610,11 +579,21 @@ export function GameView({
 	};
 
 	const localState = {
-		round: round,
-		canPlacekingWithoutSacrifice: canPlaceKingWithoutSacrifice,
-		nbCardsToPlay: nbCardsToPlay,
-		activePowerCard: activePowerCard,
-		board: board,
+		round,
+		canPlaceKingWithoutSacrifice,
+		nbCardsToPlay,
+		activePowerCard,
+		board,
+	};
+
+	const attackState = {
+		round,
+		canKingAttackAgain,
+		currentPlayer,
+		opponentPlayer,
+		board,
+		hasAttacked,
+		currentPSlots,
 	};
 
 	return (
@@ -637,14 +616,13 @@ export function GameView({
 				selectCurrentSlot={selectCurrSlotNb}
 				selectedOppSlotsNbs={selectedOppSlotsNbs}
 				selectOppSlotsNbs={selectOppSlotsNbs}
-				tankIdWithDoubleAPOfCurr={currentPlayer.tankIdWithDoubleAP}
-				tankIdWithDoubleAPOfOpp={opponentPlayer.tankIdWithDoubleAP}
+				tanksWithDoubleAPOfCurr={currentPlayer.tanksWithDoubleAP}
+				tanksWithDoubleAPOfOpp={opponentPlayer.tanksWithDoubleAP}
 				isMyRound={isMyRound}
 				playCard={playCard}
 				localState={localState}
 				attackOppAnimal={attackOppAnimal}
-				canKingAttackAgain={canKingAttackAgain}
-				isAttackAnimalEnabled={isAttackAnimalEnabled}
+				attackState={attackState}
 			/>
 
 			<CurrentPView

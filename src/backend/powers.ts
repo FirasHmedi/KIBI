@@ -257,10 +257,6 @@ export const resetBoard = async (
 	await changeElement(gameId, NEUTRAL);
 };
 
-export const doubleTankAP = async (
-	gameId: string,
-	playerType: PlayerType,
-	tankIdWithDoubleAP: string,
-) => {
-	await setItem(getGamePath(gameId) + playerType, { tankIdWithDoubleAP });
+export const doubleTanksAP = async (gameId: string, playerType: PlayerType) => {
+	await setItem(getGamePath(gameId) + playerType, { tanksWithDoubleAP: true });
 };

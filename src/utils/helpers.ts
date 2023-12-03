@@ -67,8 +67,12 @@ export const getAnimalCard = (cardId?: string): AnimalCard | undefined => {
 
 export const isKing = (cardId?: string) => getAnimalCard(cardId)?.role === KING;
 export const isJoker = (cardId?: string) => getAnimalCard(cardId)?.role === JOKER;
+
 export const isJokerInElement = (cardId?: string, elementType?: ClanName) =>
 	getAnimalCard(cardId)?.role === JOKER && getAnimalCard(cardId)?.clan === elementType;
+export const isKingInElement = (cardId?: string, elementType?: ClanName) =>
+	getAnimalCard(cardId)?.role === KING && getAnimalCard(cardId)?.clan === elementType;
+
 export const isAttacker = (cardId?: string) => getAnimalCard(cardId)?.role === ATTACKER;
 export const isTank = (cardId?: string) => getAnimalCard(cardId)?.role === TANK;
 export const isAnimalInEnv = (cardId?: string, elementType?: ClanName) =>

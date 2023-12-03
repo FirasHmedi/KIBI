@@ -59,8 +59,8 @@
 		"description": "Sacrifice an animal to get 3hp",
 		"name": "Sacrifice an active animal for 3hp"
 	},
-	"double-tank-ap": {
-		"description": "Double attack points of a Elephant",
-		"name": "Double AP of an Elephant"
+	"double-tanks-ap": {
+		"description": "Double attack points of all Elephants",
+		"name": "Double AP of all Elephants"
 	}
 }

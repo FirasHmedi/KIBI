@@ -228,7 +228,7 @@ const PlayerDataView = ({
 	showCountDown?: any;
 	finishRound?: any;
 }) => {
-	const { hp, playerType, canPlayPowers, tankIdWithDoubleAP, canAttack, envLoadNb } = player;
+	const { hp, playerType, canPlayPowers, tanksWithDoubleAP, canAttack, envLoadNb } = player;
 	const batteryStyle = { color: violet, width: '3vw', height: 'auto' };
 	const hpRef = useRef<number>(0);
 	const [hpChange, setHpChange] = useState<string>();
@@ -332,7 +332,7 @@ const PlayerDataView = ({
 				) : null}
 			</div>
 
-			{!isEmpty(tankIdWithDoubleAP) && <h5>TANK AP is doubled </h5>}
+			{!isEmpty(tanksWithDoubleAP) && <h5>TANK AP is doubled </h5>}
 		</div>
 	);
 };

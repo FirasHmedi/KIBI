@@ -10,17 +10,16 @@ import { BoardSlots, DeckSlot, DropItem, ElementSlot } from './Slots';
 interface Props {
 	board: Board;
 	isMyRound: boolean;
-	tankIdWithDoubleAPOfCurr?: string;
-	tankIdWithDoubleAPOfOpp?: string;
+	tanksWithDoubleAPOfCurr?: boolean;
+	tanksWithDoubleAPOfOpp?: boolean;
 	selectedCurrentPSlotNb?: number;
 	selectedOppSlotsNbs?: number[];
 	selectOppSlotsNbs: (slotNb: number) => void;
 	selectCurrentSlot: (slotNb: number) => void;
 	playCard: any;
 	localState?: any;
-	attackOppAnimal?:any;
-	canKingAttackAgain?:any;
-	isAttackAnimalEnabled?:any;
+	attackOppAnimal?: any;
+	attackState?: any;
 }
 
 export const BoardView = ({
@@ -29,13 +28,12 @@ export const BoardView = ({
 	selectOppSlotsNbs,
 	selectedOppSlotsNbs = [],
 	selectedCurrentPSlotNb,
-	tankIdWithDoubleAPOfCurr,
-	tankIdWithDoubleAPOfOpp,
+	tanksWithDoubleAPOfCurr,
+	tanksWithDoubleAPOfOpp,
 	playCard,
 	localState,
 	attackOppAnimal,
-	canKingAttackAgain,
-	isAttackAnimalEnabled,
+	attackState,
 }: Props) => {
 	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } =
 		board;
@@ -60,8 +58,10 @@ export const BoardView = ({
 					selectedSlots={selectedOppSlotsNbs}
 					opponent={true}
 					elementType={elementType}
-					tankIdWithDoubleAP={tankIdWithDoubleAPOfOpp}
+					tanksWithDoubleAP={tanksWithDoubleAPOfOpp}
 					attackOppAnimal={attackOppAnimal}
+					attackState={attackState}
+					localState={localState}
 				/>
 				<Seperator />
 				<BoardSlots
@@ -70,12 +70,11 @@ export const BoardView = ({
 					selectedSlots={selectedCurrSlots}
 					current={true}
 					elementType={elementType}
-					tankIdWithDoubleAP={tankIdWithDoubleAPOfCurr}
+					tanksWithDoubleAP={tanksWithDoubleAPOfCurr}
 					playCard={playCard}
 					localState={localState}
 					attackOppAnimal={attackOppAnimal}
-					canKingAttackAgain={canKingAttackAgain}
-					isAttackAnimalEnabled={isAttackAnimalEnabled}
+					attackState={attackState}
 				/>
 			</div>
 

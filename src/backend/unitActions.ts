@@ -1,6 +1,6 @@
 import isNil from 'lodash/isNil';
 import { ClanName } from '../utils/data';
-import { isAnimalCard, isPowerCard, isTank } from '../utils/helpers';
+import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { PlayerType } from '../utils/interface';
 import { getBoardPath, getGamePath, getItemsOnce, setItem } from './db';
 
@@ -85,12 +85,12 @@ export const removePlayerAnimalFromBoard = async (
 		await setItem(getBoardPath(gameId) + playerType, {
 			[`${slotNumber}`]: { cardId: 'empty', canAttack: false },
 		});
-		if (isTank(slot.cardId)) {
-			const tankId = await getItemsOnce(getGamePath(gameId) + playerType + '/tankIdWithDoubleAP');
+		/*if (isTank(slot.cardId)) {
+			const tankId = await getItemsOnce(getGamePath(gameId) + playerType + '/tanksWithDoubleAP');
 			if (tankId === slot.cardId) {
-				await setItem(getGamePath(gameId) + playerType, { tankIdWithDoubleAP: null });
+				await setItem(getGamePath(gameId) + playerType, { tanksWithDoubleAP: null });
 			}
-		}
+		}*/
 		return true;
 	}
 	return false;
