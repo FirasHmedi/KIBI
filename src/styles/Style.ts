@@ -86,10 +86,9 @@ export const deckSlotStyle: React.CSSProperties = {
 	borderRadius: 5,
 	color: 'white',
 	fontSize: '0.85em',
-	height: '6.5rem',
-	width: '5rem',
+	height: '6rem',
+	width: '4.5rem',
 	flexShrink: 0,
-	border: 'solid 3px #95a5a6',
 };
 
 export const signupContainerStyle: React.CSSProperties = {

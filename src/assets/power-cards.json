@@ -21,7 +21,7 @@
 	},
 	"block-pow": {
 		"description": "Block opponent from using power cards",
-		"name": "Block power cards for 1 turn"
+		"name": "Block powers for 1 turn"
 	},
 	"reset-board": {
 		"description": "Reset Board (animals, env) for 1HP",
@@ -33,11 +33,11 @@
 	},
 	"rev-last-pow": {
 		"description": "Activate last power card used directly",
-		"name": "Activate last power card used"
+		"name": "Activate last power used"
 	},
 	"rev-any-pow-1hp": {
 		"description": "Activate any power card for 1hp",
-		"name": "Activate any power card for 1hp"
+		"name": "Activate any power for 1hp"
 	},
 	"rev-any-anim-1hp": {
 		"description": "Sacrifice 1 hp to revive any animal, can attack",
@@ -45,22 +45,22 @@
 	},
 	"steal-anim-3hp": {
 		"description": "Sacrifice 3 hp to switch side of an opponent animal",
-		"name": "Steal animal opponent for 3hp"
+		"name": "Steal active animal for 3hp"
 	},
 	"switch-decks": {
 		"description": "Switch deck with opponent for 1hp",
-		"name": "Switch decks of players for 1hp"
+		"name": "Switch decks for 1hp"
 	},
 	"switch-2-cards": {
 		"description": "Switch 2 cards with opponent",
-		"name": "Switch 2 cards  with opponent"
+		"name": "Switch 2 cards with opponent"
 	},
 	"sacrif-anim-3hp": {
 		"description": "Sacrifice an animal to get 3hp",
 		"name": "Sacrifice an active animal for 3hp"
 	},
 	"double-tank-ap": {
-		"description": "Double attack points of a Tank",
-		"name": "Double AP of a Tank"
+		"description": "Double attack points of a Elephant",
+		"name": "Double AP of an Elephant"
 	}
 }

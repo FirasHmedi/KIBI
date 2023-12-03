@@ -15,7 +15,15 @@ import {
 	selectedColor,
 	violet,
 } from '../styles/Style';
-import { ANIMALS_POINTS, CLANS, ClanName, TANK, animalsPics, elementsIcons } from '../utils/data';
+import {
+	ANIMALS_POINTS,
+	CLANS,
+	ClanName,
+	RoleName,
+	TANK,
+	animalsPics,
+	elementsIcons,
+} from '../utils/data';
 import {
 	getAnimalCard,
 	getPowerCard,
@@ -134,6 +142,7 @@ export const PowerDeckSlot = ({
 				justifyContent: 'center',
 				borderColor: selected ? selectedColor : violet,
 				...bigStyle,
+				fontSize: '0.8em',
 			}}
 			onClick={() => select()}>
 			{isJokerActive ? (
@@ -189,10 +198,11 @@ export const AnimalBoardSlot = ({
 						alignItems: 'center',
 						justifyContent: 'center',
 						textAlign: 'center',
+						flex: 1,
 					}}>
 					<img
 						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-						style={{ width: '7rem', height: '5.5rem' }}></img>
+						style={{ width: '5.5rem', height: '4.5rem' }}></img>
 				</div>
 			)}
 
@@ -209,7 +219,7 @@ export const AnimalBoardSlot = ({
 				}}>
 				<div style={{ ...centerStyle, gap: 2 }}>
 					<h4>{isTankDoubleAP ? ap * 2 : ap}</h4>
-					<TbSword />
+					<TbSword style={{ fontSize: '1.45rem' }} />
 				</div>
 
 				<div style={{ ...centerStyle, gap: 2 }}>
@@ -224,6 +234,45 @@ export const AnimalBoardSlot = ({
 				/>
 			</div>
 		</div>
+	);
+};
+
+const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
+	const { hp, ap } = ANIMALS_POINTS[role as RoleName];
+	const roleTooltipContent = ability;
+	const roleTooltipId = `role-anchor${cardId}`;
+	return (
+		<>
+			<img
+				src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
+				style={{ width: '3.5rem', height: '3.5rem', flex: 1 }}
+			/>
+			<div
+				id={roleTooltipId}
+				style={{
+					...flexRowStyle,
+					width: '100%',
+					justifyContent: 'space-evenly',
+					alignItems: 'center',
+					paddingBottom: 4,
+					fontSize: '0.9rem',
+				}}>
+				<div style={{ ...centerStyle, gap: 2 }}>
+					<h4>{ap}</h4>
+					<TbSword style={{ fontSize: '1.1rem' }} />
+				</div>
+				<div style={{ ...centerStyle, gap: 2 }}>
+					<h4>{hp}</h4>
+					<FaHeart />
+				</div>
+				<Tooltip
+					anchorSelect={`#${roleTooltipId}`}
+					content={roleTooltipContent}
+					style={{ width: '5vw', fontSize: '0.7rem' }}
+					place='bottom'
+				/>
+			</div>
+		</>
 	);
 };
 
@@ -247,9 +296,6 @@ export const AnimalDeckSlot = ({
 		[cardId],
 	);
 	const { clan, name, ability, role } = getAnimalCard(cardId)!;
-	const { hp, ap } = ANIMALS_POINTS[role];
-	const roleTooltipContent = ability;
-	const roleTooltipId = `role-anchor${cardId}`;
 
 	return (
 		<div
@@ -262,37 +308,7 @@ export const AnimalDeckSlot = ({
 			}}
 			onClick={() => select()}>
 			{!isJokerActive && (
-				<>
-					<img
-						src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
-						style={{ width: '4.5rem', height: '4.5rem' }}></img>
-
-					<div
-						id={roleTooltipId}
-						style={{
-							...flexRowStyle,
-							width: '100%',
-							justifyContent: 'space-evenly',
-							alignItems: 'center',
-							paddingBottom: 4,
-							fontSize: '0.9rem',
-						}}>
-						<div style={{ ...centerStyle, gap: 2 }}>
-							<h4>{ap}</h4>
-							<TbSword />
-						</div>
-						<div style={{ ...centerStyle, gap: 2 }}>
-							<h4>{hp}</h4>
-							<FaHeart />
-						</div>
-						<Tooltip
-							anchorSelect={`#${roleTooltipId}`}
-							content={roleTooltipContent}
-							style={{ width: '5vw', fontSize: '0.7rem' }}
-							place='bottom'
-						/>
-					</div>
-				</>
+				<AnimalDeckSlotView cardId={cardId} name={name} role={role} ability={ability} />
 			)}
 		</div>
 	);
@@ -382,7 +398,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive }: De
 				fontSize: '0.7em',
 			}}
 			onClick={() => selectSlotPolished()}>
-			Power card
+			Power
 		</div>
 	);
 };

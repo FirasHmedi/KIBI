@@ -229,7 +229,7 @@ const PlayerDataView = ({
 	finishRound?: any;
 }) => {
 	const { hp, playerType, canPlayPowers, tankIdWithDoubleAP, canAttack, envLoadNb } = player;
-	const batteryStyle = { color: violet, width: '2.8vw', height: 'auto' };
+	const batteryStyle = { color: violet, width: '3vw', height: 'auto' };
 	const hpRef = useRef<number>(0);
 	const [hpChange, setHpChange] = useState<string>();
 
