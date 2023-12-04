@@ -8,7 +8,7 @@
 		return false;
 	}
 	for (let i = 0; i < 3; i++) {
-		const oppAnimal = getAnimalCard(opponentPSlots[i]?.cardId);
+		const oppAnimal = getAnimalCard(oppPSlots[i]?.cardId);
 		if (oppAnimal?.role !== king.role && king.clan === oppAnimal?.clan) {
 			return true;
 		}

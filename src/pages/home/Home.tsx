@@ -45,6 +45,16 @@ function Home() {
 			},
 			board: {
 				mainDeck,
+				one: [
+					{ cardId: 'empty', canAttack: false },
+					{ cardId: 'empty', canAttack: false },
+					{ cardId: 'empty', canAttack: false },
+				],
+				two: [
+					{ cardId: 'empty', canAttack: false },
+					{ cardId: 'empty', canAttack: false },
+					{ cardId: 'empty', canAttack: false },
+				],
 			},
 			playerToSelect: PlayerType.ONE,
 			initialPowers: initialPowers,

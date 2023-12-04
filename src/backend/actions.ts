@@ -54,7 +54,7 @@ export const placeAnimalOnBoard = async (
 		'player ' + playerType + ' placed a ' + animal?.name + ' in slot ' + slotNb,
 	);
 	await removeCardFromPlayerDeck(gameId, playerType, animalId);
-	await addAnimalToBoard(gameId, playerType, slotNb, animalId, false, elementType);
+	await addAnimalToBoard(gameId, playerType, slotNb, animalId, false);
 };
 
 export const placeKingOnBoard = async (

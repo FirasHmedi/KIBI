@@ -35,8 +35,7 @@ export const BoardView = ({
 	attack,
 	attackState,
 }: Props) => {
-	const { mainDeck, currentPSlots, opponentPSlots, animalGY, powerGY, elementType, activeCardId } =
-		board;
+	const { mainDeck, currPSlots, oppPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 	const selectedCurrSlots = !isNil(selectedCurrentPSlotNb) ? [selectedCurrentPSlotNb!] : [];
 
 	return (
@@ -53,7 +52,7 @@ export const BoardView = ({
 					...flexColumnStyle,
 				}}>
 				<BoardSlots
-					slots={opponentPSlots}
+					slots={oppPSlots}
 					selectSlot={selectOppSlotsNbs}
 					selectedSlots={selectedOppSlotsNbs}
 					opponent={true}
@@ -65,7 +64,7 @@ export const BoardView = ({
 				/>
 				<Seperator />
 				<BoardSlots
-					slots={currentPSlots}
+					slots={currPSlots}
 					selectSlot={selectCurrentSlot}
 					selectedSlots={selectedCurrSlots}
 					current={true}

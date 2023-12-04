@@ -62,8 +62,8 @@ interface GameViewProps {
 	round: Round;
 	gameId: string;
 	board: Board;
-	opponentPlayer: Player;
-	currentPlayer: Player;
+	oppPlayer: Player;
+	currPlayer: Player;
 	spectator?: boolean;
 	showCountDown: any;
 }
@@ -72,20 +72,20 @@ export function GameView({
 	round,
 	gameId,
 	board,
-	opponentPlayer,
-	currentPlayer,
+	oppPlayer,
+	currPlayer,
 	spectator,
 	showCountDown,
 }: GameViewProps) {
-	const { opponentPSlots, currentPSlots, elementType } = board;
+	const { oppPSlots, currPSlots, elementType } = board;
 
 	const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
 	const [selectedOppSlotsNbs, setSelectedOppSlotsNbs] = useState<number[]>([]);
 	const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
 	const [canPlaceKingWithoutSacrifice, setCanPlaceKingWithoutSacrifice] = useState<boolean>(false);
-	const playerType = currentPlayer.playerType!;
-	const idsInOppPSlots = selectedOppSlotsNbs.map(nb => opponentPSlots[nb ?? 3]?.cardId);
-	const idInCurrPSlot = currentPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
+	const playerType = currPlayer.playerType!;
+	const idsInOppPSlots = selectedOppSlotsNbs.map(nb => oppPSlots[nb ?? 3]?.cardId);
+	const idInCurrPSlot = currPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
 	const [hasAttacked, setHasAttacked] = useState(false);
 	const [openCardsPopup, setOpenCardsPopup] = useState(false);
@@ -100,7 +100,7 @@ export function GameView({
 
 	useEffect(() => {
 		if (isMyRound) {
-			activateMonkeyAbility(currentPSlots, false, elementType);
+			activateMonkeyAbility(currPSlots, false, elementType);
 		}
 		if (round.nb >= 3 && isMyRound) {
 			setNbCardsToPlay(2);
@@ -115,21 +115,21 @@ export function GameView({
 	const isAttackAnimalEnabled =
 		round.nb >= 3 &&
 		isMyRound &&
-		currentPlayer.canAttack &&
+		currPlayer.canAttack &&
 		!hasAttacked &&
 		isAnimalCard(idInCurrPSlot) &&
 		isAnimalCard(idsInOppPSlots[0]) &&
-		currentPSlots[selectedCurrPSlotNb ?? 3]?.canAttack;
+		currPSlots[selectedCurrPSlotNb ?? 3]?.canAttack;
 
 	const isOppSlotsEmpty =
-		!isAnimalCard(opponentPSlots[0]?.cardId) &&
-		!isAnimalCard(opponentPSlots[1]?.cardId) &&
-		!isAnimalCard(opponentPSlots[2]?.cardId);
+		!isAnimalCard(oppPSlots[0]?.cardId) &&
+		!isAnimalCard(oppPSlots[1]?.cardId) &&
+		!isAnimalCard(oppPSlots[2]?.cardId);
 
 	const isOppSlotsAllFilled =
-		isAnimalCard(opponentPSlots[0]?.cardId) &&
-		isAnimalCard(opponentPSlots[1]?.cardId) &&
-		isAnimalCard(opponentPSlots[2]?.cardId);
+		isAnimalCard(oppPSlots[0]?.cardId) &&
+		isAnimalCard(oppPSlots[1]?.cardId) &&
+		isAnimalCard(oppPSlots[2]?.cardId);
 
 	const isAttackerAbilityActive =
 		isAttacker(idInCurrPSlot) && isAnimalInEnv(idInCurrPSlot, elementType);
@@ -137,12 +137,12 @@ export function GameView({
 	const isAttackOwnerEnabled =
 		round.nb >= 3 &&
 		isMyRound &&
-		currentPlayer.canAttack &&
+		currPlayer.canAttack &&
 		!hasAttacked &&
 		isAnimalCard(idInCurrPSlot) &&
 		(isAttackerAbilityActive || isOppSlotsEmpty) &&
 		!isOppSlotsAllFilled &&
-		currentPSlots[selectedCurrPSlotNb ?? 3]?.canAttack;
+		currPSlots[selectedCurrPSlotNb ?? 3]?.canAttack;
 
 	const selectCurrSlotNb = async (slotNb: number) => {
 		setSelectedCurrPSlotNb(nb => (slotNb === nb ? undefined : slotNb));
@@ -184,20 +184,20 @@ export function GameView({
 	};
 
 	const getCurrSlotNb = () => {
-		let nb;
+		let nb = null;
 		for (let i = 0; i < 3; i++) {
-			if (!isAnimalCard(currentPSlots[i]?.cardId)) {
+			if (!isAnimalCard(currPSlots[i]?.cardId)) {
 				nb = i;
 			}
 		}
-		return selectedCurrPSlotNb != null ? selectedCurrPSlotNb : nb;
+		return nb != null ? nb : 0;
 	};
 
 	const playAnimalCard = async (cardId: string, slotNb: number): Promise<void> => {
 		const { role, clan } = getAnimalCard(cardId)!;
 
 		if (role === KING) {
-			const animalIdInSlotNb = currentPSlots[slotNb!]?.cardId;
+			const animalIdInSlotNb = currPSlots[slotNb!]?.cardId;
 			const sacrificedAnimal = getAnimalCard(animalIdInSlotNb);
 			if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
 				return;
@@ -211,7 +211,7 @@ export function GameView({
 
 		if (isJokerInElement(cardId, elementType)) {
 			await waitFor(700);
-			activateMonkeyAbility(currentPSlots, true);
+			activateMonkeyAbility(currPSlots, true);
 		}
 	};
 
@@ -227,12 +227,12 @@ export function GameView({
 					isNil(slotNbForSteal) ||
 					selectedOppSlotsNbs?.length != 1 ||
 					!isAnimalCard(idsInOppPSlots[0]) ||
-					currentPlayer.hp < 3
+					currPlayer.hp < 3
 				)
 					return false;
 				break;
 			case 'steal-pow-2hp':
-				if (!(opponentPlayer.cardsIds ?? []).some(id => isPowerCard(id)) || currentPlayer.hp < 2)
+				if (!(oppPlayer.cardsIds ?? []).some(id => isPowerCard(id)) || currPlayer.hp < 2)
 					return false;
 				break;
 			case 'sacrif-anim-3hp':
@@ -245,7 +245,7 @@ export function GameView({
 				if (isEmpty(board?.powerGY)) return false;
 				break;
 			case 'switch-2-cards':
-				if (currentPlayer.cardsIds.length < 2 || opponentPlayer.cardsIds.length < 2) return false;
+				if (currPlayer.cardsIds.length < 2 || oppPlayer.cardsIds.length < 2) return false;
 				break;
 			case 'rev-last-pow':
 				if (isEmpty(board.powerGY)) return false;
@@ -286,7 +286,6 @@ export function GameView({
 			case 'rev-any-anim-1hp':
 				const slotNbForRevive = getCurrSlotNb();
 				await sacrifice1HpToReviveAnyAnimal(gameId, playerType, cardId, slotNbForRevive!);
-				activateJokerAbilityNow;
 				if (isJokerInElement(cardId, elementType)) {
 					activateJokerAbilityNow = true;
 				}
@@ -308,7 +307,7 @@ export function GameView({
 		await processPostPowerCardPlay();
 		if (activateJokerAbilityNow) {
 			await waitFor(700);
-			activateMonkeyAbility(currentPSlots, true);
+			activateMonkeyAbility(currPSlots, true);
 		}
 	};
 
@@ -340,7 +339,7 @@ export function GameView({
 				setOpenCardsPopup(true);
 				return;
 			case 'steal-pow-2hp':
-				const powerCardsIds = opponentPlayer.cardsIds.filter(id => isPowerCard(id));
+				const powerCardsIds = oppPlayer.cardsIds.filter(id => isPowerCard(id));
 				setCardsIdsForPopup(powerCardsIds);
 				setOpenCardsPopup(true);
 				return;
@@ -362,7 +361,7 @@ export function GameView({
 				await switchDeck(gameId);
 				break;
 			case 'switch-2-cards':
-				setCardsIdsForPopup(currentPlayer.cardsIds);
+				setCardsIdsForPopup(currPlayer.cardsIds);
 				setOpenCardsPopup(true);
 				return;
 			case 'sacrif-anim-3hp':
@@ -389,7 +388,7 @@ export function GameView({
 				break;
 			case 'reset-board':
 				await minus1Hp(gameId, playerType);
-				await resetBoard(gameId, playerType, currentPSlots, opponentPSlots);
+				await resetBoard(gameId, playerType, currPSlots, oppPSlots);
 				break;
 			case 'place-king':
 				setCanPlaceKingWithoutSacrifice(true);
@@ -405,7 +404,7 @@ export function GameView({
 		await processPostPowerCardPlay();
 		if (activateJokerAbilityNow) {
 			await waitFor(700);
-			activateMonkeyAbility(currentPSlots, true);
+			activateMonkeyAbility(currPSlots, true);
 		}
 	};
 
@@ -451,28 +450,28 @@ export function GameView({
 		await changeElement(gameId, elementType, playerType);
 		setShowEnvPopup(false);
 		await waitFor(700);
-		activateMonkeyAbility(currentPSlots, false, elementType);
+		activateMonkeyAbility(currPSlots, false, elementType);
 	};
 
 	const finishRoundBot = async () => {
 		await executeBotTurn(gameId);
 		await enableAttackingAndPlayingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
 		await addOneRound(gameId, playerType);
-		await enableAttackForOpponentAnimals(gameId, playerType, currentPSlots);
+		await enableAttackForOpponentAnimals(gameId, playerType, currPSlots);
 		await setElementLoad(gameId, PlayerType.ONE, 1);
 	};
 
 	const finishRound = async () => {
 		try {
-			showCountDown.current = false;
+			showCountDown.curr = false;
 			await enableAttackingAndPlayingPowerCards(gameId, playerType);
 			await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
 			await enableAttackForOpponentAnimals(
 				gameId,
 				getOpponentIdFromCurrentId(playerType),
-				opponentPSlots,
+				oppPSlots,
 			);
-			if (opponentPlayer?.playerName === 'bot') {
+			if (oppPlayer?.playerName === 'bot') {
 				await drawCardFromMainDeck(gameId, PlayerType.TWO);
 				await finishRoundBot();
 			}
@@ -484,8 +483,8 @@ export function GameView({
 	const attack = async (
 		curranimalId?: string,
 		oppoanimalId?: string,
-		currentslotnb?: number,
-		opponentslotnb?: number,
+		currslotnb?: number,
+		oppslotnb?: number,
 	) => {
 		if (!isAnimalCard(curranimalId)) {
 			return;
@@ -494,16 +493,16 @@ export function GameView({
 		const isAttackAnimalsEnabled =
 			round.nb >= 3 &&
 			isMyRound &&
-			currentPlayer.canAttack &&
+			currPlayer.canAttack &&
 			!hasAttacked &&
-			currentPSlots[currentslotnb ?? 3]?.canAttack;
+			currPSlots[currslotnb ?? 3]?.canAttack;
 
 		console.log(
 			round.nb >= 3,
 			isMyRound,
-			currentPlayer.canAttack,
+			currPlayer.canAttack,
 			!hasAttacked,
-			currentPSlots[currentslotnb ?? 3]?.canAttack,
+			currPSlots[currslotnb ?? 3]?.canAttack,
 			!isAnimalCard(oppoanimalId),
 			isAttackerInElement(curranimalId, elementType),
 			isOppSlotsEmpty,
@@ -519,27 +518,27 @@ export function GameView({
 		console.log({ isAttackAnimalsEnabled }, { isAttackOwnerEnabled });
 
 		if (isAttackOwnerEnabled) {
-			await attackOppHp(currentslotnb!, curranimalId!);
+			await attackOppHp(currslotnb!, curranimalId!);
 			return;
 		}
 
 		if (isAttackAnimalsEnabled) {
-			await attackAnimal(curranimalId, oppoanimalId, currentslotnb, opponentslotnb);
+			await attackAnimal(curranimalId, oppoanimalId, currslotnb, oppslotnb);
 		}
 	};
 
 	const attackAnimal = async (
 		curranimalId?: string,
 		oppoanimalId?: string,
-		currentslotnb?: number,
-		opponentslotnb?: number,
+		currslotnb?: number,
+		oppslotnb?: number,
 	) => {
 		const animalA = getAnimalCard(curranimalId);
 		const animalD = getAnimalCard(oppoanimalId);
 		if (!animalA || !animalD) return;
 
 		const animalAAP =
-			animalA.role === TANK && currentPlayer?.tanksWithDoubleAP
+			animalA.role === TANK && currPlayer?.tanksWithDoubleAP
 				? ANIMALS_POINTS[animalA.role].ap * 2
 				: ANIMALS_POINTS[animalA.role].ap;
 
@@ -550,8 +549,8 @@ export function GameView({
 		}
 
 		setHasAttacked(true);
-		await changeHasAttacked(gameId, playerType, currentslotnb!, true);
-		await attackOppAnimal(gameId, playerType, curranimalId!, oppoanimalId!, opponentslotnb!);
+		await changeHasAttacked(gameId, playerType, currslotnb!, true);
+		await attackOppAnimal(gameId, playerType, curranimalId!, oppoanimalId!, oppslotnb!);
 
 		const canSecondAttackWithKing =
 			isKingInElement(curranimalId, elementType) && !canKingAttackAgain.current;
@@ -562,7 +561,7 @@ export function GameView({
 		}
 
 		await waitFor(300);
-		await changeHasAttacked(gameId, playerType, currentslotnb!, false);
+		await changeHasAttacked(gameId, playerType, currslotnb!, false);
 		setHasAttacked(true);
 		canKingAttackAgain.current = false;
 	};
@@ -570,7 +569,7 @@ export function GameView({
 	const attackOppHp = async (currSlotNb: number, animalId: string) => {
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, currSlotNb, true);
-		const isDoubleAP = currentPlayer.tanksWithDoubleAP;
+		const isDoubleAP = currPlayer.tanksWithDoubleAP;
 		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalId, isDoubleAP);
 		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, currSlotNb, false);
@@ -592,7 +591,7 @@ export function GameView({
 			}
 			if (!hasJokerInElement) return;
 		}
-		setCardsIdsForPopup(opponentPlayer.cardsIds);
+		setCardsIdsForPopup(oppPlayer.cardsIds);
 		setOpenCardsPopup(true);
 		setIsJokerActive(true);
 	};
@@ -608,11 +607,11 @@ export function GameView({
 	const attackState = {
 		round,
 		canKingAttackAgain,
-		currentPlayer,
-		opponentPlayer,
+		currPlayer,
+		oppPlayer,
 		board,
 		hasAttacked,
-		currentPSlots,
+		currPSlots,
 	};
 
 	return (
@@ -625,7 +624,7 @@ export function GameView({
 				paddingTop: '5vh',
 				paddingBottom: '5vh',
 			}}>
-			<OpponentPView player={opponentPlayer} spectator={spectator} />
+			<OpponentPView player={oppPlayer} spectator={spectator} />
 
 			{!spectator && showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
 
@@ -635,8 +634,8 @@ export function GameView({
 				selectCurrentSlot={selectCurrSlotNb}
 				selectedOppSlotsNbs={selectedOppSlotsNbs}
 				selectOppSlotsNbs={selectOppSlotsNbs}
-				tanksWithDoubleAPOfCurr={currentPlayer.tanksWithDoubleAP}
-				tanksWithDoubleAPOfOpp={opponentPlayer.tanksWithDoubleAP}
+				tanksWithDoubleAPOfCurr={currPlayer.tanksWithDoubleAP}
+				tanksWithDoubleAPOfOpp={oppPlayer.tanksWithDoubleAP}
 				isMyRound={isMyRound}
 				playCard={playCard}
 				localState={localState}
@@ -645,7 +644,7 @@ export function GameView({
 			/>
 
 			<CurrentPView
-				player={currentPlayer}
+				player={currPlayer}
 				round={round}
 				playCard={playCard}
 				finishRound={finishRound}

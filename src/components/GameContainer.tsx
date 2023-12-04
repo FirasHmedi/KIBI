@@ -36,8 +36,8 @@ export function GameContainer({
 			powerGY: gameBoard?.powerGY ?? DefaultBoard.powerGY,
 			elementType: gameBoard?.elementType ?? DefaultBoard.elementType,
 			activeCardId: gameBoard?.activeCardId ?? DefaultBoard.activeCardId,
-			currentPSlots: [],
-			opponentPSlots: [],
+			currPSlots: [],
+			oppPSlots: [],
 		};
 
 		const p1 = { ...game[PlayerType.ONE], playerType: PlayerType.ONE };
@@ -50,16 +50,16 @@ export function GameContainer({
 			setOppPlayer(p2);
 			setBoard({
 				...partOfBoard,
-				currentPSlots: gameBoard?.one ?? [],
-				opponentPSlots: gameBoard?.two ?? [],
+				currPSlots: gameBoard?.one ?? [],
+				oppPSlots: gameBoard?.two ?? [],
 			});
 		} else {
 			setCurrPlayer(p2);
 			setOppPlayer(p1);
 			setBoard({
 				...partOfBoard,
-				currentPSlots: gameBoard?.two ?? [],
-				opponentPSlots: gameBoard?.one ?? [],
+				currPSlots: gameBoard?.two ?? [],
+				oppPSlots: gameBoard?.one ?? [],
 			});
 		}
 
@@ -95,8 +95,8 @@ export function GameContainer({
 				round={game.round}
 				gameId={gameId}
 				board={board}
-				opponentPlayer={opponentPlayer}
-				currentPlayer={currentPlayer}
+				oppPlayer={opponentPlayer}
+				currPlayer={currentPlayer}
 				spectator={spectator}
 				showCountDown={showCountDown}
 			/>

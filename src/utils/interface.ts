@@ -25,8 +25,8 @@ export interface EnvCard {
 
 export const DefaultBoard = {
 	mainDeck: [],
-	currentPSlots: [],
-	opponentPSlots: [],
+	currPSlots: [],
+	oppPSlots: [],
 	animalGY: [],
 	powerGY: [],
 	elementType: 'neutral' as ClanName,
@@ -62,8 +62,8 @@ export interface Game {
 
 export interface Board {
 	mainDeck: string[];
-	currentPSlots: SlotType[];
-	opponentPSlots: SlotType[];
+	currPSlots: SlotType[];
+	oppPSlots: SlotType[];
 	one?: SlotType[];
 	two?: SlotType[];
 	animalGY: string[];

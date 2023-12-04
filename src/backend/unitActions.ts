@@ -12,10 +12,9 @@ export const checkIfAnimalExistAddItToGraveYard = async (
 	gameId: string,
 	playerType: string,
 	slotNb: number,
-	elementType?: string,
 ) => {
 	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNb);
-	if (slot && isAnimalCard(slot.cardId)) {
+	if (isAnimalCard(slot?.cardId)) {
 		await addAnimalToGraveYard(gameId, slot.cardId);
 	}
 };
@@ -26,9 +25,8 @@ export const addAnimalToBoard = async (
 	slotNb: number,
 	animalId: string,
 	canAttack: boolean = false,
-	elementType?: string,
 ) => {
-	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb, elementType);
+	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb);
 	const slots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
 	const updatedSlots = [
 		slots[0] ?? { cardId: 'empty', canAttack: false },

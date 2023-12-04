@@ -237,20 +237,20 @@ export const returnOneAnimalFromGYToDeck = async (
 export const resetBoard = async (
 	gameId: string,
 	playerType: PlayerType,
-	currentPSlots: SlotType[] = [],
-	opponentPSlots: SlotType[] = [],
+	currPSlots: SlotType[] = [],
+	oppPSlots: SlotType[] = [],
 ) => {
 	for (let i = 0; i < 3; i++) {
 		await removePlayerAnimalFromBoard(gameId, playerType, i);
-		if (!isEmpty(currentPSlots[i]?.cardId) && currentPSlots[i]?.cardId !== EMPTY) {
-			await addCardsToPlayerDeck(gameId, playerType, [currentPSlots[i]?.cardId]);
+		if (!isEmpty(currPSlots[i]?.cardId) && currPSlots[i]?.cardId !== EMPTY) {
+			await addCardsToPlayerDeck(gameId, playerType, [currPSlots[i]?.cardId]);
 		}
 	}
 	for (let i = 0; i < 3; i++) {
 		await removePlayerAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), i);
-		if (!isEmpty(opponentPSlots[i]?.cardId) && opponentPSlots[i]?.cardId !== EMPTY) {
+		if (!isEmpty(oppPSlots[i]?.cardId) && oppPSlots[i]?.cardId !== EMPTY) {
 			await addCardsToPlayerDeck(gameId, getOpponentIdFromCurrentId(playerType), [
-				opponentPSlots[i]?.cardId,
+				oppPSlots[i]?.cardId,
 			]);
 		}
 	}
