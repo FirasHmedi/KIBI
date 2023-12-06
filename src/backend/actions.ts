@@ -1,5 +1,5 @@
 import shuffle from 'lodash/shuffle';
-import { ANIMALS_POINTS, ClanName, JOKER, TANK } from '../utils/data';
+import { ANIMALS_POINTS, ClanName, EMPTY, JOKER, TANK } from '../utils/data';
 import { getAnimalCard, getOpponentIdFromCurrentId, isAnimalCard, waitFor } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import {
@@ -207,9 +207,9 @@ export const changeHasAttacked = async (
 ) => {
 	const slots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
 	const updatedSlots = [
-		slots[0] ?? { cardId: 'empty', canAttack: false },
-		slots[1] ?? { cardId: 'empty', canAttack: false },
-		slots[2] ?? { cardId: 'empty', canAttack: false },
+		slots[0] ?? { cardId: EMPTY, canAttack: false },
+		slots[1] ?? { cardId: EMPTY, canAttack: false },
+		slots[2] ?? { cardId: EMPTY, canAttack: false },
 	];
 	updatedSlots[slotNb] = { ...updatedSlots[slotNb], hasAttacked: value };
 	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });

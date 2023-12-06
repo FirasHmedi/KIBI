@@ -77,7 +77,7 @@ export const BoardView = ({
 				/>
 			</div>
 
-			<div style={{ position: 'absolute', right: '30vw' }}>
+			<div style={{ position: 'absolute', right: '32vw' }}>
 				<ElementSlot elementType={elementType} />
 			</div>
 
@@ -114,7 +114,7 @@ const ActiveCardSlot = ({
 		[cardId, localState],
 	);
 	return (
-		<div ref={drop} style={{ position: 'absolute', left: '27vw' }}>
+		<div ref={drop} style={{ position: 'absolute', left: '30vw' }}>
 			<DeckSlot cardId={cardId} />
 		</div>
 	);

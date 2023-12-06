@@ -151,6 +151,13 @@ export const GeneralTestData = {
 	"description": "Sacrifice 2hp to steal power card from opponent deck, activate directly",
 	"name": "Steal power card for 2hp"
 	},
+
+	if (isTank(slot.cardId)) {
+		const tankId = await getItemsOnce(getGamePath(gameId) + playerType + '/tanksWithDoubleAP');
+		if (tankId === slot.cardId) {
+			await setItem(getGamePath(gameId) + playerType, { tanksWithDoubleAP: null });
+		}
+	}
 	*/
 
 export {};

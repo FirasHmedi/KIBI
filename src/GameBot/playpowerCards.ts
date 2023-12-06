@@ -18,6 +18,7 @@ import {
 	switchDeck,
 } from '../backend/powers';
 import { addPowerToGraveYard } from '../backend/unitActions';
+import { EMPTY } from '../utils/data';
 import { getOriginalCardId, getPowerCard, isKing, isTank } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import { placeKingWithoutSacrifice } from './../backend/actions';
@@ -49,11 +50,11 @@ const getFirstTankId = (botSlots: SlotType[]) => {
 };
 
 const getFirstEmptySlotIndex = (botSlots: SlotType[]) => {
-	return botSlots.findIndex(slot => isEmpty(slot) || slot.cardId === 'empty');
+	return botSlots.findIndex(slot => isEmpty(slot) || slot.cardId === EMPTY);
 };
 
 const getFirstNonEmptySlotIndex = (playerSlots: SlotType[]) => {
-	return playerSlots.findIndex(slot => !isEmpty(slot) && slot.cardId !== 'empty');
+	return playerSlots.findIndex(slot => !isEmpty(slot) && slot.cardId !== EMPTY);
 };
 
 const isPowerCardPlayable = async (cardId: string, gameId: string) => {

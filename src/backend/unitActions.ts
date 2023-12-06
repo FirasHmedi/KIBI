@@ -1,5 +1,5 @@
 import isNil from 'lodash/isNil';
-import { ClanName } from '../utils/data';
+import { ClanName, EMPTY } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { PlayerType } from '../utils/interface';
 import { getBoardPath, getGamePath, getItemsOnce, setItem } from './db';
@@ -29,13 +29,12 @@ export const addAnimalToBoard = async (
 	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb);
 	const slots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
 	const updatedSlots = [
-		slots[0] ?? { cardId: 'empty', canAttack: false },
-		slots[1] ?? { cardId: 'empty', canAttack: false },
-		slots[2] ?? { cardId: 'empty', canAttack: false },
+		slots[0] ?? { cardId: EMPTY, canAttack: false },
+		slots[1] ?? { cardId: EMPTY, canAttack: false },
+		slots[2] ?? { cardId: EMPTY, canAttack: false },
 	];
 	updatedSlots[slotNb] = { cardId: animalId, canAttack };
 	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });
-	//await activateJokerAbility(gameId, animalId, playerType);
 };
 
 export const addCardsToPlayerDeck = async (
@@ -81,14 +80,8 @@ export const removePlayerAnimalFromBoard = async (
 	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNumber);
 	if (slot) {
 		await setItem(getBoardPath(gameId) + playerType, {
-			[`${slotNumber}`]: { cardId: 'empty', canAttack: false },
+			[`${slotNumber}`]: { cardId: EMPTY, canAttack: false },
 		});
-		/*if (isTank(slot.cardId)) {
-			const tankId = await getItemsOnce(getGamePath(gameId) + playerType + '/tanksWithDoubleAP');
-			if (tankId === slot.cardId) {
-				await setItem(getGamePath(gameId) + playerType, { tanksWithDoubleAP: null });
-			}
-		}*/
 		return true;
 	}
 	return false;

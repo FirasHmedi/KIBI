@@ -621,8 +621,8 @@ export function GameView({
 				width: '100%',
 				height: '90vh',
 				justifyContent: 'space-between',
-				paddingTop: '5vh',
-				paddingBottom: '5vh',
+				paddingTop: '8vh',
+				paddingBottom: '8vh',
 			}}>
 			<OpponentPView player={oppPlayer} spectator={spectator} />
 

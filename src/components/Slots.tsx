@@ -147,7 +147,7 @@ export const PowerDeckSlot = ({
 				justifyContent: 'center',
 				borderColor: selected ? selectedColor : violet,
 				...bigStyle,
-				fontSize: '0.8em',
+				fontSize: '0.75em',
 			}}
 			onClick={() => select()}>
 			{isJokerActive ? (
@@ -237,7 +237,7 @@ export const AnimalBoardSlot = ({
 					}}>
 					<img
 						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-						style={{ width: '5.5rem', height: '4.5rem' }}></img>
+						style={{ width: '5.2rem', height: '4.2rem' }}></img>
 				</div>
 			)}
 
@@ -280,7 +280,7 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 		<>
 			<img
 				src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
-				style={{ width: '3.5rem', height: '3.5rem', flex: 1 }}
+				style={{ width: '3rem', height: '3rem', flex: 1 }}
 			/>
 			<div
 				id={roleTooltipId}
@@ -553,7 +553,7 @@ className={
 		<div
 			style={{
 				...centerStyle,
-				width: '28rem',
+				width: '24rem',
 				justifyContent: 'space-evenly',
 			}}>
 			{compoundSlots.map((slot, index) => (

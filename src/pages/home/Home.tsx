@@ -14,6 +14,7 @@ import {
 } from '../../styles/Style';
 import {
 	ANIMALS_CARDS,
+	EMPTY,
 	ENV_MAX_LOAD,
 	GAMES_PATH,
 	INITIAL_HP,
@@ -46,14 +47,14 @@ function Home() {
 			board: {
 				mainDeck,
 				one: [
-					{ cardId: 'empty', canAttack: false },
-					{ cardId: 'empty', canAttack: false },
-					{ cardId: 'empty', canAttack: false },
+					{ cardId: EMPTY, canAttack: false },
+					{ cardId: EMPTY, canAttack: false },
+					{ cardId: EMPTY, canAttack: false },
 				],
 				two: [
-					{ cardId: 'empty', canAttack: false },
-					{ cardId: 'empty', canAttack: false },
-					{ cardId: 'empty', canAttack: false },
+					{ cardId: EMPTY, canAttack: false },
+					{ cardId: EMPTY, canAttack: false },
+					{ cardId: EMPTY, canAttack: false },
 				],
 			},
 			playerToSelect: PlayerType.ONE,

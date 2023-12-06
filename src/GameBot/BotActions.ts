@@ -7,7 +7,7 @@ import {
 } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
 import { changeElement } from '../backend/powers';
-import { ANIMALS_POINTS, ATTACKER, JOKER, KING, TANK } from '../utils/data';
+import { ANIMALS_POINTS, ATTACKER, EMPTY, JOKER, KING, TANK } from '../utils/data';
 import { getAnimalCard, isAnimalCard } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import {
@@ -48,7 +48,7 @@ export const playAnimalCardForBot = async (selectedCards: string[], gameId: stri
 		for (let i = 0; i < Math.min(nbCardsToPlay, emptySlots.length); i++) {
 			let cardPlaced = false;
 			for (let j = 0; j < 3 && !cardPlaced; j++) {
-				if (botSlots[j].cardId === 'empty' && isAnimalCard(selectedCards[i])) {
+				if (botSlots[j].cardId === EMPTY && isAnimalCard(selectedCards[i])) {
 					await placeAnimalOnBoard(gameId, PlayerType.TWO, j, selectedCards[i], elementType);
 					await delay(1000);
 					cardPlaced = true;
