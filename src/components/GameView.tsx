@@ -481,7 +481,7 @@ export function GameView({
 			return;
 		}
 
-		if (isAttackAnimalsEnabled) {
+		if (isAttackAnimalsEnabled && isAnimalCard(oppoAnimalId)) {
 			await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
 		}
 	};

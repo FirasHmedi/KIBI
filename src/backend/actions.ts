@@ -88,8 +88,9 @@ export const attackOppAnimal = async (
 ) => {
 	const animalA = getAnimalCard(animalAId)!;
 	const animalD = getAnimalCard(animalDId)!;
-	const opponentId = getOpponentIdFromCurrentId(playerType);
+	if (!animalA || !animalD) return;
 
+	const opponentId = getOpponentIdFromCurrentId(playerType);
 	await addInfoToLog(gameId, animalA.name + ' killed ' + animalD.name + ' of ' + opponentId);
 
 	const elementType = await getElementType(gameId);

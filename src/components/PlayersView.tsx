@@ -266,7 +266,9 @@ const PlayerDataView = ({
 						height: '4vh',
 						gap: 12,
 					}}>
-					{showCountDown?.current && !!finishRound && <CountDown finishRound={finishRound} />}
+					{showCountDown?.current && !!finishRound && false && (
+						<CountDown finishRound={finishRound} />
+					)}
 					<h4>{playerType?.toUpperCase()}</h4>
 				</div>
 			)}

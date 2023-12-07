@@ -10,7 +10,7 @@ import {
 	neutralColor,
 	violet,
 } from '../../styles/Style';
-import { ANIMALS_CARDS, GAMES_PATH, KING, RUNNING } from '../../utils/data';
+import { ANIMALS_CARDS, GAMES_PATH, INITIAL_DECK_COUNT, KING, RUNNING } from '../../utils/data';
 import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
 
@@ -31,8 +31,8 @@ function GamePage() {
 		if (spectator) return;
 
 		if (
-			game?.one?.cardsIds?.length === 12 &&
-			game?.two?.cardsIds?.length === 12 &&
+			game?.one?.cardsIds?.length === INITIAL_DECK_COUNT &&
+			game?.two?.cardsIds?.length === INITIAL_DECK_COUNT &&
 			!isGameRunning(game?.status)
 		) {
 			setItem(GAMES_PATH + gameId, {
