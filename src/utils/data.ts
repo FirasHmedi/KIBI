@@ -37,6 +37,8 @@ export const ATTACKER = 'attacker';
 export const TANK = 'tank';
 export const JOKER = 'joker';
 
+export const BOT = 'bot';
+
 export type ClanName = 'air' | 'earth' | 'fire' | 'water' | 'neutral';
 export type RoleName = 'tank' | 'attacker' | 'king' | 'joker';
 

@@ -14,6 +14,7 @@ import {
 } from '../../styles/Style';
 import {
 	ANIMALS_CARDS,
+	BOT,
 	EMPTY,
 	ENV_MAX_LOAD,
 	GAMES_PATH,
@@ -32,7 +33,7 @@ function Home() {
 	const createGame = async () => {
 		const gameId = uuidv4();
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
-		const initialPowers = mainDeck.splice(-8, 8);
+		const initialPowers = mainDeck.splice(-4, 4);
 
 		await setItem(GAMES_PATH + gameId, {
 			status: PREPARE,
@@ -133,10 +134,12 @@ function Home() {
 			playerToSelect: PlayerType.ONE,
 			initialPowers: initialPowers,
 		});
+
 		if (gameId.length === 0) return;
+
 		await setItem(GAMES_PATH + gameId + '/two', {
 			hp: INITIAL_HP,
-			playerName: 'bot',
+			playerName: BOT,
 			canAttack: true,
 			canPlayPowers: true,
 			status: PREPARE,

@@ -145,6 +145,7 @@ export const PowerDeckSlot = ({
 				...deckSlotStyle,
 				backgroundColor: violet,
 				justifyContent: 'center',
+				border: 'solid 1.5px',
 				borderColor: selected ? selectedColor : violet,
 				...bigStyle,
 				fontSize: '0.75em',
@@ -220,9 +221,7 @@ export const AnimalBoardSlot = ({
 				...boardSlotStyle,
 				justifyContent: 'space-between',
 				backgroundColor: CLANS[clan!]?.color,
-				boxShadow: selected
-					? `0 0 1.5px 2.5px ${selectedColor}`
-					: `0 0 1px 2px ${CLANS[clan!]?.color}`,
+				boxShadow: selected ? `0 0 1px 2px ${selectedColor}` : `0 0 1px 2px ${CLANS[clan!]?.color}`,
 			}}
 			onClick={() => select()}>
 			{!!name && name?.toLowerCase() in animalsPics && (
@@ -339,6 +338,7 @@ export const AnimalDeckSlot = ({
 				...deckSlotStyle,
 				backgroundColor: CLANS[clan!]?.color,
 				justifyContent: 'space-between',
+				border: 'solid 1.5px',
 				borderColor: selected ? selectedColor : CLANS[clan!]?.color,
 			}}
 			onClick={() => select()}>
@@ -374,9 +374,9 @@ export const BoardSlot = ({
 		{
 			accept: 'attackcard',
 			drop: (item: DropItem) => {
-				console.log('animal', item.id, 'attacks', cardId);
 				const animalAId = item.id;
 				const animalDId = cardId;
+				console.log(animalAId, ' attacks ', animalDId);
 				attack(animalAId, animalDId, item.nb, nb);
 			},
 		},
@@ -407,7 +407,7 @@ export const BoardSlot = ({
 					...boardSlotStyle,
 					justifyContent: 'center',
 					border: `solid 1px ${lightViolet}`,
-					boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
+					boxShadow: selected ? `0 0 1px 2px ${selectedColor}` : undefined,
 				}}
 				onClick={() => selectSlot(nb)}></div>
 		);
@@ -420,7 +420,7 @@ export const BoardSlot = ({
 				...boardSlotStyle,
 				justifyContent: 'center',
 				border: `solid 1px ${lightViolet}`,
-				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
+				boxShadow: selected ? `0 0 1px 2px ${selectedColor}` : undefined,
 			}}
 			onClick={() => selectSlot(nb)}></div>
 	);

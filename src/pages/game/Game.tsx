@@ -71,8 +71,8 @@ function GamePage() {
 		});
 
 		const powers = game?.initialPowers ?? [];
-		oneCardsIds.push(...powers.filter((_: any, index: number) => index < 4));
-		twoCardsIds.push(...powers.filter((_: any, index: number) => index >= 4));
+		oneCardsIds.push(...powers.filter((_: any, index: number) => index < 2));
+		twoCardsIds.push(...powers.filter((_: any, index: number) => index >= 2));
 
 		await setItem(getGamePath(gameId) + PlayerType.ONE, {
 			cardsIds: oneCardsIds,

@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import {
+	ANIMALS_POINTS,
 	ANIMAL_CARDS_OBJECT,
 	ATTACKER,
 	ClanName,
@@ -9,9 +10,10 @@ import {
 	POWER_CARDS_OBJECT,
 	PREPARE,
 	RUNNING,
+	RoleName,
 	TANK,
 } from './data';
-import { AnimalCard, Card, PlayerType } from './interface';
+import { AnimalCard, Card, PlayerType, SlotType } from './interface';
 
 export const isNotEmpty = (input: string | Array<any>, minLength = 0) => input.length > minLength;
 
@@ -79,3 +81,36 @@ export const isAttacker = (cardId?: string) => getAnimalCard(cardId)?.role === A
 export const isTank = (cardId?: string) => getAnimalCard(cardId)?.role === TANK;
 export const isAnimalInEnv = (cardId?: string, elementType?: ClanName) =>
 	elementType === getAnimalCard(cardId)?.clan;
+
+export const getAnimalHP = (role: RoleName) => ANIMALS_POINTS[role].hp;
+export const getAnimalAP = (role: RoleName, doubleAP = false) =>
+	doubleAP ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
+
+export const canAnimalAKillAnimalD = (
+	aID?: string,
+	dID?: string,
+	tanksWithDoubleAP: boolean = false,
+) => {
+	const animalA = getAnimalCard(aID);
+	const animalD = getAnimalCard(dID);
+	if (!animalA || !animalD) return false;
+
+	const doubleAP = animalA.role === TANK && tanksWithDoubleAP;
+	const animalAAP = getAnimalAP(animalA.role, doubleAP);
+	const animalDHP = getAnimalHP(animalD.role);
+
+	if (animalAAP < animalDHP) {
+		return false;
+	}
+	return true;
+};
+
+export const getIsOppSlotsEmpty = (slots: SlotType[] = []) =>
+	!isAnimalCard(slots[0]?.cardId) &&
+	!isAnimalCard(slots[1]?.cardId) &&
+	!isAnimalCard(slots[2]?.cardId);
+
+export const getIsOppSlotsAllFilled = (slots: SlotType[] = []) =>
+	isAnimalCard(slots[0]?.cardId) &&
+	isAnimalCard(slots[1]?.cardId) &&
+	isAnimalCard(slots[2]?.cardId);

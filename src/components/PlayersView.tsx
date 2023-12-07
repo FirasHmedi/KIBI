@@ -38,8 +38,6 @@ export const CurrentPView = ({
 	playCard,
 	finishRound,
 	attack,
-	isAttackAnimalEnabled,
-	isAttackOwnerEnabled,
 	nbCardsToPlay,
 	setElement,
 	spectator,
@@ -50,8 +48,6 @@ export const CurrentPView = ({
 	playCard: (cardId?: string) => Promise<void>;
 	finishRound: () => void;
 	attack: () => void;
-	isAttackAnimalEnabled: boolean;
-	isAttackOwnerEnabled: boolean;
 	nbCardsToPlay: number;
 	setElement: () => void;
 	spectator?: boolean;
@@ -80,7 +76,7 @@ export const CurrentPView = ({
 		setDisablePlayButton(false);
 	};
 
-	const isAttackEnabled = isAttackAnimalEnabled || isAttackOwnerEnabled;
+	const isAttackEnabled = false;
 	const tooltipId = `can-attack-anchor`;
 	const description =
 		round.nb <= 2
