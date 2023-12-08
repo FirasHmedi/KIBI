@@ -389,6 +389,10 @@ export function GameView({
 	};
 
 	const playCard = async (cardId?: string, slotNb?: number) => {
+		if (spectator) {
+			return;
+		}
+
 		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
 		if (isEmpty(cardId) || isEmpty(playerType) || nbCardsToPlay === 0 || !isMyRound) {
 			return;
@@ -448,6 +452,10 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
+		if (spectator) {
+			return;
+		}
+
 		if (!isAnimalCard(currAnimalId)) {
 			return;
 		}
@@ -557,10 +565,10 @@ export function GameView({
 			style={{
 				...flexColumnStyle,
 				width: '100%',
-				height: '90vh',
+				height: '92vh',
 				justifyContent: 'space-between',
-				paddingTop: '8vh',
-				paddingBottom: '8vh',
+				paddingTop: '4vh',
+				paddingBottom: '4vh',
 			}}>
 			<OpponentPView player={oppPlayer} spectator={spectator} />
 
@@ -586,7 +594,6 @@ export function GameView({
 				round={round}
 				playCard={playCard}
 				finishRound={finishRound}
-				attack={attack}
 				nbCardsToPlay={nbCardsToPlay}
 				setElement={setElement}
 				spectator={spectator}

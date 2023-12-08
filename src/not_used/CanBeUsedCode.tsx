@@ -167,6 +167,46 @@ export const GeneralTestData = {
 	playerToSelect={game?.playerToSelect}
 	powerCards={game?.initialPowers}
 	/>
+
+	<button
+		style={{
+			fontWeight: 'bold',
+			color: !isAttackEnabled ? 'grey' : violet,
+			...centerStyle,
+		}}
+		id={tooltipId}
+		disabled={!isAttackEnabled}
+		onClick={() => attack()}>
+		<FaPaw
+			style={{ width: '2vw', height: 'auto', color: !isAttackEnabled ? 'grey' : violet }}
+		/>
+	</button>
+
+		<div
+					style={{
+						...flexColumnStyle,
+						justifyContent: 'center',
+						position: 'absolute',
+						right: '27vw',
+						bottom: '34vh',
+						gap: 40,
+						width: '10vw',
+					}}>
+					{!isAttackEnabled && <Tooltip anchorSelect={`#${tooltipId}`} content={description} />}
+				</div>
+
+
+
+	const isAttackEnabled = false;
+	const tooltipId = `can-attack-anchor`;
+	const description =
+		round.nb <= 2
+			? 'Attacking is disabled in first turn'
+			: !isMyRound
+			? 'Not my round to attack'
+			: !canAttack
+			? 'Blocked from attacking'
+			: "Animal is not selected or can't attack";
 	*/
 
 export {};
