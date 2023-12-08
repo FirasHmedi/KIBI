@@ -456,7 +456,7 @@ export function GameView({
 			return;
 		}
 
-		if (!isAnimalCard(currAnimalId)) {
+		if (!isAnimalCard(currAnimalId) || currAnimalId === oppoAnimalId) {
 			return;
 		}
 

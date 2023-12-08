@@ -272,7 +272,7 @@ const PlayerDataView = ({
 				style={{
 					...flexColumnStyle,
 					position: 'absolute',
-					left: '8vw',
+					left: '6vw',
 					bottom: isMe ? '10vh' : undefined,
 					top: isMe ? undefined : '18vh',
 					width: '12vw',
