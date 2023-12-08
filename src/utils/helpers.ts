@@ -1,5 +1,8 @@
+import { shuffle } from 'lodash';
 import { useLocation } from 'react-router-dom';
+import { getGamePath, setItem } from '../backend/db';
 import {
+	ANIMALS_CARDS,
 	ANIMALS_POINTS,
 	ANIMAL_CARDS_OBJECT,
 	ATTACKER,
@@ -114,3 +117,44 @@ export const getIsOppSlotsAllFilled = (slots: SlotType[] = []) =>
 	isAnimalCard(slots[0]?.cardId) &&
 	isAnimalCard(slots[1]?.cardId) &&
 	isAnimalCard(slots[2]?.cardId);
+
+export const submitRandomSelection = async (gameId: string, powerCards: string[] = []) => {
+	const oneCardsIds: string[] = [];
+	const twoCardsIds: string[] = [];
+	let i = 0,
+		j = 0;
+	const animalsWithoutKings = shuffle(ANIMALS_CARDS)
+		.filter(({ role, id }) => {
+			if (role === KING) {
+				if (i < 2) {
+					oneCardsIds.push(id);
+					i++;
+				} else if (j < 2) {
+					twoCardsIds.push(id);
+					j++;
+				}
+				return false;
+			}
+			return true;
+		})
+		.map(animal => animal.id);
+
+	animalsWithoutKings.forEach((id, index) => {
+		index < 6 ? oneCardsIds.push(id) : twoCardsIds.push(id);
+	});
+
+	oneCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index < 2));
+	twoCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index >= 2));
+
+	await setItem(getGamePath(gameId) + PlayerType.ONE, {
+		cardsIds: oneCardsIds,
+	});
+
+	await setItem(getGamePath(gameId) + PlayerType.TWO, {
+		cardsIds: twoCardsIds,
+	});
+
+	await setItem(getGamePath(gameId), {
+		playerToSelect: PlayerType.ONE,
+	});
+};

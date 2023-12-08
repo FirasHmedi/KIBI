@@ -30,13 +30,12 @@ import {
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
 	stealCardFromOpponent,
-	stealPowerCardFor2hp,
 	switch2Cards,
 	switchDeck,
 } from '../backend/powers';
 import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
 import { flexColumnStyle } from '../styles/Style';
-import { BOT, ClanName, EMPTY, JOKER, KING } from '../utils/data';
+import { BOT, ClanName, EMPTY, JOKER, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
 import {
 	canAnimalAKillAnimalD,
 	getAnimalCard,
@@ -78,51 +77,54 @@ export function GameView({
 	spectator,
 	showCountDown,
 }: GameViewProps) {
-	const { oppPSlots, currPSlots, elementType } = board;
+	const { oppPSlots, currPSlots, elementType, animalGY, powerGY } = board;
+	const playerType = currPlayer.playerType!;
+	const isMyRound = round.player === playerType;
 
 	const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
 	const [selectedOppSlotsNbs, setSelectedOppSlotsNbs] = useState<number[]>([]);
 	const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
 	const [canPlaceKingWithoutSacrifice, setCanPlaceKingWithoutSacrifice] = useState<boolean>(false);
-	const playerType = currPlayer.playerType!;
-	const idsInOppPSlots = selectedOppSlotsNbs.map(nb => oppPSlots[nb ?? 3]?.cardId);
-	const idInCurrPSlot = currPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
 	const [hasAttacked, setHasAttacked] = useState(false);
 	const [cardsIdsForPopup, setCardsIdsForPopup] = useState<string[]>([]);
-	const openCardsPopup = cardsIdsForPopup?.length > 0;
 	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
 	const [isJokerActive, setIsJokerActive] = useState(false);
+
 	const activePowerCard = useRef('');
 	const canKingAttackAgain = useRef(false);
 
-	const isMyRound = round.player === playerType;
-	const POWER_CARDS_WITH_2_SELECTS = ['2-anim-gy', 'switch-2-cards'];
-
+	const openCardsPopup = cardsIdsForPopup?.length > 0;
 	const isOppSlotsEmpty = getIsOppSlotsEmpty(oppPSlots);
 	const isOppSlotsAllFilled = getIsOppSlotsAllFilled(oppPSlots);
+	const idsInOppPSlots = selectedOppSlotsNbs.map(nb => oppPSlots[nb ?? 3]?.cardId);
+	const idInCurrPSlot = currPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
 
 	useEffect(() => {
 		if (isMyRound) {
 			activateMonkeyAbility(currPSlots, false, elementType);
 		}
-		if (round.nb >= 3 && isMyRound) {
-			setNbCardsToPlay(2);
-			setHasAttacked(false);
-			setCanPlaceKingWithoutSacrifice(false);
-			setSelectedCurrPSlotNb(undefined);
-			setSelectedOppSlotsNbs([]);
-			setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
+
+		if (round.nb < 3 || !isMyRound) {
+			return;
 		}
+
+		setNbCardsToPlay(2);
+		setHasAttacked(false);
+		setCanPlaceKingWithoutSacrifice(false);
+		setSelectedCurrPSlotNb(undefined);
+		setSelectedOppSlotsNbs([]);
+		setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
 	}, [round.nb]);
 
 	const selectCurrSlotNb = async (slotNb: number) => {
 		setSelectedCurrPSlotNb(nb => (slotNb === nb ? undefined : slotNb));
-		if (!isKing(idInCurrPSlot)) {
-			setSelectedOppSlotsNbs(selectedSlotsNbs =>
-				selectedSlotsNbs.length >= 1 ? [selectedOppSlotsNbs[selectedSlotsNbs.length - 1]] : [],
-			);
+		if (isKing(idInCurrPSlot)) {
+			return;
 		}
+		setSelectedOppSlotsNbs(selectedSlotsNbs =>
+			selectedSlotsNbs.length >= 1 ? [selectedOppSlotsNbs[selectedSlotsNbs.length - 1]] : [],
+		);
 	};
 
 	const selectOppSlotsNbs = async (slotNb: number) => {
@@ -142,39 +144,43 @@ export function GameView({
 		);
 	};
 
-	const handlePlacingKing = async (
-		cardId: string,
-		slotNb?: number,
-		animalIdInSlotNb?: string,
-	): Promise<void> => {
-		if (canPlaceKingWithoutSacrifice) {
-			await placeKingWithoutSacrifice(gameId, playerType, cardId, slotNb!);
-			setCanPlaceKingWithoutSacrifice(false);
-		} else {
-			await placeKingOnBoard(gameId, playerType, cardId, animalIdInSlotNb!, slotNb!);
-		}
-	};
-
 	const getCurrSlotNb = () => {
-		let nb = 0;
 		for (let i = 0; i < 3; i++) {
 			if (!isAnimalCard(currPSlots[i]?.cardId)) {
-				nb = i;
+				return i;
 			}
 		}
-		return nb;
+		return 0;
+	};
+
+	const handlePlacingKing = async (
+		cardId: string,
+		slotNb: number,
+		kingClan: ClanName,
+	): Promise<void> => {
+		const animalIdInSlotNb = currPSlots[slotNb!]?.cardId;
+		const sacrificedAnimal = getAnimalCard(animalIdInSlotNb);
+
+		if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== kingClan) {
+			return;
+		}
+
+		if (canPlaceKingWithoutSacrifice) {
+			await placeKingWithoutSacrifice(gameId, playerType, cardId, slotNb);
+			setCanPlaceKingWithoutSacrifice(false);
+		} else {
+			await placeKingOnBoard(gameId, playerType, cardId, animalIdInSlotNb!, slotNb);
+		}
+
+		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 	};
 
 	const playAnimalCard = async (cardId: string, slotNb: number): Promise<void> => {
 		const { role, clan } = getAnimalCard(cardId)!;
 
 		if (role === KING) {
-			const animalIdInSlotNb = currPSlots[slotNb!]?.cardId;
-			const sacrificedAnimal = getAnimalCard(animalIdInSlotNb);
-			if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== clan) {
-				return;
-			}
-			await handlePlacingKing(cardId, slotNb, animalIdInSlotNb);
+			await handlePlacingKing(cardId, slotNb, clan);
+			return;
 		} else {
 			await placeAnimalOnBoard(gameId, playerType, slotNb, cardId, elementType);
 		}
@@ -190,25 +196,29 @@ export function GameView({
 	const isPowerCardPlayable = (cardId: string) => {
 		switch (getOriginalCardId(cardId!)) {
 			case 'rev-any-anim-1hp':
-				const slotNbForRevive = getCurrSlotNb();
-				if (isNil(slotNbForRevive) || isEmpty(board.animalGY)) return false;
+				if (isEmpty(animalGY)) return false;
 				break;
 			case 'steal-anim-3hp':
+<<<<<<< HEAD
 				
 				/*const slotNbForSteal = getCurrSlotNb();
+=======
+>>>>>>> aeb0315c3d49f8f4cd29ab981f9c596cc68ae5cf
 				if (
-					isNil(slotNbForSteal) ||
 					selectedOppSlotsNbs?.length != 1 ||
 					!isAnimalCard(idsInOppPSlots[0]) ||
 					currPlayer.hp < 3
 				)
 					return false;
+<<<<<<< HEAD
 				break;*/
 				
 				return true;
 			case 'steal-pow-2hp':
 				if (!(oppPlayer.cardsIds ?? []).some(id => isPowerCard(id)) || currPlayer.hp < 2)
 					return false;
+=======
+>>>>>>> aeb0315c3d49f8f4cd29ab981f9c596cc68ae5cf
 				break;
 			case 'sacrif-anim-3hp':
 				if (isAnimalCard(currPSlots[0].cardId) && isAnimalCard(currPSlots[1].cardId) && isAnimalCard(currPSlots[2].cardId))
@@ -216,16 +226,16 @@ export function GameView({
 								return true;
 				break;
 			case '2-anim-gy':
-				if (isEmpty(board?.animalGY) || board.animalGY?.length < 2) return false;
+				if (isEmpty(animalGY) || animalGY?.length < 2) return false;
 				break;
 			case 'rev-any-pow-1hp':
-				if (isEmpty(board?.powerGY)) return false;
+				if (isEmpty(powerGY)) return false;
 				break;
 			case 'switch-2-cards':
 				if (currPlayer.cardsIds.length < 2 || oppPlayer.cardsIds.length < 2) return false;
 				break;
 			case 'rev-last-pow':
-				if (isEmpty(board.powerGY)) return false;
+				if (isEmpty(powerGY)) return false;
 				break;
 		}
 		return true;
@@ -353,14 +363,10 @@ export function GameView({
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
 			case 'rev-any-pow-1hp':
-				setCardsIdsForPopup(board.powerGY);
+				setCardsIdsForPopup(powerGY);
 				return;
 			case 'rev-any-anim-1hp':
-				setCardsIdsForPopup(board.animalGY);
-				return;
-			case 'steal-pow-2hp':
-				const powerCardsIds = oppPlayer.cardsIds.filter(id => isPowerCard(id));
-				setCardsIdsForPopup(powerCardsIds);
+				setCardsIdsForPopup(animalGY);
 				return;
 			case 'steal-anim-3hp':
 			    const opponentIds = oppPSlots
@@ -397,7 +403,7 @@ export function GameView({
 				await draw2Cards(gameId, playerType);
 				break;
 			case '2-anim-gy':
-				setCardsIdsForPopup(board.animalGY);
+				setCardsIdsForPopup(animalGY);
 				return;
 			case 'block-pow':
 				await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
@@ -443,6 +449,10 @@ export function GameView({
 	};
 
 	const playCard = async (cardId?: string, slotNb?: number) => {
+		if (spectator) {
+			return;
+		}
+
 		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
 		if (isEmpty(cardId) || isEmpty(playerType) || nbCardsToPlay === 0 || !isMyRound) {
 			return;
@@ -503,7 +513,11 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
-		if (!isAnimalCard(currAnimalId)) {
+		if (spectator) {
+			return;
+		}
+
+		if (!isAnimalCard(currAnimalId) || currAnimalId === oppoAnimalId) {
 			return;
 		}
 
@@ -612,10 +626,10 @@ export function GameView({
 			style={{
 				...flexColumnStyle,
 				width: '100%',
-				height: '90vh',
+				height: '92vh',
 				justifyContent: 'space-between',
-				paddingTop: '8vh',
-				paddingBottom: '8vh',
+				paddingTop: '4vh',
+				paddingBottom: '4vh',
 			}}>
 			<OpponentPView player={oppPlayer} spectator={spectator} />
 
@@ -641,7 +655,6 @@ export function GameView({
 				round={round}
 				playCard={playCard}
 				finishRound={finishRound}
-				attack={attack}
 				nbCardsToPlay={nbCardsToPlay}
 				setElement={setElement}
 				spectator={spectator}

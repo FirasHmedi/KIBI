@@ -1,5 +1,4 @@
 import ProgressBar from '@ramonak/react-progress-bar';
-import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
@@ -9,7 +8,6 @@ import {
 	MdBatteryCharging80,
 	MdBatteryChargingFull,
 } from 'react-icons/md';
-import { Tooltip } from 'react-tooltip';
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
 import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
@@ -37,7 +35,6 @@ export const CurrentPView = ({
 	round,
 	playCard,
 	finishRound,
-	attack,
 	nbCardsToPlay,
 	setElement,
 	spectator,
@@ -47,13 +44,12 @@ export const CurrentPView = ({
 	round: Round;
 	playCard: (cardId?: string) => Promise<void>;
 	finishRound: () => void;
-	attack: () => void;
 	nbCardsToPlay: number;
 	setElement: () => void;
 	spectator?: boolean;
 	showCountDown?: any;
 }) => {
-	const { playerType, canPlayPowers, canAttack } = player;
+	const { playerType, canPlayPowers } = player;
 	const cardsIds = player.cardsIds ?? [];
 	const [selectedId, setSelectedId] = useState<string>();
 	const playCardRef = useRef<any>();
@@ -76,17 +72,6 @@ export const CurrentPView = ({
 		setDisablePlayButton(false);
 	};
 
-	const isAttackEnabled = false;
-	const tooltipId = `can-attack-anchor`;
-	const description =
-		round.nb <= 2
-			? 'Attacking is disabled in first turn'
-			: !isMyRound
-			? 'Not my round to attack'
-			: !canAttack
-			? 'Blocked from attacking'
-			: "Animal is not selected or can't attack";
-
 	const Buttons = () => {
 		if (spectator) {
 			return <></>;
@@ -95,36 +80,9 @@ export const CurrentPView = ({
 			<>
 				<div
 					style={{
-						...flexColumnStyle,
-						justifyContent: 'center',
 						position: 'absolute',
-						right: '27vw',
-						bottom: '34vh',
-						gap: 40,
-						width: '10vw',
-					}}>
-					{!isAttackEnabled && <Tooltip anchorSelect={`#${tooltipId}`} content={description} />}
-
-					{/*<button
-						style={{
-							fontWeight: 'bold',
-							color: !isAttackEnabled ? 'grey' : violet,
-							...centerStyle,
-						}}
-						id={tooltipId}
-						disabled={!isAttackEnabled}
-						onClick={() => attack()}>
-						<FaPaw
-							style={{ width: '2vw', height: 'auto', color: !isAttackEnabled ? 'grey' : violet }}
-						/>
-					</button>*/}
-				</div>
-
-				<div
-					style={{
-						position: 'absolute',
-						right: '15vw',
-						bottom: '13vh',
+						right: '10vw',
+						bottom: '10vh',
 						...flexRowStyle,
 						alignItems: 'flex-end',
 						justifyContent: 'center',
@@ -315,10 +273,11 @@ const PlayerDataView = ({
 					...flexColumnStyle,
 					position: 'absolute',
 					left: '6vw',
-					bottom: isMe ? '6.5vh' : undefined,
-					top: isMe ? undefined : '6.5vh',
-					width: '10vw',
+					bottom: isMe ? '10vh' : undefined,
+					top: isMe ? undefined : '18vh',
+					width: '12vw',
 					gap: 12,
+					fontSize: '0.9em',
 				}}>
 				{canAttack === false && canPlayPowers === false ? (
 					<h4>Blocked from attacking and playing power cards</h4>
@@ -327,9 +286,8 @@ const PlayerDataView = ({
 				) : canPlayPowers === false ? (
 					<h4>Blocked from playing power cards</h4>
 				) : null}
+				{tanksWithDoubleAP && <h4>ELEPHANTS AP is doubled </h4>}
 			</div>
-
-			{!isEmpty(tanksWithDoubleAP) && <h5>TANK AP is doubled </h5>}
 		</div>
 	);
 };

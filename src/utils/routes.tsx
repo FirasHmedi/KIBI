@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { IoIosMenu } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { SignUpButton } from '../components/SignUpButton';
 import { auth, db } from '../firebase';
 import Cards from '../pages/cards/Cards';
 import Game from '../pages/game/Game';
@@ -76,19 +75,19 @@ const Layout = ({ children }: any) => {
 				</a>
 
 				<div style={{ marginLeft: 'auto', marginRight: '1vw', display: 'flex', gap: 10 }}>
-					<button onClick={() => navigate(CARDS_PATH)}>
+					{/*<button onClick={() => navigate(CARDS_PATH)}>
 						<h4 style={{ paddingLeft: '1vw', margin: 0 }}>Cards</h4>
-					</button>
+					</button>*/}
 					<button onClick={() => navigate(WALKTHROUGH_PATH)}>
 						<h4 style={{ paddingLeft: '1vw', margin: 0 }}>Explanation</h4>
 					</button>
-					{currentUser ? (
+					{/*currentUser ? (
 						<button onClick={() => logOut()}>
 							<h5 style={{ fontWeight: 'bold' }}>{currentUser.username}</h5>
 						</button>
 					) : (
 						<SignUpButton />
-					)}
+					)*/}
 				</div>
 			</div>
 

@@ -1,5 +1,5 @@
 import isNil from 'lodash/isNil';
-import { ClanName, EMPTY } from '../utils/data';
+import { ClanName, EMPTY_SLOT } from '../utils/data';
 import { isAnimalCard, isPowerCard } from '../utils/helpers';
 import { PlayerType } from '../utils/interface';
 import { getBoardPath, getGamePath, getItemsOnce, setItem } from './db';
@@ -28,11 +28,7 @@ export const addAnimalToBoard = async (
 ) => {
 	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb);
 	const slots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
-	const updatedSlots = [
-		slots[0] ?? { cardId: EMPTY, canAttack: false },
-		slots[1] ?? { cardId: EMPTY, canAttack: false },
-		slots[2] ?? { cardId: EMPTY, canAttack: false },
-	];
+	const updatedSlots = [slots[0] ?? EMPTY_SLOT, slots[1] ?? EMPTY_SLOT, slots[2] ?? EMPTY_SLOT];
 	updatedSlots[slotNb] = { cardId: animalId, canAttack };
 	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });
 };
@@ -80,7 +76,7 @@ export const removePlayerAnimalFromBoard = async (
 	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNumber);
 	if (slot) {
 		await setItem(getBoardPath(gameId) + playerType, {
-			[`${slotNumber}`]: { cardId: EMPTY, canAttack: false },
+			[`${slotNumber}`]: EMPTY_SLOT,
 		});
 		return true;
 	}

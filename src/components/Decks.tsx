@@ -20,7 +20,7 @@ export const CurrentPDeck = ({
 		<div
 			style={{
 				...flexRowStyle,
-				width: '40vw',
+				width: '40rem',
 				overflowY: 'auto',
 			}}>
 			{cardsIds.map((cardId, index) => (
@@ -46,7 +46,7 @@ export const OpponentPDeck = ({
 	<div
 		style={{
 			...flexRowStyle,
-			width: '40vw',
+			width: '40rem',
 			overflowY: 'auto',
 			justifyContent: !spectator ? 'center' : undefined,
 		}}>
