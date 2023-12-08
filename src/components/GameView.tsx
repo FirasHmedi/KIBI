@@ -30,6 +30,7 @@ import {
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
 	stealCardFromOpponent,
+	stealPowerCardFor2hp,
 	switch2Cards,
 	switchDeck,
 } from '../backend/powers';
@@ -199,27 +200,16 @@ export function GameView({
 				if (isEmpty(animalGY)) return false;
 				break;
 			case 'steal-anim-3hp':
-<<<<<<< HEAD
 				
 				/*const slotNbForSteal = getCurrSlotNb();
-=======
->>>>>>> aeb0315c3d49f8f4cd29ab981f9c596cc68ae5cf
 				if (
 					selectedOppSlotsNbs?.length != 1 ||
 					!isAnimalCard(idsInOppPSlots[0]) ||
 					currPlayer.hp < 3
 				)
 					return false;
-<<<<<<< HEAD
 				break;*/
-				
 				return true;
-			case 'steal-pow-2hp':
-				if (!(oppPlayer.cardsIds ?? []).some(id => isPowerCard(id)) || currPlayer.hp < 2)
-					return false;
-=======
->>>>>>> aeb0315c3d49f8f4cd29ab981f9c596cc68ae5cf
-				break;
 			case 'sacrif-anim-3hp':
 				if (isAnimalCard(currPSlots[0].cardId) && isAnimalCard(currPSlots[1].cardId) && isAnimalCard(currPSlots[2].cardId))
 				
