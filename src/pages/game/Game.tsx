@@ -1,7 +1,6 @@
-import { shuffle } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getGamePath, setItem, subscribeToItems } from '../../backend/db';
+import { setItem, subscribeToItems } from '../../backend/db';
 import { GameContainer } from '../../components/GameContainer';
 import {
 	buttonStyle,
@@ -10,8 +9,8 @@ import {
 	neutralColor,
 	violet,
 } from '../../styles/Style';
-import { ANIMALS_CARDS, GAMES_PATH, INITIAL_DECK_COUNT, KING, RUNNING } from '../../utils/data';
-import { isGameInPreparation, isGameRunning } from '../../utils/helpers';
+import { GAMES_PATH, INITIAL_DECK_COUNT, RUNNING } from '../../utils/data';
+import { isGameInPreparation, isGameRunning, submitRandomSelection } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
 
 function GamePage() {
@@ -44,48 +43,6 @@ function GamePage() {
 			});
 		}
 	}, [game]);
-
-	const submitRandomSelection = async () => {
-		const oneCardsIds: string[] = [];
-		const twoCardsIds: string[] = [];
-		let i = 0,
-			j = 0;
-		const animalsWithoutKings = shuffle(ANIMALS_CARDS)
-			.filter(({ role, id }) => {
-				if (role === KING) {
-					if (i < 2) {
-						oneCardsIds.push(id);
-						i++;
-					} else if (j < 2) {
-						twoCardsIds.push(id);
-						j++;
-					}
-					return false;
-				}
-				return true;
-			})
-			.map(animal => animal.id);
-
-		animalsWithoutKings.forEach((id, index) => {
-			index < 6 ? oneCardsIds.push(id) : twoCardsIds.push(id);
-		});
-
-		const powers = game?.initialPowers ?? [];
-		oneCardsIds.push(...powers.filter((_: any, index: number) => index < 2));
-		twoCardsIds.push(...powers.filter((_: any, index: number) => index >= 2));
-
-		await setItem(getGamePath(gameId) + PlayerType.ONE, {
-			cardsIds: oneCardsIds,
-		});
-
-		await setItem(getGamePath(gameId) + PlayerType.TWO, {
-			cardsIds: twoCardsIds,
-		});
-
-		await setItem(getGamePath(gameId), {
-			playerToSelect: PlayerType.ONE,
-		});
-	};
 
 	return (
 		<div
@@ -120,17 +77,9 @@ function GamePage() {
 							fontSize: 14,
 						}}
 						disabled={playerType !== PlayerType.ONE}
-						onClick={() => submitRandomSelection()}>
+						onClick={() => submitRandomSelection(gameId, game?.initialPowers)}>
 						LAUNCH
 					</button>
-					{/*<SharedSelection
-						playerType={playerType}
-						gameId={gameId}
-						oneCards={game?.one?.cardsIds ?? []}
-						twoCards={game?.two?.cardsIds ?? []}
-						playerToSelect={game?.playerToSelect}
-						powerCards={game?.initialPowers}
-						/>*/}
 				</div>
 			)}
 		</div>

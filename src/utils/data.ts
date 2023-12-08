@@ -165,3 +165,7 @@ export const ANIMAL_CARDS_OBJECT: Record<string, AnimalCard> = JSON.parse(
 
 export const POWER_CARDS_OBJECT: Record<string, Card> = JSON.parse(JSON.stringify(powerCardsJson));
 export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
+
+export const EMPTY_SLOT = { cardId: EMPTY, canAttack: false };
+
+export const POWER_CARDS_WITH_2_SELECTS = ['2-anim-gy', 'switch-2-cards'];

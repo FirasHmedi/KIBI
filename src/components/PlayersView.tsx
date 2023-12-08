@@ -1,5 +1,4 @@
 import ProgressBar from '@ramonak/react-progress-bar';
-import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
@@ -314,11 +313,12 @@ const PlayerDataView = ({
 				style={{
 					...flexColumnStyle,
 					position: 'absolute',
-					left: '6vw',
-					bottom: isMe ? '6.5vh' : undefined,
-					top: isMe ? undefined : '6.5vh',
-					width: '10vw',
+					left: '8vw',
+					bottom: isMe ? '10vh' : undefined,
+					top: isMe ? undefined : '18vh',
+					width: '12vw',
 					gap: 12,
+					fontSize: '0.9em',
 				}}>
 				{canAttack === false && canPlayPowers === false ? (
 					<h4>Blocked from attacking and playing power cards</h4>
@@ -327,9 +327,8 @@ const PlayerDataView = ({
 				) : canPlayPowers === false ? (
 					<h4>Blocked from playing power cards</h4>
 				) : null}
+				{tanksWithDoubleAP && <h4>ELEPHANTS AP is doubled </h4>}
 			</div>
-
-			{!isEmpty(tanksWithDoubleAP) && <h5>TANK AP is doubled </h5>}
 		</div>
 	);
 };

@@ -158,6 +158,15 @@ export const GeneralTestData = {
 			await setItem(getGamePath(gameId) + playerType, { tanksWithDoubleAP: null });
 		}
 	}
+
+	<SharedSelection
+	playerType={playerType}
+	gameId={gameId}
+	oneCards={game?.one?.cardsIds ?? []}
+	twoCards={game?.two?.cardsIds ?? []}
+	playerToSelect={game?.playerToSelect}
+	powerCards={game?.initialPowers}
+	/>
 	*/
 
 export {};
