@@ -543,7 +543,7 @@ className={
 			}}>
 			{compoundSlots.map((slot, index) => (
 				<div key={index}>
-					<div>{current && <CanAttackIconsView slot={slot} />}</div>
+					{/*<div>{current && <CanAttackIconsView slot={slot} />}</div>*/}
 					<div style={isAnimalInEnv(slot?.cardId, elementType) ? glow : undefined}>
 						<BoardSlot
 							nb={index}
@@ -556,7 +556,7 @@ className={
 							opponent={opponent}
 						/>
 					</div>
-					{opponent && <CanAttackIconsView slot={slot} />}
+					{/*opponent && <CanAttackIconsView slot={slot} />*/}
 				</div>
 			))}
 		</div>

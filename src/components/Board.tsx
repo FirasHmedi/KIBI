@@ -39,7 +39,7 @@ export const BoardView = ({ board, playCard, localState, attack, attackState }: 
 					attackState={attackState}
 					localState={localState}
 				/>
-				<Seperator />
+				<Seperator h='8vh' />
 				<BoardSlots
 					slots={currPSlots}
 					current={true}
