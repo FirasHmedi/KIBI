@@ -56,7 +56,7 @@
 		"name": "Switch 2 cards with opponent"
 	},
 	"sacrif-anim-3hp": {
-		"description": "Sacrifice an animal to get 3hp",
-		"name": "Sacrifice an active animal for 3hp"
+		"description": "Sacrifice an active animal to get 3hp",
+		"name": "Sacrifice an animal for 3hp"
 	}
 }

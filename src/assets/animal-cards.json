@@ -18,7 +18,7 @@
 		"description": "tank of air clan",
 		"name": "Elephant",
 		"role": "tank",
-		"ability": "+1hp to player after attack"
+		"ability": "+1hp to player each round"
 	},
 	"12-a": {
 		"ability": "Steal card",
@@ -46,7 +46,7 @@
 		"description": "tank of fire clan",
 		"name": "Elephant",
 		"role": "tank",
-		"ability": "+1hp to player after attack"
+		"ability": "+1hp to player each round"
 	},
 	"16-a": {
 		"ability": "Steal card",
@@ -74,7 +74,7 @@
 		"description": "tank of earth clan",
 		"name": "Elephant",
 		"role": "tank",
-		"ability": "+1hp to player after attack"
+		"ability": "+1hp to player each round"
 	},
 	"4-a": {
 		"ability": "Steal card",
@@ -102,7 +102,7 @@
 		"description": "tank of water clan",
 		"name": "Elephant",
 		"role": "tank",
-		"ability": "+1hp to player after attack"
+		"ability": "+1hp to player each round"
 	},
 	"8-a": {
 		"ability": "Steal card",

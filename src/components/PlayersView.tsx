@@ -10,7 +10,6 @@ import {
 } from 'react-icons/md';
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
-import { isAnimalCard, isPowerCard, waitFor } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
@@ -49,28 +48,11 @@ export const CurrentPView = ({
 	spectator?: boolean;
 	showCountDown?: any;
 }) => {
-	const { playerType, canPlayPowers } = player;
+	const { playerType } = player;
 	const cardsIds = player.cardsIds ?? [];
 	const [selectedId, setSelectedId] = useState<string>();
-	const playCardRef = useRef<any>();
 
 	const isMyRound = round?.player === playerType;
-	const [disablePlayButton, setDisablePlayButton] = useState(false);
-
-	const isPlayCardEnabled =
-		nbCardsToPlay >= 1 &&
-		!!selectedId &&
-		isMyRound &&
-		!disablePlayButton &&
-		(isAnimalCard(selectedId) || (canPlayPowers && isPowerCard(selectedId)));
-
-	const playCardWithButtonControl = async () => {
-		setDisablePlayButton(true);
-		await playCard(selectedId);
-		setSelectedId(undefined);
-		await waitFor(800);
-		setDisablePlayButton(false);
-	};
 
 	const Buttons = () => {
 		if (spectator) {
