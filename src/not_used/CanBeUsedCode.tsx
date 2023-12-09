@@ -182,20 +182,18 @@ export const GeneralTestData = {
 		/>
 	</button>
 
-		<div
-					style={{
-						...flexColumnStyle,
-						justifyContent: 'center',
-						position: 'absolute',
-						right: '27vw',
-						bottom: '34vh',
-						gap: 40,
-						width: '10vw',
-					}}>
-					{!isAttackEnabled && <Tooltip anchorSelect={`#${tooltipId}`} content={description} />}
-				</div>
-
-
+	<div
+		style={{
+			...flexColumnStyle,
+			justifyContent: 'center',
+			position: 'absolute',
+			right: '27vw',
+			bottom: '34vh',
+			gap: 40,
+			width: '10vw',
+		}}>
+		{!isAttackEnabled && <Tooltip anchorSelect={`#${tooltipId}`} content={description} />}
+	</div>
 
 	const isAttackEnabled = false;
 	const tooltipId = `can-attack-anchor`;
@@ -207,6 +205,11 @@ export const GeneralTestData = {
 			: !canAttack
 			? 'Blocked from attacking'
 			: "Animal is not selected or can't attack";
+
+	"double-tanks-ap": {
+		"description": "Double attack points of all Elephants",
+		"name": "Double AP of all Elephants"
+	}
 	*/
 
 export {};
