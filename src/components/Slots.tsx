@@ -146,6 +146,7 @@ export const PowerDeckSlot = ({
 				borderColor: selected ? selectedColor : violet,
 				...bigStyle,
 				fontSize: '0.75em',
+				alignItems: 'center',
 			}}>
 			{isJokerActive ? (
 				<h5>K</h5>
@@ -330,9 +331,10 @@ export const AnimalDeckSlot = ({
 			style={{
 				...deckSlotStyle,
 				backgroundColor: isJokerActive ? violet : CLANS[clan!]?.color,
-				justifyContent: 'space-between',
 				border: 'solid 1.5px',
 				borderColor: selected ? selectedColor : isJokerActive ? violet : CLANS[clan!]?.color,
+				alignItems: 'center',
+				justifyContent: isJokerActive ? 'center' : 'space-between',
 			}}>
 			{isJokerActive ? (
 				<h5>K</h5>

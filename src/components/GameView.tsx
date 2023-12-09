@@ -190,7 +190,7 @@ export function GameView({
 				if (isEmpty(powerGY)) return false;
 				break;
 			case 'switch-2-cards':
-				if (currPlayer.cardsIds.length < 2 || oppPlayer.cardsIds.length < 2) return false;
+				if (currPlayer.cardsIds.length < 3 || oppPlayer.cardsIds.length < 2) return false;
 				break;
 			case 'rev-last-pow':
 				if (isEmpty(powerGY)) return false;
@@ -203,9 +203,9 @@ export function GameView({
 		await processPostPowerCardPlay();
 	};
 
-	const findSlotNumberByCardId = (cardId: string, Slots: SlotType[]): number | null => {
-		for (let i = 0; i < Slots.length; i++) {
-			if (Slots[i].cardId === cardId) {
+	const findSlotNumberByCardId = (cardId: string, slots: SlotType[]): number | null => {
+		for (let i = 0; i < slots.length; i++) {
+			if (slots[i].cardId === cardId) {
 				return i;
 			}
 		}
@@ -232,41 +232,9 @@ export function GameView({
 			return;
 		}
 
-		let activateJokerAbilityNow = false;
-		let activateTankAbilityNow = false;
-
-		switch (getOriginalCardId(activePowerCard.current)) {
-			case 'rev-any-pow-1hp':
-				await reviveAnyPowerFor1hp(gameId, playerType, cardId);
-				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
-				break;
-			case 'rev-any-anim-1hp':
-				const slotNbForRevive = getCurrSlotNb();
-				await sacrifice1HpToReviveAnyAnimal(gameId, playerType, cardId, slotNbForRevive!);
-				activateJokerAbilityNow = isJokerInElement(cardId, elementType);
-				activateTankAbilityNow = isTankInElement(cardId, elementType);
-				break;
-			case '2-anim-gy':
-				await return2animalsFromGYToDeck(gameId, playerType, [...selectedCardsIdsForPopup, cardId]);
-				break;
-			case 'sacrif-anim-3hp':
-				const CurrPSlotNb = findSlotNumberByCardId(cardId, currPSlots);
-				await sacrificeAnimalToGet3Hp(gameId, playerType, cardId, CurrPSlotNb!, elementType);
-				break;
-			case 'steal-anim-3hp':
-				const slotNbForSteal = getCurrSlotNb();
-				const slotNbtoSteal = findSlotNumberByCardId(cardId, oppPSlots);
-				await sacrifice3HpToSteal(gameId, playerType, cardId, slotNbtoSteal!, slotNbForSteal!);
-				activateJokerAbilityNow = isJokerInElement(cardId, elementType);
-				activateTankAbilityNow = isTankInElement(cardId, elementType);
-				break;
-			case 'switch-2-cards':
-				await switch2Cards(gameId, playerType, activePowerCard.current, [
-					...selectedCardsIdsForPopup,
-					cardId,
-				]);
-				break;
-		}
+		const { activateJokerAbilityNow, activateTankAbilityNow } = await executePowerCardsWithPopup(
+			cardId,
+		);
 
 		await processPostPowerCardPlay();
 
@@ -278,6 +246,48 @@ export function GameView({
 			await waitFor(700);
 			activateTankAbility(gameId, playerType, currPSlots, elementType);
 		}
+	};
+
+	const executePowerCardsWithPopup = async (cardId: string) => {
+		switch (getOriginalCardId(activePowerCard.current)) {
+			case 'rev-any-pow-1hp':
+				await reviveAnyPowerFor1hp(gameId, playerType, cardId);
+				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
+				break;
+			case 'rev-any-anim-1hp':
+				const slotNbForRevive = getCurrSlotNb();
+				await sacrifice1HpToReviveAnyAnimal(gameId, playerType, cardId, slotNbForRevive!);
+				return {
+					activateJokerAbilityNow: isJokerInElement(cardId, elementType),
+					activateTankAbilityNow: isTankInElement(cardId, elementType),
+				};
+			case '2-anim-gy':
+				await return2animalsFromGYToDeck(gameId, playerType, [...selectedCardsIdsForPopup, cardId]);
+				break;
+			case 'sacrif-anim-3hp':
+				const slotNb = findSlotNumberByCardId(cardId, currPSlots);
+				await sacrificeAnimalToGet3Hp(gameId, playerType, cardId, slotNb!, elementType);
+				break;
+			case 'steal-anim-3hp':
+				const slotNbForSteal = getCurrSlotNb();
+				const slotNbtoSteal = findSlotNumberByCardId(cardId, oppPSlots);
+				await sacrifice3HpToSteal(gameId, playerType, cardId, slotNbtoSteal!, slotNbForSteal!);
+				return {
+					activateJokerAbilityNow: isJokerInElement(cardId, elementType),
+					activateTankAbilityNow: isTankInElement(cardId, elementType),
+				};
+			case 'switch-2-cards':
+				await switch2Cards(gameId, playerType, activePowerCard.current, [
+					...selectedCardsIdsForPopup,
+					cardId,
+				]);
+				break;
+		}
+
+		return {
+			activateJokerAbilityNow: false,
+			activateTankAbilityNow: false,
+		};
 	};
 
 	const playPowerCard = async (cardId: string) => {
@@ -314,7 +324,8 @@ export function GameView({
 				await switchDeck(gameId);
 				break;
 			case 'switch-2-cards':
-				setCardsIdsForPopup(currPlayer.cardsIds);
+				const filteredIds = currPlayer.cardsIds.filter(id => id !== cardId);
+				setCardsIdsForPopup(filteredIds);
 				return;
 			case 'sacrif-anim-3hp':
 				const currentIds = currPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
