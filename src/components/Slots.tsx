@@ -148,8 +148,7 @@ export const PowerDeckSlot = ({
 				borderColor: selected ? selectedColor : violet,
 				...bigStyle,
 				fontSize: '0.75em',
-			}}
-			onClick={() => select()}>
+			}}>
 			{isJokerActive ? (
 				<h5>K</h5>
 			) : (
@@ -167,9 +166,7 @@ export const PowerDeckSlot = ({
 
 export const AnimalBoardSlot = ({
 	cardId,
-	select,
 	selected,
-	tanksWithDoubleAP,
 	attack,
 	nb,
 	attackState,
@@ -221,8 +218,7 @@ export const AnimalBoardSlot = ({
 				justifyContent: 'space-between',
 				backgroundColor: CLANS[clan!]?.color,
 				boxShadow: selected ? `0 0 1px 2px ${selectedColor}` : `0 0 1px 2px ${CLANS[clan!]?.color}`,
-			}}
-			onClick={() => select()}>
+			}}>
 			{!!name && name?.toLowerCase() in animalsPics && (
 				<div
 					style={{
@@ -339,8 +335,7 @@ export const AnimalDeckSlot = ({
 				justifyContent: 'space-between',
 				border: 'solid 1.5px',
 				borderColor: selected ? selectedColor : isJokerActive ? violet : CLANS[clan!]?.color,
-			}}
-			onClick={() => select()}>
+			}}>
 			{!isJokerActive && (
 				<AnimalDeckSlotView cardId={cardId} name={name} role={role} ability={ability} />
 			)}
