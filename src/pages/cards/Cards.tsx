@@ -18,8 +18,8 @@ function Cards() {
 				<h3>Animal Cards</h3>
 				<div style={{ display: 'flex', flexWrap: 'wrap', ...centerStyle }}>
 					{ANIMALS_CARDS.map((animal, index) => (
-						<div style={{ padding: '10px' }}>
-							<AnimalBoardSlot key={index} cardId={animal.id} select={() => {}} />
+						<div key={index} style={{ padding: '10px' }}>
+							<AnimalBoardSlot cardId={animal.id} select={() => {}} />
 							<h6>
 								{animal.name} ({animal.clan})
 							</h6>
@@ -29,8 +29,8 @@ function Cards() {
 				<h3>Power Cards</h3>
 				<div style={{ display: 'flex', flexWrap: 'wrap', ...centerStyle }}>
 					{POWER_CARDS.map((card, index) => (
-						<div style={{ padding: '10px' }}>
-							<PowerBoardSlot key={index} cardId={'one-' + card.id} select={() => {}} />
+						<div key={index} style={{ padding: '10px' }}>
+							<PowerBoardSlot cardId={'one-' + card.id} select={() => {}} />
 						</div>
 					))}
 				</div>

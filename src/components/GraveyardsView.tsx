@@ -1,3 +1,4 @@
+import { shuffle } from 'lodash';
 import { useState } from 'react';
 import { MdCancel } from 'react-icons/md';
 import {
@@ -27,6 +28,8 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 
 	const openCardSelectionPopup = () => setPopupOpen(true);
 	const closeCardSelectionPopup = () => setPopupOpen(false);
+	const cardsNb = cardsIds.length;
+	const hasCards = cardsNb > 0;
 
 	return (
 		<div
@@ -39,9 +42,9 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 			<h5 style={{ marginBottom: 4 }}>
 				{name} ({cardsIds.length})
 			</h5>
-			{cardsIds.length > 0 ? (
+			{hasCards ? (
 				<div onClick={openCardSelectionPopup} style={topCardStyle}>
-					<DeckSlot cardId={cardsIds[cardsIds?.length - 1]} />
+					<DeckSlot cardId={cardsIds[cardsNb - 1]} />
 				</div>
 			) : (
 				<div
@@ -51,7 +54,7 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 						justifyContent: 'center',
 					}}></div>
 			)}
-			{isPopupOpen && (
+			{isPopupOpen && hasCards && (
 				<CardsPopup cardsIds={cardsIds} closeCardSelectionPopup={closeCardSelectionPopup} />
 			)}
 		</div>
@@ -73,6 +76,7 @@ export const CardsPopup = ({
 	dropClose?: boolean;
 	isJokerActive?: boolean;
 }) => {
+	const shuffledCards = isJokerActive ? shuffle(cardsIds) : cardsIds;
 	return (
 		<div
 			style={graveyardPopupContainer}
@@ -90,7 +94,7 @@ export const CardsPopup = ({
 			)}
 
 			<div style={graveyardPopupContent}>
-				{cardsIds.map((cardId, index) => (
+				{shuffledCards.map((cardId, index) => (
 					<div
 						key={index}
 						onClick={e => {

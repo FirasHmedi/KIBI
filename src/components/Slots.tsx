@@ -335,10 +335,10 @@ export const AnimalDeckSlot = ({
 			ref={drag}
 			style={{
 				...deckSlotStyle,
-				backgroundColor: CLANS[clan!]?.color,
+				backgroundColor: isJokerActive ? violet : CLANS[clan!]?.color,
 				justifyContent: 'space-between',
 				border: 'solid 1.5px',
-				borderColor: selected ? selectedColor : CLANS[clan!]?.color,
+				borderColor: selected ? selectedColor : isJokerActive ? violet : CLANS[clan!]?.color,
 			}}
 			onClick={() => select()}>
 			{!isJokerActive && (

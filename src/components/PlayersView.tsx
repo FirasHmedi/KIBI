@@ -208,7 +208,7 @@ const PlayerDataView = ({
 			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
 				<div style={{ ...flexRowStyle, justifyContent: 'center', alignItems: 'center' }}>
 					{!!hpChange && (
-						<div style={{ position: 'absolute', left: '17.6vw' }}>
+						<div style={{ position: 'absolute', left: '12rem' }}>
 							<h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4>
 						</div>
 					)}

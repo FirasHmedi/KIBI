@@ -31,7 +31,6 @@ import {
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
 	stealCardFromOpponent,
-	stealPowerCardFor2hp,
 	switch2Cards,
 	switchDeck,
 } from '../backend/powers';
@@ -51,6 +50,7 @@ import {
 	isJokerInElement,
 	isKingInElement,
 	isPowerCard,
+	isTankInElement,
 	waitFor,
 } from '../utils/helpers';
 import { Board, Player, PlayerType, Round, SlotType } from '../utils/interface';
@@ -161,7 +161,10 @@ export function GameView({
 			activateMonkeyAbility(currPSlots, true);
 		}
 
-		activateTankAbility(gameId, playerType, currPSlots, elementType);
+		if (isTankInElement(cardId, elementType)) {
+			await waitFor(700);
+			activateTankAbility(gameId, playerType, currPSlots, elementType);
+		}
 	};
 
 	const isPowerCardPlayable = (cardId: string) => {
@@ -210,7 +213,7 @@ export function GameView({
 	};
 
 	const selectCardForPopup = async (cardId: string) => {
-		if (isEmpty(cardId)) {
+		if (isEmpty(cardId) || selectedCardsIdsForPopup[0] === cardId) {
 			return;
 		}
 		if (
@@ -240,10 +243,8 @@ export function GameView({
 			case 'rev-any-anim-1hp':
 				const slotNbForRevive = getCurrSlotNb();
 				await sacrifice1HpToReviveAnyAnimal(gameId, playerType, cardId, slotNbForRevive!);
-				if (isJokerInElement(cardId, elementType)) {
-					activateJokerAbilityNow = true;
-				}
-				activateTankAbilityNow = true;
+				activateJokerAbilityNow = isJokerInElement(cardId, elementType);
+				activateTankAbilityNow = isTankInElement(cardId, elementType);
 				break;
 			case '2-anim-gy':
 				await return2animalsFromGYToDeck(gameId, playerType, [...selectedCardsIdsForPopup, cardId]);
@@ -256,14 +257,8 @@ export function GameView({
 				const slotNbForSteal = getCurrSlotNb();
 				const slotNbtoSteal = findSlotNumberByCardId(cardId, oppPSlots);
 				await sacrifice3HpToSteal(gameId, playerType, cardId, slotNbtoSteal!, slotNbForSteal!);
-				if (isJokerInElement(cardId, elementType)) {
-					activateJokerAbilityNow = true;
-				}
-				activateTankAbilityNow = true;
-				break;
-			case 'steal-pow-2hp':
-				await stealPowerCardFor2hp(gameId, playerType, cardId);
-				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
+				activateJokerAbilityNow = isJokerInElement(cardId, elementType);
+				activateTankAbilityNow = isTankInElement(cardId, elementType);
 				break;
 			case 'switch-2-cards':
 				await switch2Cards(gameId, playerType, activePowerCard.current, [
@@ -312,7 +307,6 @@ export function GameView({
 				return;
 			case 'steal-anim-3hp':
 				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
-				console.log({ opponentIds });
 				setCardsIdsForPopup(opponentIds);
 				return;
 			case 'switch-decks':
@@ -374,12 +368,9 @@ export function GameView({
 	};
 
 	const playCard = async (cardId?: string, slotNb?: number) => {
-		if (spectator) {
-			return;
-		}
-
 		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
-		if (isEmpty(cardId) || isEmpty(playerType) || nbCardsToPlay === 0 || !isMyRound) {
+
+		if (spectator || isEmpty(cardId) || isEmpty(playerType) || nbCardsToPlay === 0 || !isMyRound) {
 			return;
 		}
 
