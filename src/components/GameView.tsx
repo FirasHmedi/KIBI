@@ -403,7 +403,7 @@ export function GameView({
 			return;
 		}
 
-		if (isPowerCard(cardId)) {
+		if (isPowerCard(cardId) && currPlayer.canPlayPowers) {
 			await playPowerCard(cardId!);
 		}
 	};
