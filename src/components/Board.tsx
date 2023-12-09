@@ -1,4 +1,3 @@
-import isNil from 'lodash/isNil';
 import { useDrop } from 'react-dnd';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { Board } from '../utils/interface';
@@ -10,33 +9,14 @@ import { BoardSlots, DeckSlot, DropItem, ElementSlot } from './Slots';
 interface Props {
 	board: Board;
 	isMyRound: boolean;
-	tanksWithDoubleAPOfCurr?: boolean;
-	tanksWithDoubleAPOfOpp?: boolean;
-	selectedCurrentPSlotNb?: number;
-	selectedOppSlotsNbs?: number[];
-	selectOppSlotsNbs: (slotNb: number) => void;
-	selectCurrentSlot: (slotNb: number) => void;
 	playCard: any;
 	localState?: any;
 	attack?: any;
 	attackState?: any;
 }
 
-export const BoardView = ({
-	board,
-	selectCurrentSlot,
-	selectOppSlotsNbs,
-	selectedOppSlotsNbs = [],
-	selectedCurrentPSlotNb,
-	tanksWithDoubleAPOfCurr,
-	tanksWithDoubleAPOfOpp,
-	playCard,
-	localState,
-	attack,
-	attackState,
-}: Props) => {
+export const BoardView = ({ board, playCard, localState, attack, attackState }: Props) => {
 	const { mainDeck, currPSlots, oppPSlots, animalGY, powerGY, elementType, activeCardId } = board;
-	const selectedCurrSlots = !isNil(selectedCurrentPSlotNb) ? [selectedCurrentPSlotNb!] : [];
 
 	return (
 		<div
@@ -53,11 +33,8 @@ export const BoardView = ({
 				}}>
 				<BoardSlots
 					slots={oppPSlots}
-					selectSlot={selectOppSlotsNbs}
-					selectedSlots={selectedOppSlotsNbs}
 					opponent={true}
 					elementType={elementType}
-					tanksWithDoubleAP={tanksWithDoubleAPOfOpp}
 					attack={attack}
 					attackState={attackState}
 					localState={localState}
@@ -65,11 +42,8 @@ export const BoardView = ({
 				<Seperator />
 				<BoardSlots
 					slots={currPSlots}
-					selectSlot={selectCurrentSlot}
-					selectedSlots={selectedCurrSlots}
 					current={true}
 					elementType={elementType}
-					tanksWithDoubleAP={tanksWithDoubleAPOfCurr}
 					playCard={playCard}
 					localState={localState}
 					attack={attack}

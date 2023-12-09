@@ -21,7 +21,6 @@ import {
 	CLANS,
 	ClanName,
 	RoleName,
-	TANK,
 	animalsPics,
 	elementsIcons,
 } from '../utils/data';
@@ -208,7 +207,7 @@ export const AnimalBoardSlot = ({
 	if (!name || !clan || !role) return <></>;
 
 	const { hp, ap } = ANIMALS_POINTS[role];
-	const isTankDoubleAP = role === TANK && tanksWithDoubleAP;
+	const isTankDoubleAP = false; // role === TANK && tanksWithDoubleAP;
 	const roleTooltipContent = ability;
 	const roleTooltipId = `role-anchor${cardId}`;
 	const ref = useRef(null);
@@ -515,8 +514,6 @@ const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
 
 export const BoardSlots = ({
 	slots,
-	selectedSlots,
-	selectSlot,
 	opponent,
 	current,
 	elementType,
@@ -527,8 +524,6 @@ export const BoardSlots = ({
 	attackState,
 }: {
 	slots: SlotType[];
-	selectedSlots: number[];
-	selectSlot: (slotNb: number) => void;
 	opponent?: boolean;
 	current?: boolean;
 	elementType?: ClanName;
@@ -563,9 +558,7 @@ className={
 						<BoardSlot
 							nb={index}
 							tanksWithDoubleAP={tanksWithDoubleAP}
-							selectSlot={selectSlot}
 							cardId={slot?.cardId}
-							selected={selectedSlots.includes(index)}
 							playCard={playCard}
 							localState={localState}
 							attack={attack}

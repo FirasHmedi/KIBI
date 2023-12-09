@@ -3,6 +3,7 @@ import isNil from 'lodash/isNil';
 import { useEffect, useRef, useState } from 'react';
 import { executeBotTurn } from '../GameBot/BotActions';
 import {
+	activateTankAbility,
 	attackOppAnimal,
 	attackOwner,
 	changeHasAttacked,
@@ -48,7 +49,6 @@ import {
 	isAnimalCard,
 	isAttackerInElement,
 	isJokerInElement,
-	isKing,
 	isKingInElement,
 	isPowerCard,
 	waitFor,
@@ -82,8 +82,6 @@ export function GameView({
 	const playerType = currPlayer.playerType!;
 	const isMyRound = round.player === playerType;
 
-	const [selectedCurrPSlotNb, setSelectedCurrPSlotNb] = useState<number>();
-	const [selectedOppSlotsNbs, setSelectedOppSlotsNbs] = useState<number[]>([]);
 	const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
 	const [canPlaceKingWithoutSacrifice, setCanPlaceKingWithoutSacrifice] = useState<boolean>(false);
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
@@ -98,12 +96,11 @@ export function GameView({
 	const openCardsPopup = cardsIdsForPopup?.length > 0;
 	const isOppSlotsEmpty = getIsOppSlotsEmpty(oppPSlots);
 	const isOppSlotsAllFilled = getIsOppSlotsAllFilled(oppPSlots);
-	const idsInOppPSlots = selectedOppSlotsNbs.map(nb => oppPSlots[nb ?? 3]?.cardId);
-	const idInCurrPSlot = currPSlots[selectedCurrPSlotNb ?? 3]?.cardId;
 
 	useEffect(() => {
 		if (isMyRound) {
 			activateMonkeyAbility(currPSlots, false, elementType);
+			activateTankAbility(gameId, playerType, currPSlots, elementType);
 		}
 
 		if (round.nb < 3 || !isMyRound) {
@@ -113,37 +110,8 @@ export function GameView({
 		setNbCardsToPlay(2);
 		setHasAttacked(false);
 		setCanPlaceKingWithoutSacrifice(false);
-		setSelectedCurrPSlotNb(undefined);
-		setSelectedOppSlotsNbs([]);
 		setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
 	}, [round.nb]);
-
-	const selectCurrSlotNb = async (slotNb: number) => {
-		setSelectedCurrPSlotNb(nb => (slotNb === nb ? undefined : slotNb));
-		if (isKing(idInCurrPSlot)) {
-			return;
-		}
-		setSelectedOppSlotsNbs(selectedSlotsNbs =>
-			selectedSlotsNbs.length >= 1 ? [selectedOppSlotsNbs[selectedSlotsNbs.length - 1]] : [],
-		);
-	};
-
-	const selectOppSlotsNbs = async (slotNb: number) => {
-		if (!isKing(idInCurrPSlot)) {
-			setSelectedOppSlotsNbs(selectedSlotsNbs =>
-				selectedSlotsNbs.includes(slotNb) ? [] : [slotNb],
-			);
-			return;
-		}
-
-		setSelectedOppSlotsNbs(selectedSlotsNbs =>
-			selectedSlotsNbs.includes(slotNb)
-				? selectedSlotsNbs.filter(nb => nb != slotNb)
-				: selectedSlotsNbs.length === 2
-				? [selectedOppSlotsNbs[1], slotNb]
-				: [...selectedSlotsNbs, slotNb],
-		);
-	};
 
 	const getCurrSlotNb = () => {
 		for (let i = 0; i < 3; i++) {
@@ -192,6 +160,8 @@ export function GameView({
 			await waitFor(700);
 			activateMonkeyAbility(currPSlots, true);
 		}
+
+		activateTankAbility(gameId, playerType, currPSlots, elementType);
 	};
 
 	const isPowerCardPlayable = (cardId: string) => {
@@ -204,8 +174,8 @@ export function GameView({
 				break;
 			case 'sacrif-anim-3hp':
 				if (
-					!isAnimalCard(currPSlots[0].cardId) ||
-					!isAnimalCard(currPSlots[1].cardId) ||
+					!isAnimalCard(currPSlots[0].cardId) &&
+					!isAnimalCard(currPSlots[1].cardId) &&
 					!isAnimalCard(currPSlots[2].cardId)
 				)
 					return false;
@@ -223,20 +193,13 @@ export function GameView({
 				if (isEmpty(powerGY)) return false;
 				break;
 		}
-		return false;
+		return true;
 	};
 
 	const closePopupAndProcessPowerCard = async () => {
 		await processPostPowerCardPlay();
 	};
-	const getSlotNbForSteal = (slots: SlotType[]): number | null => {
-		for (let i = 0; i < slots.length; i++) {
-			if (slots[i].cardId === 'empty') {
-				return i;
-			}
-		}
-		return null;
-	};
+
 	const findSlotNumberByCardId = (cardId: string, Slots: SlotType[]): number | null => {
 		for (let i = 0; i < Slots.length; i++) {
 			if (Slots[i].cardId === cardId) {
@@ -267,6 +230,7 @@ export function GameView({
 		}
 
 		let activateJokerAbilityNow = false;
+		let activateTankAbilityNow = false;
 
 		switch (getOriginalCardId(activePowerCard.current)) {
 			case 'rev-any-pow-1hp':
@@ -279,6 +243,7 @@ export function GameView({
 				if (isJokerInElement(cardId, elementType)) {
 					activateJokerAbilityNow = true;
 				}
+				activateTankAbilityNow = true;
 				break;
 			case '2-anim-gy':
 				await return2animalsFromGYToDeck(gameId, playerType, [...selectedCardsIdsForPopup, cardId]);
@@ -294,6 +259,7 @@ export function GameView({
 				if (isJokerInElement(cardId, elementType)) {
 					activateJokerAbilityNow = true;
 				}
+				activateTankAbilityNow = true;
 				break;
 			case 'steal-pow-2hp':
 				await stealPowerCardFor2hp(gameId, playerType, cardId);
@@ -312,6 +278,10 @@ export function GameView({
 		if (activateJokerAbilityNow) {
 			await waitFor(700);
 			activateMonkeyAbility(currPSlots, true);
+		}
+		if (activateTankAbilityNow) {
+			await waitFor(700);
+			activateTankAbility(gameId, playerType, currPSlots, elementType);
 		}
 	};
 
@@ -342,6 +312,7 @@ export function GameView({
 				return;
 			case 'steal-anim-3hp':
 				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
+				console.log({ opponentIds });
 				setCardsIdsForPopup(opponentIds);
 				return;
 			case 'switch-decks':
@@ -391,8 +362,6 @@ export function GameView({
 
 		await addPowerToGraveYard(gameId, activePowerCard.current);
 
-		setSelectedCurrPSlotNb(undefined);
-		setSelectedOppSlotsNbs([]);
 		setSelectedCardsIdsForPopup([]);
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 
@@ -419,8 +388,7 @@ export function GameView({
 			return;
 		}
 
-		if (isPowerCard(cardId)) {
-			console.log('here');
+		if (isPowerCard(cardId) && currPlayer.canPlayPowers) {
 			await playPowerCard(cardId!);
 		}
 	};
@@ -434,6 +402,7 @@ export function GameView({
 		setShowEnvPopup(false);
 		await waitFor(700);
 		activateMonkeyAbility(currPSlots, false, elementType);
+		await activateTankAbility(gameId, playerType, currPSlots, elementType);
 	};
 
 	const finishRoundBot = async () => {
@@ -593,12 +562,6 @@ export function GameView({
 
 			<BoardView
 				board={board}
-				selectedCurrentPSlotNb={selectedCurrPSlotNb}
-				selectCurrentSlot={selectCurrSlotNb}
-				selectedOppSlotsNbs={selectedOppSlotsNbs}
-				selectOppSlotsNbs={selectOppSlotsNbs}
-				tanksWithDoubleAPOfCurr={currPlayer.tanksWithDoubleAP}
-				tanksWithDoubleAPOfOpp={oppPlayer.tanksWithDoubleAP}
 				isMyRound={isMyRound}
 				playCard={playCard}
 				localState={localState}

@@ -98,7 +98,7 @@ export const canAnimalAKillAnimalD = (
 	const animalD = getAnimalCard(dID);
 	if (!animalA || !animalD) return false;
 
-	const doubleAP = animalA.role === TANK && tanksWithDoubleAP;
+	const doubleAP = false; // animalA.role === TANK && tanksWithDoubleAP;
 	const animalAAP = getAnimalAP(animalA.role, doubleAP);
 	const animalDHP = getAnimalHP(animalD.role);
 

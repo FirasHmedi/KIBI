@@ -96,12 +96,26 @@ export const attackOppAnimal = async (
 	const elementType = await getElementType(gameId);
 	if (animalA.clan === elementType) {
 		if (animalA.role === TANK) {
-			add1Hp(gameId, playerType);
+			await add1Hp(gameId, playerType);
 		}
 	}
 
 	await removePlayerAnimalFromBoard(gameId, opponentId, slotDNumber);
 	await addAnimalToGraveYard(gameId, animalDId);
+};
+
+export const activateTankAbility = async (
+	gameId: string,
+	playerType: PlayerType,
+	slots: any[] = [],
+	elementType?: ClanName,
+) => {
+	for (let i = 0; i < slots.length; i++) {
+		const animal = getAnimalCard(slots[i]?.cardId);
+		if (!!animal && animal.role === TANK && animal.clan === elementType) {
+			await add1Hp(gameId, playerType);
+		}
+	}
 };
 
 export const attackOwner = async (
@@ -113,10 +127,11 @@ export const attackOwner = async (
 	if (!isAnimalCard(animalId)) return;
 	const { name, role } = getAnimalCard(animalId)!;
 	await addInfoToLog(gameId, name + ' has attacked ' + playerDType + ' directly');
-	const ap = isDoubleAP && role === TANK ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
+	const ap = ANIMALS_POINTS[role].ap;
 	await removeHpFromPlayer(gameId, playerDType, ap);
 };
 
+/* Not Used */
 export const activateJokerAbility = async (
 	gameId: string,
 	jokerId: string,
@@ -173,6 +188,7 @@ export const enableAttackForOpponentAnimals = async (
 	}
 };
 
+/* Not Used */
 export const activateJokersAbilities = async (
 	gameId: string,
 	playerDType: PlayerType,

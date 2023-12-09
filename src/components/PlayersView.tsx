@@ -77,49 +77,39 @@ export const CurrentPView = ({
 			return <></>;
 		}
 		return (
-			<>
+			<div
+				style={{
+					position: 'absolute',
+					right: '10vw',
+					bottom: '8vh',
+				}}>
 				<div
 					style={{
-						position: 'absolute',
-						right: '10vw',
-						bottom: '10vh',
-						...flexRowStyle,
-						alignItems: 'flex-end',
+						...flexColumnStyle,
+						alignItems: 'center',
 						justifyContent: 'center',
+						width: '14vw',
 					}}>
+					{!!nbCardsToPlay && isMyRound && (
+						<h5 style={{ color: violet, padding: 10 }}>{nbCardsToPlay} card(s) to play</h5>
+					)}
 					<button
-						ref={playCardRef}
 						style={{
 							fontWeight: 'bold',
-							minWidth: '8vw',
+							minWidth: '4vw',
 							fontSize: '0.8em',
-							color: !isPlayCardEnabled ? 'grey' : violet,
+							width: '4.5vw',
+							padding: 2,
+							color: 'white',
+							backgroundColor: isMyRound ? violet : 'grey',
+							borderRadius: 5,
 						}}
-						disabled={!isPlayCardEnabled}
-						onClick={() => playCardWithButtonControl()}>
-						PLAY CARD {!!nbCardsToPlay && isMyRound && <span>({nbCardsToPlay})</span>}
+						disabled={!isMyRound}
+						onClick={() => finishRound()}>
+						FINISH
 					</button>
-					<div
-						style={{
-							...flexRowStyle,
-							alignItems: 'flex-end',
-							justifyContent: 'flex-start',
-							width: '6vw',
-						}}>
-						<button
-							style={{
-								fontWeight: 'bold',
-								minWidth: '4vw',
-								fontSize: '0.8em',
-								color: !isMyRound ? 'grey' : violet,
-							}}
-							disabled={!isMyRound}
-							onClick={() => finishRound()}>
-							FINISH
-						</button>
-					</div>
 				</div>
-			</>
+			</div>
 		);
 	};
 
@@ -130,6 +120,7 @@ export const CurrentPView = ({
 				alignItems: 'center',
 				width: '100%',
 				justifyContent: 'center',
+				gap: 8,
 			}}>
 			<Buttons />
 			<PlayerDataView
