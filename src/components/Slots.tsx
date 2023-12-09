@@ -113,13 +113,11 @@ export const PowerBoardSlot = ({
 
 export const PowerDeckSlot = ({
 	cardId,
-	select,
 	selected,
 	isBigStyle,
 	isJokerActive,
 }: {
 	cardId: string;
-	select: () => void;
 	selected?: boolean;
 	isBigStyle?: boolean;
 	isJokerActive?: boolean;
@@ -231,7 +229,7 @@ export const AnimalBoardSlot = ({
 					}}>
 					<img
 						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-						style={{ width: '5.2rem', height: '4.2rem' }}></img>
+						style={{ width: '5rem', height: '4rem' }}></img>
 				</div>
 			)}
 
@@ -274,7 +272,7 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 		<>
 			<img
 				src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
-				style={{ width: '3rem', height: '3rem', flex: 1 }}
+				style={{ width: '2.6rem', height: '2.6rem', flex: 1 }}
 			/>
 			<div
 				id={roleTooltipId}
@@ -336,7 +334,9 @@ export const AnimalDeckSlot = ({
 				border: 'solid 1.5px',
 				borderColor: selected ? selectedColor : isJokerActive ? violet : CLANS[clan!]?.color,
 			}}>
-			{!isJokerActive && (
+			{isJokerActive ? (
+				<h5>K</h5>
+			) : (
 				<AnimalDeckSlotView cardId={cardId} name={name} role={role} ability={ability} />
 			)}
 		</div>
@@ -439,14 +439,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive }: De
 	}
 
 	if (cardId && isPowerCard(cardId)) {
-		return (
-			<PowerDeckSlot
-				cardId={cardId}
-				select={selectSlotPolished}
-				selected={selected}
-				isJokerActive={isJokerActive}
-			/>
-		);
+		return <PowerDeckSlot cardId={cardId} selected={selected} isJokerActive={isJokerActive} />;
 	}
 
 	return (

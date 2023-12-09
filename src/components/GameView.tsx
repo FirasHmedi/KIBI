@@ -570,7 +570,7 @@ export function GameView({
 				spectator={spectator}
 				showCountDown={showCountDown}
 			/>
-			{openCardsPopup && (
+			{openCardsPopup && !spectator && (
 				<CardsPopup
 					cardsIds={cardsIdsForPopup}
 					selectedIds={selectedCardsIdsForPopup}

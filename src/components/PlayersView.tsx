@@ -62,7 +62,7 @@ export const CurrentPView = ({
 			<div
 				style={{
 					position: 'absolute',
-					right: '10vw',
+					right: '12vw',
 					bottom: '8vh',
 				}}>
 				<div
@@ -245,9 +245,9 @@ const PlayerDataView = ({
 				style={{
 					...flexColumnStyle,
 					position: 'absolute',
-					left: '6vw',
-					bottom: isMe ? '10vh' : undefined,
-					top: isMe ? undefined : '18vh',
+					left: '3vw',
+					bottom: isMe ? '8vh' : undefined,
+					top: isMe ? undefined : '13vh',
 					width: '12vw',
 					gap: 12,
 					fontSize: '0.9em',

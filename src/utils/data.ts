@@ -18,7 +18,7 @@ export const GAMES_PATH = 'games/';
 
 export const ROUND_DURATION = 80; //60
 
-export const INITIAL_HP = 7;
+export const INITIAL_HP = 6;
 
 export const ENV_MAX_LOAD = 3; // each turn get 1
 
@@ -104,44 +104,16 @@ export const elementsIcons = {
 	earth: earthIcon,
 };
 
-import badger from '/animals/badger.png';
-import bear from '/animals/bear.png';
-import bee from '/animals/bee.png';
-import crow from '/animals/crow.png';
-import dragon from '/animals/dragon.png';
-import eagle from '/animals/eagle.png';
-import fox from '/animals/fox.png';
-import jellyfish from '/animals/jellyfish.png';
-import orca from '/animals/orca.png';
-import ostrich from '/animals/ostrich.png';
-import phoenix from '/animals/phoenix.png';
-import shark from '/animals/shark.png';
-import snake from '/animals/snake.png';
-import whale from '/animals/whale.png';
-import bull from '/src/assets/icons/bull.svg';
-import elephant1 from '/src/assets/icons/elephant.svg';
-import lion1 from '/src/assets/icons/lion.svg';
+import eagle from '/src/assets/icons/eagle.svg';
+import lion from '/src/assets/icons/lion.svg';
 import monkey from '/src/assets/icons/monkey.svg';
+import whale from '/src/assets/icons/whale.svg';
 
 export const animalsPics = {
-	elephant: elephant1,
-	bear: bear,
-	ostrich: ostrich,
 	eagle: eagle,
-	orca: orca,
-	dragon: dragon,
-	phoenix: phoenix,
-	badger: badger,
-	shark: shark,
-	bee: bee,
-	snake: snake,
-	crow: crow,
-	jellyfish: jellyfish,
-	fox: fox,
 	whale: whale,
+	lion: lion,
 	monkey: monkey,
-	bull: bull,
-	lion: lion1,
 };
 
 export const ALL_CARDS_OBJECT: Record<string, AllCards> = {

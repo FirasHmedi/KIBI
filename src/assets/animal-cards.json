@@ -9,14 +9,14 @@
 	"10-a": {
 		"clan": "air",
 		"description": "attacker of air clan",
-		"name": "Bull",
+		"name": "Eagle",
 		"role": "attacker",
 		"ability": "Attacks Opponent"
 	},
 	"11-a": {
 		"clan": "air",
 		"description": "tank of air clan",
-		"name": "Elephant",
+		"name": "Whale",
 		"role": "tank",
 		"ability": "+1hp to player each round"
 	},
@@ -37,14 +37,14 @@
 	"14-a": {
 		"clan": "fire",
 		"description": "attacker of fire clan",
-		"name": "Bull",
+		"name": "Eagle",
 		"role": "attacker",
 		"ability": "Attacks Opponent"
 	},
 	"15-a": {
 		"clan": "fire",
 		"description": "tank of fire clan",
-		"name": "Elephant",
+		"name": "Whale",
 		"role": "tank",
 		"ability": "+1hp to player each round"
 	},
@@ -65,14 +65,14 @@
 	"2-a": {
 		"clan": "earth",
 		"description": "attacker of earth clan",
-		"name": "Bull",
+		"name": "Eagle",
 		"role": "attacker",
 		"ability": "Attacks Opponent"
 	},
 	"3-a": {
 		"clan": "earth",
 		"description": "tank of earth clan",
-		"name": "Elephant",
+		"name": "Whale",
 		"role": "tank",
 		"ability": "+1hp to player each round"
 	},
@@ -93,14 +93,14 @@
 	"6-a": {
 		"clan": "water",
 		"description": "attacker of water clan",
-		"name": "Bull",
+		"name": "Eagle",
 		"role": "attacker",
 		"ability": "Attacks Opponent"
 	},
 	"7-a": {
 		"clan": "water",
 		"description": "tank of water clan",
-		"name": "Elephant",
+		"name": "Whale",
 		"role": "tank",
 		"ability": "+1hp to player each round"
 	},
