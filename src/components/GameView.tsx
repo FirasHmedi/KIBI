@@ -36,7 +36,7 @@ import {
 } from '../backend/powers';
 import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
 import { flexColumnStyle } from '../styles/Style';
-import { BOT, ClanName, JOKER, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
+import { BOT, ClanName, EMPTY, JOKER, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
 import {
 	canAnimalAKillAnimalD,
 	getAnimalCard,
@@ -200,22 +200,15 @@ export function GameView({
 				if (isEmpty(animalGY)) return false;
 				break;
 			case 'steal-anim-3hp':
-				/*const slotNbForSteal = getCurrSlotNb();
-				if (
-					selectedOppSlotsNbs?.length != 1 ||
-					!isAnimalCard(idsInOppPSlots[0]) ||
-					currPlayer.hp < 3
-				)
-					return false;
-				break;*/
-				return true;
+				if (currPlayer.hp < 3 || isOppSlotsEmpty) return false;
+				break;
 			case 'sacrif-anim-3hp':
 				if (
-					isAnimalCard(currPSlots[0].cardId) &&
-					isAnimalCard(currPSlots[1].cardId) &&
-					isAnimalCard(currPSlots[2].cardId)
+					!isAnimalCard(currPSlots[0].cardId) ||
+					!isAnimalCard(currPSlots[1].cardId) ||
+					!isAnimalCard(currPSlots[2].cardId)
 				)
-					return true;
+					return false;
 				break;
 			case '2-anim-gy':
 				if (isEmpty(animalGY) || animalGY?.length < 2) return false;
@@ -230,7 +223,7 @@ export function GameView({
 				if (isEmpty(powerGY)) return false;
 				break;
 		}
-		return true;
+		return false;
 	};
 
 	const closePopupAndProcessPowerCard = async () => {
@@ -296,7 +289,6 @@ export function GameView({
 				break;
 			case 'steal-anim-3hp':
 				const slotNbForSteal = getCurrSlotNb();
-				console.log(slotNbForSteal);
 				const slotNbtoSteal = findSlotNumberByCardId(cardId, oppPSlots);
 				await sacrifice3HpToSteal(gameId, playerType, cardId, slotNbtoSteal!, slotNbForSteal!);
 				if (isJokerInElement(cardId, elementType)) {
@@ -328,12 +320,12 @@ export function GameView({
 			return false;
 		}
 
+		console.log('Executing power card ', cardId);
+
 		const { name } = getPowerCard(cardId)!;
-		console.log('herer2');
 		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
 		activePowerCard.current = cardId;
-		let activateJokerAbilityNow = false;
-		console.log('executing power card ', cardId);
+
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
 				await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
@@ -349,10 +341,7 @@ export function GameView({
 				setCardsIdsForPopup(animalGY);
 				return;
 			case 'steal-anim-3hp':
-				const opponentIds = oppPSlots
-					.filter(slot => slot.cardId !== 'empty')
-					.map(slot => slot.cardId);
-				console.log(opponentIds);
+				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(opponentIds);
 				return;
 			case 'switch-decks':
@@ -363,18 +352,8 @@ export function GameView({
 				setCardsIdsForPopup(currPlayer.cardsIds);
 				return;
 			case 'sacrif-anim-3hp':
-				const currentIds = currPSlots
-					.filter(slot => slot.cardId !== 'empty')
-					.map(slot => slot.cardId);
+				const currentIds = currPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(currentIds);
-
-				/*await sacrificeAnimalToGet3Hp(
-					gameId,
-					playerType,
-					idInCurrPSlot,
-					selectedCurrPSlotNb,
-					elementType,
-				);*/
 				return;
 			case '2hp':
 				await add2Hp(gameId, playerType);
@@ -403,11 +382,8 @@ export function GameView({
 				await setElementLoad(gameId, playerType, 3);
 				break;
 		}
+
 		await processPostPowerCardPlay();
-		if (activateJokerAbilityNow) {
-			await waitFor(700);
-			activateMonkeyAbility(currPSlots, true);
-		}
 	};
 
 	const processPostPowerCardPlay = async () => {
@@ -443,7 +419,8 @@ export function GameView({
 			return;
 		}
 
-		if (isPowerCard(cardId) && currPlayer.canPlayPowers) {
+		if (isPowerCard(cardId)) {
+			console.log('here');
 			await playPowerCard(cardId!);
 		}
 	};
