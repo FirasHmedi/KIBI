@@ -4,7 +4,7 @@ import { FaGamepad } from 'react-icons/fa';
 import { MdComputer, MdPerson, MdPersonAdd, MdVisibility } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { setItem } from '../../backend/db';
+import { getItemsOnce, setItem } from '../../backend/db';
 import {
 	buttonStyle,
 	centerStyle,
@@ -24,12 +24,14 @@ function Home() {
 	const navigate = useNavigate();
 	const [gameId, setGameId] = useState('');
 	const [disabledButton, setDisabledButton] = useState(false);
+	const [alertMessage, setAlertMessage] = useState("");
 
 	const createGame = async () => {
 		const gameId = uuidv4();
+		const player1Id = uuidv4(); 
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
-
+		localStorage.setItem('playerId', player1Id);
 		await setItem(GAMES_PATH + gameId, {
 			status: PREPARE,
 			one: {
@@ -61,6 +63,7 @@ function Home() {
 
 	const playWithGameBot = async () => {
 		const gameId = uuidv4();
+		//const player1Id = uuidv4(); 
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
 
@@ -105,7 +108,18 @@ function Home() {
 
 	const joinGameAsPlayer = async () => {
 		if (gameId.length === 0) return;
+		const gameData = await getItemsOnce(GAMES_PATH + gameId);
+		if (!gameData || gameData.two.id) {
+			console.log("Game is full or does not exist.");
+			setAlertMessage("Game is full or does not exist.");
+			return;
+		}
+		const player2Id = uuidv4(); // Generate unique ID for Player 1
+
+		localStorage.setItem('playerId', player2Id);
+
 		await setItem(GAMES_PATH + gameId + '/two', {
+			id: player2Id, 
 			hp: INITIAL_HP,
 			playerName: 'player2',
 			canAttack: true,
@@ -134,6 +148,42 @@ function Home() {
 			},
 		});
 	};
+	const returnAsPlayer = async (playerNumber:number) => {
+		const storedPlayerId = localStorage.getItem('playerId');
+		if (!storedPlayerId) {
+			console.log("No player ID found in local storage.");
+			return;
+		}
+		const playerData = playerNumber === 1 ? "one" : "two";
+		console.log(playerData)
+		const IdFromDb = await getItemsOnce(GAMES_PATH +'/'+ gameId +'/'+ playerData + '/' + 'id');
+		if (!IdFromDb) {
+			console.log("Game does not exist.");
+			return;
+		}
+		
+		console.log(storedPlayerId)
+		console.log(IdFromDb)
+		if (IdFromDb === storedPlayerId) {
+			if (playerNumber === 1 ) {navigate('game/' + gameId, {
+				state: {
+					gameId: gameId,
+					playerName: 'player1',
+					playerType: PlayerType.ONE,
+				},
+			});}
+			else {navigate('game/' + gameId, {
+				state: {
+					gameId: gameId,
+					playerName: 'player2',
+					playerType: PlayerType.TWO,
+				},
+			});}
+		} else {
+			console.log("Player ID does not match.");
+		}
+	};
+	
 
 	return (
 		<div style={{ height: '100%', ...centerStyle, width: '100%' }}>
@@ -144,6 +194,12 @@ function Home() {
 					gap: 20,
 				}}>
 				<div style={{ ...centerStyle, gap: 15 }}>
+				{alertMessage && (
+            <div style={{  }}>
+                {alertMessage}
+                <button onClick={() => setAlertMessage("")}>Close</button>
+            </div>
+        )}
 					<button
 						style={{
 							...buttonStyle,
@@ -200,6 +256,20 @@ function Home() {
 							onClick={() => joinGameAsSpectator()}>
 							<MdVisibility />
 						</button>
+						<button
+							style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.7em' }}
+							disabled={disabledButton}
+							onClick={() => returnAsPlayer(1)}>
+							Return 1
+
+						</button>
+						<button
+							style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.7em' }}
+							disabled={disabledButton}
+							onClick={() => returnAsPlayer(2)}>
+							Return 2
+						</button>
+						
 					</div>
 				</div>
 			</div>
