@@ -2,7 +2,14 @@ import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
 
 function WalkThrough() {
 	return (
-		<div style={{ ...flexColumnStyle, ...centerStyle, color: violet, overflowY: 'auto', height: '90vh' }}>
+		<div
+			style={{
+				...flexColumnStyle,
+				...centerStyle,
+				color: violet,
+				overflowY: 'auto',
+				height: '90vh',
+			}}>
 			<h2>Game Explanation</h2>
 			<ul style={{ textAlign: 'left' }}>
 				<li>
@@ -10,12 +17,14 @@ function WalkThrough() {
 				</li>
 				<li>
 					<h6>
-						Animal cards divided into 4 clans (earth, fire, air and water), each clan contains 4 animals (king, attacker
-						,tank and joker), each animal has a specific ability
+						Animal cards divided into 4 clans (earth, fire, air and water), each clan contains 4
+						animals (king, attacker ,tank and joker), each animal has a specific ability
 					</h6>
 				</li>
 				<li>
-					<h6>The Power card has a specific ability that can influence the game and the Animal cards</h6>
+					<h6>
+						The Power card has a specific ability that can influence the game and the Animal cards
+					</h6>
 				</li>
 				<li>
 					<h6>Before the start of the game, each player chooses 8 animals and one power card</h6>
@@ -28,8 +37,8 @@ function WalkThrough() {
 				</li>
 				<li>
 					<h6>
-						The board divided into 5 elements: 6 slots, animal graveyard, power graveyard, environment slot and the main
-						deck
+						The board divided into 5 elements: 6 slots, animal graveyard, power graveyard, element
+						slot and the main deck
 					</h6>
 				</li>
 				<li>
@@ -42,7 +51,10 @@ function WalkThrough() {
 					<h6>Power graveyard contains the power card that are used</h6>
 				</li>
 				<li>
-					<h6>Environment slot indicate which clan environment is activated, at the start of the game is neutral</h6>
+					<h6>
+						Element slot indicate which clan element is activated, at the start of the game is
+						neutral
+					</h6>
 				</li>
 				<li>
 					<h6>The main deck contains power cards, each round every player get one power card</h6>
@@ -52,14 +64,14 @@ function WalkThrough() {
 				</li>
 				<li>
 					<h6>
-						Each round, the player get a power card from the main deck, he can play 2 cards (3 in the first round), he
-						can also set the environment and attack the opponent.
+						Each round, the player get a power card from the main deck, he can play 2 cards (3 in
+						the first round), he can also set the element and attack the opponent.
 					</h6>
 				</li>
 				<li>
 					<h6>
-						To change the environment, your element must be charged, it takes 3 round to charged(at the start of the
-						element is charge it) or use the power card "Fully charge the element"
+						To change the element, your element must be charged, it takes 3 round to charged(at the
+						start of the element is charge it) or use the power card "Charge the element"
 					</h6>
 				</li>
 				<li>
@@ -102,10 +114,13 @@ function WalkThrough() {
 					<h6>play the power card revive any animal for 1 hp and revive the BEE</h6>
 				</li>
 				<li>
-					<h6>play the power card revive block all attacks to stop the opponent from attacking in next turn</h6>
+					<h6>
+						play the power card revive block all attacks to stop the opponent from attacking in next
+						turn
+					</h6>
 				</li>
 				<li>
-					<h6>finally change the environment and attack directly the player with the EAGLE</h6>
+					<h6>finally change the element and attack directly the player with the EAGLE</h6>
 				</li>
 			</ul>
 		</div>
