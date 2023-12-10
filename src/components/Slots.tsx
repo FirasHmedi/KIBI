@@ -5,8 +5,6 @@ import { TbSword } from 'react-icons/tb';
 import { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { Tooltip } from 'react-tooltip';
-import attIcon from '../assets/icons/att.png';
-import noAttIcon from '../assets/icons/no-att.png';
 import {
 	boardSlotStyle,
 	centerStyle,
@@ -480,19 +478,6 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 					}}></img>
 			)}
 		</div>
-	);
-};
-
-const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
-	const val = 24;
-	return isAnimalCard(slot?.cardId) ? (
-		slot?.canAttack ? (
-			<img src={attIcon} style={{ width: val }}></img>
-		) : (
-			<img src={noAttIcon} style={{ width: 28 }}></img>
-		)
-	) : (
-		<div style={{ height: val }} />
 	);
 };
 

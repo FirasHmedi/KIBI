@@ -16,7 +16,7 @@ import {
 	setElementLoad,
 	setPowerCardAsActive,
 } from '../backend/actions';
-import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
+import { add1Hp, add2Hp, minus1Hp } from '../backend/animalsAbilities';
 import {
 	cancelAttacks,
 	cancelUsingPowerCards,
@@ -159,12 +159,13 @@ export function GameView({
 
 		if (isJokerInElement(cardId, elementType)) {
 			await waitFor(700);
-			activateMonkeyAbility(currPSlots, true);
+			setCardsIdsForPopup(oppPlayer.cardsIds);
+			setIsJokerActive(true);
 		}
 
 		if (isTankInElement(cardId, elementType)) {
 			await waitFor(700);
-			activateTankAbility(gameId, playerType, currPSlots, elementType);
+			await add1Hp(gameId, playerType);
 		}
 	};
 
@@ -241,11 +242,12 @@ export function GameView({
 
 		if (activateJokerAbilityNow) {
 			await waitFor(700);
-			activateMonkeyAbility(currPSlots, true);
+			setCardsIdsForPopup(oppPlayer.cardsIds);
+			setIsJokerActive(true);
 		}
 		if (activateTankAbilityNow) {
 			await waitFor(700);
-			activateTankAbility(gameId, playerType, currPSlots, elementType);
+			await add1Hp(gameId, playerType);
 		}
 	};
 

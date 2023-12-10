@@ -215,6 +215,19 @@ className={
 		slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
 	}
 	
+	const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
+		const val = 24;
+		return isAnimalCard(slot?.cardId) ? (
+			slot?.canAttack ? (
+				<img src={attIcon} style={{ width: val }}></img>
+			) : (
+				<img src={noAttIcon} style={{ width: 28 }}></img>
+			)
+		) : (
+			<div style={{ height: val }} />
+		);
+	};
+
 	*/
 
 export {};
