@@ -46,7 +46,7 @@ export interface Player {
 	playerName?: string;
 	canPlayPowers: boolean;
 	canAttack: boolean;
-	tanksWithDoubleAP?: boolean;
+	isDoubleAP?: boolean;
 	envLoadNb: number;
 }
 

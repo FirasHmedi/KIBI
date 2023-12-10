@@ -24,13 +24,7 @@ import {
 	animalsPics,
 	elementsIcons,
 } from '../utils/data';
-import {
-	getAnimalCard,
-	getPowerCard,
-	isAnimalCard,
-	isAnimalInEnv,
-	isPowerCard,
-} from '../utils/helpers';
+import { getAnimalCard, getPowerCard, isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
 export interface DropItem {
@@ -61,7 +55,7 @@ interface SlotProps {
 	selectSlot?: any;
 	nb?: number;
 	graveyard?: boolean;
-	tanksWithDoubleAP?: boolean;
+	isDoubleAP?: boolean;
 	playCard: any;
 	localState: any;
 	attack?: any;
@@ -169,11 +163,12 @@ export const AnimalBoardSlot = ({
 	attack,
 	nb,
 	attackState,
+	isDoubleAP,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
-	tanksWithDoubleAP?: boolean;
+	isDoubleAP?: boolean;
 	attack?: any;
 	nb?: number;
 	attackState?: any;
@@ -203,7 +198,6 @@ export const AnimalBoardSlot = ({
 	if (!name || !clan || !role) return <></>;
 
 	const { hp, ap } = ANIMALS_POINTS[role];
-	const isTankDoubleAP = false; // role === TANK && tanksWithDoubleAP;
 	const roleTooltipContent = ability;
 	const roleTooltipId = `role-anchor${cardId}`;
 	const ref = useRef(null);
@@ -246,7 +240,7 @@ export const AnimalBoardSlot = ({
 					height: '2rem',
 				}}>
 				<div style={{ ...centerStyle, gap: 2 }}>
-					<h4>{isTankDoubleAP ? ap * 2 : ap}</h4>
+					<h4>{isDoubleAP ? ap * 2 : ap}</h4>
 					<TbSword style={{ fontSize: '1.45rem' }} />
 				</div>
 
@@ -350,7 +344,7 @@ export const BoardSlot = ({
 	selected,
 	selectSlot,
 	nb,
-	tanksWithDoubleAP,
+	isDoubleAP,
 	playCard,
 	localState,
 	attack,
@@ -386,7 +380,7 @@ export const BoardSlot = ({
 					cardId={cardId!}
 					select={() => selectSlot(nb)}
 					selected={selected}
-					tanksWithDoubleAP={tanksWithDoubleAP}
+					isDoubleAP={isDoubleAP}
 					attack={attack}
 					nb={nb}
 					attackState={attackState}
@@ -505,9 +499,8 @@ const CanAttackIconsView = ({ slot }: { slot: SlotType }) => {
 export const BoardSlots = ({
 	slots,
 	opponent,
-	current,
 	elementType,
-	tanksWithDoubleAP,
+	isDoubleAP,
 	playCard,
 	localState,
 	attack,
@@ -517,7 +510,7 @@ export const BoardSlots = ({
 	opponent?: boolean;
 	current?: boolean;
 	elementType?: ClanName;
-	tanksWithDoubleAP?: boolean;
+	isDoubleAP?: boolean;
 	playCard?: any;
 	localState?: any;
 	attack?: any;
@@ -525,15 +518,12 @@ export const BoardSlots = ({
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
-	// const mainColor = elementType == 'neutral' ? 'transparent' : CLANS[elementType].color;
+	const mainColor = elementType == 'neutral' ? 'transparent' : CLANS[elementType].color;
 	const glow = {
-		/*boxShadow: ` 0 0 0.2vw 0.12vw ${mainColor}`, borderRadius: 5,*/
+		boxShadow: ` 0 0 0.2vw 0.12vw ${mainColor}`,
+		borderRadius: 5,
 	};
-	/*
-className={
-		slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
-	}
-	*/
+
 	return (
 		<div
 			style={{
@@ -544,10 +534,10 @@ className={
 			{compoundSlots.map((slot, index) => (
 				<div key={index}>
 					{/*<div>{current && <CanAttackIconsView slot={slot} />}</div>*/}
-					<div style={isAnimalInEnv(slot?.cardId, elementType) ? glow : undefined}>
+					<div style={isDoubleAP ? glow : undefined}>
 						<BoardSlot
 							nb={index}
-							tanksWithDoubleAP={tanksWithDoubleAP}
+							isDoubleAP={isDoubleAP}
 							cardId={slot?.cardId}
 							playCard={playCard}
 							localState={localState}

@@ -88,20 +88,15 @@ export const isAnimalInEnv = (cardId?: string, elementType?: ClanName) =>
 	elementType === getAnimalCard(cardId)?.clan;
 
 export const getAnimalHP = (role: RoleName) => ANIMALS_POINTS[role].hp;
-export const getAnimalAP = (role: RoleName, doubleAP = false) =>
-	doubleAP ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
+export const getAnimalAP = (role: RoleName, isDoubleAP = false) =>
+	isDoubleAP ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
 
-export const canAnimalAKillAnimalD = (
-	aID?: string,
-	dID?: string,
-	tanksWithDoubleAP: boolean = false,
-) => {
+export const canAnimalAKillAnimalD = (aID?: string, dID?: string, isDoubleAP: boolean = false) => {
 	const animalA = getAnimalCard(aID);
 	const animalD = getAnimalCard(dID);
 	if (!animalA || !animalD) return false;
 
-	const doubleAP = false; // animalA.role === TANK && tanksWithDoubleAP;
-	const animalAAP = getAnimalAP(animalA.role, doubleAP);
+	const animalAAP = getAnimalAP(animalA.role, isDoubleAP);
 	const animalDHP = getAnimalHP(animalD.role);
 
 	if (animalAAP < animalDHP) {

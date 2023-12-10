@@ -17,10 +17,10 @@ import {
 	addInfoToLog,
 	changeCanAttackVarOfSlot,
 	getCardFromMainDeck,
+	removeAnimalFromBoard,
 	removeCardFromMainDeck,
 	removeCardFromPlayerDeck,
 	removeHpFromPlayer,
-	removePlayerAnimalFromBoard,
 	setActivePowerCard,
 } from './unitActions';
 
@@ -71,7 +71,7 @@ export const placeKingOnBoard = async (
 		'player ' + playerType + ' sacrificed a ' + sacrificedAnimal?.name + ' to play ' + king?.name,
 	);
 	if (!king || !sacrificedAnimal || king.clan !== sacrificedAnimal.clan) return;
-	const isRemoved = await removePlayerAnimalFromBoard(gameId, playerType, slotNb);
+	const isRemoved = await removeAnimalFromBoard(gameId, playerType, slotNb);
 	if (isRemoved) {
 		await addAnimalToGraveYard(gameId, sacrificedAnimalId);
 		await removeCardFromPlayerDeck(gameId, playerType, kingId);
@@ -93,14 +93,7 @@ export const attackOppAnimal = async (
 	const opponentId = getOpponentIdFromCurrentId(playerType);
 	await addInfoToLog(gameId, animalA.name + ' killed ' + animalD.name + ' of ' + opponentId);
 
-	const elementType = await getElementType(gameId);
-	if (animalA.clan === elementType) {
-		if (animalA.role === TANK) {
-			await add1Hp(gameId, playerType);
-		}
-	}
-
-	await removePlayerAnimalFromBoard(gameId, opponentId, slotDNumber);
+	await removeAnimalFromBoard(gameId, opponentId, slotDNumber);
 	await addAnimalToGraveYard(gameId, animalDId);
 };
 
@@ -127,7 +120,7 @@ export const attackOwner = async (
 	if (!isAnimalCard(animalId)) return;
 	const { name, role } = getAnimalCard(animalId)!;
 	await addInfoToLog(gameId, name + ' has attacked ' + playerDType + ' directly');
-	const ap = ANIMALS_POINTS[role].ap;
+	const ap = isDoubleAP ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
 	await removeHpFromPlayer(gameId, playerDType, ap);
 };
 

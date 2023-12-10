@@ -210,6 +210,11 @@ export const GeneralTestData = {
 		"description": "Double attack points of all Elephants",
 		"name": "Double AP of all Elephants"
 	}
+		
+className={
+		slot?.hasAttacked ? (current ? 'up-transition' : 'down-transition') : undefined
+	}
+	
 	*/
 
 export {};

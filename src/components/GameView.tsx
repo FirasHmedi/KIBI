@@ -21,7 +21,6 @@ import {
 	cancelAttacks,
 	cancelUsingPowerCards,
 	changeElement,
-	doubleTanksAP,
 	draw2Cards,
 	resetBoard,
 	return2animalsFromGYToDeck,
@@ -96,6 +95,8 @@ export function GameView({
 	const openCardsPopup = cardsIdsForPopup?.length > 0;
 	const isOppSlotsEmpty = getIsOppSlotsEmpty(oppPSlots);
 	const isOppSlotsAllFilled = getIsOppSlotsAllFilled(oppPSlots);
+	const isOppDoubleAP = oppPlayer.isDoubleAP;
+	const isCurrDoubleAP = currPlayer.isDoubleAP;
 
 	useEffect(() => {
 		if (isMyRound) {
@@ -351,9 +352,6 @@ export function GameView({
 				setCanPlaceKingWithoutSacrifice(true);
 				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
 				break;
-			case 'double-tanks-ap':
-				await doubleTanksAP(gameId, playerType);
-				break;
 			case 'charge-element':
 				await setElementLoad(gameId, playerType, 3);
 				break;
@@ -440,11 +438,7 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
-		if (spectator) {
-			return;
-		}
-
-		if (!isAnimalCard(currAnimalId) || currAnimalId === oppoAnimalId) {
+		if (!isAnimalCard(currAnimalId) || currAnimalId === oppoAnimalId || spectator) {
 			return;
 		}
 
@@ -479,7 +473,7 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
-		if (!canAnimalAKillAnimalD(currAnimalId, oppoAnimalId, currPlayer.tanksWithDoubleAP)) {
+		if (!canAnimalAKillAnimalD(currAnimalId, oppoAnimalId, isCurrDoubleAP)) {
 			return;
 		}
 
@@ -504,8 +498,7 @@ export function GameView({
 	const attackOppHp = async (currSlotNb: number, animalId: string) => {
 		setHasAttacked(true);
 		await changeHasAttacked(gameId, playerType, currSlotNb, true);
-		const isDoubleAP = currPlayer.tanksWithDoubleAP;
-		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalId, isDoubleAP);
+		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalId, isCurrDoubleAP);
 		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, currSlotNb, false);
 	};
@@ -569,6 +562,8 @@ export function GameView({
 				localState={localState}
 				attack={attack}
 				attackState={attackState}
+				isOppDoubleAP={isOppDoubleAP}
+				isCurrDoubleAP={isCurrDoubleAP}
 			/>
 
 			<CurrentPView

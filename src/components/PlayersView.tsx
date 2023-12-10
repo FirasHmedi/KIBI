@@ -154,7 +154,7 @@ const PlayerDataView = ({
 	showCountDown?: any;
 	finishRound?: any;
 }) => {
-	const { hp, playerType, canPlayPowers, tanksWithDoubleAP, canAttack, envLoadNb } = player;
+	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack, envLoadNb } = player;
 	const batteryStyle = { color: violet, width: '3vw', height: 'auto' };
 	const hpRef = useRef<number>(0);
 	const [hpChange, setHpChange] = useState<string>();
@@ -259,7 +259,7 @@ const PlayerDataView = ({
 				) : canPlayPowers === false ? (
 					<h4>Blocked from playing power cards</h4>
 				) : null}
-				{tanksWithDoubleAP && <h4>ELEPHANTS AP is doubled </h4>}
+				{isDoubleAP && <h4>Animals AP is doubled </h4>}
 			</div>
 		</div>
 	);

@@ -13,9 +13,19 @@ interface Props {
 	localState?: any;
 	attack?: any;
 	attackState?: any;
+	isOppDoubleAP?: boolean;
+	isCurrDoubleAP?: boolean;
 }
 
-export const BoardView = ({ board, playCard, localState, attack, attackState }: Props) => {
+export const BoardView = ({
+	board,
+	playCard,
+	localState,
+	attack,
+	attackState,
+	isOppDoubleAP,
+	isCurrDoubleAP,
+}: Props) => {
 	const { mainDeck, currPSlots, oppPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 
 	return (
@@ -38,6 +48,7 @@ export const BoardView = ({ board, playCard, localState, attack, attackState }: 
 					attack={attack}
 					attackState={attackState}
 					localState={localState}
+					isDoubleAP={isOppDoubleAP}
 				/>
 				<Seperator h='8vh' />
 				<BoardSlots
@@ -48,6 +59,7 @@ export const BoardView = ({ board, playCard, localState, attack, attackState }: 
 					localState={localState}
 					attack={attack}
 					attackState={attackState}
+					isDoubleAP={isCurrDoubleAP}
 				/>
 			</div>
 

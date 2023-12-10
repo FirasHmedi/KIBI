@@ -1,8 +1,9 @@
 import isNil from 'lodash/isNil';
 import { ClanName, EMPTY_SLOT } from '../utils/data';
-import { isAnimalCard, isPowerCard } from '../utils/helpers';
-import { PlayerType } from '../utils/interface';
-import { getBoardPath, getGamePath, getItemsOnce, setItem } from './db';
+import { getAnimalCard, isAnimalCard, isPowerCard } from '../utils/helpers';
+import { PlayerType, SlotType } from '../utils/interface';
+import { getElementType } from './actions';
+import { getBoardPath, getGamePath, getItemsOnce, getPlayerPath, setItem } from './db';
 
 export const setActivePowerCard = async (gameId: string, cardId?: string) => {
 	await setItem(getBoardPath(gameId), { activeCardId: cardId });
@@ -28,10 +29,41 @@ export const addAnimalToBoard = async (
 	canAttack: boolean = false,
 ) => {
 	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb);
-	const slots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
+	const slots = ((await getItemsOnce(getBoardPath(gameId) + playerType)) ?? []) as SlotType[];
 	const updatedSlots = [slots[0] ?? EMPTY_SLOT, slots[1] ?? EMPTY_SLOT, slots[2] ?? EMPTY_SLOT];
 	updatedSlots[slotNb] = { cardId: animalId, canAttack: true };
 	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });
+	// 3 Animals in element
+	const isDoubleAP = await are3AnimalsWithSameElement(gameId, updatedSlots);
+	await setPlayerDoubleAP(gameId, playerType, isDoubleAP);
+};
+
+export const setPlayerDoubleAP = async (
+	gameId: string,
+	playerType: PlayerType,
+	isDoubleAP: boolean = false,
+) => {
+	await setItem(getPlayerPath(gameId, playerType), { isDoubleAP });
+};
+
+export const are3AnimalsWithSameElement = async (
+	gameId: string,
+	slots: SlotType[],
+	elementType?: ClanName,
+) => {
+	let latestElementType = elementType;
+	if (!latestElementType) {
+		latestElementType = await getElementType(gameId);
+	}
+	const animal1 = getAnimalCard(slots[0].cardId);
+	const animal2 = getAnimalCard(slots[1].cardId);
+	const animal3 = getAnimalCard(slots[2].cardId);
+	console.log(animal1, animal1, animal3, latestElementType);
+	return (
+		latestElementType === animal1?.clan &&
+		animal2?.clan === latestElementType &&
+		animal3?.clan === latestElementType
+	);
 };
 
 export const addCardsToPlayerDeck = async (
@@ -69,9 +101,9 @@ export const addPowerToGraveYard = async (gameId: string, powerId: string) => {
 	await setItem(getBoardPath(gameId) + 'powerGY', { [`${cardIndex}`]: powerId });
 };
 
-export const removePlayerAnimalFromBoard = async (
+export const removeAnimalFromBoard = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	slotNumber: number,
 ): Promise<boolean> => {
 	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNumber);
@@ -79,6 +111,9 @@ export const removePlayerAnimalFromBoard = async (
 		await setItem(getBoardPath(gameId) + playerType, {
 			[`${slotNumber}`]: EMPTY_SLOT,
 		});
+
+		await setPlayerDoubleAP(gameId, playerType, false);
+
 		return true;
 	}
 	return false;
@@ -200,6 +235,13 @@ export const changePLayerHealth = async (gameId: string, playerType: string, hp:
 
 export const getPLayerCards = async (gameId: string, playerType: string): Promise<string[]> => {
 	return (await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds')) ?? [];
+};
+
+export const getPLayerDoubleAP = async (
+	gameId: string,
+	playerType: PlayerType,
+): Promise<boolean> => {
+	return (await getItemsOnce(getPlayerPath(gameId, playerType) + '/isDoubleAP')) ?? false;
 };
 
 export const setPlayerDeck = async (gameId: string, playerType: string, cardsIds: string[]) => {

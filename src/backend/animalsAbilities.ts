@@ -10,9 +10,9 @@ import {
 	addPowerToGraveYard,
 	deleteAnimalCardFromGraveYardById,
 	deletePowerCardFromGraveYardById,
+	removeAnimalFromBoard,
 	removeCardFromPlayerDeck,
 	removeHpFromPlayer,
-	removePlayerAnimalFromBoard,
 } from './unitActions';
 
 export const returnAnimalToDeck = async (gameId: string, playerType: string, animalId: string) => {
@@ -21,13 +21,13 @@ export const returnAnimalToDeck = async (gameId: string, playerType: string, ani
 };
 
 // ----------------------attacker--------------------
-export const removePlayerAnimalFromBoardAndAddToGraveYard = async (
+export const removeAnimalFromBoardAndAddToGraveYard = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	slotNumber: number,
 	animalId: string,
 ) => {
-	await removePlayerAnimalFromBoard(gameId, playerType, slotNumber);
+	await removeAnimalFromBoard(gameId, playerType, slotNumber);
 	await addAnimalToGraveYard(gameId, animalId);
 };
 // ----------------------tank-----------------------

@@ -15,6 +15,7 @@ import {
 	addAnimalToGraveYard,
 	addCardsToPlayerDeck,
 	addHpToPlayer,
+	are3AnimalsWithSameElement,
 	changeCanAttackVar,
 	changeElementUnitAction,
 	changePLayerHealth,
@@ -24,9 +25,10 @@ import {
 	deletePowerCardFromGraveYardById,
 	getPLayerCards,
 	getPLayerHealth,
+	removeAnimalFromBoard,
 	removeHpFromPlayer,
-	removePlayerAnimalFromBoard,
 	setPlayerDeck,
+	setPlayerDoubleAP,
 } from './unitActions';
 
 export const stealCardFromOpponent = async (
@@ -104,7 +106,7 @@ export const sacrifice3HpToSteal = async (
 ) => {
 	if (!animalId || isNil(mySlotNb) || isNil(oppSlotNb)) return;
 	await removeHpFromPlayer(gameId, playerType, 3);
-	await removePlayerAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), oppSlotNb);
+	await removeAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), oppSlotNb);
 	await addAnimalToBoard(gameId, playerType, mySlotNb, animalId, true);
 };
 
@@ -174,9 +176,19 @@ export const switch2Cards = async (
 export const changeElement = async (
 	gameId: string,
 	elementType: ClanName,
-	playerType?: PlayerType,
+	playerType: PlayerType,
 ) => {
 	await changeElementUnitAction(gameId, elementType);
+
+	const currSlots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
+	const isCurrDoubleAP = await are3AnimalsWithSameElement(gameId, currSlots, elementType);
+	await setPlayerDoubleAP(gameId, playerType, isCurrDoubleAP);
+
+	const oppPlayerType = getOpponentIdFromCurrentId(playerType);
+	const oppSlots = (await getItemsOnce(getBoardPath(gameId) + oppPlayerType)) ?? [];
+	const isOppDoubleAP = await are3AnimalsWithSameElement(gameId, oppSlots, elementType);
+	await setPlayerDoubleAP(gameId, oppPlayerType, isOppDoubleAP);
+
 	if (playerType) {
 		setElementLoad(gameId, playerType, 0);
 	}
@@ -190,7 +202,7 @@ export const sacrificeAnimalToGet3Hp = async (
 	elementType?: string,
 ) => {
 	if (!animalId || isNil(slotNb)) return;
-	const isRemoved = await removePlayerAnimalFromBoard(gameId, playerType, slotNb);
+	const isRemoved = await removeAnimalFromBoard(gameId, playerType, slotNb);
 	if (isRemoved) {
 		await addAnimalToGraveYard(gameId, animalId);
 		await addHpToPlayer(gameId, playerType, 3);
@@ -241,20 +253,20 @@ export const resetBoard = async (
 	oppPSlots: SlotType[] = [],
 ) => {
 	for (let i = 0; i < 3; i++) {
-		await removePlayerAnimalFromBoard(gameId, playerType, i);
+		await removeAnimalFromBoard(gameId, playerType, i);
 		if (!isEmpty(currPSlots[i]?.cardId) && currPSlots[i]?.cardId !== EMPTY) {
 			await addCardsToPlayerDeck(gameId, playerType, [currPSlots[i]?.cardId]);
 		}
 	}
 	for (let i = 0; i < 3; i++) {
-		await removePlayerAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), i);
+		await removeAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), i);
 		if (!isEmpty(oppPSlots[i]?.cardId) && oppPSlots[i]?.cardId !== EMPTY) {
 			await addCardsToPlayerDeck(gameId, getOpponentIdFromCurrentId(playerType), [
 				oppPSlots[i]?.cardId,
 			]);
 		}
 	}
-	await changeElement(gameId, NEUTRAL);
+	await changeElement(gameId, NEUTRAL, playerType);
 };
 
 export const doubleTanksAP = async (gameId: string, playerType: PlayerType) => {
