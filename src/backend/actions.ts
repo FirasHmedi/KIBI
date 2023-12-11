@@ -229,7 +229,7 @@ export const incrementEnvLoad = async (gameId: string, playerType: PlayerType) =
 	await setItem(getPlayerPath(gameId, playerType), { envLoadNb: envLoadNb + 1 });
 };
 
-export const setElementLoad = async (gameId: string, playerType: PlayerType, val: number = 1) => {
+export const setElementLoad = async (gameId: string, playerType: PlayerType, val: number) => {
 	await setItem(getPlayerPath(gameId, playerType), { envLoadNb: val });
 	// 0 when he changed element, 3 for loading element with card
 	/*

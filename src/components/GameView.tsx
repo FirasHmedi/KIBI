@@ -16,7 +16,7 @@ import {
 	setElementLoad,
 	setPowerCardAsActive,
 } from '../backend/actions';
-import { add1Hp, add2Hp, minus1Hp } from '../backend/animalsAbilities';
+import { add1Hp, add2Hp, minus1Hp, minus2Hp } from '../backend/animalsAbilities';
 import {
 	cancelAttacks,
 	cancelUsingPowerCards,
@@ -379,7 +379,7 @@ export function GameView({
 
 	const chargeElement = async () => {
 		if (spectator || currPlayer.envLoadNb === 1 || currPlayer.hp < 2 || !isMyRound) return;
-		await minus1Hp(gameId, playerType);
+		await minus2Hp(gameId, playerType);
 		await setElementLoad(gameId, playerType, 1);
 	};
 

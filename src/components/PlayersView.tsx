@@ -241,7 +241,7 @@ const PlayerDataView = ({
 						}}
 						disabled={envLoadNb === 1 || !isMyRound}
 						onClick={() => chargeElement()}>
-						Charge (-1hp)
+						Charge (-2hp)
 					</button>
 				)}
 
