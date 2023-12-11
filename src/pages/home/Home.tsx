@@ -35,6 +35,7 @@ function Home() {
 		await setItem(GAMES_PATH + gameId, {
 			status: PREPARE,
 			one: {
+				id : player1Id,
 				hp: INITIAL_HP,
 				playerName: 'player1',
 				canAttack: true,
@@ -148,38 +149,36 @@ function Home() {
 			},
 		});
 	};
-	const returnAsPlayer = async (playerNumber:number) => {
+	const returnAsPlayer = async () => {
 		const storedPlayerId = localStorage.getItem('playerId');
 		if (!storedPlayerId) {
 			console.log("No player ID found in local storage.");
 			return;
 		}
-		const playerData = playerNumber === 1 ? "one" : "two";
-		console.log(playerData)
-		const IdFromDb = await getItemsOnce(GAMES_PATH +'/'+ gameId +'/'+ playerData + '/' + 'id');
-		if (!IdFromDb) {
-			console.log("Game does not exist.");
+		const playerOneId = await getItemsOnce(GAMES_PATH +'/'+ gameId +'/one/id');
+		const playerTwoId = await getItemsOnce(GAMES_PATH +'/'+ gameId +'/two/id');
+
+		if (!playerOneId || !playerTwoId) {
+			console.log("Game does not exist or player is not initiated yet");
 			return;
 		}
 		
-		console.log(storedPlayerId)
-		console.log(IdFromDb)
-		if (IdFromDb === storedPlayerId) {
-			if (playerNumber === 1 ) {navigate('game/' + gameId, {
+		if (playerOneId === storedPlayerId) {
+			navigate('game/' + gameId, {
 				state: {
 					gameId: gameId,
 					playerName: 'player1',
 					playerType: PlayerType.ONE,
 				},
 			});}
-			else {navigate('game/' + gameId, {
+		else if (playerTwoId === storedPlayerId) {navigate('game/' + gameId, {
 				state: {
 					gameId: gameId,
 					playerName: 'player2',
 					playerType: PlayerType.TWO,
 				},
 			});}
-		} else {
+		 else {
 			console.log("Player ID does not match.");
 		}
 	};
@@ -259,15 +258,9 @@ function Home() {
 						<button
 							style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.7em' }}
 							disabled={disabledButton}
-							onClick={() => returnAsPlayer(1)}>
-							Return 1
+							onClick={() => returnAsPlayer()}>
+							continue
 
-						</button>
-						<button
-							style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.7em' }}
-							disabled={disabledButton}
-							onClick={() => returnAsPlayer(2)}>
-							Return 2
 						</button>
 						
 					</div>
