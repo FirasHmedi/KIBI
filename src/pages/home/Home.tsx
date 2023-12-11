@@ -5,6 +5,9 @@ import { MdComputer, MdPerson, MdPersonAdd, MdVisibility } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { getItemsOnce, setItem } from '../../backend/db';
+import { ToastContainer,toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 import {
 	buttonStyle,
 	centerStyle,
@@ -112,10 +115,12 @@ function Home() {
 		const gameData = await getItemsOnce(GAMES_PATH + gameId);
 		if (!gameData || gameData.two.id) {
 			console.log("Game is full or does not exist.");
-			setAlertMessage("Game is full or does not exist.");
+			toast.error("Game is full or does not exist.", {
+				position: toast.POSITION.TOP_RIGHT,
+			  });
 			return;
 		}
-		const player2Id = uuidv4(); // Generate unique ID for Player 1
+		const player2Id = uuidv4(); 
 
 		localStorage.setItem('playerId', player2Id);
 
@@ -153,6 +158,9 @@ function Home() {
 		const storedPlayerId = localStorage.getItem('playerId');
 		if (!storedPlayerId) {
 			console.log("No player ID found in local storage.");
+			toast.error("No player ID found in local storage.", {
+				position: toast.POSITION.TOP_RIGHT,
+			  });
 			return;
 		}
 		const playerOneId = await getItemsOnce(GAMES_PATH +'/'+ gameId +'/one/id');
@@ -160,6 +168,9 @@ function Home() {
 
 		if (!playerOneId || !playerTwoId) {
 			console.log("Game does not exist or player is not initiated yet");
+			toast.error("Game does not exist or player is not initiated yet", {
+				position: toast.POSITION.TOP_RIGHT,
+			  });
 			return;
 		}
 		
@@ -180,11 +191,16 @@ function Home() {
 			});}
 		 else {
 			console.log("Player ID does not match.");
+			toast.error("Player ID does not match.", {
+				position: toast.POSITION.TOP_RIGHT,
+			  });
 		}
 	};
 	
 
 	return (
+		<>
+		<ToastContainer />
 		<div style={{ height: '100%', ...centerStyle, width: '100%' }}>
 			<div
 				style={{
@@ -266,7 +282,7 @@ function Home() {
 					</div>
 				</div>
 			</div>
-		</div>
+		</div></>
 	);
 }
 
