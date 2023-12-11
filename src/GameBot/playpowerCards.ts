@@ -185,7 +185,7 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 			await doubleTanksAP(gameId, PlayerType.TWO);
 			break;
 		case 'charge-element':
-			await setElementLoad(gameId, PlayerType.TWO, 3);
+			await setElementLoad(gameId, PlayerType.TWO, 1);
 			break;
 	}
 

@@ -230,7 +230,9 @@ export const incrementEnvLoad = async (gameId: string, playerType: PlayerType) =
 };
 
 export const setElementLoad = async (gameId: string, playerType: PlayerType, val: number = 1) => {
+	await setItem(getPlayerPath(gameId, playerType), { envLoadNb: val });
 	// 0 when he changed element, 3 for loading element with card
+	/*
 	if (val === 0 || val === 3) {
 		await setItem(getPlayerPath(gameId, playerType), { envLoadNb: val });
 		return;
@@ -240,4 +242,5 @@ export const setElementLoad = async (gameId: string, playerType: PlayerType, val
 		return;
 	}
 	await setItem(getPlayerPath(gameId, playerType), { envLoadNb: envLoadNb + 1 });
+	*/
 };

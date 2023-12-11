@@ -228,6 +228,11 @@ className={
 		);
 	};
 
+		"place-king": {
+		"description": "Place an active king",
+		"name": "Place a king on board"
+	},
+
 	*/
 
 export {};

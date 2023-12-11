@@ -2,12 +2,7 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
-import {
-	MdBattery0Bar,
-	MdBatteryCharging20,
-	MdBatteryCharging80,
-	MdBatteryChargingFull,
-} from 'react-icons/md';
+import { MdBattery0Bar, MdBatteryChargingFull } from 'react-icons/md';
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
 import { Player, Round } from '../utils/interface';
@@ -32,12 +27,12 @@ const CountDown = ({ finishRound }: any) => (
 export const CurrentPView = ({
 	player,
 	round,
-	playCard,
 	finishRound,
 	nbCardsToPlay,
 	setElement,
 	spectator,
 	showCountDown,
+	chargeElement,
 }: {
 	player: Player;
 	round: Round;
@@ -47,6 +42,7 @@ export const CurrentPView = ({
 	setElement: () => void;
 	spectator?: boolean;
 	showCountDown?: any;
+	chargeElement?: any;
 }) => {
 	const { playerType } = player;
 	const cardsIds = player.cardsIds ?? [];
@@ -112,6 +108,7 @@ export const CurrentPView = ({
 				isMyRound={isMyRound}
 				isMe={true}
 				finishRound={finishRound}
+				chargeElement={chargeElement}
 			/>
 			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
 			<EmptyElement />
@@ -146,6 +143,7 @@ const PlayerDataView = ({
 	isMe,
 	showCountDown,
 	finishRound,
+	chargeElement,
 }: {
 	player: Player;
 	setElement?: any;
@@ -153,6 +151,7 @@ const PlayerDataView = ({
 	isMe?: boolean;
 	showCountDown?: any;
 	finishRound?: any;
+	chargeElement?: any;
 }) => {
 	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack, envLoadNb } = player;
 	const batteryStyle = { color: violet, width: '3vw', height: 'auto' };
@@ -226,20 +225,37 @@ const PlayerDataView = ({
 					completed={hp ?? 0}></ProgressBar>
 			</div>
 
-			<button
-				style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}
-				disabled={!(!!setElement && envLoadNb === 3 && isMyRound)}
-				onClick={() => setElement()}>
-				{envLoadNb === 3 ? (
-					<MdBatteryChargingFull style={batteryStyle} />
-				) : envLoadNb === 2 ? (
-					<MdBatteryCharging80 style={batteryStyle} />
-				) : envLoadNb === 1 ? (
-					<MdBatteryCharging20 style={batteryStyle} />
-				) : envLoadNb === 0 ? (
-					<MdBattery0Bar style={batteryStyle} />
-				) : null}
-			</button>
+			<div style={{ ...flexRowStyle, alignItems: 'center' }}>
+				{isMe && (
+					<button
+						style={{
+							...flexRowStyle,
+							alignItems: 'center',
+							justifyContent: 'center',
+							color: 'white',
+							backgroundColor: isMyRound && envLoadNb === 0 ? violet : 'grey',
+							borderRadius: 5,
+							height: '3vh',
+							padding: 1,
+							width: '8vw',
+						}}
+						disabled={envLoadNb === 1 || !isMyRound}
+						onClick={() => chargeElement()}>
+						Charge (-1hp)
+					</button>
+				)}
+
+				<button
+					style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}
+					disabled={!(!!setElement && envLoadNb === 1 && isMyRound)}
+					onClick={() => setElement()}>
+					{envLoadNb === 1 ? (
+						<MdBatteryChargingFull style={batteryStyle} />
+					) : envLoadNb === 0 ? (
+						<MdBattery0Bar style={batteryStyle} />
+					) : null}
+				</button>
+			</div>
 
 			<div
 				style={{

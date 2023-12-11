@@ -27,10 +27,6 @@
 		"description": "Reset Board (animals, element) for 1HP",
 		"name": "Reset Board for 1hp"
 	},
-	"place-king": {
-		"description": "Place an active king",
-		"name": "Place a king on board"
-	},
 	"rev-last-pow": {
 		"description": "Activate last power card used directly",
 		"name": "Activate last power used"

@@ -111,7 +111,6 @@ export function GameView({
 		setNbCardsToPlay(2);
 		setHasAttacked(false);
 		setCanPlaceKingWithoutSacrifice(false);
-		setElementLoad(gameId, getOpponentIdFromCurrentId(playerType), 1);
 	}, [round.nb]);
 
 	const getCurrSlotNb = () => {
@@ -146,14 +145,16 @@ export function GameView({
 	};
 
 	const playAnimalCard = async (cardId: string, slotNb: number): Promise<void> => {
-		const { role, clan } = getAnimalCard(cardId)!;
+		const { role } = getAnimalCard(cardId)!;
 
 		if (role === KING) {
-			await handlePlacingKing(cardId, slotNb, clan);
-			return;
-		} else {
-			await placeAnimalOnBoard(gameId, playerType, slotNb, cardId, elementType);
+			if (currPlayer.hp < 2) {
+				return;
+			}
+			await minus1Hp(gameId, playerType);
 		}
+
+		await placeAnimalOnBoard(gameId, playerType, slotNb, cardId, elementType);
 
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 
@@ -307,6 +308,7 @@ export function GameView({
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
 				await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
+				await minus1Hp(gameId, playerType);
 				break;
 			case 'rev-last-pow':
 				await reviveLastPower(gameId, playerType);
@@ -345,17 +347,14 @@ export function GameView({
 				return;
 			case 'block-pow':
 				await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
+				await minus1Hp(gameId, playerType);
 				break;
 			case 'reset-board':
 				await minus1Hp(gameId, playerType);
 				await resetBoard(gameId, playerType, currPSlots, oppPSlots);
 				break;
-			case 'place-king':
-				setCanPlaceKingWithoutSacrifice(true);
-				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
-				break;
 			case 'charge-element':
-				await setElementLoad(gameId, playerType, 3);
+				await setElementLoad(gameId, playerType, 1);
 				break;
 		}
 
@@ -376,6 +375,12 @@ export function GameView({
 	const setElement = () => {
 		if (spectator) return;
 		setShowEnvPopup(true);
+	};
+
+	const chargeElement = async () => {
+		if (spectator || currPlayer.envLoadNb === 1 || currPlayer.hp < 2 || !isMyRound) return;
+		await minus1Hp(gameId, playerType);
+		await setElementLoad(gameId, playerType, 1);
 	};
 
 	const playCard = async (cardId?: string, slotNb?: number) => {
@@ -412,7 +417,6 @@ export function GameView({
 		await enableAttackingAndPlayingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
 		await addOneRound(gameId, playerType);
 		await enableAttackForOpponentAnimals(gameId, playerType, currPSlots);
-		await setElementLoad(gameId, PlayerType.ONE, 1);
 	};
 
 	const finishRound = async () => {
@@ -577,6 +581,7 @@ export function GameView({
 				setElement={setElement}
 				spectator={spectator}
 				showCountDown={showCountDown}
+				chargeElement={chargeElement}
 			/>
 			{openCardsPopup && !spectator && (
 				<CardsPopup
