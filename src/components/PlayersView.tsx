@@ -1,13 +1,19 @@
 import ProgressBar from '@ramonak/react-progress-bar';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
-import { MdBattery0Bar, MdBatteryChargingFull } from 'react-icons/md';
+import {
+	MdBattery0Bar,
+	MdBatteryCharging20,
+	MdBatteryCharging80,
+	MdBatteryChargingFull,
+} from 'react-icons/md';
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
-import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
+import { GAMES_PATH, INITIAL_HP, ROUND_DURATION } from '../utils/data';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
+import { setItem } from '../backend/db';
 
 const CountDown = ({ finishRound }: any) => (
 	<CountdownCircleTimer
@@ -27,12 +33,13 @@ const CountDown = ({ finishRound }: any) => (
 export const CurrentPView = ({
 	player,
 	round,
+	playCard,
 	finishRound,
 	nbCardsToPlay,
 	setElement,
 	spectator,
 	showCountDown,
-	chargeElement,
+	gameId,
 }: {
 	player: Player;
 	round: Round;
@@ -42,12 +49,19 @@ export const CurrentPView = ({
 	setElement: () => void;
 	spectator?: boolean;
 	showCountDown?: any;
-	chargeElement?: any;
+	gameId ? : string;
 }) => {
-	const { playerType } = player;
-	const cardsIds = player.cardsIds ?? [];
-	const [selectedId, setSelectedId] = useState<string>();
 
+	const { playerType } = player;
+	//const cardsIds = player.cardsIds ?? [];
+	const [cardsIds, setCardsIds] = useState(player.cardsIds ?? []);
+	const updateCardsOrder = useCallback((newOrder:string[]) => {
+        setCardsIds(newOrder);
+		setItem(GAMES_PATH + gameId + player.playerType , {cardsIds : newOrder})
+        
+    }, [setCardsIds]);
+	const [selectedId, setSelectedId] = useState<string>();
+	
 	const isMyRound = round?.player === playerType;
 
 	const Buttons = () => {
@@ -108,9 +122,13 @@ export const CurrentPView = ({
 				isMyRound={isMyRound}
 				isMe={true}
 				finishRound={finishRound}
-				chargeElement={chargeElement}
 			/>
-			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
+			<CurrentPDeck 
+			cardsIds={cardsIds} 
+			selectedId={selectedId} 
+			setSelectedId={setSelectedId}
+			updateCardsOrder={updateCardsOrder}
+			/>
 			<EmptyElement />
 		</div>
 	);
@@ -143,7 +161,6 @@ const PlayerDataView = ({
 	isMe,
 	showCountDown,
 	finishRound,
-	chargeElement,
 }: {
 	player: Player;
 	setElement?: any;
@@ -151,7 +168,6 @@ const PlayerDataView = ({
 	isMe?: boolean;
 	showCountDown?: any;
 	finishRound?: any;
-	chargeElement?: any;
 }) => {
 	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack, envLoadNb } = player;
 	const batteryStyle = { color: violet, width: '3vw', height: 'auto' };
@@ -225,37 +241,20 @@ const PlayerDataView = ({
 					completed={hp ?? 0}></ProgressBar>
 			</div>
 
-			<div style={{ ...flexRowStyle, alignItems: 'center' }}>
-				{isMe && (
-					<button
-						style={{
-							...flexRowStyle,
-							alignItems: 'center',
-							justifyContent: 'center',
-							color: 'white',
-							backgroundColor: isMyRound && envLoadNb === 0 ? violet : 'grey',
-							borderRadius: 5,
-							height: '3vh',
-							padding: 1,
-							width: '8vw',
-						}}
-						disabled={envLoadNb === 1 || !isMyRound}
-						onClick={() => chargeElement()}>
-						Charge (-2hp)
-					</button>
-				)}
-
-				<button
-					style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}
-					disabled={!(!!setElement && envLoadNb === 1 && isMyRound)}
-					onClick={() => setElement()}>
-					{envLoadNb === 1 ? (
-						<MdBatteryChargingFull style={batteryStyle} />
-					) : envLoadNb === 0 ? (
-						<MdBattery0Bar style={batteryStyle} />
-					) : null}
-				</button>
-			</div>
+			<button
+				style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}
+				disabled={!(!!setElement && envLoadNb === 3 && isMyRound)}
+				onClick={() => setElement()}>
+				{envLoadNb === 3 ? (
+					<MdBatteryChargingFull style={batteryStyle} />
+				) : envLoadNb === 2 ? (
+					<MdBatteryCharging80 style={batteryStyle} />
+				) : envLoadNb === 1 ? (
+					<MdBatteryCharging20 style={batteryStyle} />
+				) : envLoadNb === 0 ? (
+					<MdBattery0Bar style={batteryStyle} />
+				) : null}
+			</button>
 
 			<div
 				style={{

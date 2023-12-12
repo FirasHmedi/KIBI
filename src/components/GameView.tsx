@@ -582,6 +582,7 @@ export function GameView({
 				spectator={spectator}
 				showCountDown={showCountDown}
 				chargeElement={chargeElement}
+				gameId={gameId}
 			/>
 			{openCardsPopup && !spectator && (
 				<CardsPopup

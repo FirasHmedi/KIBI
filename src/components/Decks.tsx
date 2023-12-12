@@ -1,19 +1,59 @@
+import { useDrag, useDrop } from 'react-dnd';
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { DeckSlot, SlotBack } from './Slots';
+import { useCallback } from 'react';
 
 interface CurrentPDeckProps {
 	cardsIds: string[];
 	setSelectedId: (id?: string) => void;
 	selectedId?: string;
 	isJokerActive?: boolean;
+	updateCardsOrder?:any;
 }
+const DraggableDeckSlot = ({ cardId, index, moveCard, selected, isJokerActive } : { cardId : string,index : number , moveCard : any , selected : any , isJokerActive : boolean}) => {
+	const [, drag] = useDrag({
+	  type: "card",
+	  item: { cardId, index },
+	});
+  
+	const [, drop] = useDrop({
+	  accept: "card",
+	  hover(item:{cardId : string , index : number}) {
+		if (!drag) return;
+		console.log("i'm dragging")
+		const dragIndex = item.index;
+		const hoverIndex = index;
+		if (dragIndex === hoverIndex) return;
+		moveCard(dragIndex, hoverIndex);
+		item.index = hoverIndex;
+	  },
+	});
+  
+	return (
+	  <div ref={node => drag(drop(node))} style={{ marginRight: 8 }}>
+		<DeckSlot 
+		  cardId={cardId}
+		  selected={selected}
+		  isJokerActive={isJokerActive}
+		/>
+	  </div>
+	);
+  };
 
 export const CurrentPDeck = ({
 	cardsIds = [],
 	setSelectedId,
 	selectedId,
 	isJokerActive,
+	updateCardsOrder
 }: CurrentPDeckProps) => {
+const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
+    const newCardsIds = Array.from(cardsIds);
+    const [removed] = newCardsIds.splice(dragIndex, 1);
+    newCardsIds.splice(hoverIndex, 0, removed);
+	updateCardsOrder(newCardsIds)
+    // Here you should update the cardsIds array in the state of the parent component
+  }, [cardsIds,updateCardsOrder]);
 	const selectCard = (cardId: string) =>
 		cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId);
 	return (
@@ -25,11 +65,14 @@ export const CurrentPDeck = ({
 			}}>
 			{cardsIds.map((cardId, index) => (
 				<div style={{ marginRight: 8 }} key={index} onClick={() => selectCard(cardId)}>
-					<DeckSlot
-						cardId={cardId}
-						selected={selectedId === cardId}
-						isJokerActive={isJokerActive}
-					/>
+				<DraggableDeckSlot
+    		      key={cardId}
+     		      index={index}
+         		  cardId={cardId}
+        		  moveCard={moveCard}
+        		  selected={selectedId === cardId}
+        		  isJokerActive={isJokerActive!}
+        />
 				</div>
 			))}
 		</div>
