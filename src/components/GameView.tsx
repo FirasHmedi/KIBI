@@ -45,6 +45,7 @@ import {
 	getOriginalCardId,
 	getPowerCard,
 	isAnimalCard,
+	isAnimalInSlots,
 	isAttackerInElement,
 	isJokerInElement,
 	isKingInElement,
@@ -444,7 +445,12 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
-		if (!isAnimalCard(currAnimalId) || currAnimalId === oppoAnimalId || spectator) {
+		if (
+			!isAnimalCard(currAnimalId) ||
+			currAnimalId === oppoAnimalId ||
+			spectator ||
+			isAnimalInSlots(currPSlots, currAnimalId)
+		) {
 			return;
 		}
 
@@ -468,7 +474,11 @@ export function GameView({
 			return;
 		}
 
-		if (isAttackAnimalsEnabled && isAnimalCard(oppoAnimalId)) {
+		if (
+			isAttackAnimalsEnabled &&
+			isAnimalCard(oppoAnimalId) &&
+			isAnimalInSlots(oppPSlots, oppoAnimalId)
+		) {
 			await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
 		}
 	};

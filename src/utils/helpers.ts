@@ -1,4 +1,4 @@
-import { shuffle } from 'lodash';
+import { isEmpty, shuffle } from 'lodash';
 import { useLocation } from 'react-router-dom';
 import { getGamePath, setItem } from '../backend/db';
 import {
@@ -154,4 +154,11 @@ export const submitRandomSelection = async (gameId: string, powerCards: string[]
 	await setItem(getGamePath(gameId), {
 		playerToSelect: PlayerType.ONE,
 	});
+};
+
+export const isAnimalInSlots = (slots: SlotType[] = [], cardId?: string): boolean => {
+	if (isEmpty(cardId)) {
+		return false;
+	}
+	return slots.some(slot => slot?.cardId === cardId);
 };
