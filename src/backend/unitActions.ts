@@ -55,9 +55,9 @@ export const are3AnimalsWithSameElement = async (
 	if (!latestElementType) {
 		latestElementType = await getElementType(gameId);
 	}
-	const animal1 = getAnimalCard(slots[0].cardId);
-	const animal2 = getAnimalCard(slots[1].cardId);
-	const animal3 = getAnimalCard(slots[2].cardId);
+	const animal1 = getAnimalCard(slots[0]?.cardId);
+	const animal2 = getAnimalCard(slots[1]?.cardId);
+	const animal3 = getAnimalCard(slots[2]?.cardId);
 	console.log(animal1, animal1, animal3, latestElementType);
 	return (
 		latestElementType === animal1?.clan &&

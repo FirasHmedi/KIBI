@@ -1,4 +1,5 @@
 import { FaHeart } from 'react-icons/fa';
+import { FaShield } from 'react-icons/fa6';
 import { IoIosInformationCircle } from 'react-icons/io';
 import { TbSword } from 'react-icons/tb';
 
@@ -122,11 +123,12 @@ export const PowerDeckSlot = ({
 		}),
 		[cardId],
 	);
-	const { name, description } = getPowerCard(cardId) ?? {};
+	const { name, description, gain, loss } = getPowerCard(cardId) ?? {};
 	const tooltipId = `power-deck-anchor${cardId}`;
 	const bigStyle: React.CSSProperties = !!isBigStyle
 		? { height: '20vh', width: '8vw', fontSize: '1em' }
 		: {};
+	const gainOrLoss = gain! > 0 ? `+${gain}` : loss! > 0 ? `-${loss}` : '0';
 	return (
 		<div
 			ref={drag}
@@ -144,10 +146,12 @@ export const PowerDeckSlot = ({
 				<h5>K</h5>
 			) : (
 				<>
-					<h6>{name?.toUpperCase()}</h6>
+					<h6 style={{ fontSize: '0.75em' }}>{name?.toUpperCase()}</h6>
 					<div>
 						<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
-						<IoIosInformationCircle id={tooltipId} style={{ color: 'white', width: '1.3vw' }} />
+						<span id={tooltipId} style={{ ...centerStyle, fontWeight: 'bold', fontSize: '1.1em' }}>
+							{gainOrLoss} <FaHeart style={{ color: 'white', width: '1.2rem' }} />
+						</span>
 					</div>
 				</>
 			)}
@@ -244,7 +248,7 @@ export const AnimalBoardSlot = ({
 
 				<div style={{ ...centerStyle, gap: 2 }}>
 					<h4>{hp}</h4>
-					<FaHeart />
+					<FaShield />
 				</div>
 				<Tooltip
 					anchorSelect={`#${roleTooltipId}`}
@@ -283,7 +287,7 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 				</div>
 				<div style={{ ...centerStyle, gap: 2 }}>
 					<h4>{hp}</h4>
-					<FaHeart />
+					<FaShield />
 				</div>
 				<Tooltip
 					anchorSelect={`#${roleTooltipId}`}

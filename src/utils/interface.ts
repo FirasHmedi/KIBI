@@ -9,6 +9,8 @@ export interface Card {
 	ability?: string;
 	description?: string;
 	name?: string;
+	gain?: number;
+	loss?: number;
 }
 
 export interface AnimalCard extends Card {

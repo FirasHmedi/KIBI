@@ -2,8 +2,8 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
-import { MdBattery0Bar, MdBatteryChargingFull } from 'react-icons/md';
-import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
+import { SiElement } from 'react-icons/si';
+import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
@@ -154,7 +154,6 @@ const PlayerDataView = ({
 	chargeElement?: any;
 }) => {
 	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack, envLoadNb } = player;
-	const batteryStyle = { color: violet, width: '3vw', height: 'auto' };
 	const hpRef = useRef<number>(0);
 	const [hpChange, setHpChange] = useState<string>();
 
@@ -172,6 +171,18 @@ const PlayerDataView = ({
 		}
 		hpRef.current = hp;
 	}, [hp]);
+
+	const chargeOrSetElement = () => {
+		if (!isMe || !isMyRound) {
+			return;
+		}
+		if (envLoadNb === 1) {
+			setElement();
+		}
+		if (envLoadNb === 0) {
+			chargeElement();
+		}
+	};
 
 	return (
 		<div
@@ -226,34 +237,26 @@ const PlayerDataView = ({
 			</div>
 
 			<div style={{ ...flexRowStyle, alignItems: 'center' }}>
-				{isMe && (
-					<button
-						style={{
-							...flexRowStyle,
-							alignItems: 'center',
-							justifyContent: 'center',
-							color: 'white',
-							backgroundColor: isMyRound && envLoadNb === 0 ? violet : 'grey',
-							borderRadius: 5,
-							height: '3vh',
-							padding: 1,
-							width: '8vw',
-						}}
-						disabled={envLoadNb === 1 || !isMyRound}
-						onClick={() => chargeElement()}>
-						Charge (-2hp)
-					</button>
-				)}
-
 				<button
-					style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}
-					disabled={!(!!setElement && envLoadNb === 1 && isMyRound)}
-					onClick={() => setElement()}>
+					style={{
+						...centerStyle,
+						borderRadius: 5,
+						backgroundColor: violet,
+						color: 'white',
+						height: '3vw',
+						width: '3vw',
+						justifyContent: 'center',
+						fontSize: '1em',
+					}}
+					onClick={() => chargeOrSetElement()}>
 					{envLoadNb === 1 ? (
-						<MdBatteryChargingFull style={batteryStyle} />
-					) : envLoadNb === 0 ? (
-						<MdBattery0Bar style={batteryStyle} />
-					) : null}
+						<SiElement style={{ color: 'white', width: '1.2vw', height: 'auto' }} />
+					) : (
+						<div style={centerStyle}>
+							<span style={{ fontWeight: 'bold' }}>-2 </span>
+							<FaHeart style={{ color: 'white', width: '0.9vw' }} />
+						</div>
+					)}
 				</button>
 			</div>
 

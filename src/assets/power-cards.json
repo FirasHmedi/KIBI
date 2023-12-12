@@ -1,19 +1,23 @@
 {
 	"block-att": {
-		"description": "Cancel attacks for next turn (all animal attacks)",
-		"name": "Block attacks for 1 turn"
+		"description": "Cancel attacks for next turn (all animal attacks) for 1hp",
+		"name": "Block attacks",
+		"gain": 0,
+		"loss": 1
 	},
 	"2hp": {
 		"description": "give the owner +2hp",
-		"name": "+2hp to player"
+		"name": "HP gain",
+		"gain": 2,
+		"loss": 0
 	},
 	"draw-2": {
 		"description": "Draw 2 cards from the main deck",
-		"name": "Draw 2 cards from main deck"
+		"name": "Draw 2 cards"
 	},
 	"2-anim-gy": {
 		"description": "Return 2 animals to deck from graveyard",
-		"name": "Return 2 dead animals to deck"
+		"name": "Return 2 dead animals"
 	},
 	"charge-element": {
 		"description": "Charge the element",
@@ -21,38 +25,52 @@
 	},
 	"block-pow": {
 		"description": "Block opponent from using power cards",
-		"name": "Block powers for 1 turn"
+		"name": "Block powers",
+		"gain": 0,
+		"loss": 1
 	},
 	"reset-board": {
 		"description": "Reset Board (animals, element) for 1HP",
-		"name": "Reset Board for 1hp"
+		"name": "Reset Board",
+		"gain": 0,
+		"loss": 1
 	},
 	"rev-last-pow": {
 		"description": "Activate last power card used directly",
-		"name": "Activate last power used"
+		"name": "Activate last power"
 	},
 	"rev-any-pow-1hp": {
 		"description": "Activate any power card for 1hp",
-		"name": "Activate any power for 1hp"
+		"name": "Activate any power",
+		"gain": 0,
+		"loss": 1
 	},
 	"rev-any-anim-1hp": {
 		"description": "Sacrifice 1 hp to revive any animal",
-		"name": "Revive an animal for 1hp"
+		"name": "Revive an animal",
+		"gain": 0,
+		"loss": 1
 	},
 	"steal-anim-3hp": {
 		"description": "Sacrifice 3 hp to switch side of an opponent animal",
-		"name": "Steal an animal for 3hp"
+		"name": "Steal an animal",
+		"gain": 0,
+		"loss": 3
 	},
 	"switch-decks": {
 		"description": "Switch deck with opponent for 1hp",
-		"name": "Switch decks for 1hp"
+		"name": "Switch decks",
+		"gain": 0,
+		"loss": 1
 	},
 	"switch-2-cards": {
 		"description": "Switch 2 cards with opponent",
-		"name": "Switch 2 cards with opponent"
+		"name": "Switch 2 cards"
 	},
 	"sacrif-anim-3hp": {
 		"description": "Sacrifice an animal to get 3hp",
-		"name": "Sacrifice an animal for 3hp"
+		"name": "Sacrifice an animal",
+		"gain": 3,
+		"loss": 0
 	}
 }
