@@ -449,7 +449,7 @@ export function GameView({
 			!isAnimalCard(currAnimalId) ||
 			currAnimalId === oppoAnimalId ||
 			spectator ||
-			isAnimalInSlots(currPSlots, currAnimalId)
+			!isAnimalInSlots(currPSlots, currAnimalId)
 		) {
 			return;
 		}
