@@ -2,8 +2,17 @@ import ProgressBar from '@ramonak/react-progress-bar';
 import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
-import { SiElement } from 'react-icons/si';
-import { centerStyle, flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
+import { GiHeartMinus } from 'react-icons/gi';
+import {
+	airColor,
+	centerStyle,
+	earthColor,
+	fireColor,
+	flexColumnStyle,
+	flexRowStyle,
+	violet,
+	waterColor,
+} from '../styles/Style';
 import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
@@ -54,11 +63,13 @@ export const CurrentPView = ({
 		if (spectator) {
 			return <></>;
 		}
+		const cardsToPlay =
+			nbCardsToPlay > 1 ? `${nbCardsToPlay} cards` : nbCardsToPlay === 1 ? '1 card' : 'No cards';
 		return (
 			<div
 				style={{
 					position: 'absolute',
-					right: '12vw',
+					right: '14vw',
 					bottom: '8vh',
 				}}>
 				<div
@@ -69,7 +80,7 @@ export const CurrentPView = ({
 						width: '14vw',
 					}}>
 					{!!nbCardsToPlay && isMyRound && (
-						<h5 style={{ color: violet, padding: 10 }}>{nbCardsToPlay} card(s) to play</h5>
+						<h5 style={{ color: violet, padding: 10 }}>{cardsToPlay} to play</h5>
 					)}
 					<button
 						style={{
@@ -223,7 +234,7 @@ const PlayerDataView = ({
 						</div>
 					)}
 					<h4 style={{ fontSize: '1.3rem' }}>{hpRef.current}</h4>
-					<FaHeart style={{ color: violet, width: '1.2vw' }} />
+					<FaHeart style={{ color: violet, width: '1vw' }} />
 				</div>
 
 				<ProgressBar
@@ -243,18 +254,54 @@ const PlayerDataView = ({
 						borderRadius: 5,
 						backgroundColor: violet,
 						color: 'white',
-						height: '3vw',
-						width: '3vw',
+						height: '2.4vw',
+						width: '2.4vw',
 						justifyContent: 'center',
 						fontSize: '1em',
 					}}
 					onClick={() => chargeOrSetElement()}>
 					{envLoadNb === 1 ? (
-						<SiElement style={{ color: 'white', width: '1.2vw', height: 'auto' }} />
+						<div
+							style={{
+								margin: 'auto',
+							}}>
+							<div style={{ display: 'flex', flexDirection: 'row' }}>
+								<div
+									style={{
+										width: '0.8vw',
+										height: '0.8vw',
+										backgroundColor: fireColor,
+										borderTopLeftRadius: 5,
+									}}></div>
+								<div
+									style={{
+										width: '0.8vw',
+										height: '0.8vw',
+										backgroundColor: airColor,
+										borderTopRightRadius: 5,
+									}}></div>
+							</div>
+							<div style={{ display: 'flex', flexDirection: 'row' }}>
+								<div
+									style={{
+										width: '0.8vw',
+										height: '0.8vw',
+										backgroundColor: waterColor,
+										borderBottomLeftRadius: 5,
+									}}></div>
+								<div
+									style={{
+										width: '0.8vw',
+										height: '0.8vw',
+										backgroundColor: earthColor,
+										borderBottomRightRadius: 5,
+									}}></div>
+							</div>
+						</div>
 					) : (
 						<div style={centerStyle}>
-							<span style={{ fontWeight: 'bold' }}>-2 </span>
-							<FaHeart style={{ color: 'white', width: '0.9vw' }} />
+							<GiHeartMinus style={{ color: 'white', width: '0.8vw', height: '1vw' }} />
+							<GiHeartMinus style={{ color: 'white', width: '0.8vw', height: '1vw' }} />
 						</div>
 					)}
 				</button>

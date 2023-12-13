@@ -1,6 +1,7 @@
-import { FaHeart } from 'react-icons/fa';
 import { FaShield } from 'react-icons/fa6';
+import { GiHeartMinus, GiHeartPlus } from 'react-icons/gi';
 import { IoIosInformationCircle } from 'react-icons/io';
+
 import { TbSword } from 'react-icons/tb';
 
 import { useRef } from 'react';
@@ -10,6 +11,7 @@ import {
 	boardSlotStyle,
 	centerStyle,
 	deckSlotStyle,
+	flexColumnStyle,
 	flexRowStyle,
 	lightViolet,
 	selectedColor,
@@ -19,6 +21,7 @@ import {
 	ANIMALS_POINTS,
 	CLANS,
 	ClanName,
+	KING,
 	RoleName,
 	animalsPics,
 	elementsIcons,
@@ -128,32 +131,64 @@ export const PowerDeckSlot = ({
 	const bigStyle: React.CSSProperties = !!isBigStyle
 		? { height: '20vh', width: '8vw', fontSize: '1em' }
 		: {};
-	const gainOrLoss = gain! > 0 ? `+${gain}` : loss! > 0 ? `-${loss}` : '0';
+	const gainArray = Array(gain ?? 0)
+		.fill(0)
+		.map((_, i) => i);
+	const lossArray = Array(loss ?? 0)
+		.fill(0)
+		.map((_, i) => i);
+
 	return (
 		<div
 			ref={drag}
 			style={{
 				...deckSlotStyle,
 				backgroundColor: violet,
-				justifyContent: 'center',
 				border: 'solid 1.5px',
 				borderColor: selected ? selectedColor : violet,
 				...bigStyle,
 				fontSize: '0.75em',
 				alignItems: 'center',
+				justifyContent: 'center',
 			}}>
 			{isJokerActive ? (
 				<h5>K</h5>
 			) : (
-				<>
-					<h6 style={{ fontSize: '0.75em' }}>{name?.toUpperCase()}</h6>
-					<div>
+				<div
+					style={{
+						...flexColumnStyle,
+						alignItems: 'center',
+						height: '100%',
+						justifyContent: 'space-between',
+					}}>
+					<div
+						style={{
+							width: '4.6rem',
+							display: 'flex',
+							justifyContent: 'flex-end',
+							alignItems: 'flex-start',
+							height: '1.7rem',
+							paddingRight: 2,
+							paddingTop: 2,
+						}}>
 						<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
-						<span id={tooltipId} style={{ ...centerStyle, fontWeight: 'bold', fontSize: '1.1em' }}>
-							{gainOrLoss} <FaHeart style={{ color: 'white', width: '1.2rem' }} />
-						</span>
+						{gainArray.length > 0
+							? gainArray.map(index => (
+									<span key={index}>
+										<GiHeartPlus style={{ color: 'white', width: '1rem', height: '1rem' }} />
+									</span>
+							  ))
+							: lossArray.length > 0
+							? lossArray.map(index => (
+									<span key={index} id={tooltipId}>
+										<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
+									</span>
+							  ))
+							: null}
 					</div>
-				</>
+					<h6 style={{ fontSize: '0.75em' }}>{name?.toUpperCase()}</h6>
+					<div id={tooltipId} style={{ height: '2rem', width: '100%' }} />
+				</div>
 			)}
 		</div>
 	);
@@ -226,7 +261,7 @@ export const AnimalBoardSlot = ({
 					}}>
 					<img
 						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-						style={{ width: '5rem', height: '4rem' }}></img>
+						style={{ width: '4.5rem', height: '3.5rem' }}></img>
 				</div>
 			)}
 
@@ -267,9 +302,24 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 	const roleTooltipId = `role-anchor${cardId}`;
 	return (
 		<>
+			<div
+				style={{
+					width: '100%',
+					display: 'flex',
+					justifyContent: 'flex-end',
+					paddingRight: 2,
+					paddingTop: 1,
+					height: '0.2rem',
+				}}>
+				{role === KING && (
+					<span>
+						<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
+					</span>
+				)}
+			</div>
 			<img
 				src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
-				style={{ width: '2.6rem', height: '2.6rem', flex: 1 }}
+				style={{ width: '2.6rem', height: '2.8rem', flex: 1 }}
 			/>
 			<div
 				id={roleTooltipId}

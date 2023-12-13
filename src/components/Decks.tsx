@@ -65,6 +65,7 @@ export const OpponentPDeck = ({
 );
 
 export const MainDeck = ({ nbCards = 0 }: { nbCards: number }) => {
+	const name = nbCards > 1 ? `${nbCards} cards` : nbCards === 1 ? '1 card' : 'No cards';
 	return (
 		<div
 			style={{
@@ -73,7 +74,7 @@ export const MainDeck = ({ nbCards = 0 }: { nbCards: number }) => {
 				color: violet,
 				gap: 2,
 			}}>
-			<h5>Main Deck ({nbCards}) </h5>
+			<h5>{name} </h5>
 			<SlotBack shadow />
 		</div>
 	);

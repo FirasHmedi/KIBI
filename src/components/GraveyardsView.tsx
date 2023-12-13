@@ -1,5 +1,6 @@
 import { shuffle } from 'lodash';
 import { useState } from 'react';
+import { GiTombstone } from 'react-icons/gi';
 import { MdCancel } from 'react-icons/md';
 import {
 	centerStyle,
@@ -16,11 +17,11 @@ import { DeckSlot } from './Slots';
 import monkey from '/src/assets/icons/monkey.svg';
 
 export const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
-	return <Graveyard name={'Power graveyard'} cardsIds={cardsIds} />;
+	return <Graveyard name={'Power'} cardsIds={cardsIds} />;
 };
 
 export const AnimalGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
-	return <Graveyard name={'Animal graveyard'} cardsIds={cardsIds} />;
+	return <Graveyard name={'Animal'} cardsIds={cardsIds} />;
 };
 
 export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: string[] }) => {
@@ -30,6 +31,7 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 	const closeCardSelectionPopup = () => setPopupOpen(false);
 	const cardsNb = cardsIds.length;
 	const hasCards = cardsNb > 0;
+	const pluralName = cardsNb > 1 ? `${cardsNb} ${name}s` : cardsNb === 1 ? `1 ${name}` : name;
 
 	return (
 		<div
@@ -39,9 +41,10 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 				alignItems: 'center',
 				color: violet,
 			}}>
-			<h5 style={{ marginBottom: 4 }}>
-				{name} ({cardsIds.length})
-			</h5>
+			<div style={{ marginBottom: 4, ...centerStyle }}>
+				<h5>{pluralName}</h5>
+				<GiTombstone style={{ width: '2.4rem', height: '2.4rem' }} />
+			</div>
 			{hasCards ? (
 				<div onClick={openCardSelectionPopup} style={topCardStyle}>
 					<DeckSlot cardId={cardsIds[cardsNb - 1]} />
