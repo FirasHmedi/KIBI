@@ -467,7 +467,13 @@ export function GameView({
 			(isAttackerInElement(currAnimalId, elementType) || isOppSlotsEmpty) &&
 			!isOppSlotsAllFilled;
 
-		console.log({ isAttackAnimalsEnabled }, { isAttackOwnerEnabled });
+		console.log(
+			currPlayer.canAttack,
+			hasAttacked,
+			currPSlots[currslotnb ?? 3]?.canAttack,
+			{ isAttackAnimalsEnabled },
+			{ isAttackOwnerEnabled },
+		);
 
 		if (isAttackOwnerEnabled) {
 			await attackOppHp(currslotnb!, currAnimalId!);
