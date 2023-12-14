@@ -254,8 +254,8 @@ const PlayerDataView = ({
 						borderRadius: 5,
 						backgroundColor: violet,
 						color: 'white',
-						height: '2.4vw',
-						width: '2.4vw',
+						height: '2.8vw',
+						width: '2.8vw',
 						justifyContent: 'center',
 						fontSize: '1em',
 					}}
@@ -268,15 +268,15 @@ const PlayerDataView = ({
 							<div style={{ display: 'flex', flexDirection: 'row' }}>
 								<div
 									style={{
-										width: '0.8vw',
-										height: '0.8vw',
+										width: '0.9vw',
+										height: '0.9vw',
 										backgroundColor: fireColor,
 										borderTopLeftRadius: 5,
 									}}></div>
 								<div
 									style={{
-										width: '0.8vw',
-										height: '0.8vw',
+										width: '0.9vw',
+										height: '0.9vw',
 										backgroundColor: airColor,
 										borderTopRightRadius: 5,
 									}}></div>
@@ -284,15 +284,15 @@ const PlayerDataView = ({
 							<div style={{ display: 'flex', flexDirection: 'row' }}>
 								<div
 									style={{
-										width: '0.8vw',
-										height: '0.8vw',
+										width: '0.9vw',
+										height: '0.9vw',
 										backgroundColor: waterColor,
 										borderBottomLeftRadius: 5,
 									}}></div>
 								<div
 									style={{
-										width: '0.8vw',
-										height: '0.8vw',
+										width: '0.9vw',
+										height: '0.9vw',
 										backgroundColor: earthColor,
 										borderBottomRightRadius: 5,
 									}}></div>
@@ -300,8 +300,8 @@ const PlayerDataView = ({
 						</div>
 					) : (
 						<div style={centerStyle}>
-							<GiHeartMinus style={{ color: 'white', width: '0.8vw', height: '1vw' }} />
-							<GiHeartMinus style={{ color: 'white', width: '0.8vw', height: '1vw' }} />
+							<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
+							<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 						</div>
 					)}
 				</button>
@@ -311,12 +311,12 @@ const PlayerDataView = ({
 				style={{
 					...flexColumnStyle,
 					position: 'absolute',
-					left: '3vw',
+					left: '5vw',
 					bottom: isMe ? '8vh' : undefined,
 					top: isMe ? undefined : '13vh',
 					width: '12vw',
 					gap: 12,
-					fontSize: '0.9em',
+					fontSize: '1.1em',
 				}}>
 				{canAttack === false && canPlayPowers === false ? (
 					<h4>Blocked from attacking and playing power cards</h4>
