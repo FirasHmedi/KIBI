@@ -233,6 +233,12 @@ className={
 		"name": "Place a king on board"
 	},
 
+
+	"charge-element": {
+		"description": "Charge the element",
+		"name": "Charge the element"
+	},
+
 	*/
 
 export {};

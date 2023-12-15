@@ -15,7 +15,7 @@ import {
 	homeButtonsStyle,
 	violet,
 } from '../../styles/Style';
-import { BOT, EMPTY_SLOT, ENV_MAX_LOAD, GAMES_PATH, INITIAL_HP, PREPARE } from '../../utils/data';
+import { BOT, EMPTY_SLOT, GAMES_PATH, INITIAL_HP, PREPARE } from '../../utils/data';
 import {
 	getMainDeckFirstHalf,
 	getMainDeckSecondHalf,
@@ -45,7 +45,7 @@ function Home() {
 				canAttack: true,
 				canPlayPowers: true,
 				status: PREPARE,
-				envLoadNb: ENV_MAX_LOAD,
+				envLoadNb: 0,
 			},
 			board: {
 				mainDeck,
@@ -79,7 +79,7 @@ function Home() {
 				canAttack: true,
 				canPlayPowers: true,
 				status: PREPARE,
-				envLoadNb: ENV_MAX_LOAD,
+				envLoadNb: 0,
 			},
 			board: {
 				mainDeck,
@@ -96,7 +96,7 @@ function Home() {
 			canAttack: true,
 			canPlayPowers: true,
 			status: PREPARE,
-			envLoadNb: ENV_MAX_LOAD,
+			envLoadNb: 0,
 		});
 
 		await submitRandomSelection(gameId, initialPowers);
@@ -131,7 +131,7 @@ function Home() {
 			canAttack: true,
 			canPlayPowers: true,
 			status: PREPARE,
-			envLoadNb: ENV_MAX_LOAD,
+			envLoadNb: 0,
 		});
 		setDisabledButton(true);
 		navigate('game/' + gameId, {

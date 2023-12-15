@@ -19,10 +19,6 @@
 		"description": "Return 2 animals to deck from graveyard",
 		"name": "Return 2 dead animals"
 	},
-	"charge-element": {
-		"description": "Charge the element",
-		"name": "Charge the element"
-	},
 	"block-pow": {
 		"description": "Block opponent from using power cards",
 		"name": "Block powers",

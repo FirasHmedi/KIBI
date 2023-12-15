@@ -18,7 +18,7 @@ export const GAMES_PATH = 'games/';
 
 export const ROUND_DURATION = 80; //60
 
-export const INITIAL_HP = 7;
+export const INITIAL_HP = 9;
 
 export const ENV_MAX_LOAD = 1;
 
@@ -114,6 +114,11 @@ export const animalsPics = {
 	whale: whale,
 	lion: lion,
 	monkey: monkey,
+};
+
+import blockAttacks from '/src/assets/icons/block-attacks.svg';
+export const powersPics = {
+	blockAttacks: blockAttacks,
 };
 
 export const ALL_CARDS_OBJECT: Record<string, AllCards> = {
