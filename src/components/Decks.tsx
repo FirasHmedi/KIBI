@@ -1,5 +1,6 @@
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { DeckSlot, SlotBack } from './Slots';
+import mainDeck from '/src/assets/mainDeck.svg';
 
 interface CurrentPDeckProps {
 	cardsIds: string[];
@@ -76,7 +77,7 @@ export const MainDeck = ({ nbCards = 0 }: { nbCards: number }) => {
 				gap: 2,
 			}}>
 			<h5>{name} </h5>
-			<SlotBack shadow />
+			<img src={mainDeck} style={{ height: '4rem' }} />
 		</div>
 	);
 };

@@ -116,9 +116,66 @@ export const animalsPics = {
 	monkey: monkey,
 };
 
+import { getOriginalCardId } from './helpers';
+import twoAnimals from '/src/assets/icons/2-animals.svg';
 import blockAttacks from '/src/assets/icons/block-attacks.svg';
+import blockPowers from '/src/assets/icons/block-pow.svg';
+import drawTwo from '/src/assets/icons/draw-2.svg';
+import hpGain from '/src/assets/icons/hp-gain.svg';
+import resetBoard from '/src/assets/icons/reset.svg';
+import revAnyAnimal from '/src/assets/icons/rev-any-animal.svg';
+import revAnyPower from '/src/assets/icons/rev-any-power.svg';
+import revLastPower from '/src/assets/icons/rev-last-pow.svg';
+import sacrificeAnimal from '/src/assets/icons/sacrifice-animal.svg';
+import stealAnimal from '/src/assets/icons/steal-animal.svg';
+import switch2Cards from '/src/assets/icons/switch-2-cards.svg';
+import switchCards from '/src/assets/icons/switch.svg';
+
 export const powersPics = {
-	blockAttacks: blockAttacks,
+	blockAttacks,
+	blockPowers,
+	twoAnimals,
+	drawTwo,
+	hpGain,
+	resetBoard,
+	switchCards,
+	switch2Cards,
+	sacrificeAnimal,
+	revLastPower,
+	revAnyAnimal,
+	revAnyPower,
+	stealAnimal,
+};
+
+export const getPowerCardIcon = (id: string) => {
+	switch (getOriginalCardId(id)) {
+		case 'block-att':
+			return blockAttacks;
+		case 'rev-last-pow':
+			return revLastPower;
+		case 'rev-any-pow-1hp':
+			return revAnyPower;
+		case 'rev-any-anim-1hp':
+			return revAnyAnimal;
+		case 'steal-anim-3hp':
+			return stealAnimal;
+		case 'switch-decks':
+			return switchCards;
+		case 'switch-2-cards':
+			return switch2Cards;
+		case 'sacrif-anim-3hp':
+			return sacrificeAnimal;
+		case '2hp':
+			return hpGain;
+		case 'draw-2':
+			return drawTwo;
+		case '2-anim-gy':
+			return twoAnimals;
+		case 'block-pow':
+			return blockPowers;
+		case 'reset-board':
+			return resetBoard;
+	}
 };
 
 export const ALL_CARDS_OBJECT: Record<string, AllCards> = {

@@ -25,6 +25,7 @@ import {
 	RoleName,
 	animalsPics,
 	elementsIcons,
+	getPowerCardIcon,
 } from '../utils/data';
 import { getAnimalCard, getPowerCard, isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
@@ -126,7 +127,7 @@ export const PowerDeckSlot = ({
 		}),
 		[cardId],
 	);
-	const { name, description, gain, loss } = getPowerCard(cardId) ?? {};
+	const { name, gain, loss } = getPowerCard(cardId) ?? {};
 	const tooltipId = `power-deck-anchor${cardId}`;
 	const bigStyle: React.CSSProperties = !!isBigStyle
 		? { height: '20vh', width: '8vw', fontSize: '1em' }
@@ -171,7 +172,7 @@ export const PowerDeckSlot = ({
 							paddingRight: 2,
 							paddingTop: 2,
 						}}>
-						<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
+						<Tooltip anchorSelect={`#${tooltipId}`} content={name} />
 						{gainArray.length > 0
 							? gainArray.map(index => (
 									<span key={index}>
@@ -186,8 +187,10 @@ export const PowerDeckSlot = ({
 							  ))
 							: null}
 					</div>
-					<h6 style={{ fontSize: '0.75em' }}>{name?.toUpperCase()}</h6>
-					<div id={tooltipId} style={{ height: '2rem', width: '100%' }} />
+					<div id={tooltipId}>
+						<img src={getPowerCardIcon(cardId)} style={{ width: '2.4rem', height: '2.4rem' }} />
+					</div>
+					<div style={{ height: '2rem', width: '100%' }} />
 				</div>
 			)}
 		</div>
