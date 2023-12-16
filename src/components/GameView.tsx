@@ -24,8 +24,6 @@ import {
 	draw2Cards,
 	resetBoard,
 	return2animalsFromGYToDeck,
-	reviveAnyPowerFor1hp,
-	reviveLastPower,
 	sacrifice1HpToReviveAnyAnimal,
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
@@ -33,7 +31,12 @@ import {
 	switch2Cards,
 	switchDeck,
 } from '../backend/powers';
-import { addOneRound, addPowerToGraveYard, deletePowerCardFromGraveYardById, removeHpFromPlayer } from '../backend/unitActions';
+import {
+	addOneRound,
+	addPowerToGraveYard,
+	deletePowerCardFromGraveYardById,
+	removeHpFromPlayer,
+} from '../backend/unitActions';
 import { flexColumnStyle } from '../styles/Style';
 import { BOT, ClanName, EMPTY, JOKER, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
 import {
@@ -173,11 +176,20 @@ export function GameView({
 
 	const isPowerCardPlayable = (cardId: string) => {
 		switch (getOriginalCardId(cardId!)) {
+			case 'block-att':
+				if (currPlayer.hp < 2) return false;
+				break;
+			case 'block-pow':
+				if (currPlayer.hp < 2) return false;
+				break;
+			case 'reset-board':
+				if (currPlayer.hp < 2) return false;
+				break;
 			case 'rev-any-anim-1hp':
-				if (isEmpty(animalGY)) return false;
+				if (isEmpty(animalGY) || currPlayer.hp < 2) return false;
 				break;
 			case 'steal-anim-3hp':
-				if (currPlayer.hp < 3 || isOppSlotsEmpty) return false;
+				if (currPlayer.hp < 4 || isOppSlotsEmpty) return false;
 				break;
 			case 'sacrif-anim-3hp':
 				if (
@@ -191,7 +203,7 @@ export function GameView({
 				if (isEmpty(animalGY) || animalGY?.length < 2) return false;
 				break;
 			case 'rev-any-pow-1hp':
-				if (isEmpty(powerGY)) return false;
+				if (isEmpty(powerGY) || currPlayer.hp < 2) return false;
 				break;
 			case 'switch-2-cards':
 				if (currPlayer.cardsIds.length < 3 || oppPlayer.cardsIds.length < 2) return false;
@@ -202,7 +214,6 @@ export function GameView({
 		}
 		return true;
 	};
-	
 
 	const closePopupAndProcessPowerCard = async () => {
 		await processPostPowerCardPlay();
@@ -239,7 +250,7 @@ export function GameView({
 
 		const { activateJokerAbilityNow, activateTankAbilityNow } = await executePowerCardsWithPopup(
 			cardId,
-		);
+		)!;
 
 		await processPostPowerCardPlay();
 
@@ -257,12 +268,15 @@ export function GameView({
 	const executePowerCardsWithPopup = async (cardId: string) => {
 		switch (getOriginalCardId(activePowerCard.current)) {
 			case 'rev-any-pow-1hp':
-				if (!isEmpty(powerGY) && powerGY.includes(cardId)) {
+				if (powerGY?.includes(cardId)) {
 					await removeHpFromPlayer(gameId, playerType, 1);
 					await deletePowerCardFromGraveYardById(gameId, cardId);
 					await playPowerAfterRevive(cardId);
 				}
-				return;
+				return {
+					activateJokerAbilityNow: false,
+					activateTankAbilityNow: false,
+				};
 			case 'rev-any-anim-1hp':
 				const slotNbForRevive = getCurrSlotNb();
 				await sacrifice1HpToReviveAnyAnimal(gameId, playerType, cardId, slotNbForRevive!);
@@ -300,8 +314,12 @@ export function GameView({
 	};
 
 	const playPowerAfterRevive = async (cardId: string) => {
-		if (!isPowerCardPlayable(cardId)) {
-			return false;
+		if (
+			getOriginalCardId(cardId) === 'rev-last-pow' ||
+			getOriginalCardId(cardId) === 'rev-any-pow-1hp' ||
+			!isPowerCardPlayable(cardId)
+		) {
+			return;
 		}
 
 		console.log('Executing power card ', cardId);
@@ -309,6 +327,7 @@ export function GameView({
 		const { name } = getPowerCard(cardId)!;
 		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
 		activePowerCard.current = cardId;
+
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
 				await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
@@ -330,7 +349,6 @@ export function GameView({
 				setCardsIdsForPopup(filteredIds);
 				return;
 			case 'sacrif-anim-3hp':
-				console.log("passed from here")
 				const currentIds = currPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(currentIds);
 				return;
@@ -356,9 +374,7 @@ export function GameView({
 				break;
 		}
 		await processPostPowerCardPlay();
-
 	};
-
 
 	const playPowerCard = async (cardId: string) => {
 		if (!isPowerCardPlayable(cardId)) {
@@ -376,12 +392,11 @@ export function GameView({
 				await minus1Hp(gameId, playerType);
 				break;
 			case 'rev-last-pow':
-				console.log(powerGY);
-				
 				const lastPowerCard = powerGY[powerGY.length - 1];
-
-				if (getOriginalCardId(lastPowerCard) === "rev-last-pow" || getOriginalCardId(lastPowerCard)=== "rev-any-pow-1hp" )
-				{
+				if (
+					getOriginalCardId(lastPowerCard) === 'rev-last-pow' ||
+					getOriginalCardId(lastPowerCard) === 'rev-any-pow-1hp'
+				) {
 					return;
 				}
 				await addPowerToGraveYard(gameId, activePowerCard.current);
@@ -397,7 +412,6 @@ export function GameView({
 				return;
 			case 'steal-anim-3hp':
 				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
-				console.log("passed from there")
 				setCardsIdsForPopup(opponentIds);
 				return;
 			case 'switch-decks':
@@ -409,8 +423,6 @@ export function GameView({
 				setCardsIdsForPopup(filteredIds);
 				return;
 			case 'sacrif-anim-3hp':
-				console.log("passed from there")
-
 				const currentIds = currPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(currentIds);
 				return;
