@@ -271,7 +271,7 @@ function Home() {
 								<MdVisibility />
 							</button>
 							<button
-								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.7em' }}
+								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1em' }}
 								disabled={disabledButton}
 								onClick={() => returnAsPlayer()}>
 								Rejoin

@@ -207,7 +207,7 @@ const botAttack = async (gameId: string) => {
 
 	const envLoadNb = await getItemsOnce('/games/' + gameId + '/two/envLoadNb');
 	let currentElement = await getElementFromDb(gameId);
-	if (envLoadNb === 3 && animal?.clan !== currentElement) {
+	if (envLoadNb === 1 && animal?.clan !== currentElement) {
 		await changeElement(gameId, animal.clan, PlayerType.TWO);
 		currentElement = animal.clan;
 	}
