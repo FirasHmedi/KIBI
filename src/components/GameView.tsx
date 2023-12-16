@@ -92,6 +92,7 @@ export function GameView({
 	const activePowerCard = useRef('');
 	const hasAttacked = useRef(false);
 	const canKingAttackAgain = useRef(false);
+	const gyTitle = useRef('');
 
 	const openCardsPopup = cardsIdsForPopup?.length > 0;
 	const isOppSlotsEmpty = getIsOppSlotsEmpty(oppPSlots);
@@ -320,9 +321,11 @@ export function GameView({
 				await minus1Hp(gameId, playerType);
 				break;
 			case 'rev-any-anim-1hp':
+				gyTitle.current = 'Choose an animal to revive';
 				setCardsIdsForPopup(animalGY);
 				return;
 			case 'steal-anim-3hp':
+				gyTitle.current = 'Steal an animal from Opponent';
 				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(opponentIds);
 				return;
@@ -331,10 +334,12 @@ export function GameView({
 				await switchDeck(gameId);
 				break;
 			case 'switch-2-cards':
+				gyTitle.current = 'Switch 2 cards with Opponent';
 				const filteredIds = currPlayer.cardsIds.filter(id => id !== cardId);
 				setCardsIdsForPopup(filteredIds);
 				return;
 			case 'sacrif-anim-3hp':
+				gyTitle.current = 'Sacrifice an animal for HP';
 				const currentIds = currPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(currentIds);
 				return;
@@ -345,6 +350,7 @@ export function GameView({
 				await draw2Cards(gameId, playerType);
 				break;
 			case '2-anim-gy':
+				gyTitle.current = 'Select 2 Animal to return to deck';
 				setCardsIdsForPopup(animalGY);
 				return;
 			case 'block-pow':
@@ -381,13 +387,16 @@ export function GameView({
 				await playPowerAfterRevive(lastPowerCard);
 				return;
 			case 'rev-any-pow-1hp':
+				gyTitle.current = 'Select a power card to activate';
 				await addPowerToGraveYard(gameId, activePowerCard.current);
 				setCardsIdsForPopup(powerGY);
 				return;
 			case 'rev-any-anim-1hp':
+				gyTitle.current = 'Select an animal to revive';
 				setCardsIdsForPopup(animalGY);
 				return;
 			case 'steal-anim-3hp':
+				gyTitle.current = 'Select an animal to steal';
 				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(opponentIds);
 				return;
@@ -396,10 +405,12 @@ export function GameView({
 				await switchDeck(gameId);
 				break;
 			case 'switch-2-cards':
+				gyTitle.current = 'Select 2 cards to switch';
 				const filteredIds = currPlayer.cardsIds.filter(id => id !== cardId);
 				setCardsIdsForPopup(filteredIds);
 				return;
 			case 'sacrif-anim-3hp':
+				gyTitle.current = 'Select an animal to sacrifice';
 				const currentIds = currPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(currentIds);
 				return;
@@ -410,6 +421,7 @@ export function GameView({
 				await draw2Cards(gameId, playerType);
 				break;
 			case '2-anim-gy':
+				gyTitle.current = 'Select 2 Animals to return to deck';
 				setCardsIdsForPopup(animalGY);
 				return;
 			case 'block-pow':
@@ -687,6 +699,7 @@ export function GameView({
 					closeCardSelectionPopup={closePopupAndProcessPowerCard}
 					dropClose={false}
 					isJokerActive={isJokerActive}
+					title={gyTitle}
 				/>
 			)}
 			{showCountDown.current && (

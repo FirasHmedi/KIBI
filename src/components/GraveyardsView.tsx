@@ -71,6 +71,7 @@ export const CardsPopup = ({
 	closeCardSelectionPopup,
 	dropClose = true,
 	isJokerActive,
+	title = '',
 }: {
 	cardsIds: string[];
 	selectedIds?: string[];
@@ -78,6 +79,7 @@ export const CardsPopup = ({
 	closeCardSelectionPopup?: any;
 	dropClose?: boolean;
 	isJokerActive?: boolean;
+	title?: any;
 }) => {
 	const shuffledCards = isJokerActive ? shuffle(cardsIds) : cardsIds;
 	return (
@@ -89,12 +91,16 @@ export const CardsPopup = ({
 			<button style={closeButtonStyle} onClick={closeCardSelectionPopup}>
 				<MdCancel style={{ color: 'white', width: '3vw', height: 'auto' }} />
 			</button>
-			{isJokerActive && (
-				<div style={{ ...flexRowStyle, ...centerStyle, marginTop: 45, gap: 20 }}>
-					<img src={monkey} style={{ height: '3rem', width: '3rem' }}></img>
-					<h2 style={{ color: 'white' }}>Pick a card to steal</h2>
-				</div>
-			)}
+			<div style={{ ...flexRowStyle, ...centerStyle, marginTop: 45, gap: 20, color: 'white' }}>
+				{isJokerActive ? (
+					<>
+						<img src={monkey} style={{ height: '3rem', width: '3rem' }}></img>
+						<h2>Pick a card to steal</h2>
+					</>
+				) : (
+					<h2>{title.current}</h2>
+				)}
+			</div>
 
 			<div style={graveyardPopupContent}>
 				{shuffledCards.map((cardId, index) => (
