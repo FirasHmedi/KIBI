@@ -119,8 +119,14 @@ export const submitRandomSelection = async (gameId: string, powerCards: string[]
 	const oneCardsIds: string[] = [];
 	const twoCardsIds: string[] = [];
 	let i = 0,
-		j = 0;
-	const animalsWithoutKings = shuffle(ANIMALS_CARDS)
+		j = 0,
+		k = 0,
+		l = 0,
+		m = 0,
+		n = 0,
+		o = 0,
+		p = 0;
+	shuffle(ANIMALS_CARDS)
 		.filter(({ role, id }) => {
 			if (role === KING) {
 				if (i < 2) {
@@ -134,11 +140,45 @@ export const submitRandomSelection = async (gameId: string, powerCards: string[]
 			}
 			return true;
 		})
-		.map(animal => animal.id);
-
-	animalsWithoutKings.forEach((id, index) => {
-		index < 6 ? oneCardsIds.push(id) : twoCardsIds.push(id);
-	});
+		.filter(({ role, id }) => {
+			if (role === JOKER) {
+				if (k < 2) {
+					oneCardsIds.push(id);
+					k++;
+				} else if (l < 2) {
+					twoCardsIds.push(id);
+					l++;
+				}
+				return false;
+			}
+			return true;
+		})
+		.filter(({ role, id }) => {
+			if (role === TANK) {
+				if (m < 2) {
+					oneCardsIds.push(id);
+					m++;
+				} else if (n < 2) {
+					twoCardsIds.push(id);
+					n++;
+				}
+				return false;
+			}
+			return true;
+		})
+		.filter(({ role, id }) => {
+			if (role === ATTACKER) {
+				if (o < 2) {
+					oneCardsIds.push(id);
+					o++;
+				} else if (p < 2) {
+					twoCardsIds.push(id);
+					p++;
+				}
+				return false;
+			}
+			return true;
+		});
 
 	oneCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index < 2));
 	twoCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index >= 2));

@@ -29,10 +29,10 @@ import {
 import { getAnimalCard, getPowerCard, isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
+
 export interface DropItem {
 	id: string;
 	nb?: number;
-	// Ajoutez ici d'autres propriétés si nécessaire
 }
 
 export const SlotBack = ({ shadow }: { shadow?: boolean }) => (
@@ -261,7 +261,7 @@ export const AnimalBoardSlot = ({
 					}}>
 					<img
 						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-						style={{ width: '4.5rem', height: '3.5rem' }}></img>
+						style={{ width: '4.2rem', height: '3.2rem' }}></img>
 				</div>
 			)}
 
@@ -319,7 +319,7 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 			</div>
 			<img
 				src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
-				style={{ width: '2.6rem', height: '2.8rem', flex: 1 }}
+				style={{ width: '2.2rem', height: '2.2rem', flex: 1 }}
 			/>
 			<div
 				id={roleTooltipId}

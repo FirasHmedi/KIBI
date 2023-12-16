@@ -274,7 +274,7 @@ function Home() {
 								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.7em' }}
 								disabled={disabledButton}
 								onClick={() => returnAsPlayer()}>
-								Join
+								Rejoin
 							</button>
 						</div>
 					</div>

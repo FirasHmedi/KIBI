@@ -1,6 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { useEffect, useRef, useState } from 'react';
+import { MdPerson } from 'react-icons/md';
 import { executeBotTurn } from '../GameBot/BotActions';
 import {
 	activateTankAbility,
@@ -663,10 +664,12 @@ export function GameView({
 					alignItems: 'flex-start',
 					color: violet,
 					width: '18vw',
-					fontSize: '1.1em',
+					fontSize: '1.2em',
 				}}>
 				<RoundView nb={round?.nb} />
-				<h6>Player {round.player.toUpperCase()} turn</h6>
+				<div style={{ ...centerStyle }}>
+					<MdPerson /> <h6>{round.player.toUpperCase()} turn</h6>
+				</div>
 			</div>
 
 			<BoardView
