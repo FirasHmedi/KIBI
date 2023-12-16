@@ -22,6 +22,7 @@ export const CurrentPDeck = ({
 				...flexRowStyle,
 				width: '40rem',
 				overflowY: 'auto',
+				justifyContent: 'safe center',
 			}}>
 			{cardsIds.map((cardId, index) => (
 				<div style={{ marginRight: 8 }} key={index} onClick={() => selectCard(cardId)}>

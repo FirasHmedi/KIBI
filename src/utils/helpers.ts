@@ -157,7 +157,7 @@ export const submitRandomSelection = async (gameId: string, powerCards: string[]
 };
 
 export const isAnimalInSlots = (slots: SlotType[] = [], cardId?: string): boolean => {
-	if (isEmpty(cardId)) {
+	if (isEmpty(cardId) || !isAnimalCard(cardId)) {
 		return false;
 	}
 	return slots.some(slot => slot?.cardId === cardId);

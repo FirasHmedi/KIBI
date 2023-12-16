@@ -175,13 +175,13 @@ export const PowerDeckSlot = ({
 						{gainArray.length > 0
 							? gainArray.map(index => (
 									<span key={index}>
-										<GiHeartPlus style={{ color: 'white', width: '1.2rem', height: '1.2rem' }} />
+										<GiHeartPlus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
 									</span>
 							  ))
 							: lossArray.length > 0
 							? lossArray.map(index => (
 									<span key={index} id={tooltipId}>
-										<GiHeartMinus style={{ color: 'white', width: '1.2rem', height: '1.2rem' }} />
+										<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
 									</span>
 							  ))
 							: null}
@@ -313,7 +313,7 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 				}}>
 				{role === KING && (
 					<span>
-						<GiHeartMinus style={{ color: 'white', width: '1.2rem', height: '1.2rem' }} />
+						<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
 					</span>
 				)}
 			</div>
@@ -495,7 +495,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive }: De
 			style={{
 				...deckSlotStyle,
 				justifyContent: 'center',
-				border: `solid 1px ${lightViolet}`,
+				border: `dashed 1px ${lightViolet}`,
 				borderColor: selected ? violet : undefined,
 				color: violet,
 				fontSize: '0.7em',

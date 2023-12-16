@@ -29,13 +29,13 @@ export function GameContainer({
 			return;
 		}
 
-		const gameBoard = game.board;
+		const board = game.board;
 		const partOfBoard: Board = {
-			mainDeck: gameBoard?.mainDeck ?? DefaultBoard.mainDeck,
-			animalGY: gameBoard?.animalGY ?? DefaultBoard.animalGY,
-			powerGY: gameBoard?.powerGY ?? DefaultBoard.powerGY,
-			elementType: gameBoard?.elementType ?? DefaultBoard.elementType,
-			activeCardId: gameBoard?.activeCardId ?? DefaultBoard.activeCardId,
+			mainDeck: board?.mainDeck ?? DefaultBoard.mainDeck,
+			animalGY: board?.animalGY ?? DefaultBoard.animalGY,
+			powerGY: board?.powerGY ?? DefaultBoard.powerGY,
+			elementType: board?.elementType ?? DefaultBoard.elementType,
+			activeCardId: board?.activeCardId ?? DefaultBoard.activeCardId,
 			currPSlots: [],
 			oppPSlots: [],
 		};
@@ -50,39 +50,47 @@ export function GameContainer({
 			setOppPlayer(p2);
 			setBoard({
 				...partOfBoard,
-				currPSlots: gameBoard?.one ?? [],
-				oppPSlots: gameBoard?.two ?? [],
+				currPSlots: board?.one ?? [],
+				oppPSlots: board?.two ?? [],
 			});
 		} else {
 			setCurrPlayer(p2);
 			setOppPlayer(p1);
 			setBoard({
 				...partOfBoard,
-				currPSlots: gameBoard?.two ?? [],
-				oppPSlots: gameBoard?.one ?? [],
+				currPSlots: board?.two ?? [],
+				oppPSlots: board?.one ?? [],
 			});
 		}
+	}, [game]);
 
+	//add card to next player and set countdown
+	useEffect(() => {
+		if (!isGameRunning(game.status)) {
+			return;
+		}
 		const newRound = game.round;
 		if (round && !spectator) {
 			checkAndDrawCardFromMainDeck(newRound);
 		}
 		setRound(newRound);
+	}, [game]);
 
-		if (
-			isEmpty(gameBoard?.mainDeck) &&
-			round?.player === playerType &&
-			!isEmpty(gameBoard?.powerGY) &&
-			!spectator
-		) {
+	//Revert main deck
+	useEffect(() => {
+		if (!isGameRunning(game.status)) {
+			return;
+		}
+		const gameBoard = game.board;
+		if (isEmpty(gameBoard?.mainDeck) && !isEmpty(gameBoard?.powerGY) && !spectator) {
 			revertMainDeck(gameId);
 		}
 	}, [game]);
 
-	const checkAndDrawCardFromMainDeck = ({ player, nb }: Round) => {
+	const checkAndDrawCardFromMainDeck = async ({ player, nb }: Round) => {
 		if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {
-			drawCardFromMainDeck(gameId, playerType).then();
 			showCountDown.current = true;
+			await drawCardFromMainDeck(gameId, playerType);
 		}
 	};
 

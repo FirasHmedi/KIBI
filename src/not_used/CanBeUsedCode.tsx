@@ -239,6 +239,28 @@ className={
 		"name": "Charge the element"
 	},
 
+	const handlePlacingKing = async (
+		cardId: string,
+		slotNb: number,
+		kingClan: ClanName,
+	): Promise<void> => {
+		const animalIdInSlotNb = currPSlots[slotNb!]?.cardId;
+		const sacrificedAnimal = getAnimalCard(animalIdInSlotNb);
+
+		if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== kingClan) {
+			return;
+		}
+
+		if (canPlaceKingWithoutSacrifice) {
+			await placeKingWithoutSacrifice(gameId, playerType, cardId, slotNb);
+			setCanPlaceKingWithoutSacrifice(false);
+		} else {
+			await placeKingOnBoard(gameId, playerType, cardId, animalIdInSlotNb!, slotNb);
+		}
+
+		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
+	};
+
 	*/
 
 export {};

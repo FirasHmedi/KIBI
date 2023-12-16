@@ -18,7 +18,7 @@ import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
 
-const CountDown = ({ finishRound }: any) => (
+export const CountDown = ({ finishRound }: any) => (
 	<CountdownCircleTimer
 		isPlaying
 		duration={ROUND_DURATION}
@@ -26,7 +26,7 @@ const CountDown = ({ finishRound }: any) => (
 		onComplete={() => {
 			if (!!finishRound) finishRound();
 		}}
-		size={24}
+		size={40}
 		strokeLinecap='butt'
 		strokeWidth={0.5}>
 		{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
@@ -40,7 +40,6 @@ export const CurrentPView = ({
 	nbCardsToPlay,
 	setElement,
 	spectator,
-	showCountDown,
 	chargeElement,
 }: {
 	player: Player;
@@ -50,7 +49,6 @@ export const CurrentPView = ({
 	nbCardsToPlay: number;
 	setElement: () => void;
 	spectator?: boolean;
-	showCountDown?: any;
 	chargeElement?: any;
 }) => {
 	const { playerType } = player;
@@ -113,7 +111,6 @@ export const CurrentPView = ({
 			}}>
 			<Buttons />
 			<PlayerDataView
-				showCountDown={showCountDown}
 				player={player}
 				setElement={setElement}
 				isMyRound={isMyRound}
@@ -152,15 +149,12 @@ const PlayerDataView = ({
 	setElement,
 	isMyRound,
 	isMe,
-	showCountDown,
-	finishRound,
 	chargeElement,
 }: {
 	player: Player;
 	setElement?: any;
 	isMyRound?: boolean;
 	isMe?: boolean;
-	showCountDown?: any;
 	finishRound?: any;
 	chargeElement?: any;
 }) => {
@@ -211,40 +205,45 @@ const PlayerDataView = ({
 				<div
 					style={{
 						position: 'absolute',
-						bottom: '4vh',
 						right: '3vw',
-						...flexRowStyle,
-						alignItems: 'center',
+						bottom: '4vh',
 						height: '4vh',
-						gap: 12,
+						...centerStyle,
 					}}>
-					{showCountDown?.current && !!finishRound && false && (
-						<CountDown finishRound={finishRound} />
-					)}
 					<h4>{playerType?.toUpperCase()}</h4>
 				</div>
 			)}
-			<div style={{ position: 'absolute', bottom: '4vh', right: '8vw' }}></div>
 
-			<div style={{ ...flexRowStyle, alignItems: 'center', gap: 2 }}>
-				<div style={{ ...flexRowStyle, justifyContent: 'center', alignItems: 'center' }}>
-					{!!hpChange && (
-						<div style={{ position: 'absolute', left: '12rem' }}>
-							<h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4>
-						</div>
-					)}
-					<h4 style={{ fontSize: '1.3rem' }}>{hpRef.current}</h4>
-					<FaHeart style={{ color: violet, width: '1vw' }} />
+			<div
+				style={{
+					...flexRowStyle,
+					alignItems: 'center',
+					gap: 2,
+				}}>
+				<div
+					style={{
+						...flexRowStyle,
+						alignItems: 'center',
+					}}>
+					<div style={{ width: '3rem' }}>
+						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
+					</div>
+					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
+						<h4 style={{ fontSize: '1.5rem' }}> {hpRef.current}</h4>
+						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
+					</div>
 				</div>
 
 				<ProgressBar
 					bgColor={violet}
 					maxCompleted={hp > INITIAL_HP ? hp : INITIAL_HP}
-					width='4vw'
+					width='4rem'
 					height='1.1vh'
 					baseBgColor={'grey'}
 					isLabelVisible={false}
 					completed={hp ?? 0}></ProgressBar>
+
+				<div style={{ width: '3rem' }}></div>
 			</div>
 
 			<div style={{ ...flexRowStyle, alignItems: 'center' }}>
@@ -254,8 +253,8 @@ const PlayerDataView = ({
 						borderRadius: 5,
 						backgroundColor: violet,
 						color: 'white',
-						height: '2.8vw',
-						width: '2.8vw',
+						height: '3.4vw',
+						width: '3.4vw',
 						justifyContent: 'center',
 						fontSize: '1em',
 					}}
@@ -268,15 +267,15 @@ const PlayerDataView = ({
 							<div style={{ display: 'flex', flexDirection: 'row' }}>
 								<div
 									style={{
-										width: '0.9vw',
-										height: '0.9vw',
+										width: '1vw',
+										height: '1vw',
 										backgroundColor: fireColor,
 										borderTopLeftRadius: 5,
 									}}></div>
 								<div
 									style={{
-										width: '0.9vw',
-										height: '0.9vw',
+										width: '1vw',
+										height: '1vw',
 										backgroundColor: airColor,
 										borderTopRightRadius: 5,
 									}}></div>
@@ -284,15 +283,15 @@ const PlayerDataView = ({
 							<div style={{ display: 'flex', flexDirection: 'row' }}>
 								<div
 									style={{
-										width: '0.9vw',
-										height: '0.9vw',
+										width: '1vw',
+										height: '1vw',
 										backgroundColor: waterColor,
 										borderBottomLeftRadius: 5,
 									}}></div>
 								<div
 									style={{
-										width: '0.9vw',
-										height: '0.9vw',
+										width: '1vw',
+										height: '1vw',
 										backgroundColor: earthColor,
 										borderBottomRightRadius: 5,
 									}}></div>
@@ -300,8 +299,8 @@ const PlayerDataView = ({
 						</div>
 					) : (
 						<div style={centerStyle}>
-							<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
-							<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
+							<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+							<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
 						</div>
 					)}
 				</button>

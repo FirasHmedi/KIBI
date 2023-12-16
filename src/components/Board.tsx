@@ -2,7 +2,7 @@ import { useDrop } from 'react-dnd';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
 import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
-import { RoundView, Seperator } from './Elements';
+import { Seperator } from './Elements';
 import { AnimalGraveyard, PowerGraveyard } from './GraveyardsView';
 import { BoardSlots, DeckSlot, DropItem, ElementSlot } from './Slots';
 
@@ -68,8 +68,6 @@ export const BoardView = ({
 			</div>
 
 			<div style={{ position: 'absolute', right: '3vw' }}>
-				<RoundView nb={localState?.round?.nb} />
-				<Seperator />
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator />
 				<AnimalGraveyard cardsIds={animalGY} />

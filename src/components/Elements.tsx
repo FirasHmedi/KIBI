@@ -102,11 +102,9 @@ export const ElementPopup = ({
 export const RoundView = ({ nb = 1 }: { nb: number }) => (
 	<div
 		style={{
-			width: '17vw',
-			fontSize: '0.8em',
 			fontWeight: 'bold',
 			color: violet,
 		}}>
-		ROUND {Math.floor(nb / 2)}
+		<h6>ROUND {Math.floor(nb / 2)}</h6>
 	</div>
 );

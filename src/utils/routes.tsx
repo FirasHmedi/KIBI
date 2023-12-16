@@ -78,9 +78,10 @@ const Layout = ({ children }: any) => {
 					{/*<button onClick={() => navigate(CARDS_PATH)}>
 						<h4 style={{ paddingLeft: '1vw', margin: 0 }}>Cards</h4>
 					</button>*/}
-					<button onClick={() => navigate(WALKTHROUGH_PATH)}>
+					{/*<button onClick={() => navigate(WALKTHROUGH_PATH)}>
 						<h4 style={{ paddingLeft: '1vw', margin: 0 }}>Explanation</h4>
-					</button>
+				</button>
+				*/}
 					{/*currentUser ? (
 						<button onClick={() => logOut()}>
 							<h5 style={{ fontWeight: 'bold' }}>{currentUser.username}</h5>

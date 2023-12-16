@@ -11,8 +11,6 @@ import {
 	enableAttackForOpponentAnimals,
 	enableAttackingAndPlayingPowerCards,
 	placeAnimalOnBoard,
-	placeKingOnBoard,
-	placeKingWithoutSacrifice,
 	setElementLoad,
 	setPowerCardAsActive,
 } from '../backend/actions';
@@ -34,7 +32,7 @@ import {
 	switchDeck,
 } from '../backend/powers';
 import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
-import { flexColumnStyle } from '../styles/Style';
+import { centerStyle, flexColumnStyle, violet } from '../styles/Style';
 import { BOT, ClanName, EMPTY, JOKER, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
 import {
 	canAnimalAKillAnimalD,
@@ -55,9 +53,9 @@ import {
 } from '../utils/helpers';
 import { Board, Player, PlayerType, Round, SlotType } from '../utils/interface';
 import { BoardView } from './Board';
-import { ElementPopup } from './Elements';
+import { ElementPopup, RoundView } from './Elements';
 import { CardsPopup } from './GraveyardsView';
-import { CurrentPView, OpponentPView } from './PlayersView';
+import { CountDown, CurrentPView, OpponentPView } from './PlayersView';
 
 interface GameViewProps {
 	round: Round;
@@ -83,14 +81,13 @@ export function GameView({
 	const isMyRound = round.player === playerType;
 
 	const [showEnvPopup, setShowEnvPopup] = useState<boolean>(false);
-	const [canPlaceKingWithoutSacrifice, setCanPlaceKingWithoutSacrifice] = useState<boolean>(false);
 	const [nbCardsToPlay, setNbCardsToPlay] = useState(3);
-	const [hasAttacked, setHasAttacked] = useState(false);
 	const [cardsIdsForPopup, setCardsIdsForPopup] = useState<string[]>([]);
 	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
 	const [isJokerActive, setIsJokerActive] = useState(false);
 
 	const activePowerCard = useRef('');
+	const hasAttacked = useRef(false);
 	const canKingAttackAgain = useRef(false);
 
 	const openCardsPopup = cardsIdsForPopup?.length > 0;
@@ -110,8 +107,7 @@ export function GameView({
 		}
 
 		setNbCardsToPlay(2);
-		setHasAttacked(false);
-		setCanPlaceKingWithoutSacrifice(false);
+		hasAttacked.current = false;
 	}, [round.nb]);
 
 	const getCurrSlotNb = () => {
@@ -121,28 +117,6 @@ export function GameView({
 			}
 		}
 		return 0;
-	};
-
-	const handlePlacingKing = async (
-		cardId: string,
-		slotNb: number,
-		kingClan: ClanName,
-	): Promise<void> => {
-		const animalIdInSlotNb = currPSlots[slotNb!]?.cardId;
-		const sacrificedAnimal = getAnimalCard(animalIdInSlotNb);
-
-		if (!canPlaceKingWithoutSacrifice && sacrificedAnimal?.clan !== kingClan) {
-			return;
-		}
-
-		if (canPlaceKingWithoutSacrifice) {
-			await placeKingWithoutSacrifice(gameId, playerType, cardId, slotNb);
-			setCanPlaceKingWithoutSacrifice(false);
-		} else {
-			await placeKingOnBoard(gameId, playerType, cardId, animalIdInSlotNb!, slotNb);
-		}
-
-		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 	};
 
 	const playAnimalCard = async (cardId: string, slotNb: number): Promise<void> => {
@@ -354,9 +328,6 @@ export function GameView({
 				await minus1Hp(gameId, playerType);
 				await resetBoard(gameId, playerType, currPSlots, oppPSlots);
 				break;
-			case 'charge-element':
-				await setElementLoad(gameId, playerType, 1);
-				break;
 		}
 
 		await processPostPowerCardPlay();
@@ -422,7 +393,7 @@ export function GameView({
 
 	const finishRound = async () => {
 		try {
-			showCountDown.curr = false;
+			showCountDown.current = false;
 			await enableAttackingAndPlayingPowerCards(gameId, playerType);
 			await addOneRound(gameId, getOpponentIdFromCurrentId(playerType));
 			await enableAttackForOpponentAnimals(
@@ -431,6 +402,7 @@ export function GameView({
 				oppPSlots,
 			);
 			if (oppPlayer?.playerName === BOT) {
+				showCountDown.current = true;
 				await drawCardFromMainDeck(gameId, PlayerType.TWO);
 				await finishRoundBot();
 			}
@@ -458,7 +430,7 @@ export function GameView({
 			round.nb >= 3 &&
 			isMyRound &&
 			currPlayer.canAttack &&
-			!hasAttacked &&
+			!hasAttacked.current &&
 			currPSlots[currslotnb ?? 3]?.canAttack;
 
 		const isAttackOwnerEnabled =
@@ -468,9 +440,14 @@ export function GameView({
 			!isOppSlotsAllFilled;
 
 		console.log(
+			'player canAttack',
 			currPlayer.canAttack,
+			'hasAttacked ',
 			hasAttacked,
+			'animal canAttack ',
 			currPSlots[currslotnb ?? 3]?.canAttack,
+			'isOppAnimalInSlots',
+			isAnimalInSlots(oppPSlots, oppoAnimalId),
 			{ isAttackAnimalsEnabled },
 			{ isAttackOwnerEnabled },
 		);
@@ -480,11 +457,7 @@ export function GameView({
 			return;
 		}
 
-		if (
-			isAttackAnimalsEnabled &&
-			isAnimalCard(oppoAnimalId) &&
-			isAnimalInSlots(oppPSlots, oppoAnimalId)
-		) {
+		if (isAttackAnimalsEnabled && isAnimalInSlots(oppPSlots, oppoAnimalId)) {
 			await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
 		}
 	};
@@ -499,7 +472,7 @@ export function GameView({
 			return;
 		}
 
-		setHasAttacked(true);
+		hasAttacked.current = true;
 		await changeHasAttacked(gameId, playerType, currslotnb!, true);
 		await attackOppAnimal(gameId, playerType, currAnimalId!, oppoAnimalId!, oppslotnb!);
 
@@ -507,18 +480,18 @@ export function GameView({
 			isKingInElement(currAnimalId, elementType) && !canKingAttackAgain.current;
 		if (canSecondAttackWithKing) {
 			canKingAttackAgain.current = true;
-			setHasAttacked(false);
+			hasAttacked.current = false;
 			return;
 		}
 
 		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, currslotnb!, false);
-		setHasAttacked(true);
+		hasAttacked.current = true;
 		canKingAttackAgain.current = false;
 	};
 
 	const attackOppHp = async (currSlotNb: number, animalId: string) => {
-		setHasAttacked(true);
+		hasAttacked.current = true;
 		await changeHasAttacked(gameId, playerType, currSlotNb, true);
 		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalId, isCurrDoubleAP);
 		await waitFor(300);
@@ -547,7 +520,6 @@ export function GameView({
 
 	const localState = {
 		round,
-		canPlaceKingWithoutSacrifice,
 		nbCardsToPlay,
 		activePowerCard,
 		board,
@@ -577,6 +549,22 @@ export function GameView({
 
 			{!spectator && showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
 
+			<div
+				style={{
+					position: 'absolute',
+					left: '2vw',
+					top: '50vh',
+					...flexColumnStyle,
+					gap: 12,
+					alignItems: 'flex-start',
+					color: violet,
+					width: '18vw',
+					fontSize: '1.1em',
+				}}>
+				<RoundView nb={round?.nb} />
+				<h6>Player {round.player.toUpperCase()} turn</h6>
+			</div>
+
 			<BoardView
 				board={board}
 				isMyRound={isMyRound}
@@ -596,7 +584,6 @@ export function GameView({
 				nbCardsToPlay={nbCardsToPlay}
 				setElement={setElement}
 				spectator={spectator}
-				showCountDown={showCountDown}
 				chargeElement={chargeElement}
 			/>
 			{openCardsPopup && !spectator && (
@@ -608,6 +595,18 @@ export function GameView({
 					dropClose={false}
 					isJokerActive={isJokerActive}
 				/>
+			)}
+			{showCountDown.current && (
+				<div
+					style={{
+						position: 'absolute',
+						right: '6vw',
+						bottom: '4vh',
+						height: '4vh',
+						...centerStyle,
+					}}>
+					<CountDown finishRound={finishRound} />
+				</div>
 			)}
 		</div>
 	);
