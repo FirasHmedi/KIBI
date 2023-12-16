@@ -33,7 +33,7 @@ import {
 	switch2Cards,
 	switchDeck,
 } from '../backend/powers';
-import { addOneRound, addPowerToGraveYard } from '../backend/unitActions';
+import { addOneRound, addPowerToGraveYard, deletePowerCardFromGraveYardById, removeHpFromPlayer } from '../backend/unitActions';
 import { flexColumnStyle } from '../styles/Style';
 import { BOT, ClanName, EMPTY, JOKER, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
 import {
@@ -202,6 +202,7 @@ export function GameView({
 		}
 		return true;
 	};
+	
 
 	const closePopupAndProcessPowerCard = async () => {
 		await processPostPowerCardPlay();
@@ -256,9 +257,12 @@ export function GameView({
 	const executePowerCardsWithPopup = async (cardId: string) => {
 		switch (getOriginalCardId(activePowerCard.current)) {
 			case 'rev-any-pow-1hp':
-				await reviveAnyPowerFor1hp(gameId, playerType, cardId);
-				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
-				break;
+				if (!isEmpty(powerGY) && powerGY.includes(cardId)) {
+					await removeHpFromPlayer(gameId, playerType, 1);
+					await deletePowerCardFromGraveYardById(gameId, cardId);
+					await playPowerAfterRevive(cardId);
+				}
+				return;
 			case 'rev-any-anim-1hp':
 				const slotNbForRevive = getCurrSlotNb();
 				await sacrifice1HpToReviveAnyAnimal(gameId, playerType, cardId, slotNbForRevive!);
@@ -295,7 +299,7 @@ export function GameView({
 		};
 	};
 
-	const playPowerCard = async (cardId: string) => {
+	const playPowerAfterRevive = async (cardId: string) => {
 		if (!isPowerCardPlayable(cardId)) {
 			return false;
 		}
@@ -305,19 +309,11 @@ export function GameView({
 		const { name } = getPowerCard(cardId)!;
 		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
 		activePowerCard.current = cardId;
-
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
 				await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
 				await minus1Hp(gameId, playerType);
 				break;
-			case 'rev-last-pow':
-				await reviveLastPower(gameId, playerType);
-				setNbCardsToPlay(nbCardsToPlay => nbCardsToPlay + 1);
-				break;
-			case 'rev-any-pow-1hp':
-				setCardsIdsForPopup(powerGY);
-				return;
 			case 'rev-any-anim-1hp':
 				setCardsIdsForPopup(animalGY);
 				return;
@@ -334,6 +330,87 @@ export function GameView({
 				setCardsIdsForPopup(filteredIds);
 				return;
 			case 'sacrif-anim-3hp':
+				console.log("passed from here")
+				const currentIds = currPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
+				setCardsIdsForPopup(currentIds);
+				return;
+			case '2hp':
+				await add2Hp(gameId, playerType);
+				break;
+			case 'draw-2':
+				await draw2Cards(gameId, playerType);
+				break;
+			case '2-anim-gy':
+				setCardsIdsForPopup(animalGY);
+				return;
+			case 'block-pow':
+				await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
+				await minus1Hp(gameId, playerType);
+				break;
+			case 'reset-board':
+				await minus1Hp(gameId, playerType);
+				await resetBoard(gameId, playerType, currPSlots, oppPSlots);
+				break;
+			case 'charge-element':
+				await setElementLoad(gameId, playerType, 1);
+				break;
+		}
+		await processPostPowerCardPlay();
+
+	};
+
+
+	const playPowerCard = async (cardId: string) => {
+		if (!isPowerCardPlayable(cardId)) {
+			return false;
+		}
+
+		console.log('Executing power card ', cardId);
+
+		const { name } = getPowerCard(cardId)!;
+		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
+		activePowerCard.current = cardId;
+		switch (getOriginalCardId(cardId!)) {
+			case 'block-att':
+				await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
+				await minus1Hp(gameId, playerType);
+				break;
+			case 'rev-last-pow':
+				console.log(powerGY);
+				
+				const lastPowerCard = powerGY[powerGY.length - 1];
+
+				if (getOriginalCardId(lastPowerCard) === "rev-last-pow" || getOriginalCardId(lastPowerCard)=== "rev-any-pow-1hp" )
+				{
+					return;
+				}
+				await addPowerToGraveYard(gameId, activePowerCard.current);
+				await deletePowerCardFromGraveYardById(gameId, lastPowerCard);
+				await playPowerAfterRevive(lastPowerCard);
+				return;
+			case 'rev-any-pow-1hp':
+				await addPowerToGraveYard(gameId, activePowerCard.current);
+				setCardsIdsForPopup(powerGY);
+				return;
+			case 'rev-any-anim-1hp':
+				setCardsIdsForPopup(animalGY);
+				return;
+			case 'steal-anim-3hp':
+				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
+				console.log("passed from there")
+				setCardsIdsForPopup(opponentIds);
+				return;
+			case 'switch-decks':
+				await minus1Hp(gameId, playerType);
+				await switchDeck(gameId);
+				break;
+			case 'switch-2-cards':
+				const filteredIds = currPlayer.cardsIds.filter(id => id !== cardId);
+				setCardsIdsForPopup(filteredIds);
+				return;
+			case 'sacrif-anim-3hp':
+				console.log("passed from there")
+
 				const currentIds = currPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(currentIds);
 				return;

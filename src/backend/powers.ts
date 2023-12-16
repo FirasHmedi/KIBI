@@ -81,7 +81,8 @@ export const reviveAnyPowerFor1hp = async (
 	if (!isEmpty(powerGY) && powerGY.includes(cardId)) {
 		await removeHpFromPlayer(gameId, playerType, 1);
 		await deletePowerCardFromGraveYardById(gameId, cardId);
-		await addCardsToPlayerDeck(gameId, playerType, [cardId]);
+		
+		//await addCardsToPlayerDeck(gameId, playerType, [cardId]);
 	}
 };
 
