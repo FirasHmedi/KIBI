@@ -1,6 +1,5 @@
 import { FaShield } from 'react-icons/fa6';
 import { GiHeartMinus, GiHeartPlus } from 'react-icons/gi';
-import { IoIosInformationCircle } from 'react-icons/io';
 
 import { TbSword } from 'react-icons/tb';
 
@@ -86,24 +85,62 @@ export const PowerBoardSlot = ({
 	selected?: boolean;
 	isBigStyle?: boolean;
 }) => {
-	const { name, description } = getPowerCard(cardId) ?? {};
+	const { name, description, gain, loss } = getPowerCard(cardId) ?? {};
 	const tooltipId = `power-deck-anchor${cardId}`;
 	const bigStyle: React.CSSProperties = !!isBigStyle
 		? { height: '20vh', width: '8vw', fontSize: '1em' }
 		: {};
+	const gainArray = Array(gain ?? 0)
+		.fill(0)
+		.map((_, i) => i);
+	const lossArray = Array(loss ?? 0)
+		.fill(0)
+		.map((_, i) => i);
+
 	return (
 		<div
 			style={{
 				...boardSlotStyle,
 				backgroundColor: violet,
-				justifyContent: 'space-evenly',
 				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
 				...bigStyle,
+				...flexColumnStyle,
+				alignItems: 'center',
+				height: '100%',
+				justifyContent: 'space-between',
+				width: '5.4rem',
 			}}
 			onClick={() => select()}>
-			<h6>{name?.toUpperCase()}</h6>
+			<div
+				style={{
+					width: '4.6rem',
+					display: 'flex',
+					justifyContent: 'flex-end',
+					alignItems: 'flex-start',
+					height: '1.7rem',
+					paddingRight: 2,
+					paddingTop: 2,
+				}}>
+				<Tooltip anchorSelect={`#${tooltipId}`} content={name} />
+				{gainArray.length > 0
+					? gainArray.map(index => (
+							<span key={index}>
+								<GiHeartPlus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+							</span>
+					  ))
+					: lossArray.length > 0
+					? lossArray.map(index => (
+							<span key={index} id={tooltipId}>
+								<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+							</span>
+					  ))
+					: null}
+			</div>
+			<div id={tooltipId}>
+				<img src={getPowerCardIcon(cardId)} style={{ width: '2.4rem', height: '2.4rem' }} />
+			</div>
 			<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
-			<IoIosInformationCircle id={tooltipId} style={{ color: 'white', width: '1.2vw' }} />
+			<div style={{ height: '2rem', width: '100%' }} />
 		</div>
 	);
 };

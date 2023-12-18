@@ -1,4 +1,3 @@
-import ProgressBar from '@ramonak/react-progress-bar';
 import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
@@ -13,7 +12,7 @@ import {
 	violet,
 	waterColor,
 } from '../styles/Style';
-import { INITIAL_HP, ROUND_DURATION } from '../utils/data';
+import { ROUND_DURATION } from '../utils/data';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
@@ -129,13 +128,13 @@ export const OpponentPView = ({ player, spectator }: { player: Player; spectator
 		<div
 			style={{
 				...flexRowStyle,
+				width: spectator ? '100%' : '10vw',
 				alignItems: 'center',
-				width: '100%',
 				justifyContent: 'center',
 			}}>
-			<PlayerDataView player={player} />
+			<OpponentDataView player={player} />
 			<OpponentPDeck cardsIds={player?.cardsIds} spectator={spectator} />
-			<EmptyElement />
+			{spectator && <EmptyElement />}
 		</div>
 	);
 };
@@ -191,23 +190,23 @@ const PlayerDataView = ({
 				alignItems: 'center',
 			}}
 			onClick={() => setElement()}>
-			<div style={centerStyle}>
+			<div style={{ ...centerStyle, zIndex: 10, position: 'relative', top: '2vw' }}>
 				<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
 				<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
 			</div>
-			<div style={{}}>
+			<div style={{ position: 'relative', top: '-0.6rem' }}>
 				<div style={{ display: 'flex', flexDirection: 'row' }}>
 					<div
 						style={{
-							width: '1vw',
-							height: '1vw',
+							width: '2vw',
+							height: '2vw',
 							backgroundColor: fireColor,
 							borderTopLeftRadius: 5,
 						}}></div>
 					<div
 						style={{
-							width: '1vw',
-							height: '1vw',
+							width: '2vw',
+							height: '2vw',
 							backgroundColor: airColor,
 							borderTopRightRadius: 5,
 						}}></div>
@@ -215,15 +214,15 @@ const PlayerDataView = ({
 				<div style={{ display: 'flex', flexDirection: 'row' }}>
 					<div
 						style={{
-							width: '1vw',
-							height: '1vw',
+							width: '2vw',
+							height: '2vw',
 							backgroundColor: waterColor,
 							borderBottomLeftRadius: 5,
 						}}></div>
 					<div
 						style={{
-							width: '1vw',
-							height: '1vw',
+							width: '2vw',
+							height: '2vw',
 							backgroundColor: earthColor,
 							borderBottomRightRadius: 5,
 						}}></div>
@@ -277,15 +276,6 @@ const PlayerDataView = ({
 					</div>
 				</div>
 
-				<ProgressBar
-					bgColor={violet}
-					maxCompleted={hp > INITIAL_HP ? hp : INITIAL_HP}
-					width='4rem'
-					height='1.1vh'
-					baseBgColor={'grey'}
-					isLabelVisible={false}
-					completed={hp ?? 0}></ProgressBar>
-
 				<div style={{ width: '3rem' }}></div>
 			</div>
 
@@ -294,6 +284,92 @@ const PlayerDataView = ({
 					<ElementButton />
 				</div>
 			)}
+
+			<div
+				style={{
+					...flexColumnStyle,
+					position: 'absolute',
+					left: '5vw',
+					bottom: isMe ? '8vh' : undefined,
+					top: isMe ? undefined : '13vh',
+					width: '12vw',
+					gap: 12,
+					fontSize: '1.1em',
+				}}>
+				{canAttack === false && canPlayPowers === false ? (
+					<h4>Blocked from attacking and playing power cards</h4>
+				) : canAttack === false ? (
+					<h4>Blocked from attacking</h4>
+				) : canPlayPowers === false ? (
+					<h4>Blocked from playing power cards</h4>
+				) : null}
+				{isDoubleAP && <h4>Animals AP is doubled </h4>}
+			</div>
+		</div>
+	);
+};
+
+const OpponentDataView = ({
+	player,
+	isMe,
+}: {
+	player: Player;
+	setElement?: any;
+	isMyRound?: boolean;
+	isMe?: boolean;
+	finishRound?: any;
+	chargeElement?: any;
+}) => {
+	const { hp, canPlayPowers, isDoubleAP, canAttack } = player;
+	const hpRef = useRef<number>(0);
+	const [hpChange, setHpChange] = useState<string>();
+
+	useEffect(() => {
+		if (hp > hpRef.current) {
+			setHpChange('+' + (hp - hpRef.current));
+			setTimeout(() => {
+				setHpChange(undefined);
+			}, 1000);
+		} else if (hp < hpRef.current) {
+			setHpChange('-' + (hpRef.current - hp));
+			setTimeout(() => {
+				setHpChange(undefined);
+			}, 1000);
+		}
+		hpRef.current = hp;
+	}, [hp]);
+
+	return (
+		<div
+			style={{
+				color: violet,
+				fontSize: '0.9em',
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'center',
+				justifyContent: 'center',
+				padding: 4,
+			}}>
+			<div
+				style={{
+					...flexRowStyle,
+					alignItems: 'center',
+					gap: 1,
+				}}>
+				<div
+					style={{
+						...flexRowStyle,
+						alignItems: 'center',
+					}}>
+					<div style={{ width: '2rem' }}>
+						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
+					</div>
+					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
+						<h4 style={{ fontSize: '1.5rem' }}> {hpRef.current}</h4>
+						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
+					</div>
+				</div>
+			</div>
 
 			<div
 				style={{
