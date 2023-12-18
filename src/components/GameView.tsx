@@ -449,8 +449,11 @@ export function GameView({
 		activePowerCard.current = '';
 	};
 
-	const setElement = () => {
-		if (spectator) return;
+	const setElement = async () => {
+		if (currPlayer.hp <= 2 || spectator || !isMyRound) {
+			return;
+		}
+		await minus2Hp(gameId, playerType);
 		setShowEnvPopup(true);
 	};
 
@@ -541,14 +544,13 @@ export function GameView({
 		const isAttackOwnerEnabled =
 			isAttackAnimalsEnabled &&
 			!isAnimalCard(oppoAnimalId) &&
-			(isAttackerInElement(currAnimalId, elementType) || isOppSlotsEmpty) &&
-			!isOppSlotsAllFilled;
+			(isAttackerInElement(currAnimalId, elementType) || isOppSlotsEmpty);
+		//&& !isOppSlotsAllFilled;
 
 		console.log(
 			'player canAttack',
 			currPlayer.canAttack,
-			'hasAttacked ',
-			hasAttacked,
+			{ hasAttacked },
 			'animal canAttack ',
 			currPSlots[currslotnb ?? 3]?.canAttack,
 			'isOppAnimalInSlots',

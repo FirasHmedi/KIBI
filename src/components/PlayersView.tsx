@@ -177,17 +177,60 @@ const PlayerDataView = ({
 		hpRef.current = hp;
 	}, [hp]);
 
-	const chargeOrSetElement = () => {
-		if (!isMe || !isMyRound) {
-			return;
-		}
-		if (envLoadNb === 1) {
-			setElement();
-		}
-		if (envLoadNb === 0) {
-			chargeElement();
-		}
-	};
+	const ElementButton = () => (
+		<button
+			style={{
+				...centerStyle,
+				borderRadius: 5,
+				backgroundColor: violet,
+				color: 'white',
+				height: '4vw',
+				width: '4vw',
+				fontSize: '1em',
+				...flexColumnStyle,
+				alignItems: 'center',
+			}}
+			onClick={() => setElement()}>
+			<div style={centerStyle}>
+				<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+				<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+			</div>
+			<div style={{}}>
+				<div style={{ display: 'flex', flexDirection: 'row' }}>
+					<div
+						style={{
+							width: '1vw',
+							height: '1vw',
+							backgroundColor: fireColor,
+							borderTopLeftRadius: 5,
+						}}></div>
+					<div
+						style={{
+							width: '1vw',
+							height: '1vw',
+							backgroundColor: airColor,
+							borderTopRightRadius: 5,
+						}}></div>
+				</div>
+				<div style={{ display: 'flex', flexDirection: 'row' }}>
+					<div
+						style={{
+							width: '1vw',
+							height: '1vw',
+							backgroundColor: waterColor,
+							borderBottomLeftRadius: 5,
+						}}></div>
+					<div
+						style={{
+							width: '1vw',
+							height: '1vw',
+							backgroundColor: earthColor,
+							borderBottomRightRadius: 5,
+						}}></div>
+				</div>
+			</div>
+		</button>
+	);
 
 	return (
 		<div
@@ -246,65 +289,11 @@ const PlayerDataView = ({
 				<div style={{ width: '3rem' }}></div>
 			</div>
 
-			<div style={{ ...flexRowStyle, alignItems: 'center' }}>
-				<button
-					style={{
-						...centerStyle,
-						borderRadius: 5,
-						backgroundColor: violet,
-						color: 'white',
-						height: '3.4vw',
-						width: '3.4vw',
-						justifyContent: 'center',
-						fontSize: '1em',
-					}}
-					onClick={() => chargeOrSetElement()}>
-					{envLoadNb === 1 ? (
-						<div
-							style={{
-								margin: 'auto',
-							}}>
-							<div style={{ display: 'flex', flexDirection: 'row' }}>
-								<div
-									style={{
-										width: '1vw',
-										height: '1vw',
-										backgroundColor: fireColor,
-										borderTopLeftRadius: 5,
-									}}></div>
-								<div
-									style={{
-										width: '1vw',
-										height: '1vw',
-										backgroundColor: airColor,
-										borderTopRightRadius: 5,
-									}}></div>
-							</div>
-							<div style={{ display: 'flex', flexDirection: 'row' }}>
-								<div
-									style={{
-										width: '1vw',
-										height: '1vw',
-										backgroundColor: waterColor,
-										borderBottomLeftRadius: 5,
-									}}></div>
-								<div
-									style={{
-										width: '1vw',
-										height: '1vw',
-										backgroundColor: earthColor,
-										borderBottomRightRadius: 5,
-									}}></div>
-							</div>
-						</div>
-					) : (
-						<div style={centerStyle}>
-							<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
-							<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
-						</div>
-					)}
-				</button>
-			</div>
+			{isMe && (
+				<div style={{ ...flexRowStyle, alignItems: 'center' }}>
+					<ElementButton />
+				</div>
+			)}
 
 			<div
 				style={{
