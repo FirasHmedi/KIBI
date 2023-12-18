@@ -2,9 +2,10 @@ import { MdCancel } from 'react-icons/md';
 import { airColor, centerStyle, earthColor, fireColor, violet, waterColor } from '../styles/Style';
 import { AIR, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
 
-export const Seperator = ({ h }: { h?: string }) => {
+export const Seperator = ({ h, w }: { h?: string; w?: string }) => {
 	const height = h ?? '2vh';
-	return <div style={{ height }} />;
+	const width = w ?? '2vw';
+	return <div style={{ height, width }} />;
 };
 
 export const ElementPopup = ({

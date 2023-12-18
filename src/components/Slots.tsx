@@ -4,7 +4,7 @@ import { IoIosInformationCircle } from 'react-icons/io';
 
 import { TbSword } from 'react-icons/tb';
 
-import { useRef } from 'react';
+import { CSSProperties, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { Tooltip } from 'react-tooltip';
 import {
@@ -519,17 +519,17 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 				border: elementType === 'neutral' ? `solid 1px ${lightViolet}` : undefined,
 				color: 'white',
 				flexDirection: 'column',
-				height: '3vw',
-				width: '3vw',
+				height: '4.5vw',
+				width: '4.5vw',
 				justifyContent: 'center',
 				flexShrink: 0,
-				fontSize: '0.6em',
+				fontSize: '1em',
 			}}>
 			{elementType !== 'neutral' && (
 				<img
 					src={elementsIcons[elementType!]}
 					style={{
-						height: '5vh',
+						height: '6vh',
 						backgroundSize: 'cover',
 						backgroundPosition: 'center',
 					}}></img>
@@ -561,8 +561,8 @@ export const BoardSlots = ({
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
 	const mainColor = elementType == 'neutral' ? 'transparent' : CLANS[elementType].color;
-	const glow = {
-		boxShadow: ` 0 0 0.2vw 0.12vw ${mainColor}`,
+	const glow: CSSProperties = {
+		boxShadow: ` 0 0 0.6vw 0.4vw ${mainColor}`,
 		borderRadius: 5,
 	};
 
@@ -576,18 +576,16 @@ export const BoardSlots = ({
 			{compoundSlots.map((slot, index) => (
 				<div key={index}>
 					{/*<div>{current && <CanAttackIconsView slot={slot} />}</div>*/}
-					<div style={isDoubleAP ? glow : undefined}>
-						<BoardSlot
-							nb={index}
-							isDoubleAP={isDoubleAP}
-							cardId={slot?.cardId}
-							playCard={playCard}
-							localState={localState}
-							attack={attack}
-							attackState={attackState}
-							opponent={opponent}
-						/>
-					</div>
+					<BoardSlot
+						nb={index}
+						isDoubleAP={isDoubleAP}
+						cardId={slot?.cardId}
+						playCard={playCard}
+						localState={localState}
+						attack={attack}
+						attackState={attackState}
+						opponent={opponent}
+					/>
 					{/*opponent && <CanAttackIconsView slot={slot} />*/}
 				</div>
 			))}

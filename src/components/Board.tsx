@@ -35,7 +35,7 @@ export const BoardView = ({
 				flexDirection: 'row',
 			}}>
 			<ActiveCardSlot cardId={activeCardId!} playCard={playCard} localState={localState} />
-
+			<Seperator w='2vw' />
 			<div
 				style={{
 					...centerStyle,
@@ -62,10 +62,8 @@ export const BoardView = ({
 					isDoubleAP={isCurrDoubleAP}
 				/>
 			</div>
-
-			<div style={{ position: 'absolute', right: '32vw' }}>
-				<ElementSlot elementType={elementType} />
-			</div>
+			<Seperator w='2vw' />
+			<ElementSlot elementType={elementType} />
 
 			<div style={{ position: 'absolute', right: '3vw' }}>
 				<MainDeck nbCards={mainDeck.length} />
@@ -98,7 +96,7 @@ const ActiveCardSlot = ({
 		[cardId, localState],
 	);
 	return (
-		<div ref={drop} style={{ position: 'absolute', left: '30vw' }}>
+		<div ref={drop}>
 			<DeckSlot cardId={cardId} />
 		</div>
 	);
