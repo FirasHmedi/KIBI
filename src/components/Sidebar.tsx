@@ -14,19 +14,17 @@ function Sidebar() {
 				padding: 4,
 				gap: 10,
 				...flexColumnStyle,
-				alignItems: 'flex-start',
+				alignItems: 'safe center',
 			}}>
 			<Seperator />
 			<button onClick={() => navigate(CARDS_PATH)}>
 				<h4 style={{}}>Cards</h4>
 			</button>
-			<Seperator />
 			{/*
 			<button onClick={() => navigate(WALKTHROUGH_PATH)}>
 				<h4 style={{}}>Walkthrough</h4>
 			</button>
 			*/}
-			<Seperator h='30vh' />
 			<div style={{ ...flexColumnStyle, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
 				<h5>Rules</h5>
 				<ul
