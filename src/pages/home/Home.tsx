@@ -1,16 +1,18 @@
 import shuffle from 'lodash/shuffle';
 import { useState } from 'react';
-import { FaGamepad } from 'react-icons/fa';
-import { MdComputer, MdPerson, MdPersonAdd, MdVisibility } from 'react-icons/md';
+import { MdComputer, MdPerson, MdVisibility } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { v4 as uuidv4 } from 'uuid';
 import { getItemsOnce, setItem } from '../../backend/db';
 
+import { VscDebugContinue } from 'react-icons/vsc';
+import { Seperator } from '../../components/Elements';
 import {
 	buttonStyle,
 	centerStyle,
+	flexColumnStyle,
 	flexRowStyle,
 	homeButtonsStyle,
 	violet,
@@ -200,14 +202,22 @@ function Home() {
 	return (
 		<>
 			<ToastContainer />
-			<div style={{ height: '100%', ...centerStyle, width: '100%' }}>
+			<div
+				style={{
+					display: 'flex',
+					height: '100%',
+					width: '100%',
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}>
 				<div
 					style={{
-						...centerStyle,
-						flexDirection: 'column',
+						...flexColumnStyle,
 						gap: 20,
+						alignItems: 'flex-start',
 					}}>
 					<div style={{ ...centerStyle, gap: 15 }}>
+						<h3 style={{ color: violet }}>Create a game</h3>
 						{alertMessage && (
 							<div style={{}}>
 								{alertMessage}
@@ -221,7 +231,6 @@ function Home() {
 							}}
 							disabled={false}
 							onClick={() => createGame()}>
-							<FaGamepad />
 							<MdPerson />
 						</button>
 						<button
@@ -231,11 +240,12 @@ function Home() {
 							}}
 							disabled={disabledButton}
 							onClick={playWithGameBot}>
-							<FaGamepad />
 							<MdComputer />
 						</button>
 					</div>
+					<Seperator h='1vh' />
 					<div style={centerStyle}>
+						<h3 style={{ color: violet }}>Join a game</h3>
 						<input
 							type='text'
 							placeholder='Game Id'
@@ -253,28 +263,29 @@ function Home() {
 							disabled={disabledButton}
 							onChange={e => setGameId(e.target.value)}
 						/>
+
 						<div style={{ width: '20vw', ...flexRowStyle, gap: 15 }}>
 							<button
 								style={{
 									...buttonStyle,
 									...homeButtonsStyle,
+									fontSize: '1.4em',
 								}}
 								disabled={disabledButton}
 								onClick={() => joinGameAsPlayer()}>
-								<FaGamepad />
-								<MdPersonAdd />
+								<h6>TWO</h6>
 							</button>
 							<button
-								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.7em' }}
+								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.4em' }}
 								disabled={disabledButton}
 								onClick={() => joinGameAsSpectator()}>
 								<MdVisibility />
 							</button>
 							<button
-								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1em' }}
+								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.4em' }}
 								disabled={disabledButton}
 								onClick={() => returnAsPlayer()}>
-								Rejoin
+								<VscDebugContinue /> <h6>ONE / TWO</h6>
 							</button>
 						</div>
 					</div>

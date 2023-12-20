@@ -1,19 +1,49 @@
-import { violet } from '../styles/Style';
+import { useNavigate } from 'react-router-dom';
+import { flexColumnStyle, violet } from '../styles/Style';
+import { CARDS_PATH } from '../utils/data';
+import { Seperator } from './Elements';
 
 function Sidebar() {
+	const navigate = useNavigate();
 	return (
-		<div style={{ width: '15vw', color: violet, backgroundColor: '#ecf0f1', padding: 4 }}>
-			<div>
+		<div
+			style={{
+				width: '15vw',
+				color: 'white',
+				backgroundColor: violet,
+				padding: 4,
+				gap: 10,
+				...flexColumnStyle,
+				alignItems: 'flex-start',
+			}}>
+			<Seperator />
+			<button onClick={() => navigate(CARDS_PATH)}>
+				<h4 style={{}}>Cards</h4>
+			</button>
+			<Seperator />
+			{/*
+			<button onClick={() => navigate(WALKTHROUGH_PATH)}>
+				<h4 style={{}}>Walkthrough</h4>
+			</button>
+			*/}
+			<Seperator h='30vh' />
+			<div style={{ ...flexColumnStyle, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
 				<h5>Rules</h5>
-				<ul style={{}}>
+				<ul
+					style={{
+						...flexColumnStyle,
+						justifyContent: 'flex-start',
+						alignItems: 'flex-start',
+						gap: 8,
+					}}>
 					<li>
-						<h6>The animals abilities can be used only if their clan's element is activated</h6>
+						<h6>Animals abilities are activated when their clan's element is set</h6>
 					</li>
 					<li>
-						<h6>Animals cannot attack on the first round</h6>
+						<h6>No attack on first round</h6>
 					</li>
 					<li>
-						<h6>3 Animals in board defend their player from being attacked</h6>
+						<h6>3 Animals on board defend their player</h6>
 					</li>
 					<li>
 						<h6>Player can be attacked if no animal defends him</h6>

@@ -10,10 +10,12 @@ function Cards() {
 			<div
 				style={{
 					...flexColumnStyle,
-					...centerStyle,
+					justifyContent: 'safe center',
 					color: violet,
 					height: '90vh',
 					overflowY: 'auto',
+					paddingLeft: '12vw',
+					paddingRight: '12vw',
 				}}>
 				<h3>Animal Cards</h3>
 				<div style={{ display: 'flex', flexWrap: 'wrap', ...centerStyle }}>

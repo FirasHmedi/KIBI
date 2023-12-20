@@ -102,12 +102,6 @@ function WalkThrough() {
 				</li>
 			</ul>
 			<h1>Scenario</h1>
-			<div style={{ ...flexColumnStyle, ...centerStyle }}>
-				<img style={{ height: 'auto', width: '70%' }} src={'src/assets/img/scenario.PNG'} />
-				<h1>1</h1>
-				<img style={{ height: 'auto', width: '70%' }} src={'src/assets/img/scenario2.PNG'} />
-				<h1>2</h1>
-			</div>
 			<p>in this scenario, the player one choose to:</p>
 			<ul style={{ textAlign: 'left' }}>
 				<li>
