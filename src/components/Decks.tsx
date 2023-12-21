@@ -1,5 +1,5 @@
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
-import { DeckSlot } from './Slots';
+import { DeckSlot, SlotBack } from './Slots';
 import mainDeck from '/src/assets/mainDeck.svg';
 
 interface CurrentPDeckProps {
@@ -44,27 +44,29 @@ export const OpponentPDeck = ({
 }: {
 	cardsIds: string[];
 	spectator?: boolean;
-}) => (
-	<div
-		style={{
-			...flexRowStyle,
-			width: spectator ? '40vw' : '4vw',
-			overflowY: 'auto',
-			justifyContent: !spectator ? 'center' : undefined,
-		}}>
-		{!spectator ? (
-			<div>
-				<OpponentDeckView nbCards={cardsIds.length} />
-			</div>
-		) : (
-			cardsIds.map((cardId, index) => (
-				<div style={{ marginRight: 8 }} key={index}>
-					<DeckSlot cardId={cardId} />
-				</div>
-			))
-		)}
-	</div>
-);
+}) => {
+	return (
+		<div
+			style={{
+				...flexRowStyle,
+				width: '60vw',
+				overflowY: 'auto',
+				justifyContent: 'safe center',
+			}}>
+			{!spectator
+				? cardsIds.map((cardId, index) => (
+						<div style={{ marginRight: 8 }} key={index}>
+							<SlotBack />
+						</div>
+				  ))
+				: cardsIds.map((cardId, index) => (
+						<div style={{ marginRight: 8 }} key={index}>
+							<DeckSlot cardId={cardId} />
+						</div>
+				  ))}
+		</div>
+	);
+};
 
 export const OpponentDeckView = ({ nbCards = 0 }: { nbCards: number }) => {
 	const name = nbCards > 1 ? `${nbCards} cards` : nbCards === 1 ? '1 card' : 'No cards';

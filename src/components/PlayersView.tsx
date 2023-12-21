@@ -127,10 +127,12 @@ export const OpponentPView = ({ player, spectator }: { player: Player; spectator
 	return (
 		<div
 			style={{
-				...flexRowStyle,
-				width: spectator ? '100%' : '10vw',
+				...flexColumnStyle,
+				width: '36%',
 				alignItems: 'center',
-				justifyContent: 'center',
+				justifyContent: 'safe center',
+				gap: 10,
+				border: 'solid 1px',
 			}}>
 			<OpponentDataView player={player} />
 			<OpponentPDeck cardsIds={player?.cardsIds} spectator={spectator} />
@@ -360,6 +362,7 @@ const OpponentDataView = ({
 					style={{
 						...flexRowStyle,
 						alignItems: 'center',
+						gap: 8,
 					}}>
 					<div style={{ width: '2rem' }}>
 						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
