@@ -2,7 +2,10 @@ import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { useEffect, useRef, useState } from 'react';
 import { MdPerson } from 'react-icons/md';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { executeBotTurn } from '../GameBot/BotActions';
+import { canAttackOwner } from '../GameBot/powerCardCheckers';
 import {
 	activateTankAbility,
 	attackOppAnimal,
@@ -89,6 +92,7 @@ export function GameView({
 	const [cardsIdsForPopup, setCardsIdsForPopup] = useState<string[]>([]);
 	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
 	const [isJokerActive, setIsJokerActive] = useState(false);
+	const [isvibrationActive, setIsvibrationActive] = useState(false);
 
 	const activePowerCard = useRef('');
 	const hasAttacked = useRef(false);
@@ -153,44 +157,86 @@ export function GameView({
 	const isPowerCardPlayable = (cardId: string) => {
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
-				if (currPlayer.hp < 2) return false;
+				if (currPlayer.hp < 2) {
+					showToast('Not enough hp to block enemy attacks');
+					return false;
+				}
 				break;
 			case 'block-pow':
-				if (currPlayer.hp < 2) return false;
+				if (currPlayer.hp < 2) {
+					showToast('Not enough HP to block enemy powers');
+					return false;
+				}
 				break;
 			case 'reset-board':
-				if (currPlayer.hp < 2) return false;
+				if (currPlayer.hp < 2) {
+					showToast('Not enough HP to reset board');
+					return false;
+				}
 				break;
 			case 'rev-any-anim-1hp':
-				if (isEmpty(animalGY) || currPlayer.hp < 2) return false;
+				if (isEmpty(animalGY)) {
+					showToast('No animals to revive');
+					return false;
+				}
+				if (currPlayer.hp < 2) {
+					showToast('Not enough hp to revive animal');
+					return false;
+				}
 				break;
 			case 'steal-anim-3hp':
-				if (currPlayer.hp < 4 || isOppSlotsEmpty) return false;
+				if (currPlayer.hp < 4) {
+					showToast('Not enough HP to steal animal');
+					return false;
+				}
+				if (isOppSlotsEmpty) {
+					showToast('No animal to steal');
+					return false;
+				}
 				break;
 			case 'sacrif-anim-3hp':
 				if (
 					!isAnimalCard(currPSlots[0].cardId) &&
 					!isAnimalCard(currPSlots[1].cardId) &&
 					!isAnimalCard(currPSlots[2].cardId)
-				)
+				) {
+					showToast('No animals to sacrifice');
 					return false;
+				}
 				break;
 			case '2-anim-gy':
-				if (isEmpty(animalGY) || animalGY?.length < 2) return false;
+				if (isEmpty(animalGY) || animalGY?.length < 2) {
+					showToast('Not enough Animals to return');
+					return false;
+				}
 				break;
 			case 'rev-any-pow-1hp':
-				if (isEmpty(powerGY) || currPlayer.hp < 2) return false;
+				if (isEmpty(powerGY)) {
+					showToast('No Power Cards to revive');
+					return false;
+				}
+				if (currPlayer.hp < 2) {
+					showToast('Not enough HP to revive powers');
+					return false;
+				}
 				break;
 			case 'switch-2-cards':
-				if (currPlayer.cardsIds.length < 3 || oppPlayer.cardsIds.length < 2) return false;
+				if (currPlayer.cardsIds.length < 3 || oppPlayer.cardsIds.length < 2) {
+					showToast('Not enough cards to switch');
+					return false;
+				}
 				break;
 			case 'rev-last-pow':
-				if (isEmpty(powerGY)) return false;
+				if (isEmpty(powerGY)) {
+					showToast('No power card to revive');
+					return false;
+				}
 				const lastPow = powerGY[powerGY.length - 1];
 				if (
 					getOriginalCardId(lastPow) === 'rev-last-pow' ||
 					getOriginalCardId(lastPow) === 'rev-any-pow-1hp'
 				) {
+					showToast("Can't revive Power Card twice");
 					return false;
 				}
 				break;
@@ -519,6 +565,13 @@ export function GameView({
 		}
 	};
 
+	const showToast = (msg: string) => {
+		toast.warning(msg, {
+			position: toast.POSITION.TOP_RIGHT,
+			autoClose: 1000,
+		});
+	};
+
 	const attack = async (
 		currAnimalId?: string,
 		oppoAnimalId?: string,
@@ -564,8 +617,49 @@ export function GameView({
 			return;
 		}
 
+		if (!isAnimalCard(oppoAnimalId) && !isAttackOwnerEnabled) {
+			if (round.nb < 3) {
+				showToast('Attack is disabled in first round');
+				return false;
+			}
+
+			if (!isOppSlotsEmpty) {
+				showToast('Not all slots are empty');
+				return false;
+			}
+
+			if (!currPlayer.canAttack) {
+				showToast('Blocked from attacking');
+				return false;
+			}
+
+			if (hasAttacked.current) {
+				showToast('Already attacked');
+				return false;
+			}
+			return false;
+		}
+
 		if (isAttackAnimalsEnabled && isAnimalInSlots(oppPSlots, oppoAnimalId)) {
-			await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
+			return await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
+		} else {
+			if (round.nb < 3) {
+				showToast('Attack is disabled in first round');
+				return false;
+			}
+			if (hasAttacked.current) {
+				showToast('Already Attacked');
+				return false;
+			}
+			if (!currPlayer.canAttack) {
+				showToast('Blocked from attacking');
+				return false;
+			}
+			if (!isAnimalInSlots(oppPSlots, oppoAnimalId)) {
+				showToast('Attack an opponent animal');
+				return false;
+			}
+			return false;
 		}
 	};
 
@@ -576,9 +670,8 @@ export function GameView({
 		oppslotnb?: number,
 	) => {
 		if (!canAnimalAKillAnimalD(currAnimalId, oppoAnimalId, isCurrDoubleAP)) {
-			return;
+			return false;
 		}
-
 		hasAttacked.current = true;
 		await changeHasAttacked(gameId, playerType, currslotnb!, true);
 		await attackOppAnimal(gameId, playerType, currAnimalId!, oppoAnimalId!, oppslotnb!);
@@ -640,85 +733,88 @@ export function GameView({
 		board,
 		hasAttacked,
 		currPSlots,
+		canAttackOwner,
 	};
 
 	return (
-		<div
-			style={{
-				...flexColumnStyle,
-				width: '100%',
-				height: '92vh',
-				justifyContent: 'space-between',
-				paddingTop: '4vh',
-				paddingBottom: '4vh',
-			}}>
-			<OpponentPView player={oppPlayer} spectator={spectator} />
-
-			{!spectator && showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
-
+		<>
+			<ToastContainer />
 			<div
 				style={{
-					position: 'absolute',
-					left: '2vw',
-					top: '50vh',
 					...flexColumnStyle,
-					gap: 12,
-					alignItems: 'flex-start',
-					color: violet,
-					width: '18vw',
-					fontSize: '1.2em',
+					width: '100%',
+					height: '92vh',
+					justifyContent: 'space-between',
+					paddingTop: '4vh',
+					paddingBottom: '4vh',
 				}}>
-				<RoundView nb={round?.nb} />
-				<div style={{ ...centerStyle }}>
-					<MdPerson /> <h6>{round.player.toUpperCase()} turn</h6>
-				</div>
-			</div>
+				<OpponentPView player={oppPlayer} spectator={spectator} />
 
-			<BoardView
-				board={board}
-				isMyRound={isMyRound}
-				playCard={playCard}
-				localState={localState}
-				attack={attack}
-				attackState={attackState}
-				isOppDoubleAP={isOppDoubleAP}
-				isCurrDoubleAP={isCurrDoubleAP}
-			/>
+				{!spectator && showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
 
-			<CurrentPView
-				player={currPlayer}
-				round={round}
-				playCard={playCard}
-				finishRound={finishRound}
-				nbCardsToPlay={nbCardsToPlay}
-				setElement={setElement}
-				spectator={spectator}
-				chargeElement={chargeElement}
-			/>
-			{openCardsPopup && <h5>hello</h5>}
-			{openCardsPopup && !spectator && (
-				<CardsPopup
-					cardsIds={cardsIdsForPopup}
-					selectedIds={selectedCardsIdsForPopup}
-					selectCardsPolished={selectCardForPopup}
-					closeCardSelectionPopup={closePopupAndProcessPowerCard}
-					dropClose={false}
-					isJokerActive={isJokerActive}
-					title={gyTitle}
-				/>
-			)}
-			{showCountDown.current && (
 				<div
 					style={{
 						position: 'absolute',
-						right: '6vw',
-						bottom: '4vh',
-						height: '4vh',
-						...centerStyle,
+						left: '2vw',
+						top: '50vh',
+						...flexColumnStyle,
+						gap: 12,
+						alignItems: 'flex-start',
+						color: violet,
+						width: '18vw',
+						fontSize: '1.2em',
 					}}>
-					<CountDown finishRound={finishRound} />
+					<RoundView nb={round?.nb} />
+					<div style={{ ...centerStyle }}>
+						<MdPerson /> <h6>{round.player.toUpperCase()} turn</h6>
+					</div>
 				</div>
-			)}
-		</div>
+
+				<BoardView
+					board={board}
+					isMyRound={isMyRound}
+					playCard={playCard}
+					localState={localState}
+					attack={attack}
+					attackState={attackState}
+					isOppDoubleAP={isOppDoubleAP}
+					isCurrDoubleAP={isCurrDoubleAP}
+				/>
+
+				<CurrentPView
+					player={currPlayer}
+					round={round}
+					playCard={playCard}
+					finishRound={finishRound}
+					nbCardsToPlay={nbCardsToPlay}
+					setElement={setElement}
+					spectator={spectator}
+					chargeElement={chargeElement}
+				/>
+				{openCardsPopup && !spectator && (
+					<CardsPopup
+						cardsIds={cardsIdsForPopup}
+						selectedIds={selectedCardsIdsForPopup}
+						selectCardsPolished={selectCardForPopup}
+						closeCardSelectionPopup={closePopupAndProcessPowerCard}
+						dropClose={false}
+						isJokerActive={isJokerActive}
+						title={gyTitle}
+					/>
+				)}
+				{showCountDown.current && (
+					<div
+						style={{
+							position: 'absolute',
+							right: '6vw',
+							bottom: '4vh',
+							height: '4vh',
+							...centerStyle,
+						}}>
+						<CountDown finishRound={finishRound} />
+					</div>
+				)}
+			</div>
+		</>
 	);
 }

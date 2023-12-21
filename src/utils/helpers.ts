@@ -1,5 +1,7 @@
 import { isEmpty, shuffle } from 'lodash';
 import { useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { getGamePath, setItem } from '../backend/db';
 import {
 	ANIMALS_CARDS,
@@ -100,6 +102,9 @@ export const canAnimalAKillAnimalD = (aID?: string, dID?: string, isDoubleAP: bo
 	const animalDHP = getAnimalHP(animalD.role);
 
 	if (animalAAP < animalDHP) {
+		toast.error('Not enough Attack Points to attack', {
+			position: toast.POSITION.TOP_RIGHT,
+		});
 		return false;
 	}
 	return true;
