@@ -270,6 +270,7 @@ export const AnimalBoardSlot = ({
 		},
 		[cardId, attackState],
 	);
+	
 	const { clan, name, role, ability } = getAnimalCard(cardId)!;
 
 	if (!name || !clan || !role) return <></>;

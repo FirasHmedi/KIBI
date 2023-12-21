@@ -1,5 +1,6 @@
 import { isEmpty, shuffle } from 'lodash';
 import { useLocation } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 import { getGamePath, setItem } from '../backend/db';
 import {
 	ANIMALS_CARDS,
@@ -17,6 +18,7 @@ import {
 	TANK,
 } from './data';
 import { AnimalCard, Card, PlayerType, SlotType } from './interface';
+import { toast } from 'react-toastify';
 
 export const isNotEmpty = (input: string | Array<any>, minLength = 0) => input.length > minLength;
 
@@ -100,6 +102,9 @@ export const canAnimalAKillAnimalD = (aID?: string, dID?: string, isDoubleAP: bo
 	const animalDHP = getAnimalHP(animalD.role);
 
 	if (animalAAP < animalDHP) {
+	toast.error("your animal can't attack the this opponent animal", {
+	position: toast.POSITION.TOP_RIGHT,
+	});
 		return false;
 	}
 	return true;

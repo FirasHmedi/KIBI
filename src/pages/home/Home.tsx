@@ -198,7 +198,6 @@ function Home() {
 			});
 		}
 	};
-
 	return (
 		<>
 			<ToastContainer />

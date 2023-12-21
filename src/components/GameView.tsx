@@ -1,6 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { useEffect, useRef, useState } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
 import { MdPerson } from 'react-icons/md';
 import { executeBotTurn } from '../GameBot/BotActions';
 import {
@@ -60,6 +61,8 @@ import { BoardView } from './Board';
 import { ElementPopup, RoundView } from './Elements';
 import { CardsPopup } from './GraveyardsView';
 import { CountDown, CurrentPView, OpponentPView } from './PlayersView';
+import { ToastContainer, toast } from 'react-toastify';
+import { canAttackOwner } from '../GameBot/powerCardCheckers';
 
 interface GameViewProps {
 	round: Round;
@@ -89,6 +92,7 @@ export function GameView({
 	const [cardsIdsForPopup, setCardsIdsForPopup] = useState<string[]>([]);
 	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
 	const [isJokerActive, setIsJokerActive] = useState(false);
+	const [isvibrationActive,setIsvibrationActive] = useState(false);
 
 	const activePowerCard = useRef('');
 	const hasAttacked = useRef(false);
@@ -153,19 +157,37 @@ export function GameView({
 	const isPowerCardPlayable = (cardId: string) => {
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
-				if (currPlayer.hp < 2) return false;
+				if (currPlayer.hp < 2) {toast.warning("you haven't enough hp to block ennemy attacks", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
 				break;
 			case 'block-pow':
-				if (currPlayer.hp < 2) return false;
+				if (currPlayer.hp < 2)  {toast.warning("you haven't enough hp to block ennemy powers", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
 				break;
 			case 'reset-board':
-				if (currPlayer.hp < 2) return false;
+				if (currPlayer.hp < 2)  {toast.warning("you haven't enough hp to reset baord", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
 				break;
 			case 'rev-any-anim-1hp':
-				if (isEmpty(animalGY) || currPlayer.hp < 2) return false;
+				if (isEmpty(animalGY))  {toast.warning("there is no animal to revive", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
+				if (currPlayer.hp < 2) {{toast.warning("you haven't enough hp to revive", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}}
 				break;
 			case 'steal-anim-3hp':
-				if (currPlayer.hp < 4 || isOppSlotsEmpty) return false;
+				if (currPlayer.hp < 4 )  {toast.warning("you haven't enough hp to steal animal", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
+					if (isOppSlotsEmpty){
+						{toast.warning("there is no animal to steal", {
+							position: toast.POSITION.TOP_RIGHT,
+							}); return false;}
+					}
 				break;
 			case 'sacrif-anim-3hp':
 				if (
@@ -173,25 +195,42 @@ export function GameView({
 					!isAnimalCard(currPSlots[1].cardId) &&
 					!isAnimalCard(currPSlots[2].cardId)
 				)
-					return false;
+				{toast.warning("you have no animal to sacrifice", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
 				break;
 			case '2-anim-gy':
-				if (isEmpty(animalGY) || animalGY?.length < 2) return false;
+				if (isEmpty(animalGY) || animalGY?.length < 2)  {toast.warning("there is no enough animal to return", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
 				break;
 			case 'rev-any-pow-1hp':
-				if (isEmpty(powerGY) || currPlayer.hp < 2) return false;
+				if (isEmpty(powerGY))  {toast.warning("there is no PowerCards to revive", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
+				if (currPlayer.hp < 2) {
+					toast.warning("you haven't enough hp to revive powers", {
+						position: toast.POSITION.TOP_RIGHT,
+						}); return false;
+				}
 				break;
 			case 'switch-2-cards':
-				if (currPlayer.cardsIds.length < 3 || oppPlayer.cardsIds.length < 2) return false;
+				if (currPlayer.cardsIds.length < 3 || oppPlayer.cardsIds.length < 2)  {toast.warning("there is no enough cards to switch", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
 				break;
 			case 'rev-last-pow':
-				if (isEmpty(powerGY)) return false;
+				if (isEmpty(powerGY))  {toast.warning("there is no power card to revive", {
+					position: toast.POSITION.TOP_RIGHT,
+					}); return false;}
 				const lastPow = powerGY[powerGY.length - 1];
 				if (
 					getOriginalCardId(lastPow) === 'rev-last-pow' ||
 					getOriginalCardId(lastPow) === 'rev-any-pow-1hp'
 				) {
-					return false;
+					{toast.warning("you can't revive PowerCard twice", {
+						position: toast.POSITION.TOP_RIGHT,
+						}); return false;}
 				}
 				break;
 		}
@@ -519,6 +558,8 @@ export function GameView({
 		}
 	};
 
+
+
 	const attack = async (
 		currAnimalId?: string,
 		oppoAnimalId?: string,
@@ -563,9 +604,51 @@ export function GameView({
 			await attackOppHp(currslotnb!, currAnimalId!);
 			return;
 		}
+		
+				
+				if (!isAnimalCard(oppoAnimalId) && !isAttackOwnerEnabled){
+
+					if (!currPlayer.canAttack)
+				{
+					toast.warning("you are blocked from attacking", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+						
+				}
+
+				if (hasAttacked.current){
+					toast.warning("you can't attack twice", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+				}
+				return false;
+				}
+		
 
 		if (isAttackAnimalsEnabled && isAnimalInSlots(oppPSlots, oppoAnimalId)) {
-			await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
+			return await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
+		}
+		else {
+			if (!isAttackAnimalsEnabled && isAnimalCard(oppoAnimalId) ){
+				if (hasAttacked.current){
+					toast.warning("you can't attack twice", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+				}
+				if (!currPlayer.canAttack)
+				{
+					toast.warning("you are blocked from attacking", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+				}
+				if (round.nb<3){
+					toast.warning("you can't attack in the first round", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+				}
+				return false;
+				
+			}
 		}
 	};
 
@@ -576,9 +659,8 @@ export function GameView({
 		oppslotnb?: number,
 	) => {
 		if (!canAnimalAKillAnimalD(currAnimalId, oppoAnimalId, isCurrDoubleAP)) {
-			return;
+			return false;
 		}
-
 		hasAttacked.current = true;
 		await changeHasAttacked(gameId, playerType, currslotnb!, true);
 		await attackOppAnimal(gameId, playerType, currAnimalId!, oppoAnimalId!, oppslotnb!);
@@ -640,9 +722,12 @@ export function GameView({
 		board,
 		hasAttacked,
 		currPSlots,
+		canAttackOwner
 	};
 
 	return (
+		<>
+		<ToastContainer />
 		<div
 			style={{
 				...flexColumnStyle,
@@ -720,5 +805,6 @@ export function GameView({
 				</div>
 			)}
 		</div>
+		</>
 	);
 }
