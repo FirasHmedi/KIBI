@@ -34,6 +34,7 @@ import {
 	switchDeck,
 } from '../backend/powers';
 import {
+	addInfoToLog,
 	addOneRound,
 	addPowerToGraveYard,
 	deletePowerCardFromGraveYardById,
@@ -273,6 +274,7 @@ export function GameView({
 
 		if (isJokerActive) {
 			await stealCardFromOpponent(gameId, playerType, cardId);
+			await addInfoToLog(gameId, 'Joker stealed a card');
 			setIsJokerActive(false);
 			return;
 		}
@@ -745,8 +747,7 @@ export function GameView({
 					width: '100%',
 					height: '92vh',
 					justifyContent: 'space-between',
-					paddingTop: '4vh',
-					paddingBottom: '4vh',
+					paddingBottom: '8vh',
 				}}>
 				<OpponentPView player={oppPlayer} spectator={spectator} />
 
@@ -755,7 +756,7 @@ export function GameView({
 				<div
 					style={{
 						position: 'absolute',
-						left: '2vw',
+						left: '1vw',
 						top: '50vh',
 						...flexColumnStyle,
 						gap: 12,

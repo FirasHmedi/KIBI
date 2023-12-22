@@ -67,7 +67,7 @@ export const CurrentPView = ({
 				style={{
 					position: 'absolute',
 					right: '14vw',
-					bottom: '8vh',
+					bottom: '12vh',
 				}}>
 				<div
 					style={{
@@ -132,7 +132,6 @@ export const OpponentPView = ({ player, spectator }: { player: Player; spectator
 				alignItems: 'center',
 				justifyContent: 'safe center',
 				gap: 10,
-				border: 'solid 1px',
 			}}>
 			<OpponentDataView player={player} />
 			<OpponentPDeck cardsIds={player?.cardsIds} spectator={spectator} />
@@ -350,7 +349,8 @@ const OpponentDataView = ({
 				flexDirection: 'column',
 				alignItems: 'center',
 				justifyContent: 'center',
-				padding: 4,
+				gap: 12,
+				width: '10vw',
 			}}>
 			<div
 				style={{
@@ -364,14 +364,16 @@ const OpponentDataView = ({
 						alignItems: 'center',
 						gap: 8,
 					}}>
-					<div style={{ width: '2rem' }}>
-						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
+					<div style={{ width: '3rem' }}>
+						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}mm</h4> : <div />}
 					</div>
 					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
 						<h4 style={{ fontSize: '1.5rem' }}> {hpRef.current}</h4>
 						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
 					</div>
 				</div>
+
+				<div style={{ width: '3rem' }}></div>
 			</div>
 
 			<div
