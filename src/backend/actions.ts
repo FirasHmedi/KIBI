@@ -35,7 +35,7 @@ export const enableAttackingAndPlayingPowerCards = async (gameId: string, player
 };
 
 export const drawCardFromMainDeck = async (gameId: string, playerType: string) => {
-	await addInfoToLog(gameId, 'player ' + playerType + ' draw a card');
+	await addInfoToLog(gameId, playerType + ' draw a card');
 	const powerCardId = await getCardFromMainDeck(gameId);
 	await removeCardFromMainDeck(gameId);
 	await addCardsToPlayerDeck(gameId, playerType, [powerCardId]);
@@ -49,10 +49,7 @@ export const placeAnimalOnBoard = async (
 	elementType?: string,
 ) => {
 	const animal = getAnimalCard(animalId);
-	await addInfoToLog(
-		gameId,
-		'player ' + playerType + ' placed a ' + animal?.name + ' in slot ' + slotNb,
-	);
+	await addInfoToLog(gameId, playerType + ' placed a ' + animal?.name + ' in slot ' + slotNb);
 	await removeCardFromPlayerDeck(gameId, playerType, animalId);
 	await addAnimalToBoard(gameId, playerType, slotNb, animalId, false);
 };
@@ -68,7 +65,7 @@ export const placeKingOnBoard = async (
 	const sacrificedAnimal = getAnimalCard(sacrificedAnimalId);
 	await addInfoToLog(
 		gameId,
-		'player ' + playerType + ' sacrificed a ' + sacrificedAnimal?.name + ' to play ' + king?.name,
+		playerType + ' sacrificed a ' + sacrificedAnimal?.name + ' to play ' + king?.name,
 	);
 	if (!king || !sacrificedAnimal || king.clan !== sacrificedAnimal.clan) return;
 	const isRemoved = await removeAnimalFromBoard(gameId, playerType, slotNb);
@@ -161,7 +158,7 @@ export const setPowerCardAsActive = async (
 	name?: string,
 ) => {
 	if (name) {
-		await addInfoToLog(gameId, 'player ' + playerType + ' placed a ' + name);
+		await addInfoToLog(gameId, playerType + ' placed a ' + name);
 	}
 	await removeCardFromPlayerDeck(gameId, playerType, cardId);
 	await setActivePowerCard(gameId, cardId);

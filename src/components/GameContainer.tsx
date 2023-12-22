@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
+import { getItemsOnce } from '../backend/db';
 import { isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
@@ -23,6 +24,7 @@ export function GameContainer({
 	const [currentPlayer, setCurrPlayer] = useState<Player>();
 	const [opponentPlayer, setOppPlayer] = useState<Player>();
 	const showCountDown = useRef(false);
+	const [logs, setLogs] = useState<string[]>([]);
 
 	useEffect(() => {
 		if (!isGameRunning(game.status)) {
@@ -76,6 +78,25 @@ export function GameContainer({
 		setRound(newRound);
 	}, [game]);
 
+	const getLogs = async () => {
+		const logsObject = (await getItemsOnce('/logs/' + gameId + '/log/')) ?? {};
+		console.log('objects ', logsObject);
+		const logsArray: string[] = (Object.values(logsObject) ?? []).map((val: any) => val.action);
+		console.log('logs ', logsArray);
+		setLogs(logsArray);
+	};
+
+	useEffect(() => {
+		getLogs();
+	}, [game]);
+
+	//add log
+	useEffect(() => {
+		if (!isGameRunning(game.status)) {
+			return;
+		}
+	}, [game]);
+
 	//Revert main deck
 	useEffect(() => {
 		if (!isGameRunning(game.status)) {
@@ -107,6 +128,7 @@ export function GameContainer({
 				currPlayer={currentPlayer}
 				spectator={spectator}
 				showCountDown={showCountDown}
+				logs={logs}
 			/>
 		</DndProvider>
 	);

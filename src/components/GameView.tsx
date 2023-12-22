@@ -73,6 +73,7 @@ interface GameViewProps {
 	currPlayer: Player;
 	spectator?: boolean;
 	showCountDown: any;
+	logs: string[];
 }
 
 export function GameView({
@@ -83,6 +84,7 @@ export function GameView({
 	currPlayer,
 	spectator,
 	showCountDown,
+	logs,
 }: GameViewProps) {
 	const { oppPSlots, currPSlots, elementType, animalGY, powerGY } = board;
 	const playerType = currPlayer.playerType!;
@@ -274,7 +276,10 @@ export function GameView({
 
 		if (isJokerActive) {
 			await stealCardFromOpponent(gameId, playerType, cardId);
-			await addInfoToLog(gameId, 'Joker stealed a card');
+			const cardName = isAnimalCard(cardId)
+				? getAnimalCard(cardId)?.name
+				: getPowerCard(cardId)?.name;
+			await addInfoToLog(gameId, 'Joker stealed a card ' + cardName);
 			setIsJokerActive(false);
 			return;
 		}
@@ -503,6 +508,7 @@ export function GameView({
 		}
 		await minus2Hp(gameId, playerType);
 		setShowEnvPopup(true);
+		await addInfoToLog(gameId, 'Element changed');
 	};
 
 	const chargeElement = async () => {
@@ -757,7 +763,7 @@ export function GameView({
 					style={{
 						position: 'absolute',
 						left: '1vw',
-						top: '50vh',
+						top: '35vh',
 						...flexColumnStyle,
 						gap: 12,
 						alignItems: 'flex-start',
@@ -768,6 +774,19 @@ export function GameView({
 					<RoundView nb={round?.nb} />
 					<div style={{ ...centerStyle }}>
 						<MdPerson /> <h6>{round.player.toUpperCase()} turn</h6>
+					</div>
+					<div
+						style={{
+							...flexColumnStyle,
+							justifyContent: 'flex-start',
+							alignItems: 'flex-start',
+							width: '15vw',
+							height: '14vh',
+							overflowY: 'auto',
+						}}>
+						{logs.map(log => (
+							<h6 style={{ fontSize: '0.5em' }}>{log}</h6>
+						))}
 					</div>
 				</div>
 
