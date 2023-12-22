@@ -503,12 +503,11 @@ export function GameView({
 	};
 
 	const setElement = async () => {
-		if (currPlayer.hp <= 2 || spectator || !isMyRound) {
+		if (currPlayer.hp < 2 || spectator || !isMyRound) {
 			return;
 		}
-		await minus2Hp(gameId, playerType);
+		await minus1Hp(gameId, playerType);
 		setShowEnvPopup(true);
-		await addInfoToLog(gameId, 'Element changed');
 	};
 
 	const chargeElement = async () => {
@@ -542,6 +541,7 @@ export function GameView({
 		await changeElement(gameId, elementType, playerType);
 		setShowEnvPopup(false);
 		await waitFor(700);
+		await addInfoToLog(gameId, 'Element changed');
 		activateMonkeyAbility(currPSlots, false, elementType);
 		await activateTankAbility(gameId, playerType, currPSlots, elementType);
 	};

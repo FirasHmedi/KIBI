@@ -193,9 +193,8 @@ const PlayerDataView = ({
 			onClick={() => setElement()}>
 			<div style={{ ...centerStyle, zIndex: 10, position: 'relative', top: '2vw' }}>
 				<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
-				<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
 			</div>
-			<div style={{ position: 'relative', top: '-0.6rem' }}>
+			<div style={{ position: 'relative', top: '-0.65rem' }}>
 				<div style={{ display: 'flex', flexDirection: 'row' }}>
 					<div
 						style={{
