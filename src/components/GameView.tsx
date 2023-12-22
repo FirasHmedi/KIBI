@@ -172,7 +172,7 @@ export function GameView({
 				}
 				break;
 			case 'reset-board':
-				if (currPlayer.hp < 2) {
+				if (currPlayer.hp < 3) {
 					showToast('Not enough HP to reset board');
 					return false;
 				}
@@ -412,7 +412,7 @@ export function GameView({
 				await minus1Hp(gameId, playerType);
 				break;
 			case 'reset-board':
-				await minus1Hp(gameId, playerType);
+				await minus2Hp(gameId, playerType);
 				await resetBoard(gameId, playerType, currPSlots, oppPSlots);
 				break;
 		}
@@ -483,7 +483,7 @@ export function GameView({
 				await minus1Hp(gameId, playerType);
 				break;
 			case 'reset-board':
-				await minus1Hp(gameId, playerType);
+				await minus2Hp(gameId, playerType);
 				await resetBoard(gameId, playerType, currPSlots, oppPSlots);
 				break;
 		}
