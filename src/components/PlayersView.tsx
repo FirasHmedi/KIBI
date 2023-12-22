@@ -365,7 +365,7 @@ const OpponentDataView = ({
 						gap: 8,
 					}}>
 					<div style={{ width: '3rem' }}>
-						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}mm</h4> : <div />}
+						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
 					</div>
 					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
 						<h4 style={{ fontSize: '1.5rem' }}> {hpRef.current}</h4>
