@@ -572,19 +572,20 @@ export function GameView({
 		});
 	};
 
-	const attack = async (
+	const attack = async(
 		currAnimalId?: string,
 		oppoAnimalId?: string,
 		currslotnb?: number,
 		oppslotnb?: number,
-	) => {
+	) =>{
+		
 		if (
 			!isAnimalCard(currAnimalId) ||
 			currAnimalId === oppoAnimalId ||
 			spectator ||
 			!isAnimalInSlots(currPSlots, currAnimalId)
 		) {
-			return;
+			return false;
 		}
 
 		const isAttackAnimalsEnabled =
@@ -594,12 +595,11 @@ export function GameView({
 			!hasAttacked.current &&
 			currPSlots[currslotnb ?? 3]?.canAttack;
 
+
 		const isAttackOwnerEnabled =
 			isAttackAnimalsEnabled &&
 			!isAnimalCard(oppoAnimalId) &&
 			(isAttackerInElement(currAnimalId, elementType) || isOppSlotsEmpty);
-		//&& !isOppSlotsAllFilled;
-
 		console.log(
 			'player canAttack',
 			currPlayer.canAttack,
@@ -614,50 +614,68 @@ export function GameView({
 
 		if (isAttackOwnerEnabled) {
 			await attackOppHp(currslotnb!, currAnimalId!);
-			return;
+			return true;
 		}
+		
+				
+				if (!isAnimalCard(oppoAnimalId) && !isAttackOwnerEnabled){
+					
 
-		if (!isAnimalCard(oppoAnimalId) && !isAttackOwnerEnabled) {
-			if (round.nb < 3) {
-				showToast('Attack is disabled in first round');
-				return false;
-			}
+					if (!currPlayer.canAttack)
+				{
+					toast.warning("you are blocked from attacking", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+						console.log("i'm blocked from attacking")
+						return false;
+						
+				}
 
-			if (!isOppSlotsEmpty) {
-				showToast('Not all slots are empty');
-				return false;
-			}
+				if (hasAttacked.current){
+					toast.warning("you can't attack twice", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+					return false;
 
-			if (!currPlayer.canAttack) {
-				showToast('Blocked from attacking');
-				return false;
-			}
+				}
+				if (!canAttackOwner){
+					toast.warning("you can't attack Owner", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+						return true;
 
-			if (hasAttacked.current) {
-				showToast('Already attacked');
-				return false;
-			}
-			return false;
-		}
+				}
+				}
+		
 
 		if (isAttackAnimalsEnabled && isAnimalInSlots(oppPSlots, oppoAnimalId)) {
-			return await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
-		} else {
-			if (round.nb < 3) {
-				showToast('Attack is disabled in first round');
+			 return(await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb));
+			 //return true;
+		}
+		else {
+			if (!isAttackAnimalsEnabled && isAnimalCard(oppoAnimalId) ){
+				if (hasAttacked.current){
+					toast.warning("you can't attack twice", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+						return false;
+				}
+				if (!currPlayer.canAttack)
+				{
+					toast.warning("you are blocked from attacking", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+						console.log("hello")
+						return false;
+				}
+				if (round.nb<3){
+					toast.warning("you can't attack in the first round", {
+						position: toast.POSITION.TOP_RIGHT,
+						});
+						console.log("hello")
+				}
 				return false;
-			}
-			if (hasAttacked.current) {
-				showToast('Already Attacked');
-				return false;
-			}
-			if (!currPlayer.canAttack) {
-				showToast('Blocked from attacking');
-				return false;
-			}
-			if (!isAnimalInSlots(oppPSlots, oppoAnimalId)) {
-				showToast('Attack an opponent animal');
-				return false;
+				
 			}
 			return false;
 		}
