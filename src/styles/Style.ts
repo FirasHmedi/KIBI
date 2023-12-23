@@ -132,7 +132,7 @@ export const graveyardPopupContainer: React.CSSProperties = {
 	height: '100%',
 	width: '100%',
 	backgroundColor: 'rgba(0, 0, 0, 0.7)',
-	zIndex: 1,
+	zIndex: 2,
 };
 
 export const graveyardPopupContent: React.CSSProperties = {
