@@ -65,11 +65,11 @@ export const BoardView = ({
 			<Seperator w='2vw' />
 			<ElementSlot elementType={elementType} />
 
-			<div style={{ position: 'absolute', right: '0vw', top: '9vh' }}>
+			<div style={{ position: 'absolute', right: '0vw', top: '9.2vh' }}>
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator />
 				<AnimalGraveyard cardsIds={animalGY} />
-				<Seperator />
+				<Seperator h='4vh' />
 				<PowerGraveyard cardsIds={powerGY} />
 			</div>
 		</div>

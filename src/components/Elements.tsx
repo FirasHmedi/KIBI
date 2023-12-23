@@ -21,7 +21,7 @@ export const ElementPopup = ({
 			height: '100%',
 			width: '100%',
 			backgroundColor: 'rgba(0, 0, 0, 0.6)',
-			zIndex: 1,
+			zIndex: 2,
 		}}>
 		<button
 			style={{ position: 'absolute', right: '35vw', top: '25vh' }}

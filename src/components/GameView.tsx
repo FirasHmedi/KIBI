@@ -1,7 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { useEffect, useRef, useState } from 'react';
-import { MdPerson } from 'react-icons/md';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { executeBotTurn } from '../GameBot/BotActions';
@@ -506,7 +505,6 @@ export function GameView({
 		if (currPlayer.hp < 2 || spectator || !isMyRound) {
 			return;
 		}
-		await minus1Hp(gameId, playerType);
 		setShowEnvPopup(true);
 	};
 
@@ -539,9 +537,10 @@ export function GameView({
 			return;
 		}
 		await changeElement(gameId, elementType, playerType);
+		await minus1Hp(gameId, playerType);
+		await addInfoToLog(gameId, playerType + ' changed element to ' + elementType);
 		setShowEnvPopup(false);
 		await waitFor(700);
-		await addInfoToLog(gameId, 'Element changed');
 		activateMonkeyAbility(currPSlots, false, elementType);
 		await activateTankAbility(gameId, playerType, currPSlots, elementType);
 	};
@@ -751,9 +750,9 @@ export function GameView({
 				style={{
 					...flexColumnStyle,
 					width: '100%',
-					height: '92vh',
+					height: '90vh',
 					justifyContent: 'space-between',
-					paddingBottom: '8vh',
+					paddingBottom: '10vh',
 				}}>
 				<OpponentPView player={oppPlayer} spectator={spectator} />
 
@@ -771,21 +770,23 @@ export function GameView({
 						width: '18vw',
 						fontSize: '1.2em',
 					}}>
-					<RoundView nb={round?.nb} />
 					<div style={{ ...centerStyle }}>
-						<MdPerson /> <h6>{round.player.toUpperCase()} turn</h6>
+						<h6>{round.player.toUpperCase()} playing</h6>
 					</div>
+					<RoundView nb={round?.nb} />
 					<div
 						style={{
 							...flexColumnStyle,
 							justifyContent: 'flex-start',
 							alignItems: 'flex-start',
 							width: '15vw',
-							height: '14vh',
+							height: '11vh',
 							overflowY: 'auto',
 						}}>
-						{logs.map(log => (
-							<h6 style={{ fontSize: '0.5em' }}>{log}</h6>
+						{logs.map((log, index) => (
+							<h6 style={{ fontSize: '0.5em' }}>
+								{logs.length - index}- {log}
+							</h6>
 						))}
 					</div>
 				</div>

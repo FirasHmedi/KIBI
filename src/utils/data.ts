@@ -148,33 +148,35 @@ export const powersPics = {
 };
 
 export const getPowerCardIcon = (id: string) => {
+	let h = '2.4rem',
+		w = '2.4rem';
 	switch (getOriginalCardId(id)) {
 		case 'block-att':
-			return blockAttacks;
+			return { src: blockAttacks, h, w };
 		case 'rev-last-pow':
-			return revLastPower;
+			return { src: revLastPower, h: '2.6rem', w: '2.6rem' };
 		case 'rev-any-pow-1hp':
-			return revAnyPower;
+			return { src: revAnyPower, h: '3rem', w: '3rem' };
 		case 'rev-any-anim-1hp':
-			return revAnyAnimal;
+			return { src: revAnyAnimal, h, w };
 		case 'steal-anim-3hp':
-			return stealAnimal;
+			return { src: stealAnimal, h: '2.6rem', w: '2.6rem' };
 		case 'switch-decks':
-			return switchCards;
+			return { src: switchCards, h: '2.6rem', w: '2.6rem' };
 		case 'switch-2-cards':
-			return switch2Cards;
+			return { src: switch2Cards, h: '2.8rem', w: '2.8rem' };
 		case 'sacrif-anim-3hp':
-			return sacrificeAnimal;
+			return { src: sacrificeAnimal, h, w };
 		case '2hp':
-			return hpGain;
+			return { src: hpGain, h, w };
 		case 'draw-2':
-			return drawTwo;
+			return { src: drawTwo, h, w };
 		case '2-anim-gy':
-			return twoAnimals;
+			return { src: twoAnimals, h, w };
 		case 'block-pow':
-			return blockPowers;
+			return { src: blockPowers, h, w };
 		case 'reset-board':
-			return resetBoard;
+			return { src: resetBoard, h, w };
 	}
 };
 

@@ -29,6 +29,7 @@ import {
 import { getAnimalCard, getPowerCard, isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
 import './styles.css';
+import powerIcon from '/src/assets/icons/power-icon.svg';
 
 export interface DropItem {
 	id: string;
@@ -97,6 +98,8 @@ export const PowerBoardSlot = ({
 		.fill(0)
 		.map((_, i) => i);
 
+	const { src, h, w } = getPowerCardIcon(cardId)!;
+
 	return (
 		<div
 			style={{
@@ -137,7 +140,7 @@ export const PowerBoardSlot = ({
 					: null}
 			</div>
 			<div id={tooltipId}>
-				<img src={getPowerCardIcon(cardId)} style={{ width: '2.4rem', height: '2.4rem' }} />
+				<img src={src} style={{ width: w, height: h }} />
 			</div>
 			<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
 			<div style={{ height: '2rem', width: '100%' }} />
@@ -175,6 +178,8 @@ export const PowerDeckSlot = ({
 	const lossArray = Array(loss ?? 0)
 		.fill(0)
 		.map((_, i) => i);
+
+	const { src, h, w } = getPowerCardIcon(cardId)!;
 
 	return (
 		<div
@@ -225,7 +230,7 @@ export const PowerDeckSlot = ({
 							: null}
 					</div>
 					<div id={tooltipId}>
-						<img src={getPowerCardIcon(cardId)} style={{ width: '2.4rem', height: '2.4rem' }} />
+						<img src={src} style={{ width: w, height: h }} />
 					</div>
 					<div style={{ height: '2rem', width: '100%' }} />
 				</div>
@@ -270,7 +275,7 @@ export const AnimalBoardSlot = ({
 		},
 		[cardId, attackState],
 	);
-	
+
 	const { clan, name, role, ability } = getAnimalCard(cardId)!;
 
 	if (!name || !clan || !role) return <></>;
@@ -542,7 +547,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive }: De
 				fontSize: '0.7em',
 			}}
 			onClick={() => selectSlotPolished()}>
-			Power
+			<img src={powerIcon} style={{ width: '1.4rem', height: '1.4rem' }} />
 		</div>
 	);
 };

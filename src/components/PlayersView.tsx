@@ -16,6 +16,14 @@ import { ROUND_DURATION } from '../utils/data';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
+import BlockAttacksIcon from '/src/assets/icons/block-attacks-violet.svg';
+import BlockPowersIcon from '/src/assets/icons/block-pow-violet.svg';
+
+export const BlockElement = ({ type }: any) => {
+	if (type === 'pow')
+		return <img src={BlockPowersIcon} style={{ height: '3rem', width: '3rem' }} />;
+	else return <img src={BlockAttacksIcon} style={{ height: '3rem', width: '3rem' }} />;
+};
 
 export const CountDown = ({ finishRound }: any) => (
 	<CountdownCircleTimer
@@ -77,7 +85,7 @@ export const CurrentPView = ({
 						width: '14vw',
 					}}>
 					{!!nbCardsToPlay && isMyRound && (
-						<h5 style={{ color: violet, padding: 10 }}>{cardsToPlay} to play</h5>
+						<h5 style={{ color: violet, padding: 10 }}>{cardsToPlay} left</h5>
 					)}
 					<button
 						style={{
@@ -103,7 +111,7 @@ export const CurrentPView = ({
 		<div
 			style={{
 				...flexRowStyle,
-				alignItems: 'center',
+				alignItems: 'flex-end',
 				width: '100%',
 				justifyContent: 'center',
 				gap: 8,
@@ -128,7 +136,7 @@ export const OpponentPView = ({ player, spectator }: { player: Player; spectator
 		<div
 			style={{
 				...flexColumnStyle,
-				width: '36%',
+				width: '20vw',
 				alignItems: 'center',
 				justifyContent: 'safe center',
 				gap: 10,
@@ -191,7 +199,7 @@ const PlayerDataView = ({
 				alignItems: 'center',
 			}}
 			onClick={() => setElement()}>
-			<div style={{ ...centerStyle, zIndex: 10, position: 'relative', top: '2vw' }}>
+			<div style={{ ...centerStyle, zIndex: 1, position: 'relative', top: '2vw' }}>
 				<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
 			</div>
 			<div style={{ position: 'relative', top: '-0.65rem' }}>
@@ -239,7 +247,7 @@ const PlayerDataView = ({
 				display: 'flex',
 				flexDirection: 'column',
 				alignItems: 'center',
-				justifyContent: 'center',
+				justifyContent: 'flex-end',
 				gap: 12,
 				width: '10vw',
 			}}>
@@ -279,11 +287,7 @@ const PlayerDataView = ({
 				<div style={{ width: '3rem' }}></div>
 			</div>
 
-			{isMe && (
-				<div style={{ ...flexRowStyle, alignItems: 'center' }}>
-					<ElementButton />
-				</div>
-			)}
+			{isMe && <ElementButton />}
 
 			<div
 				style={{
@@ -297,13 +301,16 @@ const PlayerDataView = ({
 					fontSize: '1.1em',
 				}}>
 				{canAttack === false && canPlayPowers === false ? (
-					<h4>Blocked from attacking and playing power cards</h4>
+					<div style={{ ...flexRowStyle, gap: 8 }}>
+						<BlockElement type='att' />
+						<BlockElement type='pow' />
+					</div>
 				) : canAttack === false ? (
-					<h4>Blocked from attacking</h4>
+					<BlockElement type='att' />
 				) : canPlayPowers === false ? (
-					<h4>Blocked from playing power cards</h4>
+					<BlockElement type='pow' />
 				) : null}
-				{isDoubleAP && <h4>Animals AP is doubled </h4>}
+				{isDoubleAP && <h4>Animals AP X 2</h4>}
 			</div>
 		</div>
 	);
@@ -379,21 +386,23 @@ const OpponentDataView = ({
 				style={{
 					...flexColumnStyle,
 					position: 'absolute',
-					left: '5vw',
-					bottom: isMe ? '8vh' : undefined,
-					top: isMe ? undefined : '13vh',
+					left: '18vw',
+					top: '10vh',
 					width: '12vw',
 					gap: 12,
 					fontSize: '1.1em',
 				}}>
 				{canAttack === false && canPlayPowers === false ? (
-					<h4>Blocked from attacking and playing power cards</h4>
+					<div style={{ ...flexRowStyle, gap: 8 }}>
+						<BlockElement type='att' />
+						<BlockElement type='pow' />
+					</div>
 				) : canAttack === false ? (
-					<h4>Blocked from attacking</h4>
+					<BlockElement type='att' />
 				) : canPlayPowers === false ? (
-					<h4>Blocked from playing power cards</h4>
+					<BlockElement type='pow' />
 				) : null}
-				{isDoubleAP && <h4>Animals AP is doubled </h4>}
+				{isDoubleAP && <h4>Animals AP X 2</h4>}
 			</div>
 		</div>
 	);

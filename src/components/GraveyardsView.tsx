@@ -14,25 +14,25 @@ import {
 	violet,
 } from '../styles/Style';
 import { DeckSlot } from './Slots';
+import animalIcon from '/src/assets/icons/animal-icon.svg';
 import monkey from '/src/assets/icons/monkey.svg';
+import powerIcon from '/src/assets/icons/power-icon.svg';
 
 export const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
-	return <Graveyard name={'Power'} cardsIds={cardsIds} />;
+	return <Graveyard src={powerIcon} cardsIds={cardsIds} />;
 };
 
 export const AnimalGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
-	return <Graveyard name={'Animal'} cardsIds={cardsIds} />;
+	return <Graveyard src={animalIcon} cardsIds={cardsIds} />;
 };
 
-export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: string[] }) => {
+export const Graveyard = ({ src, cardsIds = [] }: { src: string; cardsIds: string[] }) => {
 	const [isPopupOpen, setPopupOpen] = useState(false);
 
 	const openCardSelectionPopup = () => setPopupOpen(true);
 	const closeCardSelectionPopup = () => setPopupOpen(false);
 	const cardsNb = cardsIds.length;
 	const hasCards = cardsNb > 0;
-	const pluralName = cardsNb > 1 ? `${cardsNb} ${name}s` : cardsNb === 1 ? `1 ${name}` : name;
-
 	return (
 		<div
 			style={{
@@ -41,9 +41,20 @@ export const Graveyard = ({ name, cardsIds = [] }: { name: string; cardsIds: str
 				alignItems: 'center',
 				color: violet,
 			}}>
-			<div style={{ marginBottom: 4, ...centerStyle }}>
-				<h5>{pluralName}</h5>
-				<GiTombstone style={{ width: '2.4rem', height: '2.4rem' }} />
+			<div
+				style={{
+					...centerStyle,
+					marginBottom: 6,
+					justifyContent: 'center',
+				}}>
+				<h4 style={{ paddingLeft: 4 }}>{cardsNb}</h4>
+				<img src={src} style={{ width: '1.4rem', height: '1.4rem', paddingLeft: 4 }} />
+				<GiTombstone
+					style={{
+						width: '1.4rem',
+						height: '1.4rem',
+					}}
+				/>
 			</div>
 			{hasCards ? (
 				<div onClick={openCardSelectionPopup} style={topCardStyle}>

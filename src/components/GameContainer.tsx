@@ -1,3 +1,4 @@
+import { reverse } from 'lodash';
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { DndProvider } from 'react-dnd';
@@ -80,10 +81,8 @@ export function GameContainer({
 
 	const getLogs = async () => {
 		const logsObject = (await getItemsOnce('/logs/' + gameId + '/log/')) ?? {};
-		console.log('objects ', logsObject);
-		const logsArray: string[] = (Object.values(logsObject) ?? []).map((val: any) => val.action);
-		console.log('logs ', logsArray);
-		setLogs(logsArray);
+		const logsArray: string[] = Object.values(logsObject).map((val: any) => val.action);
+		setLogs(reverse(logsArray));
 	};
 
 	useEffect(() => {
