@@ -3,7 +3,7 @@ import { GiHeartMinus, GiHeartPlus } from 'react-icons/gi';
 
 import { TbSword } from 'react-icons/tb';
 
-import { CSSProperties, useRef } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { Tooltip } from 'react-tooltip';
 import {
@@ -255,6 +255,7 @@ export const AnimalBoardSlot = ({
 	nb?: number;
 	attackState?: any;
 }) => {
+	const [canAttack, setcanAttack] = useState(true);
 	const [, drag] = useDrag(
 		() => ({
 			type: 'attackcard',
@@ -263,6 +264,19 @@ export const AnimalBoardSlot = ({
 		}),
 		[cardId, nb, attackState],
 	);
+
+	const vibrateStyle = {
+		animation: 'vibrate 0.5s linear',
+	};
+
+	useEffect(() => {
+		let timer: string | number | NodeJS.Timeout | undefined;
+		if (!canAttack) {
+			timer = setTimeout(() => setcanAttack(true), 500);
+		}
+		return () => clearTimeout(timer);
+	}, [canAttack]);
+
 	const [, drop] = useDrop(
 		{
 			accept: 'attackcard',
@@ -270,7 +284,11 @@ export const AnimalBoardSlot = ({
 				console.log('animal', item.id, 'attacks', cardId);
 				const animalAId = item.id;
 				const animalDId = cardId;
-				attack(animalAId, animalDId, item.nb, nb);
+				attack(animalAId, animalDId, item.nb, nb).then((isAttackValid: boolean) => {
+					if (!isAttackValid) {
+						setcanAttack(false);
+					}
+				});
 			},
 		},
 		[cardId, attackState],
@@ -294,6 +312,7 @@ export const AnimalBoardSlot = ({
 				justifyContent: 'space-between',
 				backgroundColor: CLANS[clan!]?.color,
 				boxShadow: selected ? `0 0 1px 2px ${selectedColor}` : `0 0 1px 2px ${CLANS[clan!]?.color}`,
+				...(!canAttack ? vibrateStyle : {}),
 			}}>
 			{!!name && name?.toLowerCase() in animalsPics && (
 				<div
