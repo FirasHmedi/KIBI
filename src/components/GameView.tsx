@@ -598,6 +598,16 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
+		if (round.nb < 3) {
+			showToast('Attack is disabled in first round');
+			return false;
+		}
+
+		if (!currPlayer.canAttack) {
+			showToast('Blocked from attacking');
+			return false;
+		}
+
 		if (
 			currAnimalId === oppoAnimalId ||
 			spectator ||
@@ -605,6 +615,11 @@ export function GameView({
 			!isAnimalInSlots(oppPSlots, oppoAnimalId)
 		) {
 			return;
+		}
+
+		if (hasAttacked.current) {
+			showToast('Already attacked');
+			return false;
 		}
 
 		const isAttackAnimalsEnabled =
@@ -618,7 +633,6 @@ export function GameView({
 			isAttackAnimalsEnabled &&
 			!isAnimalCard(oppoAnimalId) &&
 			(isAttackerInElement(currAnimalId, elementType) || isOppSlotsEmpty);
-		//&& !isOppSlotsAllFilled;
 
 		console.log(
 			'player canAttack',
@@ -638,23 +652,8 @@ export function GameView({
 		}
 
 		if (!isAnimalCard(oppoAnimalId) && !isAttackOwnerEnabled) {
-			if (round.nb < 3) {
-				showToast('Attack is disabled in first round');
-				return false;
-			}
-
 			if (!isOppSlotsEmpty) {
 				showToast('Not all slots are empty');
-				return false;
-			}
-
-			if (!currPlayer.canAttack) {
-				showToast('Blocked from attacking');
-				return false;
-			}
-
-			if (hasAttacked.current) {
-				showToast('Already attacked');
 				return false;
 			}
 			return false;
@@ -663,10 +662,6 @@ export function GameView({
 		if (isAttackAnimalsEnabled && isAnimalInSlots(oppPSlots, oppoAnimalId)) {
 			return await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
 		} else {
-			if (round.nb < 3) {
-				showToast('Attack is disabled in first round');
-				return false;
-			}
 			if (hasAttacked.current) {
 				showToast('Already Attacked');
 				return false;
