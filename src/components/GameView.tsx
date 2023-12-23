@@ -115,6 +115,8 @@ export function GameView({
 	const isOppSlotsAllFilled = getIsOppSlotsAllFilled(oppPSlots);
 	const isOppDoubleAP = oppPlayer.isDoubleAP;
 	const isCurrDoubleAP = currPlayer.isDoubleAP;
+	const [isConfirmActive, setIsConfirmActive] = useState(false);
+
 
 	useEffect(() => {
 		if (isMyRound) {
@@ -833,6 +835,10 @@ export function GameView({
 					setElement={setElement}
 					spectator={spectator}
 					updateCardsOrder={updateCardsOrder}
+					hasAttacked={hasAttacked}
+					isConfirmActive={isConfirmActive}
+					setIsConfirmActive={setIsConfirmActive}
+
 				/>
 				{openCardsPopup && !spectator && (
 					<CardsPopup

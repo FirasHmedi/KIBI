@@ -1,6 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
+import { Tooltip } from 'react-tooltip';
+
+
+
+
 import { GiHeartMinus } from 'react-icons/gi';
 import {
 	airColor,
@@ -48,6 +59,9 @@ export const CurrentPView = ({
 	setElement,
 	spectator,
 	updateCardsOrder,
+	hasAttacked,
+	isConfirmActive,
+	setIsConfirmActive,
 }: {
 	player: Player;
 	round: Round;
@@ -57,53 +71,93 @@ export const CurrentPView = ({
 	setElement: () => void;
 	spectator?: boolean;
 	updateCardsOrder: any;
+	hasAttacked : any;
+	isConfirmActive:any;
+	setIsConfirmActive:any;
 }) => {
 	const { playerType } = player;
 	const cardsIds = player.cardsIds ?? [];
 	const isMyRound = round?.player === playerType;
 
-	const Buttons = () => {
-		if (spectator) {
-			return <></>;
-		}
-		const cardsToPlay =
-			nbCardsToPlay > 1 ? `${nbCardsToPlay} cards` : nbCardsToPlay === 1 ? '1 card' : 'No cards';
-		return (
-			<div
-				style={{
-					position: 'absolute',
-					right: '14vw',
-					bottom: '12vh',
-				}}>
-				<div
-					style={{
-						...flexColumnStyle,
-						alignItems: 'center',
-						justifyContent: 'center',
-						width: '14vw',
-					}}>
-					{!!nbCardsToPlay && isMyRound && (
-						<h5 style={{ color: violet, padding: 10 }}>{cardsToPlay} left</h5>
-					)}
-					<button
-						style={{
-							fontWeight: 'bold',
-							minWidth: '4vw',
-							fontSize: '0.8em',
-							width: '4.5vw',
-							padding: 2,
-							color: 'white',
-							backgroundColor: isMyRound ? violet : 'grey',
-							borderRadius: 5,
-						}}
-						disabled={!isMyRound}
-						onClick={() => finishRound()}>
-						FINISH
-					</button>
-				</div>
-			</div>
-		);
-	};
+
+
+const Buttons = () => {
+	
+    const handleFinishClick = () => {
+        if (hasAttacked.current) {
+            finishRound();
+        } else {
+            setIsConfirmActive(true);
+            toast("Don't forget to attack"); // Trigger the toast notification
+        }
+    };
+
+    const handleConfirmClick = () => {
+        finishRound();
+        setIsConfirmActive(false);
+    };
+
+    const cardsToPlay =
+        nbCardsToPlay > 1 ? `${nbCardsToPlay} cards` : nbCardsToPlay === 1 ? '1 card' : 'No cards';
+
+    if (spectator) {
+        return null;
+    }
+
+    return (
+        <div style={{ position: 'absolute', right: '14vw', bottom: '12vh' }}>
+            <div style={{ ...flexColumnStyle, alignItems: 'center', justifyContent: 'center', width: '14vw' }}>
+                {!!nbCardsToPlay && isMyRound && (
+                    <h5 style={{ color: violet, padding: 10 }}>{cardsToPlay} left</h5>
+                )}
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                    {!isConfirmActive && (
+                        <button
+                            style={{
+                                fontWeight: 'bold',
+                                minWidth: '4vw',
+                                fontSize: '0.8em',
+                                width: '4.5vw',
+                                padding: 2,
+                                color: 'white',
+                                backgroundColor: isMyRound ? violet : 'grey',
+                                borderRadius: 5,
+                            }}
+                            disabled={!isMyRound}
+                            onClick={handleFinishClick}>
+                            FINISH
+                        </button>
+                    )}
+                    { isConfirmActive && (
+                        <>
+                            <button
+                                style={{
+                                    fontWeight: 'bold',
+                                    minWidth: '4vw',
+                                    fontSize: '0.8em',
+                                    width: '4.5vw',
+                                    padding: 2,
+                                    color: 'white',
+                                    backgroundColor: isMyRound ? violet : 'grey',
+                                    borderRadius: 5,
+                                    marginLeft: '10px',
+                                }}
+                                disabled={!isMyRound}
+                                onClick={handleConfirmClick}
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Don't forget to attack">
+                                CONFIRM
+                            </button>
+                            <Tooltip id="my-tooltip" />
+                        </>
+                    )}
+                </div>
+            </div>
+            <ToastContainer />
+        </div>
+    );
+};
+
 
 	return (
 		<div
