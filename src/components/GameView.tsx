@@ -18,6 +18,7 @@ import {
 	setPowerCardAsActive,
 } from '../backend/actions';
 import { add1Hp, add2Hp, minus1Hp, minus2Hp } from '../backend/animalsAbilities';
+import { setItem } from '../backend/db';
 import {
 	cancelAttacks,
 	cancelUsingPowerCards,
@@ -40,7 +41,15 @@ import {
 	removeHpFromPlayer,
 } from '../backend/unitActions';
 import { centerStyle, flexColumnStyle, violet } from '../styles/Style';
-import { BOT, ClanName, EMPTY, JOKER, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
+import {
+	BOT,
+	ClanName,
+	EMPTY,
+	GAMES_PATH,
+	JOKER,
+	KING,
+	POWER_CARDS_WITH_2_SELECTS,
+} from '../utils/data';
 import {
 	canAnimalAKillAnimalD,
 	getAnimalCard,
@@ -128,6 +137,10 @@ export function GameView({
 			}
 		}
 		return 0;
+	};
+
+	const updateCardsOrder = async (newCardsIds: string[]) => {
+		await setItem(GAMES_PATH + gameId + '/' + playerType, { cardsIds: newCardsIds });
 	};
 
 	const playAnimalCard = async (cardId: string, slotNb: number): Promise<void> => {
@@ -586,10 +599,10 @@ export function GameView({
 		oppslotnb?: number,
 	) => {
 		if (
-			!isAnimalCard(currAnimalId) ||
 			currAnimalId === oppoAnimalId ||
 			spectator ||
-			!isAnimalInSlots(currPSlots, currAnimalId)
+			!isAnimalInSlots(currPSlots, currAnimalId) ||
+			!isAnimalInSlots(oppPSlots, oppoAnimalId)
 		) {
 			return;
 		}
@@ -810,7 +823,7 @@ export function GameView({
 					nbCardsToPlay={nbCardsToPlay}
 					setElement={setElement}
 					spectator={spectator}
-					chargeElement={chargeElement}
+					updateCardsOrder={updateCardsOrder}
 				/>
 				{openCardsPopup && !spectator && (
 					<CardsPopup

@@ -47,7 +47,7 @@ export const CurrentPView = ({
 	nbCardsToPlay,
 	setElement,
 	spectator,
-	chargeElement,
+	updateCardsOrder,
 }: {
 	player: Player;
 	round: Round;
@@ -56,12 +56,10 @@ export const CurrentPView = ({
 	nbCardsToPlay: number;
 	setElement: () => void;
 	spectator?: boolean;
-	chargeElement?: any;
+	updateCardsOrder: any;
 }) => {
 	const { playerType } = player;
 	const cardsIds = player.cardsIds ?? [];
-	const [selectedId, setSelectedId] = useState<string>();
-
 	const isMyRound = round?.player === playerType;
 
 	const Buttons = () => {
@@ -123,9 +121,8 @@ export const CurrentPView = ({
 				isMyRound={isMyRound}
 				isMe={true}
 				finishRound={finishRound}
-				chargeElement={chargeElement}
 			/>
-			<CurrentPDeck cardsIds={cardsIds} selectedId={selectedId} setSelectedId={setSelectedId} />
+			<CurrentPDeck cardsIds={cardsIds} updateCardsOrder={updateCardsOrder} />
 			<EmptyElement />
 		</div>
 	);
@@ -155,16 +152,13 @@ export const EmptyElement = ({ width = '11vw' }: any) => {
 const PlayerDataView = ({
 	player,
 	setElement,
-	isMyRound,
 	isMe,
-	chargeElement,
 }: {
 	player: Player;
 	setElement?: any;
 	isMyRound?: boolean;
 	isMe?: boolean;
 	finishRound?: any;
-	chargeElement?: any;
 }) => {
 	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack, envLoadNb } = player;
 	const hpRef = useRef<number>(0);

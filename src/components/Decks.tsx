@@ -1,22 +1,61 @@
+import { useRef } from 'react';
+import { useDrop } from 'react-dnd';
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { DeckSlot, SlotBack } from './Slots';
 import mainDeck from '/src/assets/mainDeck.svg';
 
 interface CurrentPDeckProps {
 	cardsIds: string[];
-	setSelectedId: (id?: string) => void;
-	selectedId?: string;
 	isJokerActive?: boolean;
+	updateCardsOrder?: any;
 }
+const DraggableDeckSlot = ({
+	cardId,
+	index,
+	moveCard,
+	isJokerActive,
+}: {
+	cardId: string;
+	index: number;
+	moveCard: any;
+	isJokerActive: boolean;
+}) => {
+	/*const [, drag] = useDrag({
+		type: 'card',
+		item: { cardId, index },
+	});*/
+	const [, drop] = useDrop({
+		accept: 'movecard',
+		drop(item: { cardId: string; index: number }) {
+			const dragIndex = item.index;
+			const hoverIndex = index;
+			if (dragIndex === hoverIndex) return;
+			moveCard(dragIndex, hoverIndex);
+			item.index = hoverIndex;
+		},
+	});
+
+	const ref = useRef(null);
+	drop(ref);
+
+	return (
+		<div ref={ref} style={{ marginRight: 8 }}>
+			<DeckSlot cardId={cardId} isJokerActive={isJokerActive} index={index} />
+		</div>
+	);
+};
 
 export const CurrentPDeck = ({
 	cardsIds = [],
-	setSelectedId,
-	selectedId,
 	isJokerActive,
+	updateCardsOrder,
 }: CurrentPDeckProps) => {
-	const selectCard = (cardId: string) =>
-		cardId === selectedId ? setSelectedId(undefined) : setSelectedId(cardId);
+	const moveCard = async (dragIndex: number, hoverIndex: number) => {
+		const swapArr = [...cardsIds];
+		[swapArr[dragIndex], swapArr[hoverIndex]] = [swapArr[hoverIndex], swapArr[dragIndex]];
+		updateCardsOrder(swapArr);
+	};
+
 	return (
 		<div
 			style={{
@@ -26,11 +65,12 @@ export const CurrentPDeck = ({
 				justifyContent: 'safe center',
 			}}>
 			{cardsIds.map((cardId, index) => (
-				<div style={{ marginRight: 8 }} key={index} onClick={() => selectCard(cardId)}>
-					<DeckSlot
+				<div style={{ marginRight: 8 }} key={index}>
+					<DraggableDeckSlot
+						index={index}
 						cardId={cardId}
-						selected={selectedId === cardId}
-						isJokerActive={isJokerActive}
+						moveCard={moveCard}
+						isJokerActive={isJokerActive!}
 					/>
 				</div>
 			))}
