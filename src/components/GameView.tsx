@@ -530,7 +530,17 @@ export function GameView({
 	const playCard = async (cardId?: string, slotNb?: number) => {
 		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
 
-		if (spectator || isEmpty(cardId) || isEmpty(playerType) || nbCardsToPlay === 0 || !isMyRound) {
+		if (spectator || isEmpty(cardId) || isEmpty(playerType)) {
+			return;
+		}
+
+		if (nbCardsToPlay === 0) {
+			showToast('Already played cards');
+			return;
+		}
+
+		if (!isMyRound) {
+			showToast('Not your round to play');
 			return;
 		}
 
@@ -539,8 +549,12 @@ export function GameView({
 			return;
 		}
 
-		if (isPowerCard(cardId) && currPlayer.canPlayPowers) {
-			await playPowerCard(cardId!);
+		if (isPowerCard(cardId)) {
+			if (currPlayer.canPlayPowers) {
+				await playPowerCard(cardId!);
+			} else {
+				showToast('Blocked from playing powers');
+			}
 		}
 	};
 
