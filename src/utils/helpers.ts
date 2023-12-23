@@ -102,8 +102,9 @@ export const canAnimalAKillAnimalD = (aID?: string, dID?: string, isDoubleAP: bo
 	const animalDHP = getAnimalHP(animalD.role);
 
 	if (animalAAP < animalDHP) {
-		toast.error('Not enough Attack Points to attack', {
+		toast.warn('Not enough AP to attack', {
 			position: toast.POSITION.TOP_RIGHT,
+			autoClose: 1000,
 		});
 		return false;
 	}
