@@ -14,7 +14,6 @@ import {
 	enableAttackForOpponentAnimals,
 	enableAttackingAndPlayingPowerCards,
 	placeAnimalOnBoard,
-	setElementLoad,
 	setPowerCardAsActive,
 } from '../backend/actions';
 import { add1Hp, add2Hp, minus1Hp, minus2Hp } from '../backend/animalsAbilities';
@@ -521,12 +520,6 @@ export function GameView({
 		setShowEnvPopup(true);
 	};
 
-	const chargeElement = async () => {
-		if (spectator || currPlayer.envLoadNb === 1 || currPlayer.hp < 2 || !isMyRound) return;
-		await minus2Hp(gameId, playerType);
-		await setElementLoad(gameId, playerType, 1);
-	};
-
 	const playCard = async (cardId?: string, slotNb?: number) => {
 		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
 
@@ -622,12 +615,7 @@ export function GameView({
 			return false;
 		}
 
-		if (
-			currAnimalId === oppoAnimalId ||
-			spectator ||
-			!isAnimalInSlots(currPSlots, currAnimalId) ||
-			!isAnimalInSlots(oppPSlots, oppoAnimalId)
-		) {
+		if (currAnimalId === oppoAnimalId || spectator || !isAnimalInSlots(currPSlots, currAnimalId)) {
 			return;
 		}
 
