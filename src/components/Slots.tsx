@@ -108,16 +108,18 @@ export const PowerDeckSlot = ({
 	selected,
 	isBigStyle,
 	isJokerActive,
+	index,
 }: {
 	cardId: string;
 	selected?: boolean;
 	isBigStyle?: boolean;
 	isJokerActive?: boolean;
+	index: number;
 }) => {
 	const [, drag] = useDrag(
 		() => ({
-			type: 'powercard',
-			item: { id: cardId },
+			type: 'movecard',
+			item: { id: cardId, index },
 			collect: monitor => ({ isDragging: !!monitor.getItem() }),
 		}),
 		[cardId],
@@ -127,9 +129,11 @@ export const PowerDeckSlot = ({
 	const bigStyle: React.CSSProperties = !!isBigStyle
 		? { height: '20vh', width: '8vw', fontSize: '1em' }
 		: {};
+	const ref = useRef(null);
+	drag(ref);
 	return (
 		<div
-			ref={drag}
+			ref={ref}
 			style={{
 				...deckSlotStyle,
 				backgroundColor: violet,
@@ -301,25 +305,29 @@ export const AnimalDeckSlot = ({
 	select,
 	selected,
 	isJokerActive,
+	index,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
 	isJokerActive?: boolean;
+	index: number;
 }) => {
 	const [, drag] = useDrag(
 		() => ({
-			type: 'animalcard',
-			item: { id: cardId },
+			type: 'movecard',
+			item: { id: cardId, index },
 			collect: monitor => ({ isDragging: !!monitor.getItem() }),
 		}),
 		[cardId],
 	);
 	const { clan, name, ability, role } = getAnimalCard(cardId)!;
+	const ref = useRef(null);
+	drag(ref);
 
 	return (
 		<div
-			ref={drag}
+			ref={ref}
 			style={{
 				...deckSlotStyle,
 				backgroundColor: isJokerActive ? violet : CLANS[clan!]?.color,
@@ -351,9 +359,12 @@ export const BoardSlot = ({
 }: SlotProps) => {
 	const [, drop] = useDrop(
 		{
-			accept: 'animalcard',
+			accept: 'movecard',
 			drop: (item: DropItem) => {
-				if (!!playCard) playCard(item.id, nb);
+				if ((!isPowerCard(item.id) && !isAnimalCard(item.id)) || !playCard) {
+					return;
+				}
+				playCard(item.id, nb);
 			},
 		},
 		[cardId, localState],
@@ -414,7 +425,7 @@ export const BoardSlot = ({
 	);
 };
 
-export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive }: DeckSlotProps) => {
+export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive, index }: any) => {
 	const selectSlotPolished = () => {
 		if (!!selectSlot) {
 			selected ? selectSlot(undefined) : selectSlot(nb);
@@ -428,12 +439,20 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive }: De
 				select={selectSlotPolished}
 				selected={selected}
 				isJokerActive={isJokerActive}
+				index={index}
 			/>
 		);
 	}
 
 	if (cardId && isPowerCard(cardId)) {
-		return <PowerDeckSlot cardId={cardId} selected={selected} isJokerActive={isJokerActive} />;
+		return (
+			<PowerDeckSlot
+				cardId={cardId}
+				selected={selected}
+				isJokerActive={isJokerActive}
+				index={index}
+			/>
+		);
 	}
 
 	return (

@@ -1,5 +1,5 @@
 import ProgressBar from '@ramonak/react-progress-bar';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
 import {
@@ -8,12 +8,12 @@ import {
 	MdBatteryCharging80,
 	MdBatteryChargingFull,
 } from 'react-icons/md';
+import { setItem } from '../backend/db';
 import { flexColumnStyle, flexRowStyle, violet } from '../styles/Style';
 import { GAMES_PATH, INITIAL_HP, ROUND_DURATION } from '../utils/data';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
-import { setItem } from '../backend/db';
 
 const CountDown = ({ finishRound }: any) => (
 	<CountdownCircleTimer
@@ -49,19 +49,15 @@ export const CurrentPView = ({
 	setElement: () => void;
 	spectator?: boolean;
 	showCountDown?: any;
-	gameId ? : string;
+	gameId?: string;
 }) => {
-
 	const { playerType } = player;
-	//const cardsIds = player.cardsIds ?? [];
-	const [cardsIds, setCardsIds] = useState(player.cardsIds ?? []);
-	const updateCardsOrder = useCallback((newOrder:string[]) => {
-        setCardsIds(newOrder);
-		setItem(GAMES_PATH + gameId + player.playerType , {cardsIds : newOrder})
-        
-    }, [setCardsIds]);
+	const cardsIds = player.cardsIds ?? [];
+	const updateCardsOrder = async (newCardsIds: string[]) => {
+		await setItem(GAMES_PATH + gameId + '/' + playerType, { cardsIds: newCardsIds });
+	};
 	const [selectedId, setSelectedId] = useState<string>();
-	
+
 	const isMyRound = round?.player === playerType;
 
 	const Buttons = () => {
@@ -123,11 +119,11 @@ export const CurrentPView = ({
 				isMe={true}
 				finishRound={finishRound}
 			/>
-			<CurrentPDeck 
-			cardsIds={cardsIds} 
-			selectedId={selectedId} 
-			setSelectedId={setSelectedId}
-			updateCardsOrder={updateCardsOrder}
+			<CurrentPDeck
+				cardsIds={cardsIds}
+				selectedId={selectedId}
+				setSelectedId={setSelectedId}
+				updateCardsOrder={updateCardsOrder}
 			/>
 			<EmptyElement />
 		</div>

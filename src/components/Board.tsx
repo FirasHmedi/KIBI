@@ -1,5 +1,6 @@
 import { useDrop } from 'react-dnd';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
+import { isPowerCard } from '../utils/helpers';
 import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
 import { RoundView, Seperator } from './Elements';
@@ -91,10 +92,13 @@ const ActiveCardSlot = ({
 }) => {
 	const [, drop] = useDrop(
 		{
-			accept: 'powercard',
+			accept: 'movecard',
 			drop: (item: DropItem) => {
+				if (!isPowerCard(item.id) || !playCard) {
+					return;
+				}
 				console.log(item);
-				if (!!playCard) playCard(item.id);
+				playCard(item.id);
 			},
 		},
 		[cardId, localState],
