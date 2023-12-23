@@ -154,12 +154,14 @@ export const PowerDeckSlot = ({
 	isBigStyle,
 	isJokerActive,
 	index,
+	graveyard = false,
 }: {
 	cardId: string;
 	selected?: boolean;
 	isBigStyle?: boolean;
 	isJokerActive?: boolean;
 	index: number;
+	graveyard: boolean;
 }) => {
 	const [, drag] = useDrag(
 		() => ({
@@ -188,7 +190,7 @@ export const PowerDeckSlot = ({
 
 	return (
 		<div
-			ref={ref}
+			ref={!graveyard ? ref : null}
 			style={{
 				...deckSlotStyle,
 				backgroundColor: violet,
@@ -299,13 +301,11 @@ export const AnimalBoardSlot = ({
 		[cardId, attackState],
 	);
 
-	const { clan, name, role, ability } = getAnimalCard(cardId)!;
+	const { clan, name, role } = getAnimalCard(cardId)!;
 
 	if (!name || !clan || !role) return <></>;
 
 	const { hp, ap } = ANIMALS_POINTS[role];
-	const roleTooltipContent = ability;
-	const roleTooltipId = `role-anchor${cardId}`;
 	const ref = useRef(null);
 	drag(drop(ref));
 
@@ -336,7 +336,6 @@ export const AnimalBoardSlot = ({
 			)}
 
 			<div
-				id={roleTooltipId}
 				style={{
 					...flexRowStyle,
 					width: '100%',
@@ -355,12 +354,6 @@ export const AnimalBoardSlot = ({
 					<h4>{hp}</h4>
 					<FaShield />
 				</div>
-				<Tooltip
-					anchorSelect={`#${roleTooltipId}`}
-					content={roleTooltipContent}
-					style={{ width: '5vw', fontSize: '0.7rem' }}
-					place='bottom'
-				/>
 			</div>
 		</div>
 	);
@@ -388,11 +381,11 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 				)}
 			</div>
 			<img
+				id={roleTooltipId}
 				src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
 				style={{ width: '2.2rem', height: '2.2rem', flex: 1 }}
 			/>
 			<div
-				id={roleTooltipId}
 				style={{
 					...flexRowStyle,
 					width: '100%',
@@ -412,7 +405,7 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 				<Tooltip
 					anchorSelect={`#${roleTooltipId}`}
 					content={roleTooltipContent}
-					style={{ width: '5vw', fontSize: '0.7rem' }}
+					style={{ width: '5vw', fontSize: '0.5rem' }}
 					place='bottom'
 				/>
 			</div>
@@ -425,12 +418,14 @@ export const AnimalDeckSlot = ({
 	selected,
 	isJokerActive,
 	index,
+	graveyard = false,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
 	isJokerActive?: boolean;
 	index: number;
+	graveyard: boolean;
 }) => {
 	const [, drag] = useDrag(
 		() => ({
@@ -446,7 +441,7 @@ export const AnimalDeckSlot = ({
 
 	return (
 		<div
-			ref={ref}
+			ref={!graveyard ? ref : null}
 			style={{
 				...deckSlotStyle,
 				backgroundColor: isJokerActive ? violet : CLANS[clan!]?.color,
@@ -544,7 +539,15 @@ export const BoardSlot = ({
 	);
 };
 
-export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive, index }: any) => {
+export const DeckSlot = ({
+	cardId,
+	selected,
+	selectSlot,
+	nb,
+	isJokerActive,
+	index,
+	graveyard,
+}: any) => {
 	const selectSlotPolished = () => {
 		if (!!selectSlot) {
 			selected ? selectSlot(undefined) : selectSlot(nb);
@@ -559,6 +562,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive, inde
 				selected={selected}
 				isJokerActive={isJokerActive}
 				index={index}
+				graveyard={graveyard}
 			/>
 		);
 	}
@@ -570,6 +574,7 @@ export const DeckSlot = ({ cardId, selected, selectSlot, nb, isJokerActive, inde
 				selected={selected}
 				isJokerActive={isJokerActive}
 				index={index}
+				graveyard={graveyard}
 			/>
 		);
 	}

@@ -11,14 +11,14 @@
 		"description": "attacker of air clan",
 		"name": "Eagle",
 		"role": "attacker",
-		"ability": "Attacks Opponent"
+		"ability": "Attacks Player"
 	},
 	"11-a": {
 		"clan": "air",
 		"description": "tank of air clan",
 		"name": "Whale",
 		"role": "tank",
-		"ability": "+1hp to player each round"
+		"ability": "+1hp per round"
 	},
 	"12-a": {
 		"ability": "Steal card",
@@ -39,14 +39,14 @@
 		"description": "attacker of fire clan",
 		"name": "Eagle",
 		"role": "attacker",
-		"ability": "Attacks Opponent"
+		"ability": "Attacks Player"
 	},
 	"15-a": {
 		"clan": "fire",
 		"description": "tank of fire clan",
 		"name": "Whale",
 		"role": "tank",
-		"ability": "+1hp to player each round"
+		"ability": "+1hp per round"
 	},
 	"16-a": {
 		"ability": "Steal card",
@@ -67,14 +67,14 @@
 		"description": "attacker of earth clan",
 		"name": "Eagle",
 		"role": "attacker",
-		"ability": "Attacks Opponent"
+		"ability": "Attacks Player"
 	},
 	"3-a": {
 		"clan": "earth",
 		"description": "tank of earth clan",
 		"name": "Whale",
 		"role": "tank",
-		"ability": "+1hp to player each round"
+		"ability": "+1hp per round"
 	},
 	"4-a": {
 		"ability": "Steal card",
@@ -95,14 +95,14 @@
 		"description": "attacker of water clan",
 		"name": "Eagle",
 		"role": "attacker",
-		"ability": "Attacks Opponent"
+		"ability": "Attacks Player"
 	},
 	"7-a": {
 		"clan": "water",
 		"description": "tank of water clan",
 		"name": "Whale",
 		"role": "tank",
-		"ability": "+1hp to player each round"
+		"ability": "+1hp per round"
 	},
 	"8-a": {
 		"ability": "Steal card",

@@ -94,11 +94,14 @@ export const getAnimalAP = (role: RoleName, isDoubleAP = false) =>
 	isDoubleAP ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
 
 export const canAnimalAKillAnimalD = (aID?: string, dID?: string, isDoubleAP: boolean = false) => {
+	if (isDoubleAP) {
+		return true;
+	}
 	const animalA = getAnimalCard(aID);
 	const animalD = getAnimalCard(dID);
 	if (!animalA || !animalD) return false;
 
-	const animalAAP = getAnimalAP(animalA.role, isDoubleAP);
+	const animalAAP = getAnimalAP(animalA.role);
 	const animalDHP = getAnimalHP(animalD.role);
 
 	if (animalAAP < animalDHP) {
