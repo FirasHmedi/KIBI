@@ -157,13 +157,13 @@ export function GameView({
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 
 		if (isJokerInElement(cardId, elementType)) {
-			await waitFor(700);
+			await waitFor(300);
 			setCardsIdsForPopup(oppPlayer.cardsIds);
 			setIsJokerActive(true);
 		}
 
 		if (isTankInElement(cardId, elementType)) {
-			await waitFor(700);
+			await waitFor(300);
 			await add1Hp(gameId, playerType);
 		}
 	};
@@ -305,12 +305,12 @@ export function GameView({
 		await processPostPowerCardPlay();
 
 		if (activateJokerAbilityNow) {
-			await waitFor(700);
+			await waitFor(300);
 			setCardsIdsForPopup(oppPlayer.cardsIds);
 			setIsJokerActive(true);
 		}
 		if (activateTankAbilityNow) {
-			await waitFor(700);
+			await waitFor(300);
 			await add1Hp(gameId, playerType);
 		}
 	};
@@ -560,7 +560,7 @@ export function GameView({
 		await minus1Hp(gameId, playerType);
 		await addInfoToLog(gameId, playerType + ' changed element to ' + elementType);
 		setShowEnvPopup(false);
-		await waitFor(700);
+		await waitFor(300);
 		activateMonkeyAbility(currPSlots, false, elementType);
 		await activateTankAbility(gameId, playerType, currPSlots, elementType);
 	};
@@ -701,7 +701,6 @@ export function GameView({
 			return;
 		}
 
-		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, currslotnb!, false);
 		hasAttacked.current = true;
 		canKingAttackAgain.current = false;
@@ -711,7 +710,6 @@ export function GameView({
 		hasAttacked.current = true;
 		await changeHasAttacked(gameId, playerType, currSlotNb, true);
 		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalId, isCurrDoubleAP);
-		await waitFor(300);
 		await changeHasAttacked(gameId, playerType, currSlotNb, false);
 	};
 
