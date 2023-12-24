@@ -58,7 +58,7 @@ export const Graveyard = ({ src, cardsIds = [] }: { src: string; cardsIds: strin
 			</div>
 			{hasCards ? (
 				<div onClick={openCardSelectionPopup} style={topCardStyle}>
-					<DeckSlot cardId={cardsIds[cardsNb - 1]} />
+					<DeckSlot cardId={cardsIds[cardsNb - 1]} graveyard={true} />
 				</div>
 			) : (
 				<div
@@ -127,6 +127,7 @@ export const CardsPopup = ({
 							cardId={cardId}
 							selected={selectedIds?.includes(cardId)}
 							isJokerActive={isJokerActive}
+							graveyard={true}
 						/>
 					</div>
 				))}

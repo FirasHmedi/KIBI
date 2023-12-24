@@ -9,12 +9,10 @@ import {
 	activateTankAbility,
 	attackOppAnimal,
 	attackOwner,
-	changeHasAttacked,
 	drawCardFromMainDeck,
 	enableAttackForOpponentAnimals,
 	enableAttackingAndPlayingPowerCards,
 	placeAnimalOnBoard,
-	setElementLoad,
 	setPowerCardAsActive,
 } from '../backend/actions';
 import { add1Hp, add2Hp, minus1Hp, minus2Hp } from '../backend/animalsAbilities';
@@ -65,7 +63,6 @@ import {
 	isKingInElement,
 	isPowerCard,
 	isTankInElement,
-	waitFor,
 } from '../utils/helpers';
 import { Board, Player, PlayerType, Round, SlotType } from '../utils/interface';
 import { BoardView } from './Board';
@@ -158,13 +155,11 @@ export function GameView({
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 
 		if (isJokerInElement(cardId, elementType)) {
-			await waitFor(700);
 			setCardsIdsForPopup(oppPlayer.cardsIds);
 			setIsJokerActive(true);
 		}
 
 		if (isTankInElement(cardId, elementType)) {
-			await waitFor(700);
 			await add1Hp(gameId, playerType);
 		}
 	};
@@ -306,12 +301,10 @@ export function GameView({
 		await processPostPowerCardPlay();
 
 		if (activateJokerAbilityNow) {
-			await waitFor(700);
 			setCardsIdsForPopup(oppPlayer.cardsIds);
 			setIsJokerActive(true);
 		}
 		if (activateTankAbilityNow) {
-			await waitFor(700);
 			await add1Hp(gameId, playerType);
 		}
 	};
@@ -521,12 +514,6 @@ export function GameView({
 		setShowEnvPopup(true);
 	};
 
-	const chargeElement = async () => {
-		if (spectator || currPlayer.envLoadNb === 1 || currPlayer.hp < 2 || !isMyRound) return;
-		await minus2Hp(gameId, playerType);
-		await setElementLoad(gameId, playerType, 1);
-	};
-
 	const playCard = async (cardId?: string, slotNb?: number) => {
 		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
 
@@ -567,7 +554,6 @@ export function GameView({
 		await minus1Hp(gameId, playerType);
 		await addInfoToLog(gameId, playerType + ' changed element to ' + elementType);
 		setShowEnvPopup(false);
-		await waitFor(700);
 		activateMonkeyAbility(currPSlots, false, elementType);
 		await activateTankAbility(gameId, playerType, currPSlots, elementType);
 	};
@@ -622,12 +608,7 @@ export function GameView({
 			return false;
 		}
 
-		if (
-			currAnimalId === oppoAnimalId ||
-			spectator ||
-			!isAnimalInSlots(currPSlots, currAnimalId) ||
-			!isAnimalInSlots(oppPSlots, oppoAnimalId)
-		) {
+		if (currAnimalId === oppoAnimalId || spectator || !isAnimalInSlots(currPSlots, currAnimalId)) {
 			return;
 		}
 
@@ -702,7 +683,6 @@ export function GameView({
 			return false;
 		}
 		hasAttacked.current = true;
-		await changeHasAttacked(gameId, playerType, currslotnb!, true);
 		await attackOppAnimal(gameId, playerType, currAnimalId!, oppoAnimalId!, oppslotnb!);
 
 		const canSecondAttackWithKing =
@@ -713,18 +693,13 @@ export function GameView({
 			return;
 		}
 
-		await waitFor(300);
-		await changeHasAttacked(gameId, playerType, currslotnb!, false);
 		hasAttacked.current = true;
 		canKingAttackAgain.current = false;
 	};
 
 	const attackOppHp = async (currSlotNb: number, animalId: string) => {
 		hasAttacked.current = true;
-		await changeHasAttacked(gameId, playerType, currSlotNb, true);
 		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalId, isCurrDoubleAP);
-		await waitFor(300);
-		await changeHasAttacked(gameId, playerType, currSlotNb, false);
 	};
 
 	const activateMonkeyAbility = (
