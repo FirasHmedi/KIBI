@@ -3,14 +3,14 @@ export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
 export const black = '#000000';
 export const primaryBlue = '#2980b9';
-export const violet = '#8e44ad';
-export const lightViolet = 'rgba(142, 68, 173, 0.6)';
+export const violet = '#681b89'; //#681b89 #501569 8e44ad
+export const lightViolet = 'rgba(142, 68, 173, 0.3)';
 
 export const greyBackground = '#ecf0f1';
 
 export const waterColor = '#2980b9';
 export const fireColor = '#c0392b';
-export const airColor = '#2ecc71';
+export const airColor = '#27ae60'; // #27ae60 #2ecc71
 export const earthColor = '#f39c12';
 export const neutralColor = '#95a5a6';
 export const selectedColor = '#575757';

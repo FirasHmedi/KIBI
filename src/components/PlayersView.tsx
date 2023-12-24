@@ -29,7 +29,7 @@ export const CountDown = ({ finishRound }: any) => (
 	<CountdownCircleTimer
 		isPlaying
 		duration={ROUND_DURATION}
-		colors={`#8e44ad`}
+		colors={`#681b89`}
 		onComplete={() => {
 			if (!!finishRound) finishRound();
 		}}
@@ -186,8 +186,8 @@ const PlayerDataView = ({
 				borderRadius: 5,
 				backgroundColor: violet,
 				color: 'white',
-				height: '4vw',
-				width: '4vw',
+				height: '3.6vw',
+				width: '3.6vw',
 				fontSize: '1em',
 				...flexColumnStyle,
 				alignItems: 'center',
@@ -200,15 +200,15 @@ const PlayerDataView = ({
 				<div style={{ display: 'flex', flexDirection: 'row' }}>
 					<div
 						style={{
-							width: '2vw',
-							height: '2vw',
+							width: '1.8vw',
+							height: '1.8vw',
 							backgroundColor: fireColor,
 							borderTopLeftRadius: 5,
 						}}></div>
 					<div
 						style={{
-							width: '2vw',
-							height: '2vw',
+							width: '1.8vw',
+							height: '1.8vw',
 							backgroundColor: airColor,
 							borderTopRightRadius: 5,
 						}}></div>
@@ -216,15 +216,15 @@ const PlayerDataView = ({
 				<div style={{ display: 'flex', flexDirection: 'row' }}>
 					<div
 						style={{
-							width: '2vw',
-							height: '2vw',
+							width: '1.8vw',
+							height: '1.8vw',
 							backgroundColor: waterColor,
 							borderBottomLeftRadius: 5,
 						}}></div>
 					<div
 						style={{
-							width: '2vw',
-							height: '2vw',
+							width: '1.8vw',
+							height: '1.8vw',
 							backgroundColor: earthColor,
 							borderBottomRightRadius: 5,
 						}}></div>
@@ -273,8 +273,8 @@ const PlayerDataView = ({
 						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
 					</div>
 					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
-						<h4 style={{ fontSize: '1.5rem' }}> {hpRef.current}</h4>
-						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
+						<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
+						<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
 					</div>
 				</div>
 
@@ -368,8 +368,8 @@ const OpponentDataView = ({
 						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
 					</div>
 					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
-						<h4 style={{ fontSize: '1.5rem' }}> {hpRef.current}</h4>
-						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
+						<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
+						<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
 					</div>
 				</div>
 
