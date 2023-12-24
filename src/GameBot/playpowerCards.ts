@@ -67,10 +67,13 @@ const isPowerCardPlayable = async (cardId: string, gameId: string) => {
 
 	switch (getOriginalCardId(cardId!)) {
 		case 'reset-board':
-			if (bot.hp < 3) return false;
+			if (bot.hp < 4) return false;
 			break;
-		case 'place-king':
-			if (!botDeck.some((cardId: any) => isKing(cardId))) return false;
+		case 'block-pow':
+			if (bot.hp < 2) return false;
+			break;
+		case 'block-att':
+			if (bot.hp < 2) return false;
 			break;
 		case 'rev-any-anim-1hp':
 			if (isEmpty(animalGY) || bot.hp < 2) return false;
@@ -243,12 +246,10 @@ const orderPowerCards = (powerCards: string[]) => {
 		'one-charge-element',
 		'one-2-anim-gy',
 		'one-rev-any-anim-1hp',
-		'one-double-tanks-ap',
 		'one-switch-2-cards',
 		'one-switch-decks',
 		'one-sacrif-anim-3hp',
 		'one-reset-board',
-		'one-place-king',
 		'two-rev-last-pow',
 		'two-rev-any-pow-1hp',
 		'two-2hp',
@@ -261,12 +262,10 @@ const orderPowerCards = (powerCards: string[]) => {
 		'two-place-2-anim-1-hp',
 		'two-steal-anim-3hp',
 		'two-steal-anim-3hp',
-		'two-double-tanks-ap',
 		'two-switch-2-cards',
 		'two-switch-decks',
 		'two-sacrif-anim-3hp',
 		'two-reset-board',
-		'two-place-king',
 	];
 
 	const powerCardIdsSet = new Set(powerCards);
@@ -286,12 +285,8 @@ export const playPowerCardForBot = async (gameId: any) => {
 const playPowerCardLogic = async (gameId: string, powerCards: string[]) => {
 	const cardWithoutChecker = [
 		'one-2hp',
-		'one-block-att',
-		'one-block-pow',
 		'one-draw-2',
 		'two-2hp',
-		'two-block-att',
-		'two-block-pow',
 		'two-draw-2',
 	];
 

@@ -1,23 +1,27 @@
 import { isEmpty, isNil, shuffle } from 'lodash';
 import {
+	activateTankAbility,
 	attackOppAnimal,
 	attackOwner,
 	placeAnimalOnBoard,
 	placeKingOnBoard,
 } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
-import { changeElement } from '../backend/powers';
-import { ANIMALS_POINTS, ATTACKER, EMPTY, JOKER, KING, TANK } from '../utils/data';
-import { getAnimalCard, isAnimalCard } from '../utils/helpers';
+import {changeElement, stealCardFromOpponent} from '../backend/powers';
+import {ANIMALS_POINTS, ATTACKER, ClanName, EMPTY, JOKER, KING, RoleName, TANK} from '../utils/data';
+import {getAnimalCard, getPowerCard, isAnimalCard, waitFor} from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import {
 	getBotDeck,
 	getBotSlots,
-	getElementFromDb,
+	getElementFromDb, getPlayerDeck,
 	getPlayerSlots,
 	getRoundNb,
 } from './datafromDB';
 import { playPowerCardForBot } from './playpowerCards';
+import {minus1Hp} from "../backend/animalsAbilities";
+import {addInfoToLog} from "../backend/unitActions";
+import {elementType} from "prop-types";
 
 export const isKing = (cardId: string): boolean => {
 	const KingIds = ['9-a', '13-a', '1-a', '5-a'];
@@ -62,26 +66,12 @@ export const playAnimalCardForBot = async (selectedCards: string[], gameId: stri
 	}
 };
 
-const canPlayKing = async (botSlots: SlotType[], cardIds: string[]) => {
+const isKingOnBoard = async (botSlots: SlotType[]) => {
 	const isKingOnBoard = botSlots.some((slot: SlotType) => isKing(slot?.cardId));
 	if (isKingOnBoard) {
 		return false;
 	}
 
-	const kingCards = cardIds.filter(cardId => isKing(cardId));
-	if (kingCards.length === 0) return false;
-
-	return botSlots.some((slot: SlotType) => {
-		if (!isAnimalCard(slot?.cardId)) return false;
-		const slotCard = getAnimalCard(slot?.cardId);
-		return (
-			slotCard &&
-			kingCards.some(kingCardId => {
-				const kingCard = getAnimalCard(kingCardId);
-				return kingCard && kingCard.clan === slotCard.clan;
-			})
-		);
-	});
 };
 
 const playKingForBot = async (gameId: string) => {
@@ -92,29 +82,21 @@ const playKingForBot = async (gameId: string) => {
 
 	const botSlots = (await getBotSlots(gameId)) ?? [];
 	const playerDeck = (await getBotDeck(gameId)) ?? [];
-	const canplayKing = await canPlayKing(botSlots, playerDeck);
-	if (!canplayKing) {
+	const kingOnBoard = await isKingOnBoard(botSlots);
+	const bot = await getItemsOnce('/games/' + gameId + '/two');
+	if (kingOnBoard) {
 		return false;
 	}
-
+	if(bot.hp<2){
+		return false;
+	}
 	const kingCards = playerDeck.filter(isKing);
-	for (const kingCard of kingCards) {
-		const kingClan = getAnimalCard(kingCard)?.clan;
-		const filteredBotSlots = botSlots.filter((slot: SlotType) => slot && !isEmpty(slot?.cardId));
-		const slotIndexToSacrifice = filteredBotSlots.findIndex((slot: SlotType) => {
-			const animal = getAnimalCard(slot?.cardId);
-			return animal && animal.clan === kingClan;
-		});
-		if (slotIndexToSacrifice !== -1) {
-			await placeKingOnBoard(
-				gameId,
-				PlayerType.TWO,
-				kingCard,
-				botSlots[slotIndexToSacrifice]?.cardId,
-				slotIndexToSacrifice,
-			);
-			return true;
-		}
+	const emptyIndex = botSlots.findIndex((slot: SlotType) => !isAnimalCard(slot?.cardId));
+	if(kingCards.length>0&&emptyIndex!=-1){
+		let currentElement = await getElementFromDb(gameId);
+		await placeAnimalOnBoard(gameId, PlayerType.TWO, emptyIndex, kingCards[0], currentElement);
+		await minus1Hp(gameId, PlayerType.TWO);
+		return true;
 	}
 	return false;
 };
@@ -151,7 +133,30 @@ const getDefendingAnimalIdAndSlot = async (
 	}
 	return null;
 };
-
+const activateMonkeyAbility = async (gameId:string,
+	slots: any[] = [],
+	isJokerGood?: boolean,
+	elementType?: ClanName,
+) => {
+	if (!isJokerGood) {
+		var hasJokerInElement = false;
+		for (let i = 0; i < slots.length; i++) {
+			const animal = getAnimalCard(slots[i]?.cardId);
+			if (!!animal && animal.role === JOKER && animal.clan === elementType) {
+				hasJokerInElement = true;
+			}
+		}
+		if (!hasJokerInElement) return;
+	}
+	const cardIds = await getPlayerDeck(gameId)
+	const randomIndex = Math.floor(Math.random() * cardIds.length);
+	const cardId = cardIds[randomIndex];
+	await stealCardFromOpponent(gameId, PlayerType.TWO, cardId);
+	const cardName = isAnimalCard(cardId)
+		? getAnimalCard(cardId)?.name
+		: getPowerCard(cardId)?.name;
+	await addInfoToLog(gameId, 'Joker stealed a card ' + cardName);
+};
 const botAttack = async (gameId: string) => {
 	const roundNB = (await getRoundNb(gameId)) ?? 0;
 	if (roundNB < 2) {
@@ -205,12 +210,18 @@ const botAttack = async (gameId: string) => {
 		return;
 	}
 
-	const envLoadNb = await getItemsOnce('/games/' + gameId + '/two/envLoadNb');
+	//const envLoadNb = await getItemsOnce('/games/' + gameId + '/two/envLoadNb');
 	let currentElement = await getElementFromDb(gameId);
-	if (envLoadNb === 1 && animal?.clan !== currentElement) {
+	if ( animal?.clan !== currentElement&&(animal.role== KING||animal.role== ATTACKER)&&player.hp>2) {
 		await changeElement(gameId, animal.clan, PlayerType.TWO);
 		currentElement = animal.clan;
+		await minus1Hp(gameId, PlayerType.TWO);
+		await addInfoToLog(gameId, PlayerType.TWO + ' changed element to ' + currentElement);
+		await waitFor(700);
+		await activateMonkeyAbility(gameId,BotSlots, false, currentElement);
+		await activateTankAbility(gameId, PlayerType.TWO, BotSlots, currentElement);
 	}
+
 
 	await attackOppAnimal(
 		gameId,
@@ -279,6 +290,10 @@ const attemptAttackPlayer = async (gameId: string) => {
 export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const roundNB = await getRoundNb(gameId);
 	let bot = await getItemsOnce('/games/' + gameId + '/two');
+	const botSlots = (await getBotSlots(gameId)) ?? [];
+	const elementType = await getElementFromDb(gameId);
+	await activateMonkeyAbility(gameId,botSlots, false, elementType);
+	await activateTankAbility(gameId, PlayerType.TWO, botSlots, elementType);
 	const kingPlayed = await playKingForBot(gameId);
 	let cardsToPick = roundNB > 2 ? 2 : 3;
 	if (kingPlayed) cardsToPick--;
@@ -314,7 +329,7 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 		await playAnimalCardForBot(selectedCards, gameId);
 	}
 
-	if (bot?.canAttack) {
+	if (bot?.canAttack&&roundNB > 2) {
 		const attempt = await attemptAttackPlayer(gameId);
 		if (!attempt) {
 			await botAttack(gameId);
