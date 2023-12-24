@@ -150,7 +150,7 @@ export function GameView({
 			await minus1Hp(gameId, playerType);
 		}
 
-		await placeAnimalOnBoard(gameId, playerType, slotNb, cardId, elementType);
+		await placeAnimalOnBoard(gameId, playerType, slotNb, cardId);
 
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 

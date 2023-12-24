@@ -46,7 +46,6 @@ export const placeAnimalOnBoard = async (
 	playerType: PlayerType,
 	slotNb: number,
 	animalId: string,
-	elementType?: string,
 ) => {
 	const animal = getAnimalCard(animalId);
 	await addInfoToLog(gameId, playerType + ' placed a ' + animal?.name + ' in slot ' + slotNb);

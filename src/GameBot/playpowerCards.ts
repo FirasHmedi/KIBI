@@ -1,11 +1,10 @@
 import { isEmpty } from 'lodash';
-import { setElementLoad, setPowerCardAsActive } from '../backend/actions';
+import { setPowerCardAsActive } from '../backend/actions';
 import { add2Hp, minus1Hp, minus2Hp } from '../backend/animalsAbilities';
 import { getBoardPath, getItemsOnce } from '../backend/db';
 import {
 	cancelAttacks,
 	cancelUsingPowerCards,
-	doubleTanksAP,
 	draw2Cards,
 	resetBoard,
 	return2animalsFromGYToDeck,
@@ -21,7 +20,6 @@ import { addPowerToGraveYard } from '../backend/unitActions';
 import { EMPTY } from '../utils/data';
 import { getOriginalCardId, getPowerCard, isKing, isTank } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
-import { placeKingWithoutSacrifice } from './../backend/actions';
 import {
 	getBotDeck,
 	getBotSlots,
@@ -30,10 +28,6 @@ import {
 	getPlayerSlots,
 } from './datafromDB';
 import {
-	canPlayChargeTheElementCard,
-	canPlayDoubleApTankCard,
-	canPlayPlaceKingCard,
-	canPlayPlaceTwoAnimalsCard,
 	canPlayResetBoardCard,
 	canPlayReviveAnimalCard,
 	canPlayReviveAnyPowerCard,
@@ -45,7 +39,6 @@ import {
 
 const getFirstTankId = (botSlots: SlotType[]) => {
 	const tankSlot = botSlots.find(slot => slot && slot.cardId && isTank(slot.cardId));
-
 	return tankSlot ? tankSlot.cardId : '';
 };
 
@@ -69,8 +62,11 @@ const isPowerCardPlayable = async (cardId: string, gameId: string) => {
 		case 'reset-board':
 			if (bot.hp < 3) return false;
 			break;
-		case 'place-king':
-			if (!botDeck.some((cardId: any) => isKing(cardId))) return false;
+		case 'block-pow':
+			if (bot.hp < 2) return false;
+			break;
+		case 'block-att':
+			if (bot.hp < 2) return false;
 			break;
 		case 'rev-any-anim-1hp':
 			if (isEmpty(animalGY) || bot.hp < 2) return false;
@@ -126,6 +122,7 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 	await setPowerCardAsActive(gameId, PlayerType.TWO, cardId!, name!);
 	switch (getOriginalCardId(cardId!)) {
 		case 'block-att':
+			await minus1Hp(gameId, PlayerType.TWO);
 			await cancelAttacks(gameId, PlayerType.ONE);
 			break;
 		case 'rev-last-pow':
@@ -170,22 +167,12 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 			await return2animalsFromGYToDeck(gameId, PlayerType.TWO, [animalGY[0], animalGY[1]]);
 			break;
 		case 'block-pow':
+			await minus1Hp(gameId, PlayerType.TWO);
 			await cancelUsingPowerCards(gameId, PlayerType.ONE);
 			break;
 		case 'reset-board':
 			await minus2Hp(gameId, PlayerType.TWO);
 			await resetBoard(gameId, PlayerType.TWO, botSlots, playerSlots);
-			break;
-		case 'place-king':
-			const king = getFirstKingIdInDeck(botDeck);
-			const slot = getFirstEmptySlotIndex(botSlots);
-			await placeKingWithoutSacrifice(gameId, PlayerType.TWO, king!, slot);
-			break;
-		case 'double-tanks-ap':
-			await doubleTanksAP(gameId, PlayerType.TWO);
-			break;
-		case 'charge-element':
-			await setElementLoad(gameId, PlayerType.TWO, 1);
 			break;
 	}
 
@@ -200,32 +187,26 @@ const getBotPowerCards = async (gameId: string) => {
 		'one-block-att',
 		'one-block-pow',
 		'one-draw-2',
-		'one-charge-element',
 		'one-2-anim-gy',
 		'one-rev-any-anim-1hp',
 		'one-steal-anim-3hp',
-		'one-double-tanks-ap',
 		'one-switch-2-cards',
 		'one-switch-decks',
 		'one-sacrif-anim-3hp',
 		'one-reset-board',
-		'one-place-king',
 		'two-rev-last-pow',
 		'two-rev-any-pow-1hp',
 		'two-2hp',
 		'two-block-att',
 		'two-block-pow',
 		'two-draw-2',
-		'two-charge-element',
 		'two-2-anim-gy',
 		'two-rev-any-anim-1hp',
 		'two-steal-anim-3hp',
-		'two-double-tanks-ap',
 		'two-switch-2-cards',
 		'two-switch-decks',
 		'two-sacrif-anim-3hp',
 		'two-reset-board',
-		'two-place-king',
 	];
 
 	const botDeck = await getBotDeck(gameId);
@@ -240,33 +221,26 @@ const orderPowerCards = (powerCards: string[]) => {
 		'one-block-att',
 		'one-block-pow',
 		'one-draw-2',
-		'one-charge-element',
 		'one-2-anim-gy',
 		'one-rev-any-anim-1hp',
-		'one-double-tanks-ap',
 		'one-switch-2-cards',
 		'one-switch-decks',
 		'one-sacrif-anim-3hp',
 		'one-reset-board',
-		'one-place-king',
 		'two-rev-last-pow',
 		'two-rev-any-pow-1hp',
 		'two-2hp',
 		'two-block-att',
 		'two-block-pow',
 		'two-draw-2',
-		'two-charge-element',
 		'two-2-anim-gy',
 		'two-rev-any-anim-1hp',
-		'two-place-2-anim-1-hp',
 		'two-steal-anim-3hp',
 		'two-steal-anim-3hp',
-		'two-double-tanks-ap',
 		'two-switch-2-cards',
 		'two-switch-decks',
 		'two-sacrif-anim-3hp',
 		'two-reset-board',
-		'two-place-king',
 	];
 
 	const powerCardIdsSet = new Set(powerCards);
@@ -284,16 +258,7 @@ export const playPowerCardForBot = async (gameId: any) => {
 };
 
 const playPowerCardLogic = async (gameId: string, powerCards: string[]) => {
-	const cardWithoutChecker = [
-		'one-2hp',
-		'one-block-att',
-		'one-block-pow',
-		'one-draw-2',
-		'two-2hp',
-		'two-block-att',
-		'two-block-pow',
-		'two-draw-2',
-	];
+	const cardWithoutChecker = ['one-2hp', 'one-draw-2', 'two-2hp', 'two-draw-2'];
 
 	for (const cardId of powerCards) {
 		const isPowerCardPlayableVar = await isPowerCardPlayable(cardId, gameId);
@@ -320,32 +285,14 @@ const playPowerCardLogic = async (gameId: string, powerCards: string[]) => {
 					return true;
 				}
 				break;
-			case 'charge-element':
-				if (await canPlayChargeTheElementCard(gameId)) {
-					await playPowerCard(cardId, gameId);
-					return true;
-				}
-				break;
 			case 'rev-any-anim-1hp':
 				if (await canPlayReviveAnimalCard(gameId)) {
 					await playPowerCard(cardId, gameId);
 					return false;
 				}
 				break;
-			case 'place-2-anim-1-hp':
-				if (await canPlayPlaceTwoAnimalsCard(gameId)) {
-					await playPowerCard(cardId, gameId);
-					return false;
-				}
-				break;
 			case 'steal-anim-3hp':
 				if (await canPlayStealAnimalCard(gameId)) {
-					await playPowerCard(cardId, gameId);
-					return true;
-				}
-				break;
-			case 'double-tanks-ap':
-				if (await canPlayDoubleApTankCard(gameId)) {
 					await playPowerCard(cardId, gameId);
 					return true;
 				}
@@ -364,12 +311,6 @@ const playPowerCardLogic = async (gameId: string, powerCards: string[]) => {
 				break;
 			case 'reset-board':
 				if (await canPlayResetBoardCard(gameId)) {
-					await playPowerCard(cardId, gameId);
-					return true;
-				}
-				break;
-			case 'place-king':
-				if (await canPlayPlaceKingCard(gameId)) {
 					await playPowerCard(cardId, gameId);
 					return true;
 				}
