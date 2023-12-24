@@ -114,12 +114,12 @@ export const canAnimalAKillAnimalD = (aID?: string, dID?: string, isDoubleAP: bo
 	return true;
 };
 
-export const getIsOppSlotsEmpty = (slots: SlotType[] = []) =>
+export const getISlotsAllEmpty = (slots: SlotType[] = []) =>
 	!isAnimalCard(slots[0]?.cardId) &&
 	!isAnimalCard(slots[1]?.cardId) &&
 	!isAnimalCard(slots[2]?.cardId);
 
-export const getIsOppSlotsAllFilled = (slots: SlotType[] = []) =>
+export const getIsSlotsAllFilled = (slots: SlotType[] = []) =>
 	isAnimalCard(slots[0]?.cardId) &&
 	isAnimalCard(slots[1]?.cardId) &&
 	isAnimalCard(slots[2]?.cardId);
@@ -210,4 +210,11 @@ export const isAnimalInSlots = (slots: SlotType[] = [], cardId?: string): boolea
 		return false;
 	}
 	return slots.some(slot => slot?.cardId === cardId);
+};
+
+export const showToast = (msg: string) => {
+	toast.warning(msg, {
+		position: toast.POSITION.TOP_RIGHT,
+		autoClose: 1000,
+	});
 };

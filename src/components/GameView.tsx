@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
 import isNil from 'lodash/isNil';
 import { useEffect, useRef, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { executeBotTurn } from '../GameBot/BotActions';
 import { canAttackOwner } from '../GameBot/powerCardCheckers';
@@ -51,8 +51,7 @@ import {
 import {
 	canAnimalAKillAnimalD,
 	getAnimalCard,
-	getIsOppSlotsAllFilled,
-	getIsOppSlotsEmpty,
+	getISlotsAllEmpty,
 	getOpponentIdFromCurrentId,
 	getOriginalCardId,
 	getPowerCard,
@@ -63,6 +62,7 @@ import {
 	isKingInElement,
 	isPowerCard,
 	isTankInElement,
+	showToast,
 } from '../utils/helpers';
 import { Board, Player, PlayerType, Round, SlotType } from '../utils/interface';
 import { BoardView } from './Board';
@@ -100,7 +100,6 @@ export function GameView({
 	const [cardsIdsForPopup, setCardsIdsForPopup] = useState<string[]>([]);
 	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
 	const [isJokerActive, setIsJokerActive] = useState(false);
-	const [isvibrationActive, setIsvibrationActive] = useState(false);
 
 	const activePowerCard = useRef('');
 	const hasAttacked = useRef(false);
@@ -108,10 +107,10 @@ export function GameView({
 	const gyTitle = useRef('');
 
 	const openCardsPopup = cardsIdsForPopup?.length > 0;
-	const isOppSlotsEmpty = getIsOppSlotsEmpty(oppPSlots);
-	const isOppSlotsAllFilled = getIsOppSlotsAllFilled(oppPSlots);
+	const isOppSlotsEmpty = getISlotsAllEmpty(oppPSlots);
 	const isOppDoubleAP = oppPlayer.isDoubleAP;
 	const isCurrDoubleAP = currPlayer.isDoubleAP;
+	const [isConfirmActive, setIsConfirmActive] = useState(false);
 
 	useEffect(() => {
 		if (isMyRound) {
@@ -585,13 +584,6 @@ export function GameView({
 		}
 	};
 
-	const showToast = (msg: string) => {
-		toast.warning(msg, {
-			position: toast.POSITION.TOP_RIGHT,
-			autoClose: 1000,
-		});
-	};
-
 	const attack = async (
 		currAnimalId?: string,
 		oppoAnimalId?: string,
@@ -740,6 +732,9 @@ export function GameView({
 		canAttackOwner,
 	};
 
+	const isAttackDisabled =
+		!(round.nb >= 3 && isMyRound && currPlayer.canAttack) || getISlotsAllEmpty(currPSlots);
+
 	return (
 		<>
 			<ToastContainer />
@@ -808,6 +803,10 @@ export function GameView({
 					setElement={setElement}
 					spectator={spectator}
 					updateCardsOrder={updateCardsOrder}
+					hasAttacked={hasAttacked}
+					isConfirmActive={isConfirmActive}
+					setIsConfirmActive={setIsConfirmActive}
+					isAttackDisabled={isAttackDisabled}
 				/>
 				{openCardsPopup && !spectator && (
 					<CardsPopup

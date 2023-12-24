@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
 import { GiHeartMinus } from 'react-icons/gi';
+import 'react-toastify/dist/ReactToastify.css';
+import { Tooltip } from 'react-tooltip';
 import {
 	airColor,
 	centerStyle,
@@ -13,6 +15,7 @@ import {
 	waterColor,
 } from '../styles/Style';
 import { ROUND_DURATION } from '../utils/data';
+import { showToast } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import './styles.css';
@@ -48,6 +51,10 @@ export const CurrentPView = ({
 	setElement,
 	spectator,
 	updateCardsOrder,
+	hasAttacked,
+	isConfirmActive,
+	setIsConfirmActive,
+	isAttackDisabled,
 }: {
 	player: Player;
 	round: Round;
@@ -57,6 +64,10 @@ export const CurrentPView = ({
 	setElement: () => void;
 	spectator?: boolean;
 	updateCardsOrder: any;
+	hasAttacked: any;
+	isConfirmActive: boolean;
+	setIsConfirmActive: any;
+	isAttackDisabled: boolean;
 }) => {
 	const { playerType } = player;
 	const cardsIds = player.cardsIds ?? [];
@@ -64,42 +75,69 @@ export const CurrentPView = ({
 
 	const Buttons = () => {
 		if (spectator) {
-			return <></>;
+			return null;
 		}
+
+		const handleFinishClick = () => {
+			if (hasAttacked.current || isAttackDisabled) {
+				finishRound();
+			} else {
+				setIsConfirmActive(true);
+				showToast("Don't forget to attack");
+			}
+		};
+
+		const handleConfirmClick = () => {
+			finishRound();
+			setIsConfirmActive(false);
+		};
+
 		const cardsToPlay =
 			nbCardsToPlay > 1 ? `${nbCardsToPlay} cards` : nbCardsToPlay === 1 ? '1 card' : 'No cards';
+
+		const buttonsStyle: CSSProperties = {
+			fontWeight: 'bold',
+			minWidth: '4vw',
+			fontSize: '0.8em',
+			width: '4.5vw',
+			padding: 2,
+			color: 'white',
+			backgroundColor: isMyRound ? violet : 'grey',
+			borderRadius: 5,
+		};
+
 		return (
 			<div
 				style={{
 					position: 'absolute',
 					right: '14vw',
 					bottom: '12vh',
+					...flexColumnStyle,
+					alignItems: 'center',
+					justifyContent: 'center',
+					width: '14vw',
 				}}>
-				<div
-					style={{
-						...flexColumnStyle,
-						alignItems: 'center',
-						justifyContent: 'center',
-						width: '14vw',
-					}}>
-					{!!nbCardsToPlay && isMyRound && (
-						<h5 style={{ color: violet, padding: 10 }}>{cardsToPlay} left</h5>
+				{!!nbCardsToPlay && isMyRound && (
+					<h5 style={{ color: violet, padding: 10 }}>{cardsToPlay} left</h5>
+				)}
+				<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+					{!isConfirmActive ? (
+						<button style={buttonsStyle} disabled={!isMyRound} onClick={handleFinishClick}>
+							FINISH
+						</button>
+					) : (
+						<>
+							<button
+								style={buttonsStyle}
+								disabled={!isMyRound}
+								onClick={handleConfirmClick}
+								data-tooltip-id='confirm-tooltip'
+								data-tooltip-content="Don't forget to attack">
+								CONFIRM
+							</button>
+							<Tooltip id='confirm-tooltip' />
+						</>
 					)}
-					<button
-						style={{
-							fontWeight: 'bold',
-							minWidth: '4vw',
-							fontSize: '0.8em',
-							width: '4.5vw',
-							padding: 2,
-							color: 'white',
-							backgroundColor: isMyRound ? violet : 'grey',
-							borderRadius: 5,
-						}}
-						disabled={!isMyRound}
-						onClick={() => finishRound()}>
-						FINISH
-					</button>
 				</div>
 			</div>
 		);
