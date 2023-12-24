@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import isNil from 'lodash/isNil';
 import { ClanName, EMPTY_SLOT } from '../utils/data';
 import { getAnimalCard, isAnimalCard, isPowerCard } from '../utils/helpers';
@@ -148,8 +149,10 @@ export const changeElementUnitAction = async (gameId: string, elementType: ClanN
 	await setItem(getBoardPath(gameId), { elementType });
 };
 
-export const getCardFromMainDeck = async (gameId: string): Promise<string> => {
+export const getCardFromMainDeck = async (gameId: string): Promise<string | null> => {
 	const mainDeck = (await getItemsOnce(getBoardPath(gameId) + 'mainDeck')) as string[];
+	if (isEmpty(mainDeck)) return null;
+
 	return mainDeck[mainDeck.length - 1];
 };
 

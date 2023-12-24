@@ -776,7 +776,7 @@ export function GameView({
 							overflowY: 'auto',
 						}}>
 						{logs.map((log, index) => (
-							<h6 style={{ fontSize: '0.5em' }}>
+							<h6 key={index} style={{ fontSize: '0.5em' }}>
 								{logs.length - index}- {log}
 							</h6>
 						))}

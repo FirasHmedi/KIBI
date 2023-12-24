@@ -10,7 +10,7 @@ import { getItemsOnce } from '../backend/db';
 import { changeElement, stealCardFromOpponent } from '../backend/powers';
 import { addInfoToLog } from '../backend/unitActions';
 import { ANIMALS_POINTS, ATTACKER, ClanName, EMPTY, JOKER, KING, TANK } from '../utils/data';
-import { getAnimalCard, getPowerCard, isAnimalCard, waitFor } from '../utils/helpers';
+import { getAnimalCard, getPowerCard, isAnimalCard, isKing, waitFor } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import {
 	getBotDeck,
@@ -21,11 +21,6 @@ import {
 	getRoundNb,
 } from './datafromDB';
 import { playPowerCardForBot } from './playpowerCards';
-
-export const isKing = (cardId: string): boolean => {
-	const KingIds = ['9-a', '13-a', '1-a', '5-a'];
-	return KingIds.includes(cardId);
-};
 
 export const playAnimalCardForBot = async (selectedCards: string[], gameId: string) => {
 	const roundNb = await getRoundNb(gameId);
@@ -279,16 +274,19 @@ const attemptAttackPlayer = async (gameId: string) => {
 
 export const executeBotTurn = async (gameId: string): Promise<void> => {
 	const roundNB = await getRoundNb(gameId);
+	const notFirstRound = roundNB > 2;
 	let bot = await getItemsOnce('/games/' + gameId + '/two');
+
 	const botSlots = (await getBotSlots(gameId)) ?? [];
 	const elementType = await getElementFromDb(gameId);
 	await activateMonkeyAbility(gameId, botSlots, false, elementType);
 	await activateTankAbility(gameId, PlayerType.TWO, botSlots, elementType);
+
 	const kingPlayed = await playKingForBot(gameId);
-	let cardsToPick = roundNB > 2 ? 2 : 3;
+	let cardsToPick = notFirstRound ? 2 : 3;
 	if (kingPlayed) cardsToPick--;
 
-	if (roundNB > 2 && bot.canPlayPowers === true) {
+	if (notFirstRound && bot.canPlayPowers === true) {
 		const isPowerCardPlayed = await playPowerCardForBot(gameId);
 		if (isPowerCardPlayed) {
 			cardsToPick--;
@@ -296,30 +294,14 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 	}
 
 	bot = await getItemsOnce('/games/' + gameId + '/two');
-	const allowedAnimalsCardIds = [
-		'10-a',
-		'11-a',
-		'12-a',
-		'14-a',
-		'15-a',
-		'16-a',
-		'2-a',
-		'3-a',
-		'4-a',
-		'6-a',
-		'7-a',
-		'8-a',
-	];
+	const animalCards = (bot?.cardsIds ?? []).filter((cardId: string) => isAnimalCard(cardId));
 
-	const validCards = (bot?.cardsIds ?? []).filter((cardId: string) =>
-		allowedAnimalsCardIds.includes(cardId),
-	);
-	if (!isEmpty(validCards)) {
-		const selectedCards: string[] = shuffle(validCards).slice(0, cardsToPick) ?? [];
+	if (!isEmpty(animalCards)) {
+		const selectedCards: string[] = shuffle(animalCards).slice(0, cardsToPick);
 		await playAnimalCardForBot(selectedCards, gameId);
 	}
 
-	if (bot?.canAttack && roundNB > 2) {
+	if (bot?.canAttack && notFirstRound) {
 		const attempt = await attemptAttackPlayer(gameId);
 		if (!attempt) {
 			await botAttack(gameId);

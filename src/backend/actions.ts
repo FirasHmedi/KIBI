@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import shuffle from 'lodash/shuffle';
 import { ANIMALS_POINTS, ClanName, EMPTY_SLOT, JOKER, TANK } from '../utils/data';
 import { getAnimalCard, getOpponentIdFromCurrentId, isAnimalCard, waitFor } from '../utils/helpers';
@@ -35,10 +36,13 @@ export const enableAttackingAndPlayingPowerCards = async (gameId: string, player
 };
 
 export const drawCardFromMainDeck = async (gameId: string, playerType: string) => {
-	await addInfoToLog(gameId, playerType + ' draw a card');
 	const powerCardId = await getCardFromMainDeck(gameId);
+	if (isEmpty(powerCardId)) {
+		return;
+	}
 	await removeCardFromMainDeck(gameId);
-	await addCardsToPlayerDeck(gameId, playerType, [powerCardId]);
+	await addCardsToPlayerDeck(gameId, playerType, [powerCardId!]);
+	await addInfoToLog(gameId, playerType + ' draw a power card');
 };
 
 export const placeAnimalOnBoard = async (
@@ -115,7 +119,7 @@ export const attackOwner = async (
 ) => {
 	if (!isAnimalCard(animalId)) return;
 	const { name, role } = getAnimalCard(animalId)!;
-	await addInfoToLog(gameId, name + ' has attacked ' + playerDType + ' directly');
+	await addInfoToLog(gameId, name + ' has attacked ' + playerDType);
 	const ap = isDoubleAP ? ANIMALS_POINTS[role].ap * 2 : ANIMALS_POINTS[role].ap;
 	await removeHpFromPlayer(gameId, playerDType, ap);
 };
