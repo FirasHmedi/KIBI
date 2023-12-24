@@ -67,11 +67,7 @@ export const playAnimalCardForBot = async (selectedCards: string[], gameId: stri
 };
 
 const isKingOnBoard = async (botSlots: SlotType[]) => {
-	const isKingOnBoard = botSlots.some((slot: SlotType) => isKing(slot?.cardId));
-	if (isKingOnBoard) {
-		return false;
-	}
-
+	return  botSlots.some((slot: SlotType) => isKing(slot?.cardId));
 };
 
 const playKingForBot = async (gameId: string) => {
