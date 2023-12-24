@@ -9,7 +9,7 @@ import {
 	neutralColor,
 	violet,
 } from '../../styles/Style';
-import { GAMES_PATH, INITIAL_DECK_COUNT, RUNNING } from '../../utils/data';
+import { BOT, GAMES_PATH, INITIAL_DECK_COUNT, RUNNING } from '../../utils/data';
 import { isGameInPreparation, isGameRunning, submitRandomSelection } from '../../utils/helpers';
 import { Game, PlayerType } from '../../utils/interface';
 
@@ -27,12 +27,25 @@ function GamePage() {
 	}, []);
 
 	useEffect(() => {
-		if (spectator) return;
+		if (spectator || isGameRunning(game?.status)) return;
 
 		if (
 			game?.one?.cardsIds?.length === INITIAL_DECK_COUNT &&
 			game?.two?.cardsIds?.length === INITIAL_DECK_COUNT &&
-			!isGameRunning(game?.status)
+			game?.two.playerName === BOT
+		) {
+			setItem(GAMES_PATH + gameId, {
+				status: RUNNING,
+				round: {
+					player: PlayerType.ONE,
+					nb: 1,
+				},
+			});
+		}
+
+		if (
+			game?.tmp?.oneCardsIds?.length === INITIAL_DECK_COUNT &&
+			game?.tmp?.twoCardsIds?.length === INITIAL_DECK_COUNT
 		) {
 			setItem(GAMES_PATH + gameId, {
 				status: RUNNING,

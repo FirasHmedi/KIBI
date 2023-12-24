@@ -19,9 +19,10 @@ import {
 } from '../../styles/Style';
 import { BOT, EMPTY_SLOT, GAMES_PATH, INITIAL_HP, PREPARE } from '../../utils/data';
 import {
+	distributeCards,
 	getMainDeckFirstHalf,
 	getMainDeckSecondHalf,
-	submitRandomSelection,
+	submitRandomSelectionforBot,
 } from '../../utils/helpers';
 import { PlayerType } from '../../utils/interface';
 
@@ -101,7 +102,7 @@ function Home() {
 			envLoadNb: 0,
 		});
 
-		await submitRandomSelection(gameId, initialPowers);
+		await submitRandomSelectionforBot(gameId, initialPowers);
 		setDisabledButton(true);
 		navigate('/game/' + gameId, {
 			state: {
@@ -110,13 +111,14 @@ function Home() {
 				playerType: PlayerType.ONE,
 			},
 		});
+		await distributeCards(gameId);
 	};
 
 	const joinGameAsPlayer = async () => {
 		if (gameId.length === 0) return;
 		const gameData = await getItemsOnce(GAMES_PATH + gameId);
 
-		if (!gameData || gameData.two.id) {
+		if (!gameData || gameData.two) {
 			toast.error('Game is full or does not exist.', {
 				position: toast.POSITION.TOP_RIGHT,
 			});
@@ -143,6 +145,7 @@ function Home() {
 				playerType: PlayerType.TWO,
 			},
 		});
+		await distributeCards(gameId);
 	};
 
 	const joinGameAsSpectator = async () => {

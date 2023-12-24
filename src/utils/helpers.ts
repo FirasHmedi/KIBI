@@ -2,7 +2,7 @@ import { isEmpty, shuffle } from 'lodash';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getGamePath, setItem } from '../backend/db';
+import { getGamePath, getItemsOnce, setItem } from '../backend/db';
 import {
 	ANIMALS_CARDS,
 	ANIMALS_POINTS,
@@ -192,17 +192,115 @@ export const submitRandomSelection = async (gameId: string, powerCards: string[]
 	oneCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index < 2));
 	twoCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index >= 2));
 
-	await setItem(getGamePath(gameId) + PlayerType.ONE, {
-		cardsIds: oneCardsIds,
-	});
-
-	await setItem(getGamePath(gameId) + PlayerType.TWO, {
-		cardsIds: twoCardsIds,
+	await setItem(getGamePath(gameId) + 'tmp/', {
+		oneCardsIds,
+		twoCardsIds,
 	});
 
 	await setItem(getGamePath(gameId), {
 		playerToSelect: PlayerType.ONE,
 	});
+};
+
+export const submitRandomSelectionforBot = async (gameId: string, powerCards: string[] = []) => {
+	const oneCardsIds: string[] = [];
+	const twoCardsIds: string[] = [];
+	let i = 0,
+		j = 0,
+		k = 0,
+		l = 0,
+		m = 0,
+		n = 0,
+		o = 0,
+		p = 0;
+	shuffle(ANIMALS_CARDS)
+		.filter(({ role, id }) => {
+			if (role === KING) {
+				if (i < 2) {
+					oneCardsIds.push(id);
+					i++;
+				} else if (j < 2) {
+					twoCardsIds.push(id);
+					j++;
+				}
+				return false;
+			}
+			return true;
+		})
+		.filter(({ role, id }) => {
+			if (role === JOKER) {
+				if (k < 2) {
+					oneCardsIds.push(id);
+					k++;
+				} else if (l < 2) {
+					twoCardsIds.push(id);
+					l++;
+				}
+				return false;
+			}
+			return true;
+		})
+		.filter(({ role, id }) => {
+			if (role === TANK) {
+				if (m < 2) {
+					oneCardsIds.push(id);
+					m++;
+				} else if (n < 2) {
+					twoCardsIds.push(id);
+					n++;
+				}
+				return false;
+			}
+			return true;
+		})
+		.filter(({ role, id }) => {
+			if (role === ATTACKER) {
+				if (o < 2) {
+					oneCardsIds.push(id);
+					o++;
+				} else if (p < 2) {
+					twoCardsIds.push(id);
+					p++;
+				}
+				return false;
+			}
+			return true;
+		});
+
+	oneCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index < 2));
+	twoCardsIds.push(...(powerCards ?? []).filter((_: any, index: number) => index >= 2));
+
+	await setItem(getGamePath(gameId) + 'tmp/', {
+		oneCardsIds,
+		twoCardsIds,
+	});
+
+	await setItem(getGamePath(gameId), {
+		playerToSelect: PlayerType.ONE,
+	});
+};
+
+export const distributeCards = async (gameId: string) => {
+	const playersCards = await getItemsOnce(getGamePath(gameId) + 'tmp/');
+	const oneCardsIds = playersCards.oneCardsIds ?? [];
+	const twoCardsIds = playersCards.twoCardsIds ?? [];
+
+	let playerOneCards: string[] = [];
+	let playerTwoCards: string[] = [];
+
+	for (let i = 0; i < 10; i += 2) {
+		playerOneCards.push(oneCardsIds.slice(i, i + 2));
+		await setItem(getGamePath(gameId) + PlayerType.ONE, {
+			cardsIds: playerOneCards,
+		});
+
+		playerTwoCards.push(twoCardsIds.slice(i, i + 2));
+		await setItem(getGamePath(gameId) + PlayerType.TWO, {
+			cardsIds: playerTwoCards,
+		});
+
+		await waitFor(500);
+	}
 };
 
 export const isAnimalInSlots = (slots: SlotType[] = [], cardId?: string): boolean => {
