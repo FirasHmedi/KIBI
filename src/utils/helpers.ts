@@ -282,19 +282,19 @@ export const submitRandomSelectionforBot = async (gameId: string, powerCards: st
 
 export const distributeCards = async (gameId: string) => {
 	const playersCards = await getItemsOnce(getGamePath(gameId) + 'tmp/');
-	const oneCardsIds = playersCards.oneCardsIds ?? [];
-	const twoCardsIds = playersCards.twoCardsIds ?? [];
+	const oneCardsIds: string[] = playersCards.oneCardsIds ?? [];
+	const twoCardsIds: string[] = playersCards.twoCardsIds ?? [];
 
 	let playerOneCards: string[] = [];
 	let playerTwoCards: string[] = [];
 
 	for (let i = 0; i < 10; i += 2) {
-		playerOneCards.push(oneCardsIds.slice(i, i + 2));
+		playerOneCards.push(...oneCardsIds.slice(i, i + 2));
 		await setItem(getGamePath(gameId) + PlayerType.ONE, {
 			cardsIds: playerOneCards,
 		});
 
-		playerTwoCards.push(twoCardsIds.slice(i, i + 2));
+		playerTwoCards.push(...twoCardsIds.slice(i, i + 2));
 		await setItem(getGamePath(gameId) + PlayerType.TWO, {
 			cardsIds: playerTwoCards,
 		});
