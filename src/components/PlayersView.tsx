@@ -249,8 +249,8 @@ const PlayerDataView = ({
 				<div
 					style={{
 						position: 'absolute',
-						right: '3vw',
-						bottom: '4vh',
+						right: '2vh',
+						bottom: '2vh',
 						height: '4vh',
 						...centerStyle,
 					}}>

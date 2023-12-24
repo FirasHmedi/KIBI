@@ -656,7 +656,7 @@ export const BoardSlots = ({
 		<div
 			style={{
 				...centerStyle,
-				width: '24rem',
+				width: '21rem',
 				justifyContent: 'space-evenly',
 			}}>
 			{compoundSlots.map((slot, index) => (
