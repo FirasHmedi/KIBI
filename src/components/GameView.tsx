@@ -709,7 +709,7 @@ export function GameView({
 	};
 
 	const openJokerPopup = () => {
-		if (isEmpty(animalGY) || isEmpty(powerGY)) {
+		if (isEmpty(animalGY) && isEmpty(powerGY)) {
 			return;
 		}
 		const graveyardCards = [...animalGY, ...powerGY];
