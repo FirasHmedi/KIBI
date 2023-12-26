@@ -116,6 +116,15 @@ function Home() {
 
 		await submitRandomSelectionforBot(gameId, initialPowers);
 		setDisabledButton(true);
+
+		await setItem(GAMES_PATH + gameId, {
+			status: RUNNING,
+			round: {
+				player: PlayerType.ONE,
+				nb: 1,
+			},
+		});
+
 		navigate('/game/' + gameId, {
 			state: {
 				gameId: gameId,
