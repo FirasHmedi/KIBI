@@ -17,11 +17,12 @@ import {
 	homeButtonsStyle,
 	violet,
 } from '../../styles/Style';
-import { BOT, EMPTY_SLOT, GAMES_PATH, INITIAL_HP, PREPARE } from '../../utils/data';
+import { BOT, EMPTY_SLOT, GAMES_PATH, INITIAL_HP, PREPARE, RUNNING } from '../../utils/data';
 import {
 	distributeCards,
 	getMainDeckFirstHalf,
 	getMainDeckSecondHalf,
+	submitRandomSelection,
 	submitRandomSelectionforBot,
 } from '../../utils/helpers';
 import { PlayerType } from '../../utils/interface';
@@ -60,6 +61,17 @@ function Home() {
 		});
 
 		setDisabledButton(true);
+
+		await submitRandomSelection(gameId, initialPowers);
+
+		await setItem(GAMES_PATH + gameId, {
+			status: RUNNING,
+			round: {
+				player: PlayerType.ONE,
+				nb: 1,
+			},
+		});
+
 		navigate('/game/' + gameId, {
 			state: {
 				gameId: gameId,
