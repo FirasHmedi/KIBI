@@ -4,10 +4,10 @@ import { MdComputer, MdPerson, MdVisibility } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { v4 as uuidv4 } from 'uuid';
 import { getItemsOnce, setItem } from '../../backend/db';
 
 import { VscDebugContinue } from 'react-icons/vsc';
+import short from 'short-uuid';
 import { Seperator } from '../../components/Elements';
 import {
 	buttonStyle,
@@ -34,8 +34,8 @@ function Home() {
 	const [alertMessage, setAlertMessage] = useState('');
 
 	const createGame = async () => {
-		const gameId = uuidv4();
-		const player1Id = uuidv4();
+		const gameId = short.generate();
+		const player1Id = short.generate();
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
 		localStorage.setItem('playerId', player1Id);
@@ -82,7 +82,7 @@ function Home() {
 	};
 
 	const playWithGameBot = async () => {
-		const gameId = uuidv4();
+		const gameId = short.generate();
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
 
@@ -136,7 +136,7 @@ function Home() {
 			});
 			return;
 		}
-		const player2Id = uuidv4();
+		const player2Id = short.generate();
 
 		localStorage.setItem('playerId', player2Id);
 
