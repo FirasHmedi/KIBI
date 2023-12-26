@@ -204,7 +204,7 @@ const botAttack = async (gameId: string) => {
 		currentElement = animal.clan;
 		await minus1Hp(gameId, PlayerType.TWO);
 		await addInfoToLog(gameId, PlayerType.TWO + ' changed element to ' + currentElement);
-		await activateMonkeyAbility(gameId, BotSlots, false, currentElement);
+		// await activateMonkeyAbility(gameId, BotSlots, false, currentElement);
 		await activateTankAbility(gameId, PlayerType.TWO, BotSlots, currentElement);
 	}
 
@@ -279,7 +279,7 @@ export const executeBotTurn = async (gameId: string): Promise<void> => {
 
 	const botSlots = (await getBotSlots(gameId)) ?? [];
 	const elementType = await getElementFromDb(gameId);
-	await activateMonkeyAbility(gameId, botSlots, false, elementType);
+	// await activateMonkeyAbility(gameId, botSlots, false, elementType);
 	await activateTankAbility(gameId, PlayerType.TWO, botSlots, elementType);
 
 	const kingPlayed = await playKingForBot(gameId);

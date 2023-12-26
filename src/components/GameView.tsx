@@ -24,10 +24,11 @@ import {
 	draw2Cards,
 	resetBoard,
 	return2animalsFromGYToDeck,
+	returnOneAnimalFromGYToDeck,
+	returnOnePowerFromGYToDeck,
 	sacrifice1HpToReviveAnyAnimal,
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
-	stealCardFromOpponent,
 	switch2Cards,
 	switchDeck,
 } from '../backend/powers';
@@ -39,15 +40,7 @@ import {
 	removeHpFromPlayer,
 } from '../backend/unitActions';
 import { centerStyle, flexColumnStyle, violet } from '../styles/Style';
-import {
-	BOT,
-	ClanName,
-	EMPTY,
-	GAMES_PATH,
-	JOKER,
-	KING,
-	POWER_CARDS_WITH_2_SELECTS,
-} from '../utils/data';
+import { BOT, ClanName, EMPTY, GAMES_PATH, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
 import {
 	canAnimalAKillAnimalD,
 	getAnimalCard,
@@ -114,7 +107,7 @@ export function GameView({
 
 	useEffect(() => {
 		if (isMyRound) {
-			activateMonkeyAbility(currPSlots, false, elementType);
+			activateMonkeyAbility(currPSlots, elementType);
 			activateTankAbility(gameId, playerType, currPSlots, elementType);
 		}
 
@@ -154,8 +147,7 @@ export function GameView({
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 
 		if (isJokerInElement(cardId, elementType)) {
-			setCardsIdsForPopup(oppPlayer.cardsIds);
-			setIsJokerActive(true);
+			openJokerPopup();
 		}
 
 		if (isTankInElement(cardId, elementType)) {
@@ -254,6 +246,11 @@ export function GameView({
 	};
 
 	const closePopupAndProcessPowerCard = async () => {
+		if (isJokerActive) {
+			setCardsIdsForPopup([]);
+			setIsJokerActive(false);
+			return;
+		}
 		await processPostPowerCardPlay();
 	};
 
@@ -281,11 +278,16 @@ export function GameView({
 		setCardsIdsForPopup([]);
 
 		if (isJokerActive) {
-			await stealCardFromOpponent(gameId, playerType, cardId);
-			const cardName = isAnimalCard(cardId)
-				? getAnimalCard(cardId)?.name
-				: getPowerCard(cardId)?.name;
-			await addInfoToLog(gameId, 'Joker stealed a card ' + cardName);
+			let cardName = 'empty';
+			if (isAnimalCard(cardId)) {
+				cardName = getAnimalCard(cardId)?.name!;
+				await returnOneAnimalFromGYToDeck(gameId, playerType, cardId);
+			}
+			if (isPowerCard(cardId)) {
+				cardName = getPowerCard(cardId)?.name!;
+				await returnOnePowerFromGYToDeck(gameId, playerType, cardId);
+			}
+			await addInfoToLog(gameId, 'Joker returned ' + cardName);
 			setIsJokerActive(false);
 			return;
 		}
@@ -300,8 +302,7 @@ export function GameView({
 		await processPostPowerCardPlay();
 
 		if (activateJokerAbilityNow) {
-			setCardsIdsForPopup(oppPlayer.cardsIds);
-			setIsJokerActive(true);
+			openJokerPopup();
 		}
 		if (activateTankAbilityNow) {
 			await add1Hp(gameId, playerType);
@@ -544,17 +545,17 @@ export function GameView({
 		}
 	};
 
-	const changeEnvWithPopup = async (elementType?: ClanName) => {
-		if (!elementType) {
+	const changeEnvWithPopup = async (newElementType?: ClanName) => {
+		if (!newElementType || spectator || newElementType === elementType) {
 			setShowEnvPopup(false);
 			return;
 		}
-		await changeElement(gameId, elementType, playerType);
+		await changeElement(gameId, newElementType, playerType);
 		await minus1Hp(gameId, playerType);
-		await addInfoToLog(gameId, playerType + ' changed element to ' + elementType);
+		await addInfoToLog(gameId, playerType + ' changed element to ' + newElementType);
 		setShowEnvPopup(false);
-		activateMonkeyAbility(currPSlots, false, elementType);
-		await activateTankAbility(gameId, playerType, currPSlots, elementType);
+		activateMonkeyAbility(currPSlots, newElementType);
+		await activateTankAbility(gameId, playerType, currPSlots, newElementType);
 	};
 
 	const finishRoundBot = async () => {
@@ -565,6 +566,9 @@ export function GameView({
 	};
 
 	const finishRound = async () => {
+		if (spectator) {
+			return;
+		}
 		try {
 			showCountDown.current = false;
 			await enableAttackingAndPlayingPowerCards(gameId, playerType);
@@ -634,7 +638,7 @@ export function GameView({
 		);
 
 		if (isAttackOwnerEnabled) {
-			await attackOppHp(currslotnb!, currAnimalId!);
+			await attackOppHp(currAnimalId!);
 			return;
 		}
 
@@ -689,28 +693,27 @@ export function GameView({
 		canKingAttackAgain.current = false;
 	};
 
-	const attackOppHp = async (currSlotNb: number, animalId: string) => {
+	const attackOppHp = async (animalId: string) => {
 		hasAttacked.current = true;
 		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalId, isCurrDoubleAP);
 	};
 
-	const activateMonkeyAbility = (
-		slots: any[] = [],
-		isJokerGood?: boolean,
-		elementType?: ClanName,
-	) => {
-		console.log('Try activate monkey ability ', { slots }, { isJokerGood }, { elementType });
-		if (!isJokerGood) {
-			var hasJokerInElement = false;
-			for (let i = 0; i < slots.length; i++) {
-				const animal = getAnimalCard(slots[i]?.cardId);
-				if (!!animal && animal.role === JOKER && animal.clan === elementType) {
-					hasJokerInElement = true;
-				}
+	const activateMonkeyAbility = (slots: any[] = [], elementType?: ClanName) => {
+		console.log('Try activate monkey ability ', { slots }, { elementType });
+		for (let i = 0; i < slots.length; i++) {
+			if (isJokerInElement(slots[i]?.cardId, elementType)) {
+				openJokerPopup();
+				return;
 			}
-			if (!hasJokerInElement) return;
 		}
-		setCardsIdsForPopup(oppPlayer.cardsIds);
+	};
+
+	const openJokerPopup = () => {
+		if (isEmpty(animalGY) || isEmpty(powerGY)) {
+			return;
+		}
+		const graveyardCards = [...animalGY, ...powerGY];
+		setCardsIdsForPopup(graveyardCards);
 		setIsJokerActive(true);
 	};
 

@@ -106,7 +106,7 @@ export const CardsPopup = ({
 				{isJokerActive ? (
 					<>
 						<img src={monkey} style={{ height: '3rem', width: '3rem' }}></img>
-						<h2>Pick a card to steal</h2>
+						<h2>Pick a card to return to deck</h2>
 					</>
 				) : (
 					<h2>{title.current}</h2>
@@ -123,12 +123,7 @@ export const CardsPopup = ({
 								selectCardsPolished(cardId);
 							}
 						}}>
-						<DeckSlot
-							cardId={cardId}
-							selected={selectedIds?.includes(cardId)}
-							isJokerActive={isJokerActive}
-							graveyard={true}
-						/>
+						<DeckSlot cardId={cardId} selected={selectedIds?.includes(cardId)} graveyard={true} />
 					</div>
 				))}
 			</div>

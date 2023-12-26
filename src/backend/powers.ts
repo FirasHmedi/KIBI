@@ -60,7 +60,7 @@ export const cancelAttacks = async (gameId: string, playerType: PlayerType) => {
 	await changeCanAttackVar(gameId, playerType, false);
 };
 
-export const reviveLastPower = async (gameId: string, playerType: PlayerType) => {
+export const returnLastPower = async (gameId: string, playerType: PlayerType) => {
 	const powerGY: string[] = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
 	if (!isEmpty(powerGY)) {
 		const lastPowerCardId = powerGY[powerGY.length - 1];
@@ -243,6 +243,16 @@ export const returnOneAnimalFromGYToDeck = async (
 	if (!animalId) return;
 	await deleteAnimalCardFromGraveYardById(gameId, animalId);
 	await addCardsToPlayerDeck(gameId, playerType, [animalId]);
+};
+
+export const returnOnePowerFromGYToDeck = async (
+	gameId: string,
+	playerType: PlayerType,
+	powerId?: string,
+) => {
+	if (!powerId) return;
+	await deletePowerCardFromGraveYardById(gameId, powerId);
+	await addCardsToPlayerDeck(gameId, playerType, [powerId]);
 };
 
 export const resetBoard = async (

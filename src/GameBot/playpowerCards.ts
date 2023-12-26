@@ -8,8 +8,8 @@ import {
 	draw2Cards,
 	resetBoard,
 	return2animalsFromGYToDeck,
+	returnLastPower,
 	reviveAnyPowerFor1hp,
-	reviveLastPower,
 	sacrifice1HpToReviveAnyAnimal,
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
@@ -126,7 +126,7 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 			await cancelAttacks(gameId, PlayerType.ONE);
 			break;
 		case 'rev-last-pow':
-			await reviveLastPower(gameId, PlayerType.TWO);
+			await returnLastPower(gameId, PlayerType.TWO);
 			break;
 		case 'rev-any-pow-1hp':
 			await reviveAnyPowerFor1hp(gameId, PlayerType.TWO, powerGY[0]);
