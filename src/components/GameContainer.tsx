@@ -5,6 +5,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
+import { violet } from '../styles/Style';
 import { isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
@@ -69,10 +70,10 @@ export function GameContainer({
 
 	//add card to next player and set countdown
 	useEffect(() => {
-		if (!isGameRunning(game.status)) {
+		if (!isGameRunning(game?.status)) {
 			return;
 		}
-		const newRound = game.round;
+		const newRound = game?.round;
 		if (round && !spectator) {
 			checkAndDrawCardFromMainDeck(newRound);
 		}
@@ -91,7 +92,7 @@ export function GameContainer({
 
 	//add log
 	useEffect(() => {
-		if (!isGameRunning(game.status)) {
+		if (!isGameRunning(game?.status)) {
 			return;
 		}
 	}, [game]);
@@ -114,11 +115,16 @@ export function GameContainer({
 		}
 	};
 
-	if (!isGameRunning(game.status) || !board || !opponentPlayer || !currentPlayer || !round)
+	if (!isGameRunning(game?.status) || !board || !opponentPlayer || !currentPlayer || !round)
 		return <></>;
 
 	return (
 		<DndProvider backend={HTML5Backend}>
+			{!game?.two?.hp && (
+				<h4 style={{ color: violet }}>
+					Game ID: <span style={{ fontSize: '1.2em', userSelect: 'all' }}>{gameId}</span>
+				</h4>
+			)}
 			<GameView
 				round={game.round}
 				gameId={gameId}

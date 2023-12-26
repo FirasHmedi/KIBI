@@ -1,17 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { setItem, subscribeToItems } from '../../backend/db';
+import { subscribeToItems } from '../../backend/db';
 import { GameContainer } from '../../components/GameContainer';
-import {
-	buttonStyle,
-	centerStyle,
-	flexColumnStyle,
-	neutralColor,
-	violet,
-} from '../../styles/Style';
-import { BOT, GAMES_PATH, INITIAL_DECK_COUNT, RUNNING } from '../../utils/data';
-import { isGameInPreparation, isGameRunning, submitRandomSelection } from '../../utils/helpers';
-import { Game, PlayerType } from '../../utils/interface';
+import { centerStyle, flexColumnStyle } from '../../styles/Style';
+import { GAMES_PATH } from '../../utils/data';
+import { isGameRunning } from '../../utils/helpers';
+import { Game } from '../../utils/interface';
 
 function GamePage() {
 	const location = useLocation();
@@ -26,37 +20,6 @@ function GamePage() {
 		subscribeToGame();
 	}, []);
 
-	useEffect(() => {
-		if (spectator || isGameRunning(game?.status)) return;
-
-		if (
-			game?.one?.cardsIds?.length === INITIAL_DECK_COUNT &&
-			game?.two?.cardsIds?.length === INITIAL_DECK_COUNT &&
-			game?.two.playerName === BOT
-		) {
-			setItem(GAMES_PATH + gameId, {
-				status: RUNNING,
-				round: {
-					player: PlayerType.ONE,
-					nb: 1,
-				},
-			});
-		}
-
-		if (
-			game?.tmp?.oneCardsIds?.length === INITIAL_DECK_COUNT &&
-			game?.tmp?.twoCardsIds?.length === INITIAL_DECK_COUNT
-		) {
-			setItem(GAMES_PATH + gameId, {
-				status: RUNNING,
-				round: {
-					player: PlayerType.ONE,
-					nb: 1,
-				},
-			});
-		}
-	}, [game]);
-
 	return (
 		<div
 			style={{
@@ -69,7 +32,7 @@ function GamePage() {
 				<GameContainer game={game!} gameId={gameId} playerType={playerType} spectator={spectator} />
 			)}
 
-			{!spectator && isGameInPreparation(game?.status) && (
+			{/*!spectator && isGameInPreparation(game?.status) && false && (
 				<div
 					style={{
 						color: violet,
@@ -94,7 +57,7 @@ function GamePage() {
 						LAUNCH
 					</button>
 				</div>
-			)}
+					)*/}
 		</div>
 	);
 }

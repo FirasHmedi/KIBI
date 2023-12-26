@@ -385,11 +385,11 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 				)}
 			</div>
 			<img
-				id={roleTooltipId}
 				src={animalsPics[name!.toLowerCase() as keyof typeof animalsPics]}
 				style={{ width: '2.2rem', height: '2.2rem', flex: 1 }}
 			/>
 			<div
+				id={roleTooltipId}
 				style={{
 					...flexRowStyle,
 					width: '100%',
