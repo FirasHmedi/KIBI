@@ -637,7 +637,7 @@ export function GameView({
 			{ isAttackOwnerEnabled },
 		);
 
-		if (isAttackOwnerEnabled) {
+		if (isAttackOwnerEnabled && !canKingAttackAgain.current) {
 			await attackOppHp(currAnimalId!);
 			return;
 		}
