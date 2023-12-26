@@ -1,3 +1,4 @@
+import { FaHeart } from 'react-icons/fa6';
 import { MdCancel } from 'react-icons/md';
 import { airColor, centerStyle, earthColor, fireColor, violet, waterColor } from '../styles/Style';
 import { AIR, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
@@ -28,6 +29,18 @@ export const ElementPopup = ({
 			onClick={() => changeElement()}>
 			<MdCancel style={{ color: 'white', width: '3vw', height: 'auto' }} />
 		</button>
+		<h2
+			style={{
+				position: 'absolute',
+				top: '15vh',
+				left: '40vw',
+				width: '20vw',
+				color: 'white',
+				...centerStyle,
+			}}>
+			Set Element for 1 {'  '}
+			<FaHeart style={{ color: 'white', fontSize: '1.3rem' }} />
+		</h2>
 		<div
 			style={{
 				position: 'absolute',

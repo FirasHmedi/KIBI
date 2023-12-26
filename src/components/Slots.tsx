@@ -7,14 +7,18 @@ import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { Tooltip } from 'react-tooltip';
 import {
+	airColor,
 	boardSlotStyle,
 	centerStyle,
 	deckSlotStyle,
+	earthColor,
+	fireColor,
 	flexColumnStyle,
 	flexRowStyle,
 	lightViolet,
 	selectedColor,
 	violet,
+	waterColor,
 } from '../styles/Style';
 import {
 	ANIMALS_POINTS,
@@ -605,13 +609,13 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 				border: elementType === 'neutral' ? `solid 1px ${lightViolet}` : undefined,
 				color: 'white',
 				flexDirection: 'column',
-				height: '4.5vw',
-				width: '4.5vw',
+				height: '4.6vw',
+				width: '4.6vw',
 				justifyContent: 'center',
 				flexShrink: 0,
 				fontSize: '1em',
 			}}>
-			{elementType !== 'neutral' && (
+			{elementType !== 'neutral' ? (
 				<img
 					src={elementsIcons[elementType!]}
 					style={{
@@ -619,6 +623,41 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 						backgroundSize: 'cover',
 						backgroundPosition: 'center',
 					}}></img>
+			) : (
+				<div style={{}}>
+					<div style={{ display: 'flex', flexDirection: 'row' }}>
+						<div
+							style={{
+								width: '2.3vw',
+								height: '2.3vw',
+								backgroundColor: fireColor,
+								borderTopLeftRadius: 5,
+							}}></div>
+						<div
+							style={{
+								width: '2.3vw',
+								height: '2.3vw',
+								backgroundColor: airColor,
+								borderTopRightRadius: 5,
+							}}></div>
+					</div>
+					<div style={{ display: 'flex', flexDirection: 'row' }}>
+						<div
+							style={{
+								width: '2.3vw',
+								height: '2.3vw',
+								backgroundColor: waterColor,
+								borderBottomLeftRadius: 5,
+							}}></div>
+						<div
+							style={{
+								width: '2.3vw',
+								height: '2.3vw',
+								backgroundColor: earthColor,
+								borderBottomRightRadius: 5,
+							}}></div>
+					</div>
+				</div>
 			)}
 		</div>
 	);

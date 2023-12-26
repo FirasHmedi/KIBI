@@ -18,14 +18,15 @@ import { ROUND_DURATION } from '../utils/data';
 import { showToast } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
+import { Seperator } from './Elements';
 import './styles.css';
 import BlockAttacksIcon from '/src/assets/icons/block-attacks-violet.svg';
 import BlockPowersIcon from '/src/assets/icons/block-pow-violet.svg';
 
 export const BlockElement = ({ type }: any) => {
 	if (type === 'pow')
-		return <img src={BlockPowersIcon} style={{ height: '3rem', width: '3rem' }} />;
-	else return <img src={BlockAttacksIcon} style={{ height: '3rem', width: '3rem' }} />;
+		return <img src={BlockPowersIcon} style={{ height: '3.5rem', width: '3.5rem' }} />;
+	else return <img src={BlockAttacksIcon} style={{ height: '3.5rem', width: '3.5rem' }} />;
 };
 
 export const CountDown = ({ finishRound }: any) => (
@@ -69,11 +70,11 @@ export const CurrentPView = ({
 	setIsConfirmActive: any;
 	isAttackDisabled: boolean;
 }) => {
-	const { playerType } = player;
+	const { playerType, hp } = player;
 	const cardsIds = player.cardsIds ?? [];
 	const isMyRound = round?.player === playerType;
 
-	const Buttons = () => {
+	const Buttons = ({ setElement }: any) => {
 		if (spectator) {
 			return null;
 		}
@@ -110,58 +111,97 @@ export const CurrentPView = ({
 			<div
 				style={{
 					position: 'absolute',
-					right: '14vw',
-					bottom: '12vh',
-					...flexColumnStyle,
-					alignItems: 'center',
-					justifyContent: 'center',
-					width: '14vw',
+					right: '18vw',
+					bottom: '14vh',
+					...flexRowStyle,
+					justifyContent: 'flex-end',
+					alignItems: 'flex-end',
 				}}>
-				{!!nbCardsToPlay && isMyRound && (
-					<h5 style={{ color: violet, padding: 10 }}>{cardsToPlay} left</h5>
-				)}
-				<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-					{!isConfirmActive ? (
-						<button style={buttonsStyle} disabled={!isMyRound} onClick={handleFinishClick}>
-							FINISH
-						</button>
-					) : (
-						<>
-							<button
-								style={buttonsStyle}
-								disabled={!isMyRound}
-								onClick={handleConfirmClick}
-								data-tooltip-id='confirm-tooltip'
-								data-tooltip-content="Don't forget to attack">
-								CONFIRM
+				<Seperator w='1vw' />
+				<div
+					style={{
+						...flexColumnStyle,
+						width: '8vw',
+					}}>
+					{!!nbCardsToPlay && isMyRound && <h5 style={{ color: violet }}>{cardsToPlay} left</h5>}
+					<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+						{!isConfirmActive ? (
+							<button style={buttonsStyle} disabled={!isMyRound} onClick={handleFinishClick}>
+								FINISH
 							</button>
-							<Tooltip id='confirm-tooltip' />
-						</>
-					)}
+						) : (
+							<>
+								<button
+									style={buttonsStyle}
+									disabled={!isMyRound}
+									onClick={handleConfirmClick}
+									data-tooltip-id='confirm-tooltip'
+									data-tooltip-content="Don't forget to attack">
+									CONFIRM
+								</button>
+								<Tooltip id='confirm-tooltip' />
+							</>
+						)}
+					</div>
 				</div>
 			</div>
 		);
 	};
 
+	const hpRef = useRef<number>(0);
+	const [hpChange, setHpChange] = useState<string>();
+
+	useEffect(() => {
+		if (hp > hpRef.current) {
+			setHpChange('+' + (hp - hpRef.current));
+			setTimeout(() => {
+				setHpChange(undefined);
+			}, 1000);
+		} else if (hp < hpRef.current) {
+			setHpChange('-' + (hpRef.current - hp));
+			setTimeout(() => {
+				setHpChange(undefined);
+			}, 1000);
+		}
+		hpRef.current = hp;
+	}, [hp]);
+
 	return (
 		<div
 			style={{
 				...flexRowStyle,
-				alignItems: 'flex-end',
-				width: '100%',
+				alignItems: 'center',
 				justifyContent: 'center',
 				gap: 8,
 			}}>
-			<Buttons />
-			<PlayerDataView
-				player={player}
-				setElement={setElement}
-				isMyRound={isMyRound}
-				isMe={true}
-				finishRound={finishRound}
-			/>
-			<CurrentPDeck cardsIds={cardsIds} updateCardsOrder={updateCardsOrder} />
-			<EmptyElement />
+			<Buttons setElement={setElement} />
+
+			<CurrPlayerDataView player={player} isMyRound={isMyRound} isMe={true} />
+
+			<div
+				style={{
+					...flexColumnStyle,
+					color: violet,
+					justifyContent: 'center',
+					alignItems: 'center',
+					gap: 16,
+				}}>
+				<CurrentPDeck cardsIds={cardsIds} updateCardsOrder={updateCardsOrder} />
+				<div
+					style={{
+						...flexRowStyle,
+						alignItems: 'center',
+					}}>
+					<div style={{ width: '3rem' }}>
+						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
+					</div>
+					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
+						<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
+						<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
+					</div>
+				</div>
+			</div>
+			<EmptyElement width='5vw' />
 		</div>
 	);
 };
@@ -187,110 +227,82 @@ export const EmptyElement = ({ width = '11vw' }: any) => {
 	return <div style={{ width }}></div>;
 };
 
-const PlayerDataView = ({
+export const ElementButton = ({ setElement }: any) => (
+	<button
+		style={{
+			borderRadius: 5,
+			backgroundColor: violet,
+			color: 'white',
+			height: '3.6vw',
+			width: '3.6vw',
+			fontSize: '1em',
+			...flexColumnStyle,
+			alignItems: 'center',
+			justifyContent: 'flex-end',
+		}}
+		onClick={() => setElement()}>
+		<div style={{ zIndex: 1, position: 'relative', top: '3vw' }}>
+			<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+		</div>
+		<div style={{}}>
+			<div style={{ display: 'flex', flexDirection: 'row' }}>
+				<div
+					style={{
+						width: '1.8vw',
+						height: '1.8vw',
+						backgroundColor: fireColor,
+						borderTopLeftRadius: 5,
+					}}></div>
+				<div
+					style={{
+						width: '1.8vw',
+						height: '1.8vw',
+						backgroundColor: airColor,
+						borderTopRightRadius: 5,
+					}}></div>
+			</div>
+			<div style={{ display: 'flex', flexDirection: 'row' }}>
+				<div
+					style={{
+						width: '1.8vw',
+						height: '1.8vw',
+						backgroundColor: waterColor,
+						borderBottomLeftRadius: 5,
+					}}></div>
+				<div
+					style={{
+						width: '1.8vw',
+						height: '1.8vw',
+						backgroundColor: earthColor,
+						borderBottomRightRadius: 5,
+					}}></div>
+			</div>
+		</div>
+	</button>
+);
+
+const CurrPlayerDataView = ({
 	player,
-	setElement,
 	isMe,
 }: {
 	player: Player;
 	setElement?: any;
 	isMyRound?: boolean;
 	isMe?: boolean;
-	finishRound?: any;
 }) => {
-	const { hp, playerType, canPlayPowers, isDoubleAP, canAttack, envLoadNb } = player;
-	const hpRef = useRef<number>(0);
-	const [hpChange, setHpChange] = useState<string>();
-
-	useEffect(() => {
-		if (hp > hpRef.current) {
-			setHpChange('+' + (hp - hpRef.current));
-			setTimeout(() => {
-				setHpChange(undefined);
-			}, 1000);
-		} else if (hp < hpRef.current) {
-			setHpChange('-' + (hpRef.current - hp));
-			setTimeout(() => {
-				setHpChange(undefined);
-			}, 1000);
-		}
-		hpRef.current = hp;
-	}, [hp]);
-
-	const ElementButton = () => (
-		<button
-			style={{
-				...centerStyle,
-				borderRadius: 5,
-				backgroundColor: violet,
-				color: 'white',
-				height: '3.6vw',
-				width: '3.6vw',
-				fontSize: '1em',
-				...flexColumnStyle,
-				alignItems: 'center',
-			}}
-			onClick={() => setElement()}>
-			<div style={{ ...centerStyle, zIndex: 1, position: 'relative', top: '2vw' }}>
-				<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
-			</div>
-			<div style={{ position: 'relative', top: '-0.65rem' }}>
-				<div style={{ display: 'flex', flexDirection: 'row' }}>
-					<div
-						style={{
-							width: '1.8vw',
-							height: '1.8vw',
-							backgroundColor: fireColor,
-							borderTopLeftRadius: 5,
-						}}></div>
-					<div
-						style={{
-							width: '1.8vw',
-							height: '1.8vw',
-							backgroundColor: airColor,
-							borderTopRightRadius: 5,
-						}}></div>
-				</div>
-				<div style={{ display: 'flex', flexDirection: 'row' }}>
-					<div
-						style={{
-							width: '1.8vw',
-							height: '1.8vw',
-							backgroundColor: waterColor,
-							borderBottomLeftRadius: 5,
-						}}></div>
-					<div
-						style={{
-							width: '1.8vw',
-							height: '1.8vw',
-							backgroundColor: earthColor,
-							borderBottomRightRadius: 5,
-						}}></div>
-				</div>
-			</div>
-		</button>
-	);
+	const { playerType, canPlayPowers, isDoubleAP, canAttack } = player;
 
 	return (
-		<div
-			style={{
-				color: violet,
-				fontSize: '0.9em',
-				display: 'flex',
-				flexDirection: 'column',
-				alignItems: 'center',
-				justifyContent: 'flex-end',
-				gap: 12,
-				width: '10vw',
-			}}>
+		<>
 			{isMe && (
 				<div
 					style={{
 						position: 'absolute',
-						right: '2vh',
+						left: '2vh',
 						bottom: '2vh',
 						height: '4vh',
 						...centerStyle,
+						color: violet,
 					}}>
 					<h4>{playerType?.toUpperCase()}</h4>
 				</div>
@@ -298,42 +310,18 @@ const PlayerDataView = ({
 
 			<div
 				style={{
-					...flexRowStyle,
-					alignItems: 'center',
-					gap: 2,
-				}}>
-				<div
-					style={{
-						...flexRowStyle,
-						alignItems: 'center',
-					}}>
-					<div style={{ width: '3rem' }}>
-						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
-					</div>
-					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
-						<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
-						<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
-					</div>
-				</div>
-
-				<div style={{ width: '3rem' }}></div>
-			</div>
-
-			{isMe && <ElementButton />}
-
-			<div
-				style={{
 					...flexColumnStyle,
 					position: 'absolute',
-					left: '5vw',
+					left: '8vw',
 					bottom: isMe ? '10vh' : undefined,
-					top: isMe ? undefined : '15vh',
+					top: isMe ? undefined : '6vh',
 					width: '12vw',
 					gap: 12,
 					fontSize: '1.1em',
+					color: violet,
 				}}>
 				{canAttack === false && canPlayPowers === false ? (
-					<div style={{ ...flexRowStyle, gap: 8 }}>
+					<div style={{ ...flexColumnStyle, gap: 8 }}>
 						<BlockElement type='att' />
 						<BlockElement type='pow' />
 					</div>
@@ -344,7 +332,7 @@ const PlayerDataView = ({
 				) : null}
 				{isDoubleAP && <h4>Animals AP X 2</h4>}
 			</div>
-		</div>
+		</>
 	);
 };
 

@@ -745,9 +745,9 @@ export function GameView({
 				style={{
 					...flexColumnStyle,
 					width: '100%',
-					height: '90vh',
+					height: '94vh',
 					justifyContent: 'space-between',
-					paddingBottom: '10vh',
+					paddingBottom: '6vh',
 				}}>
 				<OpponentPView player={oppPlayer} spectator={spectator} />
 
@@ -795,6 +795,7 @@ export function GameView({
 					attackState={attackState}
 					isOppDoubleAP={isOppDoubleAP}
 					isCurrDoubleAP={isCurrDoubleAP}
+					setElement={setElement}
 				/>
 
 				<CurrentPView
@@ -826,8 +827,8 @@ export function GameView({
 					<div
 						style={{
 							position: 'absolute',
-							right: '6vw',
-							bottom: '4vh',
+							left: '6vw',
+							bottom: '2.5vh',
 							height: '4vh',
 							...centerStyle,
 						}}>

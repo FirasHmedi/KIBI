@@ -16,6 +16,7 @@ interface Props {
 	attackState?: any;
 	isOppDoubleAP?: boolean;
 	isCurrDoubleAP?: boolean;
+	setElement: () => void;
 }
 
 export const BoardView = ({
@@ -26,6 +27,7 @@ export const BoardView = ({
 	attackState,
 	isOppDoubleAP,
 	isCurrDoubleAP,
+	setElement,
 }: Props) => {
 	const { mainDeck, currPSlots, oppPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 
@@ -64,7 +66,10 @@ export const BoardView = ({
 				/>
 			</div>
 			<Seperator w='2vw' />
-			<ElementSlot elementType={elementType} />
+
+			<button onClick={() => setElement()}>
+				<ElementSlot elementType={elementType} />
+			</button>
 
 			<div style={{ position: 'absolute', right: '0vw', top: '10vh' }}>
 				<MainDeck nbCards={mainDeck.length} />
