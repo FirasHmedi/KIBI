@@ -52,7 +52,7 @@ export const placeAnimalOnBoard = async (
 	animalId: string,
 ) => {
 	const animal = getAnimalCard(animalId);
-	await addInfoToLog(gameId, playerType + ' placed a ' + animal?.name + ' in slot ' + slotNb);
+	await addInfoToLog(gameId, playerType + ' placed' + animal?.name + ' in ' + slotNb);
 	await removeCardFromPlayerDeck(gameId, playerType, animalId);
 	await addAnimalToBoard(gameId, playerType, slotNb, animalId, false);
 };
@@ -161,7 +161,7 @@ export const setPowerCardAsActive = async (
 	name?: string,
 ) => {
 	if (name) {
-		await addInfoToLog(gameId, playerType + ' placed a ' + name);
+		await addInfoToLog(gameId, playerType + ' placed ' + name);
 	}
 	await removeCardFromPlayerDeck(gameId, playerType, cardId);
 	await setActivePowerCard(gameId, cardId);
