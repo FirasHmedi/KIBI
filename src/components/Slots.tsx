@@ -628,15 +628,15 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 					<div style={{ display: 'flex', flexDirection: 'row' }}>
 						<div
 							style={{
-								width: '2.3vw',
-								height: '2.3vw',
+								width: '1.2vw',
+								height: '1.2vw',
 								backgroundColor: fireColor,
 								borderTopLeftRadius: 5,
 							}}></div>
 						<div
 							style={{
-								width: '2.3vw',
-								height: '2.3vw',
+								width: '1.2vw',
+								height: '1.2vw',
 								backgroundColor: airColor,
 								borderTopRightRadius: 5,
 							}}></div>
@@ -644,15 +644,15 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 					<div style={{ display: 'flex', flexDirection: 'row' }}>
 						<div
 							style={{
-								width: '2.3vw',
-								height: '2.3vw',
+								width: '1.2vw',
+								height: '1.2vw',
 								backgroundColor: waterColor,
 								borderBottomLeftRadius: 5,
 							}}></div>
 						<div
 							style={{
-								width: '2.3vw',
-								height: '2.3vw',
+								width: '1.2vw',
+								height: '1.2vw',
 								backgroundColor: earthColor,
 								borderBottomRightRadius: 5,
 							}}></div>

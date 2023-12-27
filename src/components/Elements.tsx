@@ -32,14 +32,14 @@ export const ElementPopup = ({
 		<h2
 			style={{
 				position: 'absolute',
-				top: '15vh',
+				top: '30vh',
 				left: '40vw',
 				width: '20vw',
 				color: 'white',
 				...centerStyle,
 			}}>
-			Set Element for 1 {'  '}
-			<FaHeart style={{ color: 'white', fontSize: '1.3rem' }} />
+			Set Element for 1 {'    '}
+			<FaHeart style={{ color: 'white', fontSize: '1.3rem', marginLeft: 4 }} />
 		</h2>
 		<div
 			style={{
@@ -49,15 +49,16 @@ export const ElementPopup = ({
 				top: 0,
 				bottom: 0,
 				margin: 'auto',
-				height: '20vw',
-				width: '20vw',
+				height: '14vw',
+				width: '14vw',
 				zIndex: 10,
+				border: 5,
 			}}>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
 				<div
 					style={{
-						width: '10vw',
-						height: '10vw',
+						width: '7vw',
+						height: '7vw',
 						backgroundColor: fireColor,
 						...centerStyle,
 						zIndex: 11,
@@ -65,12 +66,12 @@ export const ElementPopup = ({
 					onClick={() => changeElement('fire')}>
 					<img
 						src={elementsIcons[FIRE]}
-						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+						style={{ width: '3vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 				</div>
 				<div
 					style={{
-						width: '10vw',
-						height: '10vw',
+						width: '7vw',
+						height: '7vw',
 						backgroundColor: airColor,
 						...centerStyle,
 						zIndex: 11,
@@ -78,14 +79,14 @@ export const ElementPopup = ({
 					onClick={() => changeElement('air')}>
 					<img
 						src={elementsIcons[AIR]}
-						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+						style={{ width: '3vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 				</div>
 			</div>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
 				<div
 					style={{
-						width: '10vw',
-						height: '10vw',
+						width: '7vw',
+						height: '7vw',
 						backgroundColor: waterColor,
 						...centerStyle,
 						zIndex: 11,
@@ -93,12 +94,12 @@ export const ElementPopup = ({
 					onClick={() => changeElement('water')}>
 					<img
 						src={elementsIcons[WATER]}
-						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+						style={{ width: '3vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 				</div>
 				<div
 					style={{
-						width: '10vw',
-						height: '10vw',
+						width: '7vw',
+						height: '7vw',
 						backgroundColor: earthColor,
 						...centerStyle,
 						zIndex: 11,
@@ -106,7 +107,7 @@ export const ElementPopup = ({
 					onClick={() => changeElement('earth')}>
 					<img
 						src={elementsIcons[EARTH]}
-						style={{ width: '6vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
+						style={{ width: '3vw', backgroundSize: 'cover', backgroundPosition: 'center' }}></img>
 				</div>
 			</div>
 		</div>
