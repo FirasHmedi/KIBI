@@ -382,7 +382,7 @@ const PlayerCanDoView = ({ player, isMe }: { player: Player; isMe?: boolean }) =
 			style={{
 				...flexColumnStyle,
 				position: 'absolute',
-				left: '12vw',
+				left: '11vw',
 				bottom: isMe ? '10vh' : undefined,
 				top: isMe ? undefined : '6vh',
 				width: '12vw',
@@ -400,7 +400,7 @@ const PlayerCanDoView = ({ player, isMe }: { player: Player; isMe?: boolean }) =
 			) : canPlayPowers === false ? (
 				<BlockElement type='pow' />
 			) : null}
-			{isDoubleAP && <h4>Animals AP X 2</h4>}
+			{isDoubleAP && <h4>Animals AP*2</h4>}
 		</div>
 	);
 };
