@@ -82,13 +82,9 @@ interface DeckSlotProps {
 
 export const PowerBoardSlot = ({
 	cardId,
-	select,
-	selected,
 	isBigStyle,
 }: {
 	cardId: string;
-	select: () => void;
-	selected?: boolean;
 	isBigStyle?: boolean;
 }) => {
 	const { name, description, gain, loss } = getPowerCard(cardId) ?? {};
@@ -110,15 +106,13 @@ export const PowerBoardSlot = ({
 			style={{
 				...boardSlotStyle,
 				backgroundColor: violet,
-				boxShadow: selected ? `0 0 1.5px 2.5px ${selectedColor}` : undefined,
 				...bigStyle,
 				...flexColumnStyle,
 				alignItems: 'center',
 				height: '100%',
 				justifyContent: 'space-between',
 				width: '5.4rem',
-			}}
-			onClick={() => select()}>
+			}}>
 			<div
 				style={{
 					width: '4.6rem',

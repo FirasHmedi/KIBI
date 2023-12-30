@@ -157,14 +157,7 @@ const PowerSelectionSlot = ({ id, idSelected, selectCard, myCards = [], oppCards
 			) : (
 				<h5></h5>
 			)}
-			<PowerBoardSlot
-				cardId={id}
-				selected={idSelected === id}
-				select={() => {
-					selectCard(id);
-				}}
-				isBigStyle={true}
-			/>
+			<PowerBoardSlot cardId={id} isBigStyle={true} />
 		</div>
 	);
 };
