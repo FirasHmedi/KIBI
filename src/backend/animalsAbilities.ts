@@ -15,7 +15,11 @@ import {
 	removeHpFromPlayer,
 } from './unitActions';
 
-export const returnAnimalToDeck = async (gameId: string, playerType: string, animalId: string) => {
+export const returnAnimalToDeck = async (
+	gameId: string,
+	playerType: PlayerType,
+	animalId: string,
+) => {
 	await addCardsToPlayerDeck(gameId, playerType, [animalId]);
 	await deleteAnimalCardFromGraveYardById(gameId, animalId);
 };
@@ -33,24 +37,24 @@ export const removeAnimalFromBoardAndAddToGraveYard = async (
 // ----------------------tank-----------------------
 export const returnTankToDeck = returnAnimalToDeck;
 // ----------------------Snake -----------------------
-export const add1Hp = async (gameId: string, playerType: string) => {
+export const add1Hp = async (gameId: string, playerType: PlayerType) => {
 	await addHpToPlayer(gameId, playerType, 1);
 };
 // ----------------------jellyfish-----------------------
-export const drawOneCard = async (gameId: string, playerType: string) => {
+export const drawOneCard = async (gameId: string, playerType: PlayerType) => {
 	await drawCardFromMainDeck(gameId, playerType);
 };
 
-export const minus1Hp = async (gameId: string, playerType: string) => {
+export const minus1Hp = async (gameId: string, playerType: PlayerType) => {
 	await removeHpFromPlayer(gameId, playerType, 1);
 };
 
 // tank
-export const add2Hp = async (gameId: string, playerType: string) => {
+export const add2Hp = async (gameId: string, playerType: PlayerType) => {
 	await addHpToPlayer(gameId, playerType, 2);
 };
 // attacker
-export const minus2Hp = async (gameId: string, playerType: string) => {
+export const minus2Hp = async (gameId: string, playerType: PlayerType) => {
 	await removeHpFromPlayer(gameId, playerType, 2);
 };
 
@@ -70,7 +74,7 @@ export const sendRandomOpponentCardToGY = async (gameId: string, playerType: Pla
 	}
 };
 // ----------------------Fox-----------------------
-export const returnRandomPowerCardToDeck = async (gameId: string, playerType: string) => {
+export const returnRandomPowerCardToDeck = async (gameId: string, playerType: PlayerType) => {
 	const powerGY = await getItemsOnce(getBoardPath(gameId) + 'powerGY');
 	if (!isEmpty(powerGY)) {
 		const cardId = powerGY[getRandomNumber(powerGY.length)];
@@ -79,7 +83,7 @@ export const returnRandomPowerCardToDeck = async (gameId: string, playerType: st
 	}
 };
 // ----------------------Crow-----------------------
-export const returnRandomAnimalCardToDeck = async (gameId: string, playerType: string) => {
+export const returnRandomAnimalCardToDeck = async (gameId: string, playerType: PlayerType) => {
 	const animalGY = await getItemsOnce(getBoardPath(gameId) + 'animalGY');
 	if (!isEmpty(animalGY)) {
 		const cardId = animalGY[getRandomNumber(animalGY.length)];

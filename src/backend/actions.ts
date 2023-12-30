@@ -31,11 +31,14 @@ export const revertMainDeck = async (gameId: string) => {
 	await setItem('games/' + gameId + '/board/', { powerGY: [] });
 };
 
-export const enableAttackingAndPlayingPowerCards = async (gameId: string, playerType: string) => {
+export const enableAttackingAndPlayingPowerCards = async (
+	gameId: string,
+	playerType: PlayerType,
+) => {
 	await setItem('games/' + gameId + '/' + playerType, { canAttack: true, canPlayPowers: true });
 };
 
-export const drawCardFromMainDeck = async (gameId: string, playerType: string) => {
+export const drawCardFromMainDeck = async (gameId: string, playerType: PlayerType) => {
 	const powerCardId = await getCardFromMainDeck(gameId);
 	if (isEmpty(powerCardId)) {
 		return;

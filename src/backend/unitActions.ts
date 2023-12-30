@@ -17,7 +17,7 @@ export const setActivePowerCard = async (gameId: string, cardId?: string) => {
 
 export const checkIfAnimalExistAddItToGraveYard = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	slotNb: number,
 ) => {
 	const slot = await getItemsOnce(getBoardPath(gameId) + playerType + '/' + slotNb);
@@ -74,7 +74,7 @@ export const are3AnimalsWithSameElement = async (
 
 export const addCardsToPlayerDeck = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	cardsIds: string[] = [],
 ) => {
 	const existantCardsIds = await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
@@ -85,7 +85,7 @@ export const addCardsToPlayerDeck = async (
 
 export const removeCardFromPlayerDeck = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	cardId: string,
 ) => {
 	let cardsIds = await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds');
@@ -125,7 +125,7 @@ export const removeAnimalFromBoard = async (
 	return false;
 };
 
-export const addHpToPlayer = async (gameId: string, playerType: string, hp: number) => {
+export const addHpToPlayer = async (gameId: string, playerType: PlayerType, hp: number) => {
 	const oldHp = await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
 	if (!isNil(oldHp)) {
 		const newHp = (oldHp ?? 0) + hp;
@@ -183,13 +183,17 @@ export const removeCardFromMainDeck = async (gameId: string) => {
 	await setItem(getBoardPath(gameId), { mainDeck: mainDeck });
 };
 
-export const changeCanAttackVar = async (gameId: string, playerType: string, value: boolean) => {
+export const changeCanAttackVar = async (
+	gameId: string,
+	playerType: PlayerType,
+	value: boolean,
+) => {
 	await setItem(getGamePath(gameId) + playerType, { canAttack: value });
 };
 
 export const changeCanAttackVarOfSlot = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	slotNumber: number,
 	value: boolean,
 ) => {
@@ -200,7 +204,7 @@ export const changeCanAttackVarOfSlot = async (
 
 export const changeUsingPowerCardsVar = async (
 	gameId: string,
-	playerType: string,
+	playerType: PlayerType,
 	value: boolean,
 ) => {
 	await setItem(getGamePath(gameId) + playerType, { canPlayPowers: value });
@@ -249,15 +253,15 @@ export const deleteAnimalCardFromGraveYardByIndex = async (gameId: string, index
 	await setItem(getBoardPath(gameId), { animalGY: animalGY });
 };
 
-export const getPLayerHealth = async (gameId: string, playerType: string): Promise<number> => {
+export const getPLayerHealth = async (gameId: string, playerType: PlayerType): Promise<number> => {
 	return await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
 };
 
-export const changePLayerHealth = async (gameId: string, playerType: string, hp: number) => {
+export const changePLayerHealth = async (gameId: string, playerType: PlayerType, hp: number) => {
 	await setItem(getGamePath(gameId) + playerType, { hp: hp });
 };
 
-export const getPLayerCards = async (gameId: string, playerType: string): Promise<string[]> => {
+export const getPLayerCards = async (gameId: string, playerType: PlayerType): Promise<string[]> => {
 	return (await getItemsOnce(getGamePath(gameId) + playerType + '/cardsIds')) ?? [];
 };
 
@@ -268,11 +272,11 @@ export const getPLayerDoubleAP = async (
 	return (await getItemsOnce(getPlayerPath(gameId, playerType) + '/isDoubleAP')) ?? false;
 };
 
-export const setPlayerDeck = async (gameId: string, playerType: string, cardsIds: string[]) => {
+export const setPlayerDeck = async (gameId: string, playerType: PlayerType, cardsIds: string[]) => {
 	await setItem(getGamePath(gameId) + playerType, { cardsIds });
 };
 
-export const addOneRound = async (gameId: string, playerType: string) => {
+export const addOneRound = async (gameId: string, playerType: PlayerType) => {
 	const round = await getItemsOnce('games/' + gameId + '/round');
 	round.player = playerType;
 	round.nb += 1;

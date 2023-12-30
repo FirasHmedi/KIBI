@@ -126,28 +126,28 @@ export const sacrifice1HpToReviveLastAnimal = async (
 };
 
 export const switchHealth = async (gameId: string) => {
-	const oneHp = await getPLayerHealth(gameId, 'one');
-	const twoHp = await getPLayerHealth(gameId, 'two');
-	await changePLayerHealth(gameId, 'one', twoHp);
-	await changePLayerHealth(gameId, 'two', oneHp);
+	const oneHp = await getPLayerHealth(gameId, PlayerType.ONE);
+	const twoHp = await getPLayerHealth(gameId, PlayerType.TWO);
+	await changePLayerHealth(gameId, PlayerType.ONE, twoHp);
+	await changePLayerHealth(gameId, PlayerType.TWO, oneHp);
 };
 
 export const switchDeck = async (gameId: string) => {
-	const oneCards = await getPLayerCards(gameId, 'one');
-	const twoCards = await getPLayerCards(gameId, 'two');
-	await setPlayerDeck(gameId, 'one', twoCards);
-	await setPlayerDeck(gameId, 'two', oneCards);
+	const oneCards = await getPLayerCards(gameId, PlayerType.ONE);
+	const twoCards = await getPLayerCards(gameId, PlayerType.TWO);
+	await setPlayerDeck(gameId, PlayerType.ONE, twoCards);
+	await setPlayerDeck(gameId, PlayerType.TWO, oneCards);
 };
 
 export const switch2RandomCards = async (gameId: string) => {
-	const oneCards = shuffle(await getPLayerCards(gameId, 'one'));
-	const twoCards = shuffle(await getPLayerCards(gameId, 'two'));
+	const oneCards = shuffle(await getPLayerCards(gameId, PlayerType.ONE));
+	const twoCards = shuffle(await getPLayerCards(gameId, PlayerType.TWO));
 	const oneCardFirst = oneCards.shift()!;
 	const oneCardSecond = oneCards.shift()!;
 	const twoCardFirst = twoCards.shift()!;
 	const twoCardSecond = twoCards.shift()!;
-	await setPlayerDeck(gameId, 'one', [...oneCards, twoCardFirst, twoCardSecond]);
-	await setPlayerDeck(gameId, 'two', [...twoCards, oneCardFirst, oneCardSecond]);
+	await setPlayerDeck(gameId, PlayerType.ONE, [...oneCards, twoCardFirst, twoCardSecond]);
+	await setPlayerDeck(gameId, PlayerType.TWO, [...twoCards, oneCardFirst, oneCardSecond]);
 };
 
 export const switch2Cards = async (

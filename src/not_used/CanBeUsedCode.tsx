@@ -39,7 +39,7 @@ export const TestDeck = [
 export const GeneralTestData = {
 	gameId: 'test',
 	playerName: 'test',
-	playerType: 'one',
+	playerType: PlayerType.ONE,
 	playerId: 'testId',
 };
 */
