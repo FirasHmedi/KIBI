@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { FaHeart } from 'react-icons/fa';
@@ -5,6 +6,7 @@ import { GiHeartMinus } from 'react-icons/gi';
 import 'react-toastify/dist/ReactToastify.css';
 import { Tooltip } from 'react-tooltip';
 import {
+	CurrPlayerViewButtonsStyle,
 	airColor,
 	centerStyle,
 	earthColor,
@@ -15,7 +17,7 @@ import {
 	waterColor,
 } from '../styles/Style';
 import { ROUND_DURATION } from '../utils/data';
-import { showToast } from '../utils/helpers';
+import { isGameFinished, showToast } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
 import { Seperator } from './Elements';
@@ -49,32 +51,31 @@ export const CurrentPView = ({
 	round,
 	finishRound,
 	nbCardsToPlay,
-	setElement,
 	spectator,
 	updateCardsOrder,
 	hasAttacked,
 	isConfirmActive,
 	setIsConfirmActive,
 	isAttackDisabled,
+	status,
 }: {
 	player: Player;
 	round: Round;
-	playCard: (cardId?: string) => Promise<void>;
 	finishRound: () => void;
 	nbCardsToPlay: number;
-	setElement: () => void;
 	spectator?: boolean;
 	updateCardsOrder: any;
 	hasAttacked: any;
 	isConfirmActive: boolean;
 	setIsConfirmActive: any;
 	isAttackDisabled: boolean;
+	status: string;
 }) => {
 	const { playerType, hp } = player;
 	const cardsIds = player.cardsIds ?? [];
 	const isMyRound = round?.player === playerType;
 
-	const Buttons = ({ setElement }: any) => {
+	const Buttons = () => {
 		if (spectator) {
 			return null;
 		}
@@ -97,15 +98,13 @@ export const CurrentPView = ({
 			nbCardsToPlay > 1 ? `${nbCardsToPlay} cards` : nbCardsToPlay === 1 ? '1 card' : 'No cards';
 
 		const buttonsStyle: CSSProperties = {
-			fontWeight: 'bold',
-			minWidth: '4vw',
-			fontSize: '0.8em',
-			width: '4.5vw',
-			padding: 2,
-			color: 'white',
+			...CurrPlayerViewButtonsStyle,
 			backgroundColor: isMyRound ? violet : 'grey',
-			borderRadius: 5,
 		};
+
+		if (isGameFinished(status)) {
+			return <></>;
+		}
 
 		return (
 			<div
@@ -174,7 +173,7 @@ export const CurrentPView = ({
 				justifyContent: 'center',
 				gap: 8,
 			}}>
-			<Buttons setElement={setElement} />
+			<Buttons />
 
 			<CurrPlayerDataView player={player} isMyRound={isMyRound} isMe={true} />
 
@@ -187,19 +186,21 @@ export const CurrentPView = ({
 					gap: 16,
 				}}>
 				<CurrentPDeck cardsIds={cardsIds} updateCardsOrder={updateCardsOrder} />
-				<div
-					style={{
-						...flexRowStyle,
-						alignItems: 'center',
-					}}>
-					<div style={{ width: '3rem' }}>
-						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
+				{!isNil(hp) && (
+					<div
+						style={{
+							...flexRowStyle,
+							alignItems: 'center',
+						}}>
+						<div style={{ width: '3rem' }}>
+							{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
+						</div>
+						<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
+							<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
+							<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
+						</div>
 					</div>
-					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
-						<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
-						<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
-					</div>
-				</div>
+				)}
 			</div>
 			<EmptyElement width='5vw' />
 		</div>
@@ -290,7 +291,7 @@ const CurrPlayerDataView = ({
 	isMyRound?: boolean;
 	isMe?: boolean;
 }) => {
-	const { playerType, canPlayPowers, isDoubleAP, canAttack } = player;
+	const { playerType } = player;
 
 	return (
 		<>
@@ -307,47 +308,13 @@ const CurrPlayerDataView = ({
 					<h4>{playerType?.toUpperCase()}</h4>
 				</div>
 			)}
-
-			<div
-				style={{
-					...flexColumnStyle,
-					position: 'absolute',
-					left: '8vw',
-					bottom: isMe ? '10vh' : undefined,
-					top: isMe ? undefined : '6vh',
-					width: '12vw',
-					gap: 12,
-					fontSize: '1.1em',
-					color: violet,
-				}}>
-				{canAttack === false && canPlayPowers === false ? (
-					<div style={{ ...flexColumnStyle, gap: 8 }}>
-						<BlockElement type='att' />
-						<BlockElement type='pow' />
-					</div>
-				) : canAttack === false ? (
-					<BlockElement type='att' />
-				) : canPlayPowers === false ? (
-					<BlockElement type='pow' />
-				) : null}
-				{isDoubleAP && <h4>Animals AP X 2</h4>}
-			</div>
+			<PlayerCanDoView player={player} isMe={isMe} />
 		</>
 	);
 };
 
-const OpponentDataView = ({
-	player,
-	isMe,
-}: {
-	player: Player;
-	setElement?: any;
-	isMyRound?: boolean;
-	isMe?: boolean;
-	finishRound?: any;
-	chargeElement?: any;
-}) => {
-	const { hp, canPlayPowers, isDoubleAP, canAttack } = player;
+const OpponentDataView = ({ player }: { player: Player }) => {
+	const { hp } = player;
 	const hpRef = useRef<number>(0);
 	const [hpChange, setHpChange] = useState<string>();
 
@@ -384,46 +351,56 @@ const OpponentDataView = ({
 					alignItems: 'center',
 					gap: 1,
 				}}>
-				<div
-					style={{
-						...flexRowStyle,
-						alignItems: 'center',
-						gap: 8,
-					}}>
-					<div style={{ width: '3rem' }}>
-						{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
+				{!isNil(hp) && (
+					<div
+						style={{
+							...flexRowStyle,
+							alignItems: 'center',
+							gap: 8,
+						}}>
+						<div style={{ width: '3rem' }}>
+							{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
+						</div>
+						<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
+							<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
+							<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
+						</div>
 					</div>
-					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
-						<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
-						<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
-					</div>
-				</div>
+				)}
 
 				<div style={{ width: '3rem' }}></div>
 			</div>
+			<PlayerCanDoView player={player} />
+		</div>
+	);
+};
 
-			<div
-				style={{
-					...flexColumnStyle,
-					position: 'absolute',
-					left: '18vw',
-					top: '10vh',
-					width: '12vw',
-					gap: 12,
-					fontSize: '1.1em',
-				}}>
-				{canAttack === false && canPlayPowers === false ? (
-					<div style={{ ...flexRowStyle, gap: 8 }}>
-						<BlockElement type='att' />
-						<BlockElement type='pow' />
-					</div>
-				) : canAttack === false ? (
+const PlayerCanDoView = ({ player, isMe }: { player: Player; isMe?: boolean }) => {
+	const { canPlayPowers, isDoubleAP, canAttack } = player;
+	return (
+		<div
+			style={{
+				...flexColumnStyle,
+				position: 'absolute',
+				left: '8vw',
+				bottom: isMe ? '10vh' : undefined,
+				top: isMe ? undefined : '6vh',
+				width: '12vw',
+				gap: 12,
+				fontSize: '1.1em',
+				color: violet,
+			}}>
+			{canAttack === false && canPlayPowers === false ? (
+				<div style={{ ...flexColumnStyle, gap: 8 }}>
 					<BlockElement type='att' />
-				) : canPlayPowers === false ? (
 					<BlockElement type='pow' />
-				) : null}
-				{isDoubleAP && <h4>Animals AP X 2</h4>}
-			</div>
+				</div>
+			) : canAttack === false ? (
+				<BlockElement type='att' />
+			) : canPlayPowers === false ? (
+				<BlockElement type='pow' />
+			) : null}
+			{isDoubleAP && <h4>Animals AP X 2</h4>}
 		</div>
 	);
 };

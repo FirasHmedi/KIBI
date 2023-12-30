@@ -9,6 +9,7 @@ import {
 	ANIMAL_CARDS_OBJECT,
 	ATTACKER,
 	ClanName,
+	FINISHED,
 	JOKER,
 	KING,
 	POWERS_CARDS_IDS,
@@ -36,6 +37,7 @@ export const isPowerCard = (cardId: string = ''): boolean =>
 	POWER_CARDS_OBJECT.hasOwnProperty(new String(cardId).substring(4));
 
 export const isGameRunning = (status?: string): boolean => !!status && status === RUNNING;
+export const isGameFinished = (status?: string): boolean => !!status && status === FINISHED;
 export const isGameInPreparation = (status?: string): boolean => !!status && status === PREPARE;
 
 export const getOpponentIdFromCurrentId = (currentId: PlayerType): PlayerType =>

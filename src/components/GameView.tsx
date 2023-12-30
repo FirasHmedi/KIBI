@@ -51,6 +51,7 @@ import {
 	isAnimalCard,
 	isAnimalInSlots,
 	isAttackerInElement,
+	isGameFinished,
 	isJokerInElement,
 	isKingInElement,
 	isPowerCard,
@@ -60,6 +61,7 @@ import {
 import { Board, Player, PlayerType, Round, SlotType } from '../utils/interface';
 import { BoardView } from './Board';
 import { ElementPopup, RoundView } from './Elements';
+import GameFinished from './GameFinished';
 import { CardsPopup } from './GraveyardsView';
 import { CountDown, CurrentPView, OpponentPView } from './PlayersView';
 
@@ -72,6 +74,8 @@ interface GameViewProps {
 	spectator?: boolean;
 	showCountDown: any;
 	logs: string[];
+	status: string;
+	winner?: string;
 }
 
 export function GameView({
@@ -83,6 +87,8 @@ export function GameView({
 	spectator,
 	showCountDown,
 	logs,
+	status,
+	winner,
 }: GameViewProps) {
 	const { oppPSlots, currPSlots, elementType, animalGY, powerGY } = board;
 	const playerType = currPlayer.playerType!;
@@ -127,6 +133,11 @@ export function GameView({
 		}
 		return 0;
 	};
+
+	useEffect(() => {
+		if (currPlayer.hp <= 0 || oppPlayer.hp <= 0) {
+		}
+	});
 
 	const updateCardsOrder = async (newCardsIds: string[]) => {
 		await setItem(GAMES_PATH + gameId + '/' + playerType, { cardsIds: newCardsIds });
@@ -515,6 +526,10 @@ export function GameView({
 	};
 
 	const playCard = async (cardId?: string, slotNb?: number) => {
+		if (isGameFinished(status)) {
+			return;
+		}
+
 		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
 
 		if (spectator || isEmpty(cardId) || isEmpty(playerType)) {
@@ -546,7 +561,7 @@ export function GameView({
 	};
 
 	const changeEnvWithPopup = async (newElementType?: ClanName) => {
-		if (!newElementType || spectator || newElementType === elementType) {
+		if (isGameFinished(status) || !newElementType || spectator || newElementType === elementType) {
 			setShowEnvPopup(false);
 			return;
 		}
@@ -566,7 +581,7 @@ export function GameView({
 	};
 
 	const finishRound = async () => {
-		if (spectator) {
+		if (isGameFinished(status) || spectator) {
 			return;
 		}
 		try {
@@ -594,6 +609,9 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
+		if (isGameFinished(status) || spectator) {
+			return;
+		}
 		if (round.nb < 3) {
 			showToast('Attack is disabled in first round');
 			return false;
@@ -651,7 +669,7 @@ export function GameView({
 		}
 
 		if (isAttackAnimalsEnabled && isAnimalInSlots(oppPSlots, oppoAnimalId)) {
-			return await attackAnimal(currAnimalId, oppoAnimalId, currslotnb, oppslotnb);
+			return await attackAnimal(currAnimalId, oppoAnimalId, oppslotnb);
 		} else {
 			if (hasAttacked.current) {
 				showToast('Already Attacked');
@@ -669,12 +687,7 @@ export function GameView({
 		}
 	};
 
-	const attackAnimal = async (
-		currAnimalId?: string,
-		oppoAnimalId?: string,
-		currslotnb?: number,
-		oppslotnb?: number,
-	) => {
+	const attackAnimal = async (currAnimalId?: string, oppoAnimalId?: string, oppslotnb?: number) => {
 		if (!canAnimalAKillAnimalD(currAnimalId, oppoAnimalId, isCurrDoubleAP)) {
 			return false;
 		}
@@ -722,6 +735,7 @@ export function GameView({
 		nbCardsToPlay,
 		activePowerCard,
 		board,
+		status,
 	};
 
 	const attackState = {
@@ -733,6 +747,7 @@ export function GameView({
 		hasAttacked,
 		currPSlots,
 		canAttackOwner,
+		status,
 	};
 
 	const isAttackDisabled =
@@ -751,7 +766,9 @@ export function GameView({
 				}}>
 				<OpponentPView player={oppPlayer} spectator={spectator} />
 
-				{!spectator && showEnvPopup && <ElementPopup changeElement={changeEnvWithPopup} />}
+				{!isGameFinished(status) && !spectator && showEnvPopup && (
+					<ElementPopup changeElement={changeEnvWithPopup} />
+				)}
 
 				<div
 					style={{
@@ -801,16 +818,15 @@ export function GameView({
 				<CurrentPView
 					player={currPlayer}
 					round={round}
-					playCard={playCard}
 					finishRound={finishRound}
 					nbCardsToPlay={nbCardsToPlay}
-					setElement={setElement}
 					spectator={spectator}
 					updateCardsOrder={updateCardsOrder}
 					hasAttacked={hasAttacked}
 					isConfirmActive={isConfirmActive}
 					setIsConfirmActive={setIsConfirmActive}
 					isAttackDisabled={isAttackDisabled}
+					status={status}
 				/>
 				{openCardsPopup && !spectator && (
 					<CardsPopup
@@ -823,7 +839,12 @@ export function GameView({
 						title={gyTitle}
 					/>
 				)}
-				{showCountDown.current && (
+				{isGameFinished(status) && (
+					<div>
+						<GameFinished status={status} winner={winner} />
+					</div>
+				)}
+				{!isGameFinished(status) && showCountDown.current && (
 					<div
 						style={{
 							position: 'absolute',

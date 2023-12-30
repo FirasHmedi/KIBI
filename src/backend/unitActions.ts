@@ -1,7 +1,12 @@
 import { isEmpty } from 'lodash';
 import isNil from 'lodash/isNil';
-import { ClanName, EMPTY_SLOT } from '../utils/data';
-import { getAnimalCard, isAnimalCard, isPowerCard } from '../utils/helpers';
+import { ClanName, EMPTY_SLOT, FINISHED } from '../utils/data';
+import {
+	getAnimalCard,
+	getOpponentIdFromCurrentId,
+	isAnimalCard,
+	isPowerCard,
+} from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import { getElementType } from './actions';
 import { getBoardPath, getGamePath, getItemsOnce, getPlayerPath, setItem } from './db';
@@ -128,12 +133,28 @@ export const addHpToPlayer = async (gameId: string, playerType: string, hp: numb
 	}
 };
 
-export const removeHpFromPlayer = async (gameId: string, playerType: string, hp: number) => {
+export const removeHpFromPlayer = async (gameId: string, playerType: PlayerType, hp: number) => {
 	const oldHp = await getItemsOnce(getGamePath(gameId) + playerType + '/hp');
-	if (!isNil(oldHp)) {
-		const newHp = oldHp - hp;
-		await setItem(getGamePath(gameId) + playerType, { hp: newHp });
+	if (isNil(oldHp)) {
+		return;
 	}
+	const newHp = oldHp - hp;
+	await setItem(getGamePath(gameId) + playerType, { hp: newHp });
+	if (newHp > 0) {
+		return;
+	}
+	await setItem(getGamePath(gameId), {
+		winner: getOpponentIdFromCurrentId(playerType),
+		status: FINISHED,
+	});
+	await setItem(getPlayerPath(gameId, PlayerType.ONE), {
+		canAttack: false,
+		canPlayPowers: false,
+	});
+	await setItem(getPlayerPath(gameId, PlayerType.TWO), {
+		canAttack: false,
+		canPlayPowers: false,
+	});
 };
 
 export const addInfoToLog = async (gameId: string, text: string) => {

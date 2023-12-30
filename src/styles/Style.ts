@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 export const primary = '#2c3e50'; //'#bdc3c7'; //#242422 232323
 export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
@@ -15,33 +17,33 @@ export const earthColor = '#f39c12';
 export const neutralColor = '#95a5a6';
 export const selectedColor = '#575757';
 
-export const flexRowStyle: React.CSSProperties = {
+export const flexRowStyle: CSSProperties = {
 	display: 'flex',
 	textAlign: 'center',
 	width: 'auto',
 	flexDirection: 'row',
 };
 
-export const flexColumnStyle: React.CSSProperties = {
+export const flexColumnStyle: CSSProperties = {
 	display: 'flex',
 	textAlign: 'center',
 	flexDirection: 'column',
 	alignItems: 'center',
 };
 
-export const centerStyle: React.CSSProperties = {
+export const centerStyle: CSSProperties = {
 	display: 'flex',
 	justifyContent: 'center',
 	alignItems: 'center',
 	textAlign: 'center',
 };
 
-export const appStyle: React.CSSProperties = {
+export const appStyle: CSSProperties = {
 	backgroundColor: greyBackground,
 	height: '100vh',
 };
 
-export const headerStyle: React.CSSProperties = {
+export const headerStyle: CSSProperties = {
 	...centerStyle,
 	height: '3vh',
 	justifyContent: 'center',
@@ -49,7 +51,7 @@ export const headerStyle: React.CSSProperties = {
 	paddingRight: 10,
 };
 
-export const buttonStyle: React.CSSProperties = {
+export const buttonStyle: CSSProperties = {
 	backgroundColor: violet,
 	color: 'white',
 	borderRadius: 5,
@@ -60,7 +62,7 @@ export const buttonStyle: React.CSSProperties = {
 	minWidth: '4vw',
 };
 
-export const homeButtonsStyle: React.CSSProperties = {
+export const homeButtonsStyle: CSSProperties = {
 	fontSize: '1.5em',
 	display: 'flex',
 	alignItems: 'center',
@@ -71,7 +73,7 @@ export const homeButtonsStyle: React.CSSProperties = {
 	paddingRight: 15,
 };
 
-export const boardSlotStyle: React.CSSProperties = {
+export const boardSlotStyle: CSSProperties = {
 	...flexColumnStyle,
 	borderRadius: 5,
 	color: 'white',
@@ -81,7 +83,7 @@ export const boardSlotStyle: React.CSSProperties = {
 	flexShrink: 0,
 };
 
-export const deckSlotStyle: React.CSSProperties = {
+export const deckSlotStyle: CSSProperties = {
 	...flexColumnStyle,
 	borderRadius: 5,
 	color: 'white',
@@ -91,7 +93,7 @@ export const deckSlotStyle: React.CSSProperties = {
 	flexShrink: 0,
 };
 
-export const signupContainerStyle: React.CSSProperties = {
+export const signupContainerStyle: CSSProperties = {
 	...centerStyle, // Retain existing centering styles
 	backgroundColor: violet,
 	borderRadius: 5,
@@ -104,7 +106,7 @@ export const signupContainerStyle: React.CSSProperties = {
 	minHeight: '40vh',
 };
 
-export const signinContainerStyle: React.CSSProperties = {
+export const signinContainerStyle: CSSProperties = {
 	...centerStyle, // Retain existing centering styles
 	backgroundColor: violet,
 	borderRadius: 5,
@@ -125,7 +127,7 @@ export const signInputStyle = {
 	borderWidth: 0,
 };
 
-export const graveyardPopupContainer: React.CSSProperties = {
+export const graveyardPopupContainer: CSSProperties = {
 	position: 'fixed',
 	top: 0,
 	left: 0,
@@ -135,7 +137,7 @@ export const graveyardPopupContainer: React.CSSProperties = {
 	zIndex: 2,
 };
 
-export const graveyardPopupContent: React.CSSProperties = {
+export const graveyardPopupContent: CSSProperties = {
 	position: 'absolute',
 	left: '50%',
 	top: '50%',
@@ -149,19 +151,19 @@ export const graveyardPopupContent: React.CSSProperties = {
 	backgroundColor: 'transparent',
 };
 
-export const closeButtonStyle: React.CSSProperties = {
+export const closeButtonStyle: CSSProperties = {
 	position: 'absolute',
 	top: '1vw',
 	right: '1vw',
 };
 
-export const topCardStyle: React.CSSProperties = {
+export const topCardStyle: CSSProperties = {
 	boxShadow: '6px 6px 0px 0px #7f26a4',
 	borderRadius: 5,
 	alignSelf: 'center',
 };
 
-export const alertStyle: React.CSSProperties = {
+export const alertStyle: CSSProperties = {
 	position: 'fixed',
 	top: '10%',
 	left: '50%',
@@ -170,4 +172,14 @@ export const alertStyle: React.CSSProperties = {
 	padding: '1rem',
 	borderRadius: '5px',
 	zIndex: 10,
+};
+
+export const CurrPlayerViewButtonsStyle: CSSProperties = {
+	fontWeight: 'bold',
+	minWidth: '4vw',
+	fontSize: '0.8em',
+	width: '4.5vw',
+	padding: 2,
+	color: 'white',
+	borderRadius: 5,
 };

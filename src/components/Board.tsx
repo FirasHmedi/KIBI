@@ -98,7 +98,6 @@ const ActiveCardSlot = ({
 				if (!isPowerCard(item.id) || !playCard) {
 					return;
 				}
-				console.log(item);
 				playCard(item.id);
 			},
 		},

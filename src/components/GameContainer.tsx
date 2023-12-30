@@ -1,4 +1,4 @@
-import { reverse } from 'lodash';
+import { isNil, reverse } from 'lodash';
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { DndProvider } from 'react-dnd';
@@ -6,7 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
 import { violet } from '../styles/Style';
-import { isGameRunning } from '../utils/helpers';
+import { isGameFinished, isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
 
@@ -29,11 +29,11 @@ export function GameContainer({
 	const [logs, setLogs] = useState<string[]>([]);
 
 	useEffect(() => {
-		if (!isGameRunning(game.status)) {
+		if (!isGameFinished(game?.status) && !isGameRunning(game?.status)) {
 			return;
 		}
 
-		const board = game.board;
+		const board = game?.board;
 		const partOfBoard: Board = {
 			mainDeck: board?.mainDeck ?? DefaultBoard.mainDeck,
 			animalGY: board?.animalGY ?? DefaultBoard.animalGY,
@@ -68,6 +68,8 @@ export function GameContainer({
 		}
 	}, [game]);
 
+	const winner = game?.winner;
+
 	//add card to next player and set countdown
 	useEffect(() => {
 		if (!isGameRunning(game?.status)) {
@@ -99,10 +101,10 @@ export function GameContainer({
 
 	//Revert main deck
 	useEffect(() => {
-		if (!isGameRunning(game.status)) {
+		if (!isGameRunning(game?.status)) {
 			return;
 		}
-		const gameBoard = game.board;
+		const gameBoard = game?.board;
 		if (isEmpty(gameBoard?.mainDeck) && !isEmpty(gameBoard?.powerGY) && !spectator) {
 			revertMainDeck(gameId);
 		}
@@ -115,18 +117,24 @@ export function GameContainer({
 		}
 	};
 
-	if (!isGameRunning(game?.status) || !board || !opponentPlayer || !currentPlayer || !round)
+	if (
+		(!isGameFinished(game?.status) && !isGameRunning(game?.status)) ||
+		!board ||
+		!opponentPlayer ||
+		!currentPlayer ||
+		!round
+	)
 		return <></>;
 
 	return (
 		<DndProvider backend={HTML5Backend}>
-			{!game?.two?.hp && (
+			{isNil(game?.two?.hp) && (
 				<h4 style={{ color: violet }}>
 					Game ID: <span style={{ fontSize: '1.2em', userSelect: 'all' }}>{gameId}</span>
 				</h4>
 			)}
 			<GameView
-				round={game.round}
+				round={game?.round}
 				gameId={gameId}
 				board={board}
 				oppPlayer={opponentPlayer}
@@ -134,6 +142,8 @@ export function GameContainer({
 				spectator={spectator}
 				showCountDown={showCountDown}
 				logs={logs}
+				status={game?.status}
+				winner={winner}
 			/>
 		</DndProvider>
 	);

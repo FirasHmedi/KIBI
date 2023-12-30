@@ -61,6 +61,7 @@ export interface Game {
 	playerToSelect?: PlayerType;
 	initialPowers?: string[];
 	tmp?: any;
+	winner?: PlayerType;
 }
 
 export interface Board {

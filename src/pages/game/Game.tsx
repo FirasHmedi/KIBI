@@ -4,7 +4,6 @@ import { subscribeToItems } from '../../backend/db';
 import { GameContainer } from '../../components/GameContainer';
 import { centerStyle, flexColumnStyle } from '../../styles/Style';
 import { GAMES_PATH } from '../../utils/data';
-import { isGameRunning } from '../../utils/helpers';
 import { Game } from '../../utils/interface';
 
 function GamePage() {
@@ -28,36 +27,7 @@ function GamePage() {
 				justifyContent: 'flex-start',
 				height: '100%',
 			}}>
-			{isGameRunning(game?.status) && (
-				<GameContainer game={game!} gameId={gameId} playerType={playerType} spectator={spectator} />
-			)}
-
-			{/*!spectator && isGameInPreparation(game?.status) && false && (
-				<div
-					style={{
-						color: violet,
-						...flexColumnStyle,
-						gap: 20,
-						...centerStyle,
-						justifyContent: 'center',
-						height: '100%',
-					}}>
-					<h4>
-						Game ID: <span style={{ fontSize: '1.2em', userSelect: 'all' }}>{gameId}</span>
-					</h4>
-					<button
-						style={{
-							...buttonStyle,
-							backgroundColor: playerType !== PlayerType.ONE ? neutralColor : violet,
-							padding: 4,
-							fontSize: 14,
-						}}
-						disabled={playerType !== PlayerType.ONE}
-						onClick={() => submitRandomSelection(gameId, game?.initialPowers)}>
-						LAUNCH
-					</button>
-				</div>
-					)*/}
+			<GameContainer game={game!} gameId={gameId} playerType={playerType} spectator={spectator} />
 		</div>
 	);
 }

@@ -12,6 +12,7 @@ export const WALKTHROUGH_PATH = '/walkthrough';
 export const CARDS_PATH = '/cards';
 
 export const RUNNING = 'running';
+export const FINISHED = 'finished';
 export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const GAMES_PATH = 'games/';
