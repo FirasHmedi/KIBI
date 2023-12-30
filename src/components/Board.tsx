@@ -17,6 +17,7 @@ interface Props {
 	isOppDoubleAP?: boolean;
 	isCurrDoubleAP?: boolean;
 	setElement: () => void;
+	canAttackOpponent?: boolean;
 }
 
 export const BoardView = ({
@@ -28,6 +29,7 @@ export const BoardView = ({
 	isOppDoubleAP,
 	isCurrDoubleAP,
 	setElement,
+	canAttackOpponent,
 }: Props) => {
 	const { mainDeck, currPSlots, oppPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 
@@ -52,6 +54,7 @@ export const BoardView = ({
 					attackState={attackState}
 					localState={localState}
 					isDoubleAP={isOppDoubleAP}
+					canAttackOpponent={canAttackOpponent}
 				/>
 				<Seperator h='8vh' />
 				<BoardSlots

@@ -1,4 +1,4 @@
-import { FaShield } from 'react-icons/fa6';
+import { FaHeart, FaShield } from 'react-icons/fa6';
 import { GiHeartMinus, GiHeartPlus } from 'react-icons/gi';
 
 import { TbSword } from 'react-icons/tb';
@@ -68,6 +68,7 @@ interface SlotProps {
 	attack?: any;
 	attackState?: any;
 	opponent?: boolean;
+	canAttackOpponent?: boolean;
 }
 
 interface DeckSlotProps {
@@ -252,15 +253,12 @@ export const PowerDeckSlot = ({
 
 export const AnimalBoardSlot = ({
 	cardId,
-	selected,
 	attack,
 	nb,
 	attackState,
 	isDoubleAP,
 }: {
 	cardId: string;
-	select: () => void;
-	selected?: boolean;
 	isDoubleAP?: boolean;
 	attack?: any;
 	nb?: number;
@@ -320,7 +318,7 @@ export const AnimalBoardSlot = ({
 				...boardSlotStyle,
 				justifyContent: 'space-between',
 				backgroundColor: CLANS[clan!]?.color,
-				boxShadow: selected ? `0 0 1px 2px ${selectedColor}` : `0 0 1px 2px ${CLANS[clan!]?.color}`,
+				boxShadow: `0 0 1px 2px ${CLANS[clan!]?.color}`,
 				...(!canAttack ? vibrateStyle : {}),
 			}}>
 			{!!name && name?.toLowerCase() in animalsPics && (
@@ -465,8 +463,6 @@ export const AnimalDeckSlot = ({
 
 export const BoardSlot = ({
 	cardId,
-	selected,
-	selectSlot,
 	nb,
 	isDoubleAP,
 	playCard,
@@ -474,6 +470,7 @@ export const BoardSlot = ({
 	attack,
 	attackState,
 	opponent,
+	canAttackOpponent,
 }: SlotProps) => {
 	const [, drop] = useDrop(
 		{
@@ -505,8 +502,6 @@ export const BoardSlot = ({
 			<div ref={drop}>
 				<AnimalBoardSlot
 					cardId={cardId!}
-					select={() => selectSlot(nb)}
-					selected={selected}
 					isDoubleAP={isDoubleAP}
 					attack={attack}
 					nb={nb}
@@ -524,9 +519,15 @@ export const BoardSlot = ({
 					...boardSlotStyle,
 					justifyContent: 'center',
 					border: `solid 1px ${lightViolet}`,
-					boxShadow: selected ? `0 0 1px 2px ${selectedColor}` : undefined,
-				}}
-				onClick={() => selectSlot(nb)}></div>
+					...centerStyle,
+				}}>
+				{canAttackOpponent && (
+					<>
+						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
+						<TbSword style={{ color: violet, fontSize: '1.45rem' }} />
+					</>
+				)}
+			</div>
 		);
 	}
 
@@ -537,9 +538,7 @@ export const BoardSlot = ({
 				...boardSlotStyle,
 				justifyContent: 'center',
 				border: `solid 1px ${lightViolet}`,
-				boxShadow: selected ? `0 0 1px 2px ${selectedColor}` : undefined,
-			}}
-			onClick={() => selectSlot(nb)}></div>
+			}}></div>
 	);
 };
 
@@ -672,6 +671,7 @@ export const BoardSlots = ({
 	localState,
 	attack,
 	attackState,
+	canAttackOpponent,
 }: {
 	slots: SlotType[];
 	opponent?: boolean;
@@ -682,6 +682,7 @@ export const BoardSlots = ({
 	localState?: any;
 	attack?: any;
 	attackState?: any;
+	canAttackOpponent?: boolean;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -700,7 +701,6 @@ export const BoardSlots = ({
 			}}>
 			{compoundSlots.map((slot, index) => (
 				<div key={index}>
-					{/*<div>{current && <CanAttackIconsView slot={slot} />}</div>*/}
 					<BoardSlot
 						nb={index}
 						isDoubleAP={isDoubleAP}
@@ -710,8 +710,8 @@ export const BoardSlots = ({
 						attack={attack}
 						attackState={attackState}
 						opponent={opponent}
+						canAttackOpponent={canAttackOpponent}
 					/>
-					{/*opponent && <CanAttackIconsView slot={slot} />*/}
 				</div>
 			))}
 		</div>

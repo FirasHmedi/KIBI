@@ -147,14 +147,6 @@ export const removeHpFromPlayer = async (gameId: string, playerType: PlayerType,
 		winner: getOpponentIdFromCurrentId(playerType),
 		status: FINISHED,
 	});
-	await setItem(getPlayerPath(gameId, PlayerType.ONE), {
-		canAttack: false,
-		canPlayPowers: false,
-	});
-	await setItem(getPlayerPath(gameId, PlayerType.TWO), {
-		canAttack: false,
-		canPlayPowers: false,
-	});
 };
 
 export const addInfoToLog = async (gameId: string, text: string) => {

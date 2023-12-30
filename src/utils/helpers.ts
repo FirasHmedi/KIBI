@@ -128,6 +128,14 @@ export const getIsSlotsAllFilled = (slots: SlotType[] = []) =>
 	isAnimalCard(slots[1]?.cardId) &&
 	isAnimalCard(slots[2]?.cardId);
 
+export const hasAttackerInElement = (slots: SlotType[] = [], elementType?: ClanName) => {
+	return (
+		isAttackerInElement(slots[0]?.cardId, elementType) ||
+		isAttackerInElement(slots[1]?.cardId, elementType) ||
+		isAttackerInElement(slots[2]?.cardId, elementType)
+	);
+};
+
 export const submitRandomSelection = async (gameId: string, powerCards: string[] = []) => {
 	const oneCardsIds: string[] = [];
 	const twoCardsIds: string[] = [];

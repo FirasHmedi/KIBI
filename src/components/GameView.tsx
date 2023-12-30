@@ -52,6 +52,7 @@ import {
 	getOpponentIdFromCurrentId,
 	getOriginalCardId,
 	getPowerCard,
+	hasAttackerInElement,
 	isAnimalCard,
 	isAnimalInSlots,
 	isAttackerInElement,
@@ -677,6 +678,13 @@ export function GameView({
 	const isAttackDisabled =
 		!(round.nb >= 3 && isMyRound && currPlayer.canAttack) || getISlotsAllEmpty(currPSlots);
 
+	const canAttackOpponent =
+		round.nb >= 3 &&
+		isMyRound &&
+		currPlayer.canAttack &&
+		!hasAttacked.current &&
+		(isOppSlotsEmpty || hasAttackerInElement(currPSlots, elementType));
+
 	return (
 		<>
 			<ToastContainer />
@@ -706,6 +714,7 @@ export function GameView({
 					isOppDoubleAP={isOppDoubleAP}
 					isCurrDoubleAP={isCurrDoubleAP}
 					setElement={setElement}
+					canAttackOpponent={canAttackOpponent}
 				/>
 				<CurrentPView
 					player={currPlayer}
