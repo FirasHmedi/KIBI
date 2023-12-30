@@ -9,7 +9,7 @@ import { sampleSize, shuffle } from 'lodash';
 import { ClanName, EMPTY, NEUTRAL } from '../utils/data';
 import { getPowerCard, isAnimalCard } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
-import { minus2Hp } from './animalsAbilities';
+import { minus1Hp, minus2Hp } from './animalsAbilities';
 import {
 	addAnimalToBoard,
 	addAnimalToGraveYard,
@@ -280,4 +280,29 @@ export const resetBoard = async (
 
 export const doubleTanksAP = async (gameId: string, playerType: PlayerType) => {
 	await setItem(getGamePath(gameId) + playerType, { tanksWithDoubleAP: true });
+};
+
+export const resetBoardMinusHp = async (
+	gameId: string,
+	playerType: PlayerType,
+	currPSlots: SlotType[],
+	oppPSlots: SlotType[],
+) => {
+	await minus2Hp(gameId, playerType);
+	await resetBoard(gameId, playerType, currPSlots, oppPSlots);
+};
+
+export const blockPowersMinusHp = async (gameId: string, playerType: PlayerType) => {
+	await minus1Hp(gameId, playerType);
+	await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
+};
+
+export const blockAttacksMinusHp = async (gameId: string, playerType: PlayerType) => {
+	await minus1Hp(gameId, playerType);
+	await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
+};
+
+export const switchDeckMinusHp = async (gameId: string, playerType: PlayerType) => {
+	await minus1Hp(gameId, playerType);
+	await switchDeck(gameId);
 };

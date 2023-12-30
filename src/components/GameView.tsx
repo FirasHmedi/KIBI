@@ -16,13 +16,16 @@ import {
 	setPowerCardAsActive,
 } from '../backend/actions';
 import { add1Hp, add2Hp, minus1Hp, minus2Hp } from '../backend/animalsAbilities';
-import { setItem } from '../backend/db';
+import { getPlayerPath, setItem } from '../backend/db';
 import {
+	blockAttacksMinusHp,
+	blockPowersMinusHp,
 	cancelAttacks,
 	cancelUsingPowerCards,
 	changeElement,
 	draw2Cards,
 	resetBoard,
+	resetBoardMinusHp,
 	return2animalsFromGYToDeck,
 	returnOneAnimalFromGYToDeck,
 	returnOnePowerFromGYToDeck,
@@ -31,6 +34,7 @@ import {
 	sacrificeAnimalToGet3Hp,
 	switch2Cards,
 	switchDeck,
+	switchDeckMinusHp,
 } from '../backend/powers';
 import {
 	addInfoToLog,
@@ -39,8 +43,8 @@ import {
 	deletePowerCardFromGraveYardById,
 	removeHpFromPlayer,
 } from '../backend/unitActions';
-import { centerStyle, flexColumnStyle, violet } from '../styles/Style';
-import { BOT, ClanName, EMPTY, GAMES_PATH, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
+import { centerStyle, flexColumnStyle } from '../styles/Style';
+import { BOT, ClanName, EMPTY, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils/data';
 import {
 	canAnimalAKillAnimalD,
 	getAnimalCard,
@@ -51,16 +55,18 @@ import {
 	isAnimalCard,
 	isAnimalInSlots,
 	isAttackerInElement,
+	isCard,
 	isGameFinished,
 	isJokerInElement,
 	isKingInElement,
 	isPowerCard,
+	isPowerCardPlayable,
 	isTankInElement,
 	showToast,
 } from '../utils/helpers';
 import { Board, Player, PlayerType, Round, SlotType } from '../utils/interface';
 import { BoardView } from './Board';
-import { ElementPopup, RoundView } from './Elements';
+import { ElementPopup, GameLeftInfo } from './Elements';
 import GameFinished from './GameFinished';
 import { CardsPopup } from './GraveyardsView';
 import { CountDown, CurrentPView, OpponentPView } from './PlayersView';
@@ -134,13 +140,8 @@ export function GameView({
 		return 0;
 	};
 
-	useEffect(() => {
-		if (currPlayer.hp <= 0 || oppPlayer.hp <= 0) {
-		}
-	});
-
 	const updateCardsOrder = async (newCardsIds: string[]) => {
-		await setItem(GAMES_PATH + gameId + '/' + playerType, { cardsIds: newCardsIds });
+		await setItem(getPlayerPath(gameId, playerType), { cardsIds: newCardsIds });
 	};
 
 	const playAnimalCard = async (cardId: string, slotNb: number): Promise<void> => {
@@ -159,101 +160,12 @@ export function GameView({
 
 		if (isJokerInElement(cardId, elementType)) {
 			openJokerPopup();
+			return;
 		}
 
 		if (isTankInElement(cardId, elementType)) {
 			await add1Hp(gameId, playerType);
 		}
-	};
-
-	const isPowerCardPlayable = (cardId: string) => {
-		switch (getOriginalCardId(cardId!)) {
-			case 'block-att':
-				if (currPlayer.hp < 2) {
-					showToast('Not enough hp to block enemy attacks');
-					return false;
-				}
-				break;
-			case 'block-pow':
-				if (currPlayer.hp < 2) {
-					showToast('Not enough HP to block enemy powers');
-					return false;
-				}
-				break;
-			case 'reset-board':
-				if (currPlayer.hp < 3) {
-					showToast('Not enough HP to reset board');
-					return false;
-				}
-				break;
-			case 'rev-any-anim-1hp':
-				if (isEmpty(animalGY)) {
-					showToast('No animals to revive');
-					return false;
-				}
-				if (currPlayer.hp < 2) {
-					showToast('Not enough hp to revive animal');
-					return false;
-				}
-				break;
-			case 'steal-anim-3hp':
-				if (currPlayer.hp < 4) {
-					showToast('Not enough HP to steal animal');
-					return false;
-				}
-				if (isOppSlotsEmpty) {
-					showToast('No animal to steal');
-					return false;
-				}
-				break;
-			case 'sacrif-anim-3hp':
-				if (
-					!isAnimalCard(currPSlots[0].cardId) &&
-					!isAnimalCard(currPSlots[1].cardId) &&
-					!isAnimalCard(currPSlots[2].cardId)
-				) {
-					showToast('No animals to sacrifice');
-					return false;
-				}
-				break;
-			case '2-anim-gy':
-				if (isEmpty(animalGY) || animalGY?.length < 2) {
-					showToast('Not enough Animals to return');
-					return false;
-				}
-				break;
-			case 'rev-any-pow-1hp':
-				if (isEmpty(powerGY)) {
-					showToast('No Power Cards to revive');
-					return false;
-				}
-				if (currPlayer.hp < 2) {
-					showToast('Not enough HP to revive powers');
-					return false;
-				}
-				break;
-			case 'switch-2-cards':
-				if (currPlayer.cardsIds.length < 3 || oppPlayer.cardsIds.length < 2) {
-					showToast('Not enough cards to switch');
-					return false;
-				}
-				break;
-			case 'rev-last-pow':
-				if (isEmpty(powerGY)) {
-					showToast('No power card to revive');
-					return false;
-				}
-				const lastPow = powerGY[powerGY.length - 1];
-				if (
-					getOriginalCardId(lastPow) === 'rev-last-pow' ||
-					getOriginalCardId(lastPow) === 'rev-any-pow-1hp'
-				) {
-					showToast("Can't revive Power Card twice");
-					return false;
-				}
-				break;
-		}
-		return true;
 	};
 
 	const closePopupAndProcessPowerCard = async () => {
@@ -288,16 +200,17 @@ export function GameView({
 
 		setCardsIdsForPopup([]);
 
-		if (isJokerActive) {
-			let cardName = 'empty';
+		if (isJokerActive && isCard(cardId)) {
+			const cardName = isAnimalCard(cardId)
+				? getAnimalCard(cardId)?.name!
+				: getPowerCard(cardId)?.name!;
+
 			if (isAnimalCard(cardId)) {
-				cardName = getAnimalCard(cardId)?.name!;
 				await returnOneAnimalFromGYToDeck(gameId, playerType, cardId);
-			}
-			if (isPowerCard(cardId)) {
-				cardName = getPowerCard(cardId)?.name!;
+			} else {
 				await returnOnePowerFromGYToDeck(gameId, playerType, cardId);
 			}
+
 			await addInfoToLog(gameId, 'Joker returned ' + cardName);
 			setIsJokerActive(false);
 			return;
@@ -374,7 +287,14 @@ export function GameView({
 		if (
 			getOriginalCardId(cardId) === 'rev-last-pow' ||
 			getOriginalCardId(cardId) === 'rev-any-pow-1hp' ||
-			!isPowerCardPlayable(cardId)
+			!isPowerCardPlayable(cardId, {
+				currPSlots,
+				currPlayer,
+				animalGY,
+				powerGY,
+				isOppSlotsEmpty,
+				oppPlayer,
+			})
 		) {
 			return;
 		}
@@ -436,7 +356,16 @@ export function GameView({
 	};
 
 	const playPowerCard = async (cardId: string) => {
-		if (!isPowerCardPlayable(cardId)) {
+		if (
+			!isPowerCardPlayable(cardId, {
+				currPSlots,
+				currPlayer,
+				animalGY,
+				powerGY,
+				isOppSlotsEmpty,
+				oppPlayer,
+			})
+		) {
 			return false;
 		}
 
@@ -447,8 +376,22 @@ export function GameView({
 		activePowerCard.current = cardId;
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
-				await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
-				await minus1Hp(gameId, playerType);
+				await blockAttacksMinusHp(gameId, playerType);
+				break;
+			case 'block-pow':
+				await blockPowersMinusHp(gameId, playerType);
+				break;
+			case 'reset-board':
+				await resetBoardMinusHp(gameId, playerType, currPSlots, oppPSlots);
+				break;
+			case 'switch-decks':
+				await switchDeckMinusHp(gameId, playerType);
+				break;
+			case '2hp':
+				await add2Hp(gameId, playerType);
+				break;
+			case 'draw-2':
+				await draw2Cards(gameId, playerType);
 				break;
 			case 'rev-last-pow':
 				const lastPowerCard = powerGY[powerGY.length - 1];
@@ -470,10 +413,6 @@ export function GameView({
 				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(opponentIds);
 				return;
-			case 'switch-decks':
-				await minus1Hp(gameId, playerType);
-				await switchDeck(gameId);
-				break;
 			case 'switch-2-cards':
 				gyTitle.current = 'Select 2 cards to switch';
 				const filteredIds = currPlayer.cardsIds.filter(id => id !== cardId);
@@ -484,24 +423,10 @@ export function GameView({
 				const currentIds = currPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(currentIds);
 				return;
-			case '2hp':
-				await add2Hp(gameId, playerType);
-				break;
-			case 'draw-2':
-				await draw2Cards(gameId, playerType);
-				break;
 			case '2-anim-gy':
 				gyTitle.current = 'Select 2 Animals to return to deck';
 				setCardsIdsForPopup(animalGY);
 				return;
-			case 'block-pow':
-				await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
-				await minus1Hp(gameId, playerType);
-				break;
-			case 'reset-board':
-				await minus2Hp(gameId, playerType);
-				await resetBoard(gameId, playerType, currPSlots, oppPSlots);
-				break;
 		}
 
 		await processPostPowerCardPlay();
@@ -526,13 +451,9 @@ export function GameView({
 	};
 
 	const playCard = async (cardId?: string, slotNb?: number) => {
-		if (isGameFinished(status)) {
-			return;
-		}
-
 		console.log({ playerType }, { cardId }, { round }, { nbCardsToPlay });
 
-		if (spectator || isEmpty(cardId) || isEmpty(playerType)) {
+		if (isGameFinished(status) || spectator || isEmpty(cardId) || isEmpty(playerType)) {
 			return;
 		}
 
@@ -609,7 +530,14 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
-		if (isGameFinished(status) || spectator) {
+		if (
+			isNil(currAnimalId) ||
+			isGameFinished(status) ||
+			spectator ||
+			currAnimalId === oppoAnimalId ||
+			!isAnimalInSlots(currPSlots, currAnimalId) ||
+			isNil(currslotnb)
+		) {
 			return;
 		}
 		if (round.nb < 3) {
@@ -622,10 +550,6 @@ export function GameView({
 			return false;
 		}
 
-		if (currAnimalId === oppoAnimalId || spectator || !isAnimalInSlots(currPSlots, currAnimalId)) {
-			return;
-		}
-
 		if (hasAttacked.current) {
 			showToast('Already attacked');
 			return false;
@@ -636,7 +560,7 @@ export function GameView({
 			isMyRound &&
 			currPlayer.canAttack &&
 			!hasAttacked.current &&
-			currPSlots[currslotnb ?? 3]?.canAttack;
+			currPSlots[currslotnb]?.canAttack;
 
 		const isAttackOwnerEnabled =
 			isAttackAnimalsEnabled &&
@@ -648,7 +572,7 @@ export function GameView({
 			currPlayer.canAttack,
 			{ hasAttacked },
 			'animal canAttack ',
-			currPSlots[currslotnb ?? 3]?.canAttack,
+			currPSlots[currslotnb]?.canAttack,
 			'isOppAnimalInSlots',
 			isAnimalInSlots(oppPSlots, oppoAnimalId),
 			{ isAttackAnimalsEnabled },
@@ -770,38 +694,7 @@ export function GameView({
 					<ElementPopup changeElement={changeEnvWithPopup} />
 				)}
 
-				<div
-					style={{
-						position: 'absolute',
-						left: '1vw',
-						top: '35vh',
-						...flexColumnStyle,
-						gap: 12,
-						alignItems: 'flex-start',
-						color: violet,
-						width: '18vw',
-						fontSize: '1.2em',
-					}}>
-					<div style={{ ...centerStyle }}>
-						<h6>{round.player.toUpperCase()} playing</h6>
-					</div>
-					<RoundView nb={round?.nb} />
-					<div
-						style={{
-							...flexColumnStyle,
-							justifyContent: 'flex-start',
-							alignItems: 'flex-start',
-							width: '15vw',
-							height: '11vh',
-							overflowY: 'auto',
-						}}>
-						{logs.map((log, index) => (
-							<h6 key={index} style={{ fontSize: '0.5em' }}>
-								{logs.length - index}- {log}
-							</h6>
-						))}
-					</div>
-				</div>
+				<GameLeftInfo round={round} logs={logs} />
 
 				<BoardView
 					board={board}
@@ -814,7 +707,6 @@ export function GameView({
 					isCurrDoubleAP={isCurrDoubleAP}
 					setElement={setElement}
 				/>
-
 				<CurrentPView
 					player={currPlayer}
 					round={round}
@@ -839,11 +731,7 @@ export function GameView({
 						title={gyTitle}
 					/>
 				)}
-				{isGameFinished(status) && (
-					<div>
-						<GameFinished status={status} winner={winner} />
-					</div>
-				)}
+				{isGameFinished(status) && <GameFinished status={status} winner={winner} />}
 				{!isGameFinished(status) && showCountDown.current && (
 					<div
 						style={{

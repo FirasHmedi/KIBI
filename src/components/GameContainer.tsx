@@ -6,7 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
 import { violet } from '../styles/Style';
-import { isGameFinished, isGameRunning } from '../utils/helpers';
+import { isGameFinished, isGameInPreparation, isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
 
@@ -72,11 +72,11 @@ export function GameContainer({
 
 	//add card to next player and set countdown
 	useEffect(() => {
-		if (!isGameRunning(game?.status)) {
+		if (isGameInPreparation(game?.status)) {
 			return;
 		}
 		const newRound = game?.round;
-		if (round && !spectator) {
+		if (round && !spectator && !isGameFinished(game?.status)) {
 			checkAndDrawCardFromMainDeck(newRound);
 		}
 		setRound(newRound);
@@ -90,13 +90,6 @@ export function GameContainer({
 
 	useEffect(() => {
 		getLogs();
-	}, [game]);
-
-	//add log
-	useEffect(() => {
-		if (!isGameRunning(game?.status)) {
-			return;
-		}
 	}, [game]);
 
 	//Revert main deck

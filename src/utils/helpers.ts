@@ -36,6 +36,8 @@ export const isAnimalCard = (cardId?: string): boolean =>
 export const isPowerCard = (cardId: string = ''): boolean =>
 	POWER_CARDS_OBJECT.hasOwnProperty(new String(cardId).substring(4));
 
+export const isCard = (cardId: string = ''): boolean => isAnimalCard(cardId) || isPowerCard(cardId);
+
 export const isGameRunning = (status?: string): boolean => !!status && status === RUNNING;
 export const isGameFinished = (status?: string): boolean => !!status && status === FINISHED;
 export const isGameInPreparation = (status?: string): boolean => !!status && status === PREPARE;
@@ -317,4 +319,96 @@ export const showToast = (msg: string) => {
 		position: toast.POSITION.TOP_RIGHT,
 		autoClose: 1000,
 	});
+};
+
+export const isPowerCardPlayable = (cardId: string, elements: any) => {
+	const { currPlayer, animalGY, powerGY, oppPlayer, currPSlots, isOppSlotsEmpty } = elements;
+	const hp = currPlayer.hp;
+	switch (getOriginalCardId(cardId!)) {
+		case 'block-att':
+			if (hp < 2) {
+				showToast('Not enough hp to block enemy attacks');
+				return false;
+			}
+			break;
+		case 'block-pow':
+			if (hp < 2) {
+				showToast('Not enough HP to block enemy powers');
+				return false;
+			}
+			break;
+		case 'reset-board':
+			if (hp < 3) {
+				showToast('Not enough HP to reset board');
+				return false;
+			}
+			break;
+		case 'rev-any-anim-1hp':
+			if (isEmpty(animalGY)) {
+				showToast('No animals to revive');
+				return false;
+			}
+			if (hp < 2) {
+				showToast('Not enough hp to revive animal');
+				return false;
+			}
+			break;
+		case 'steal-anim-3hp':
+			if (hp < 4) {
+				showToast('Not enough HP to steal animal');
+				return false;
+			}
+			if (isOppSlotsEmpty) {
+				showToast('No animal to steal');
+				return false;
+			}
+			break;
+		case 'sacrif-anim-3hp':
+			if (
+				!isAnimalCard(currPSlots[0].cardId) &&
+				!isAnimalCard(currPSlots[1].cardId) &&
+				!isAnimalCard(currPSlots[2].cardId)
+			) {
+				showToast('No animals to sacrifice');
+				return false;
+			}
+			break;
+		case '2-anim-gy':
+			if (isEmpty(animalGY) || animalGY?.length < 2) {
+				showToast('Not enough Animals to return');
+				return false;
+			}
+			break;
+		case 'rev-any-pow-1hp':
+			if (isEmpty(powerGY)) {
+				showToast('No Power Cards to revive');
+				return false;
+			}
+			if (hp < 2) {
+				showToast('Not enough HP to revive powers');
+				return false;
+			}
+			break;
+		case 'switch-2-cards':
+			if (currPlayer.cardsIds.length < 3 || oppPlayer.cardsIds.length < 2) {
+				showToast('Not enough cards to switch');
+				return false;
+			}
+			break;
+		case 'rev-last-pow':
+			if (isEmpty(powerGY)) {
+				showToast('No power card to revive');
+				return false;
+			}
+			const lastPow = powerGY[powerGY.length - 1];
+			if (
+				getOriginalCardId(lastPow) === 'rev-last-pow' ||
+				getOriginalCardId(lastPow) === 'rev-any-pow-1hp'
+			) {
+				showToast("Can't revive Power Card twice");
+				return false;
+			}
+			break;
+	}
+	return true;
 };

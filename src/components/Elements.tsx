@@ -1,7 +1,16 @@
 import { FaHeart } from 'react-icons/fa6';
 import { MdCancel } from 'react-icons/md';
-import { airColor, centerStyle, earthColor, fireColor, violet, waterColor } from '../styles/Style';
+import {
+	airColor,
+	centerStyle,
+	earthColor,
+	fireColor,
+	flexColumnStyle,
+	violet,
+	waterColor,
+} from '../styles/Style';
 import { AIR, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
+import { Round } from '../utils/interface';
 
 export const Seperator = ({ h, w }: { h?: string; w?: string }) => {
 	const height = h ?? '2vh';
@@ -121,5 +130,40 @@ export const RoundView = ({ nb = 1 }: { nb: number }) => (
 			color: violet,
 		}}>
 		<h6>ROUND {Math.floor(nb / 2)}</h6>
+	</div>
+);
+
+export const GameLeftInfo = ({ round, logs }: { round: Round; logs: any[] }) => (
+	<div
+		style={{
+			position: 'absolute',
+			left: '1vw',
+			top: '35vh',
+			...flexColumnStyle,
+			gap: 12,
+			alignItems: 'flex-start',
+			color: violet,
+			width: '18vw',
+			fontSize: '1.2em',
+		}}>
+		<div style={{ ...centerStyle }}>
+			<h6>{round.player.toUpperCase()} playing</h6>
+		</div>
+		<RoundView nb={round?.nb} />
+		<div
+			style={{
+				...flexColumnStyle,
+				justifyContent: 'flex-start',
+				alignItems: 'flex-start',
+				width: '15vw',
+				height: '11vh',
+				overflowY: 'auto',
+			}}>
+			{logs.map((log, index) => (
+				<h6 key={index} style={{ fontSize: '0.5em' }}>
+					{logs.length - index}- {log}
+				</h6>
+			))}
+		</div>
 	</div>
 );

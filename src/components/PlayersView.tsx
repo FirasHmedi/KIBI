@@ -382,7 +382,7 @@ const PlayerCanDoView = ({ player, isMe }: { player: Player; isMe?: boolean }) =
 			style={{
 				...flexColumnStyle,
 				position: 'absolute',
-				left: '8vw',
+				left: '12vw',
 				bottom: isMe ? '10vh' : undefined,
 				top: isMe ? undefined : '6vh',
 				width: '12vw',
