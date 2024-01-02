@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { setPowerCardAsActive } from '../backend/actions';
-import { add2Hp, minus1Hp, minus2Hp } from '../backend/animalsAbilities';
+import { add2Hp, minus1Hp } from '../backend/animalsAbilities';
 import { getBoardPath, getItemsOnce } from '../backend/db';
 import {
 	cancelAttacks,
@@ -60,7 +60,7 @@ const isPowerCardPlayable = async (cardId: string, gameId: string) => {
 
 	switch (getOriginalCardId(cardId!)) {
 		case 'reset-board':
-			if (bot.hp < 3) return false;
+			if (bot.hp < 2) return false;
 			break;
 		case 'block-pow':
 			if (bot.hp < 2) return false;
@@ -171,7 +171,7 @@ const playPowerCard = async (cardId: string, gameId: string) => {
 			await cancelUsingPowerCards(gameId, PlayerType.ONE);
 			break;
 		case 'reset-board':
-			await minus2Hp(gameId, PlayerType.TWO);
+			await minus1Hp(gameId, PlayerType.TWO);
 			await resetBoard(gameId, PlayerType.TWO, botSlots, playerSlots);
 			break;
 	}

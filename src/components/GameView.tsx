@@ -15,16 +15,13 @@ import {
 	placeAnimalOnBoard,
 	setPowerCardAsActive,
 } from '../backend/actions';
-import { add1Hp, add2Hp, minus1Hp, minus2Hp } from '../backend/animalsAbilities';
+import { add1Hp, add2Hp, minus1Hp } from '../backend/animalsAbilities';
 import { getPlayerPath, setItem } from '../backend/db';
 import {
 	blockAttacksMinusHp,
 	blockPowersMinusHp,
-	cancelAttacks,
-	cancelUsingPowerCards,
 	changeElement,
 	draw2Cards,
-	resetBoard,
 	resetBoardMinusHp,
 	return2animalsFromGYToDeck,
 	returnOneAnimalFromGYToDeck,
@@ -33,7 +30,6 @@ import {
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
 	switch2Cards,
-	switchDeck,
 	switchDeckMinusHp,
 } from '../backend/powers';
 import {
@@ -308,8 +304,16 @@ export function GameView({
 
 		switch (getOriginalCardId(cardId!)) {
 			case 'block-att':
-				await cancelAttacks(gameId, getOpponentIdFromCurrentId(playerType));
-				await minus1Hp(gameId, playerType);
+				await blockAttacksMinusHp(gameId, playerType);
+				break;
+			case 'block-pow':
+				await blockPowersMinusHp(gameId, playerType);
+				break;
+			case 'reset-board':
+				await resetBoardMinusHp(gameId, playerType, currPSlots, oppPSlots);
+				break;
+			case 'switch-decks':
+				await switchDeckMinusHp(gameId, playerType);
 				break;
 			case 'rev-any-anim-1hp':
 				gyTitle.current = 'Choose an animal to revive';
@@ -320,10 +324,6 @@ export function GameView({
 				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
 				setCardsIdsForPopup(opponentIds);
 				return;
-			case 'switch-decks':
-				await minus1Hp(gameId, playerType);
-				await switchDeck(gameId);
-				break;
 			case 'switch-2-cards':
 				gyTitle.current = 'Switch 2 cards with Opponent';
 				const filteredIds = currPlayer.cardsIds.filter(id => id !== cardId);
@@ -344,14 +344,6 @@ export function GameView({
 				gyTitle.current = 'Select 2 Animal to return to deck';
 				setCardsIdsForPopup(animalGY);
 				return;
-			case 'block-pow':
-				await cancelUsingPowerCards(gameId, getOpponentIdFromCurrentId(playerType));
-				await minus1Hp(gameId, playerType);
-				break;
-			case 'reset-board':
-				await minus2Hp(gameId, playerType);
-				await resetBoard(gameId, playerType, currPSlots, oppPSlots);
-				break;
 		}
 		await processPostPowerCardPlay();
 	};
@@ -503,6 +495,7 @@ export function GameView({
 	};
 
 	const finishRound = async () => {
+		canKingAttackAgain.current = false;
 		if (isGameFinished(status) || spectator) {
 			return;
 		}
@@ -531,6 +524,9 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
+		if (canKingAttackAgain.current && !isKingInElement(currAnimalId)) {
+			return;
+		}
 		if (
 			isNil(currAnimalId) ||
 			isGameFinished(status) ||
@@ -580,7 +576,7 @@ export function GameView({
 			{ isAttackOwnerEnabled },
 		);
 
-		if (isAttackOwnerEnabled) {
+		if (isAttackOwnerEnabled && !canKingAttackAgain.current) {
 			await attackOppHp(currAnimalId!);
 			return;
 		}

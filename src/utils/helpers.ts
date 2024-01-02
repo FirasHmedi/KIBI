@@ -346,7 +346,7 @@ export const isPowerCardPlayable = (cardId: string, elements: any) => {
 			}
 			break;
 		case 'reset-board':
-			if (hp < 3) {
+			if (hp < 2) {
 				showToast('Not enough HP to reset board');
 				return false;
 			}

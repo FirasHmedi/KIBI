@@ -288,7 +288,7 @@ export const resetBoardMinusHp = async (
 	currPSlots: SlotType[],
 	oppPSlots: SlotType[],
 ) => {
-	await minus2Hp(gameId, playerType);
+	await minus1Hp(gameId, playerType);
 	await resetBoard(gameId, playerType, currPSlots, oppPSlots);
 };
 

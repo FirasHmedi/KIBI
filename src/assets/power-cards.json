@@ -26,10 +26,10 @@
 		"loss": 1
 	},
 	"reset-board": {
-		"description": "Reset Board (animals, element) for 2HP",
+		"description": "Reset Board (animals, element) for 1HP",
 		"name": "Reset Board",
 		"gain": 0,
-		"loss": 2
+		"loss": 1
 	},
 	"rev-last-pow": {
 		"description": "Activate last power card used directly",
