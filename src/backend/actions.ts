@@ -1,7 +1,13 @@
 import { isEmpty } from 'lodash';
 import shuffle from 'lodash/shuffle';
-import { ANIMALS_POINTS, ClanName, EMPTY_SLOT, JOKER, TANK } from '../utils/data';
-import { getAnimalCard, getOpponentIdFromCurrentId, isAnimalCard, waitFor } from '../utils/helpers';
+import { ANIMALS_POINTS, ClanName, EMPTY_SLOT, JOKER } from '../utils/data';
+import {
+	getAnimalCard,
+	getOpponentIdFromCurrentId,
+	isAnimalCard,
+	isTankInElement,
+	waitFor,
+} from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import {
 	add1Hp,
@@ -107,9 +113,9 @@ export const activateTankAbility = async (
 	elementType?: ClanName,
 ) => {
 	for (let i = 0; i < slots.length; i++) {
-		const animal = getAnimalCard(slots[i]?.cardId);
-		if (!!animal && animal.role === TANK && animal.clan === elementType) {
+		if (isTankInElement(slots[i]?.cardId, elementType)) {
 			await add1Hp(gameId, playerType);
+			return;
 		}
 	}
 };

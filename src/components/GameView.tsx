@@ -117,7 +117,9 @@ export function GameView({
 	useEffect(() => {
 		if (isMyRound) {
 			activateMonkeyAbility(currPSlots, elementType);
-			activateTankAbility(gameId, playerType, currPSlots, elementType);
+			(async function () {
+				await activateTankAbility(gameId, playerType, currPSlots, elementType);
+			})();
 		}
 
 		if (round.nb < 3 || !isMyRound) {
@@ -483,8 +485,8 @@ export function GameView({
 		await minus1Hp(gameId, playerType);
 		await addInfoToLog(gameId, playerType + ' changed element to ' + newElementType);
 		setShowEnvPopup(false);
-		activateMonkeyAbility(currPSlots, newElementType);
 		await activateTankAbility(gameId, playerType, currPSlots, newElementType);
+		activateMonkeyAbility(currPSlots, newElementType);
 	};
 
 	const finishRoundBot = async () => {
