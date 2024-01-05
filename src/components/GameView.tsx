@@ -524,7 +524,14 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
-		if (canKingAttackAgain.current && !isKingInElement(currAnimalId)) {
+		if (canKingAttackAgain.current && !isKingInElement(currAnimalId, elementType)) {
+			return;
+		}
+		if (
+			canKingAttackAgain.current &&
+			isKingInElement(currAnimalId, elementType) &&
+			!isAnimalInSlots(oppPSlots, oppoAnimalId)
+		) {
 			return;
 		}
 		if (
@@ -657,6 +664,7 @@ export function GameView({
 		activePowerCard,
 		board,
 		status,
+		elementType,
 	};
 
 	const attackState = {
@@ -669,6 +677,7 @@ export function GameView({
 		currPSlots,
 		canAttackOwner,
 		status,
+		elementType,
 	};
 
 	const isAttackDisabled =

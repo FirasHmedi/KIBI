@@ -311,7 +311,7 @@ export const distributeCards = async (gameId: string) => {
 			cardsIds: playerTwoCards,
 		});
 
-		await waitFor(1000);
+		await waitFor(800);
 	}
 };
 
