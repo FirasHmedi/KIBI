@@ -59,10 +59,6 @@
 		"gain": 0,
 		"loss": 1
 	},
-	"switch-2-cards": {
-		"description": "Switch 2 cards with opponent",
-		"name": "Switch 2 cards"
-	},
 	"sacrif-anim-3hp": {
 		"description": "Sacrifice an animal to get 3hp",
 		"name": "Sacrifice an animal",

@@ -261,6 +261,13 @@ className={
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 	};
 
+
+
+	"switch-2-cards": {
+		"description": "Switch 2 cards with opponent",
+		"name": "Switch 2 cards"
+	},
+
 	*/
 
 export {};
