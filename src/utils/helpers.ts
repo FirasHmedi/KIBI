@@ -417,6 +417,15 @@ export const isPowerCardPlayable = (cardId: string, elements: any) => {
 				return false;
 			}
 			break;
+		case 'steal-card-1hp':
+			if (hp < 2) {
+				showToast('Not enough HP');
+				return false;
+			}
+			if (isEmpty(oppPlayer.cardsIds)) {
+				return false;
+			}
+			break;
 	}
 	return true;
 };

@@ -29,6 +29,7 @@ import {
 	sacrifice1HpToReviveAnyAnimal,
 	sacrifice3HpToSteal,
 	sacrificeAnimalToGet3Hp,
+	stealCardFromOpponent,
 	switch2Cards,
 	switchDeckMinusHp,
 } from '../backend/powers';
@@ -102,6 +103,7 @@ export function GameView({
 	const [cardsIdsForPopup, setCardsIdsForPopup] = useState<string[]>([]);
 	const [selectedCardsIdsForPopup, setSelectedCardsIdsForPopup] = useState<string[]>([]);
 	const [isJokerActive, setIsJokerActive] = useState(false);
+	const [isStealCard, setIsStealCard] = useState(false);
 
 	const activePowerCard = useRef('');
 	const hasAttacked = useRef(false);
@@ -198,6 +200,7 @@ export function GameView({
 		}
 
 		setCardsIdsForPopup([]);
+		setIsStealCard(false);
 
 		if (isJokerActive && isCard(cardId)) {
 			const cardName = isAnimalCard(cardId)
@@ -234,6 +237,12 @@ export function GameView({
 
 	const executePowerCardsWithPopup = async (cardId: string) => {
 		switch (getOriginalCardId(activePowerCard.current)) {
+			case 'steal-card-1hp':
+				await stealCardFromOpponent(gameId, playerType, cardId);
+				return {
+					activateJokerAbilityNow: false,
+					activateTankAbilityNow: false,
+				};
 			case 'rev-any-pow-1hp':
 				if (powerGY?.includes(cardId)) {
 					setSelectedCardsIdsForPopup([]);
@@ -346,6 +355,11 @@ export function GameView({
 				gyTitle.current = 'Select 2 Animal to return to deck';
 				setCardsIdsForPopup(animalGY);
 				return;
+			case 'steal-card-1hp':
+				gyTitle.current = 'Steal a card from Opponent';
+				setIsStealCard(true);
+				setCardsIdsForPopup(oppPlayer.cardsIds);
+				return;
 		}
 		await processPostPowerCardPlay();
 	};
@@ -405,8 +419,8 @@ export function GameView({
 				return;
 			case 'steal-anim-3hp':
 				gyTitle.current = 'Select an animal to steal';
-				const opponentIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
-				setCardsIdsForPopup(opponentIds);
+				const oppAnimalsIds = oppPSlots.map(slot => slot.cardId).filter(cardId => cardId !== EMPTY);
+				setCardsIdsForPopup(oppAnimalsIds);
 				return;
 			case 'switch-2-cards':
 				gyTitle.current = 'Select 2 cards to switch';
@@ -421,6 +435,11 @@ export function GameView({
 			case '2-anim-gy':
 				gyTitle.current = 'Select 2 Animals to return to deck';
 				setCardsIdsForPopup(animalGY);
+				return;
+			case 'steal-card-1hp':
+				gyTitle.current = 'Steal a card from Opponent';
+				setIsStealCard(true);
+				setCardsIdsForPopup(oppPlayer.cardsIds);
 				return;
 		}
 
@@ -744,6 +763,7 @@ export function GameView({
 						closeCardSelectionPopup={closePopupAndProcessPowerCard}
 						dropClose={false}
 						isJokerActive={isJokerActive}
+						isStealCard={isStealCard}
 						title={gyTitle}
 					/>
 				)}

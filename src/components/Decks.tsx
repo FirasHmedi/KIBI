@@ -6,24 +6,17 @@ import mainDeck from '/src/assets/mainDeck.svg';
 
 interface CurrentPDeckProps {
 	cardsIds: string[];
-	isJokerActive?: boolean;
 	updateCardsOrder?: any;
 }
 const DraggableDeckSlot = ({
 	cardId,
 	index,
 	moveCard,
-	isJokerActive,
 }: {
 	cardId: string;
 	index: number;
 	moveCard: any;
-	isJokerActive: boolean;
 }) => {
-	/*const [, drag] = useDrag({
-		type: 'card',
-		item: { cardId, index },
-	});*/
 	const [, drop] = useDrop({
 		accept: 'movecard',
 		drop(item: { cardId: string; index: number }) {
@@ -40,16 +33,12 @@ const DraggableDeckSlot = ({
 
 	return (
 		<div ref={ref} style={{ marginRight: 8 }}>
-			<DeckSlot cardId={cardId} isJokerActive={isJokerActive} index={index} />
+			<DeckSlot cardId={cardId} index={index} />
 		</div>
 	);
 };
 
-export const CurrentPDeck = ({
-	cardsIds = [],
-	isJokerActive,
-	updateCardsOrder,
-}: CurrentPDeckProps) => {
+export const CurrentPDeck = ({ cardsIds = [], updateCardsOrder }: CurrentPDeckProps) => {
 	const moveCard = async (dragIndex: number, hoverIndex: number) => {
 		const swapArr = [...cardsIds];
 		[swapArr[dragIndex], swapArr[hoverIndex]] = [swapArr[hoverIndex], swapArr[dragIndex]];
@@ -66,12 +55,7 @@ export const CurrentPDeck = ({
 			}}>
 			{cardsIds.map((cardId, index) => (
 				<div style={{ marginRight: 8 }} key={index}>
-					<DraggableDeckSlot
-						index={index}
-						cardId={cardId}
-						moveCard={moveCard}
-						isJokerActive={isJokerActive!}
-					/>
+					<DraggableDeckSlot index={index} cardId={cardId} moveCard={moveCard} />
 				</div>
 			))}
 		</div>

@@ -117,70 +117,6 @@ export const animalsPics = {
 	monkey: monkey,
 };
 
-import { getOriginalCardId } from './helpers';
-import twoAnimals from '/src/assets/icons/2-animals.svg';
-import blockAttacks from '/src/assets/icons/block-attacks.svg';
-import blockPowers from '/src/assets/icons/block-pow.svg';
-import drawTwo from '/src/assets/icons/draw-2.svg';
-import hpGain from '/src/assets/icons/hp-gain.svg';
-import resetBoard from '/src/assets/icons/reset.svg';
-import revAnyAnimal from '/src/assets/icons/rev-any-animal.svg';
-import revAnyPower from '/src/assets/icons/rev-any-power.svg';
-import revLastPower from '/src/assets/icons/rev-last-pow.svg';
-import sacrificeAnimal from '/src/assets/icons/sacrifice-animal.svg';
-import stealAnimal from '/src/assets/icons/steal-animal.svg';
-import switch2Cards from '/src/assets/icons/switch-2-cards.svg';
-import switchCards from '/src/assets/icons/switch.svg';
-
-export const powersPics = {
-	blockAttacks,
-	blockPowers,
-	twoAnimals,
-	drawTwo,
-	hpGain,
-	resetBoard,
-	switchCards,
-	switch2Cards,
-	sacrificeAnimal,
-	revLastPower,
-	revAnyAnimal,
-	revAnyPower,
-	stealAnimal,
-};
-
-export const getPowerCardIcon = (id: string) => {
-	let h = '2.4rem',
-		w = '2.4rem';
-	switch (getOriginalCardId(id)) {
-		case 'block-att':
-			return { src: blockAttacks, h, w };
-		case 'rev-last-pow':
-			return { src: revLastPower, h: '2.6rem', w: '2.6rem' };
-		case 'rev-any-pow-1hp':
-			return { src: revAnyPower, h: '3rem', w: '3rem' };
-		case 'rev-any-anim-1hp':
-			return { src: revAnyAnimal, h, w };
-		case 'steal-anim-3hp':
-			return { src: stealAnimal, h: '2.6rem', w: '2.6rem' };
-		case 'switch-decks':
-			return { src: switchCards, h: '2.6rem', w: '2.6rem' };
-		case 'switch-2-cards':
-			return { src: switch2Cards, h: '2.8rem', w: '2.8rem' };
-		case 'sacrif-anim-3hp':
-			return { src: sacrificeAnimal, h, w };
-		case '2hp':
-			return { src: hpGain, h, w };
-		case 'draw-2':
-			return { src: drawTwo, h, w };
-		case '2-anim-gy':
-			return { src: twoAnimals, h, w };
-		case 'block-pow':
-			return { src: blockPowers, h, w };
-		case 'reset-board':
-			return { src: resetBoard, h, w };
-	}
-};
-
 export const ALL_CARDS_OBJECT: Record<string, AllCards> = {
 	...JSON.parse(JSON.stringify(animalsCardsJson)),
 	...JSON.parse(JSON.stringify(powerCardsJson)),
@@ -205,4 +141,4 @@ export const POWER_CARDS: Card[] = getArrayFromJson(powerCardsJson);
 
 export const EMPTY_SLOT = { cardId: EMPTY, canAttack: false };
 
-export const POWER_CARDS_WITH_2_SELECTS = ['2-anim-gy', 'switch-2-cards'];
+export const POWER_CARDS_WITH_2_SELECTS = ['2-anim-gy'];

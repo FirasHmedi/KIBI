@@ -82,6 +82,7 @@ export const CardsPopup = ({
 	closeCardSelectionPopup,
 	dropClose = true,
 	isJokerActive,
+	isStealCard = false,
 	title = '',
 }: {
 	cardsIds: string[];
@@ -91,8 +92,9 @@ export const CardsPopup = ({
 	dropClose?: boolean;
 	isJokerActive?: boolean;
 	title?: any;
+	isStealCard?: boolean;
 }) => {
-	const shuffledCards = isJokerActive ? shuffle(cardsIds) : cardsIds;
+	const shuffledCards = isStealCard ? shuffle(cardsIds) : cardsIds;
 	return (
 		<div
 			style={graveyardPopupContainer}
@@ -123,7 +125,12 @@ export const CardsPopup = ({
 								selectCardsPolished(cardId);
 							}
 						}}>
-						<DeckSlot cardId={cardId} selected={selectedIds?.includes(cardId)} graveyard={true} />
+						<DeckSlot
+							isStealCard={isStealCard}
+							cardId={cardId}
+							selected={selectedIds?.includes(cardId)}
+							graveyard={true}
+						/>
 					</div>
 				))}
 			</div>

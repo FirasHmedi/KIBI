@@ -28,10 +28,10 @@ import {
 	RoleName,
 	animalsPics,
 	elementsIcons,
-	getPowerCardIcon,
 } from '../utils/data';
 import { getAnimalCard, getPowerCard, isAnimalCard, isPowerCard } from '../utils/helpers';
 import { SlotType } from '../utils/interface';
+import { PowerCardIcon } from './Elements';
 import './styles.css';
 import powerIcon from '/src/assets/icons/power-icon.svg';
 
@@ -77,7 +77,7 @@ interface DeckSlotProps {
 	selectSlot?: (slotNb?: number) => void;
 	nb?: number;
 	graveyard?: boolean;
-	isJokerActive?: boolean;
+	isStealCard?: boolean;
 }
 
 export const PowerBoardSlot = ({
@@ -98,8 +98,6 @@ export const PowerBoardSlot = ({
 	const lossArray = Array(loss ?? 0)
 		.fill(0)
 		.map((_, i) => i);
-
-	const { src, h, w } = getPowerCardIcon(cardId)!;
 
 	return (
 		<div
@@ -139,7 +137,7 @@ export const PowerBoardSlot = ({
 					: null}
 			</div>
 			<div id={tooltipId}>
-				<img src={src} style={{ width: w, height: h }} />
+				<PowerCardIcon id={cardId} />
 			</div>
 			<Tooltip anchorSelect={`#${tooltipId}`} content={description} />
 			<div style={{ height: '2rem', width: '100%' }} />
@@ -151,14 +149,14 @@ export const PowerDeckSlot = ({
 	cardId,
 	selected,
 	isBigStyle,
-	isJokerActive,
+	isStealCard,
 	index,
 	graveyard = false,
 }: {
 	cardId: string;
 	selected?: boolean;
 	isBigStyle?: boolean;
-	isJokerActive?: boolean;
+	isStealCard?: boolean;
 	index: number;
 	graveyard: boolean;
 }) => {
@@ -182,8 +180,6 @@ export const PowerDeckSlot = ({
 		.fill(0)
 		.map((_, i) => i);
 
-	const { src, h, w } = getPowerCardIcon(cardId)!;
-
 	const ref = useRef(null);
 	drag(ref);
 
@@ -200,7 +196,7 @@ export const PowerDeckSlot = ({
 				alignItems: 'center',
 				justifyContent: 'center',
 			}}>
-			{isJokerActive ? (
+			{isStealCard ? (
 				<h5>K</h5>
 			) : (
 				<div
@@ -236,7 +232,7 @@ export const PowerDeckSlot = ({
 							: null}
 					</div>
 					<div id={tooltipId}>
-						<img src={src} style={{ width: w, height: h }} />
+						<PowerCardIcon id={cardId} />
 					</div>
 					<div style={{ height: '2rem', width: '100%' }} />
 				</div>
@@ -412,14 +408,14 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 export const AnimalDeckSlot = ({
 	cardId,
 	selected,
-	isJokerActive,
+	isStealCard,
 	index,
 	graveyard = false,
 }: {
 	cardId: string;
 	select: () => void;
 	selected?: boolean;
-	isJokerActive?: boolean;
+	isStealCard?: boolean;
 	index: number;
 	graveyard: boolean;
 }) => {
@@ -440,13 +436,13 @@ export const AnimalDeckSlot = ({
 			ref={!graveyard ? ref : null}
 			style={{
 				...deckSlotStyle,
-				backgroundColor: isJokerActive ? violet : CLANS[clan!]?.color,
+				backgroundColor: CLANS[clan!]?.color,
 				border: 'solid 1.5px',
-				borderColor: selected ? selectedColor : isJokerActive ? violet : CLANS[clan!]?.color,
+				borderColor: CLANS[clan!]?.color,
 				alignItems: 'center',
-				justifyContent: isJokerActive ? 'center' : 'space-between',
+				justifyContent: 'center',
 			}}>
-			{isJokerActive ? (
+			{isStealCard ? (
 				<h5>K</h5>
 			) : (
 				<AnimalDeckSlotView cardId={cardId} name={name} role={role} ability={ability} />
@@ -541,7 +537,7 @@ export const DeckSlot = ({
 	selected,
 	selectSlot,
 	nb,
-	isJokerActive,
+	isStealCard,
 	index,
 	graveyard,
 }: any) => {
@@ -551,25 +547,25 @@ export const DeckSlot = ({
 		}
 	};
 
-	if (cardId && isAnimalCard(cardId)) {
+	if (isAnimalCard(cardId)) {
 		return (
 			<AnimalDeckSlot
 				cardId={cardId}
 				select={selectSlotPolished}
 				selected={selected}
-				isJokerActive={isJokerActive}
+				isStealCard={isStealCard}
 				index={index}
 				graveyard={graveyard}
 			/>
 		);
 	}
 
-	if (cardId && isPowerCard(cardId)) {
+	if (isPowerCard(cardId)) {
 		return (
 			<PowerDeckSlot
 				cardId={cardId}
 				selected={selected}
-				isJokerActive={isJokerActive}
+				isStealCard={isStealCard}
 				index={index}
 				graveyard={graveyard}
 			/>

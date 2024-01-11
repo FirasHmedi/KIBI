@@ -64,5 +64,11 @@
 		"name": "Sacrifice an animal",
 		"gain": 3,
 		"loss": 0
+	},
+	"steal-card-1hp": {
+		"description": "Steal a card from opponent deck for 1hp",
+		"name": "Steal Opponent card for 1hp",
+		"gain": 0,
+		"loss": 1
 	}
 }

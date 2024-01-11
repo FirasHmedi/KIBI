@@ -167,3 +167,92 @@ export const GameLeftInfo = ({ round, logs }: { round: Round; logs: any[] }) => 
 		</div>
 	</div>
 );
+
+import { getOriginalCardId } from '../utils/helpers';
+import twoAnimals from '/src/assets/icons/2-animals.svg';
+import blockAttacks from '/src/assets/icons/block-attacks.svg';
+import blockPowers from '/src/assets/icons/block-pow.svg';
+import drawTwo from '/src/assets/icons/draw-2.svg';
+import hpGain from '/src/assets/icons/hp-gain.svg';
+import resetBoard from '/src/assets/icons/reset.svg';
+import revAnyAnimal from '/src/assets/icons/rev-any-animal.svg';
+import revAnyPower from '/src/assets/icons/rev-any-power.svg';
+import revLastPower from '/src/assets/icons/rev-last-pow.svg';
+import sacrificeAnimal from '/src/assets/icons/sacrifice-animal.svg';
+import stealAnimal from '/src/assets/icons/steal-animal.svg';
+import stealCard1hp from '/src/assets/icons/steal-card-1hp.svg';
+import switchDecks from '/src/assets/icons/switch.svg';
+
+export const powersPics = {
+	blockAttacks,
+	blockPowers,
+	twoAnimals,
+	drawTwo,
+	hpGain,
+	resetBoard,
+	switchDecks,
+	sacrificeAnimal,
+	revLastPower,
+	revAnyAnimal,
+	revAnyPower,
+	stealAnimal,
+	stealCard1hp,
+};
+
+export const PowerCardIcon = ({ id }: { id: string }) => {
+	let src;
+	let h = '2.4rem',
+		w = '2.4rem';
+	switch (getOriginalCardId(id)) {
+		case 'block-att':
+			src = blockAttacks;
+			break;
+		case 'rev-last-pow':
+			src = revLastPower;
+			h = '2.6rem';
+			w = '2.6rem';
+			break;
+		case 'rev-any-pow-1hp':
+			src = revAnyPower;
+			h = '3rem';
+			w = '3rem';
+			break;
+		case 'steal-card-1hp':
+			src = stealCard1hp;
+			h = '3rem';
+			w = '3rem';
+			break;
+		case 'rev-any-anim-1hp':
+			src = revAnyAnimal;
+			break;
+		case 'steal-anim-3hp':
+			src = stealAnimal;
+			h = '2.6rem';
+			w = '2.6rem';
+			break;
+		case 'switch-decks':
+			src = switchDecks;
+			h = '2.6rem';
+			w = '2.6rem';
+			break;
+		case 'sacrif-anim-3hp':
+			src = sacrificeAnimal;
+			break;
+		case '2hp':
+			src = hpGain;
+			break;
+		case 'draw-2':
+			src = drawTwo;
+			break;
+		case '2-anim-gy':
+			src = twoAnimals;
+			break;
+		case 'block-pow':
+			src = blockPowers;
+			break;
+		case 'reset-board':
+			src = resetBoard;
+			break;
+	}
+	return <img src={src} style={{ width: w, height: h }} />;
+};
