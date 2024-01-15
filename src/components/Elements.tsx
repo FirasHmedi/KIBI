@@ -180,7 +180,7 @@ import revAnyPower from '/src/assets/icons/rev-any-power.svg';
 import revLastPower from '/src/assets/icons/rev-last-pow.svg';
 import sacrificeAnimal from '/src/assets/icons/sacrifice-animal.svg';
 import stealAnimal from '/src/assets/icons/steal-animal.svg';
-import stealCard1hp from '/src/assets/icons/steal-card-1hp.svg';
+import stealCard1hp from '/src/assets/icons/steal-card.svg';
 import switchDecks from '/src/assets/icons/switch.svg';
 
 export const powersPics = {
@@ -219,8 +219,8 @@ export const PowerCardIcon = ({ id }: { id: string }) => {
 			break;
 		case 'steal-card-1hp':
 			src = stealCard1hp;
-			h = '3rem';
-			w = '3rem';
+			h = '2.6rem';
+			w = '2.6rem';
 			break;
 		case 'rev-any-anim-1hp':
 			src = revAnyAnimal;
