@@ -268,7 +268,7 @@ function Home() {
 					</div>
 					<Seperator h='1vh' />
 					<div style={centerStyle}>
-						<h3 style={{ color: violet }}>Join a game</h3>
+						<h3 style={{ color: violet }}>Join</h3>
 						<input
 							type='text'
 							placeholder='Game Id'
@@ -276,11 +276,13 @@ function Home() {
 							style={{
 								padding: 10,
 								margin: 10,
-								width: '24vw',
+								width: '14vw',
 								height: '2vh',
 								borderRadius: 5,
 								borderWidth: 3,
 								borderColor: violet,
+								fontSize: '1rem',
+								color: violet,
 							}}
 							value={gameId}
 							disabled={disabledButton}
@@ -311,6 +313,14 @@ function Home() {
 								<VscDebugContinue /> <h6>ONE / TWO</h6>
 							</button>
 						</div>
+					</div>
+					<Seperator h='1vh' />
+					<div style={centerStyle}>
+						<button
+							style={{ color: violet }}
+							onClick={() => window.open('https://discord.gg/CrAy2vKQ', '_blank')}>
+							<h3 style={{}}>Discord server</h3>
+						</button>
 					</div>
 				</div>
 			</div>
