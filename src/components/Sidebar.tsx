@@ -20,10 +20,9 @@ function Sidebar() {
 					...flexColumnStyle,
 					backgroundColor: violet,
 					gap: 20,
-					marginTop: '5rem',
 				}}>
 				<button onClick={() => window.open('https://discord.gg/CrAy2vKQ', '_blank')}>
-					<h4 style={{}}>Discord server</h4>
+					<h4 style={{ textDecoration: 'underline' }}>Discord server</h4>
 				</button>
 				<button onClick={() => navigate(CARDS_PATH)}>
 					<h4 style={{}}>Cards</h4>

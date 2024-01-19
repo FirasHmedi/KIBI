@@ -17,7 +17,15 @@ import {
 	homeButtonsStyle,
 	violet,
 } from '../../styles/Style';
-import { BOT, EMPTY_SLOT, GAMES_PATH, INITIAL_HP, PREPARE, RUNNING } from '../../utils/data';
+import {
+	BOT,
+	EMPTY_SLOT,
+	GAMES_PATH,
+	INITIAL_HP,
+	PLAYER_ID_KEY,
+	PREPARE,
+	RUNNING,
+} from '../../utils/data';
 import {
 	distributeCards,
 	getMainDeckFirstHalf,
@@ -35,10 +43,14 @@ function Home() {
 
 	const createGame = async () => {
 		const gameId = short.generate();
-		const player1Id = short.generate();
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
-		localStorage.setItem('playerId', player1Id);
+
+		let player1Id = localStorage.getItem(PLAYER_ID_KEY);
+		if (!player1Id) {
+			player1Id = short.generate();
+			localStorage.setItem(PLAYER_ID_KEY, player1Id);
+		}
 
 		await setItem(GAMES_PATH + gameId, {
 			status: PREPARE,
@@ -145,9 +157,12 @@ function Home() {
 			});
 			return;
 		}
-		const player2Id = short.generate();
 
-		localStorage.setItem('playerId', player2Id);
+		let player2Id = localStorage.getItem(PLAYER_ID_KEY);
+		if (!player2Id) {
+			player2Id = short.generate();
+			localStorage.setItem(PLAYER_ID_KEY, player2Id);
+		}
 
 		await setItem(GAMES_PATH + gameId + '/two', {
 			id: player2Id,
@@ -182,9 +197,9 @@ function Home() {
 	};
 
 	const returnAsPlayer = async () => {
-		const storedPlayerId = localStorage.getItem('playerId');
+		const storedPlayerId = localStorage.getItem(PLAYER_ID_KEY);
 		if (!storedPlayerId) {
-			toast.error('No player ID found in local storage.', {
+			toast.error('No player ID found.', {
 				position: toast.POSITION.TOP_RIGHT,
 			});
 			return;
@@ -319,7 +334,7 @@ function Home() {
 						<button
 							style={{ color: violet }}
 							onClick={() => window.open('https://discord.gg/CrAy2vKQ', '_blank')}>
-							<h3 style={{}}>Discord server</h3>
+							<h3 style={{ textDecoration: 'underline' }}>Discord server</h3>
 						</button>
 					</div>
 				</div>
