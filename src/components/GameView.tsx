@@ -702,7 +702,9 @@ export function GameView({
 	};
 
 	const isAttackDisabled =
-		!(round.nb >= 3 && isMyRound && currPlayer.canAttack) || getISlotsAllEmpty(currPSlots);
+		!(round.nb >= 3 && isMyRound && currPlayer.canAttack) ||
+		getISlotsAllEmpty(currPSlots) ||
+		(getISlotsAllEmpty(oppPSlots) && canKingAttackAgain.current);
 
 	const canAttackOpponent =
 		round.nb >= 3 &&
