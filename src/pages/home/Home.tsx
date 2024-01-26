@@ -1,11 +1,12 @@
 import shuffle from 'lodash/shuffle';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdComputer, MdPerson, MdVisibility } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getItemsOnce, setItem } from '../../backend/db';
 
+import { isEmpty, orderBy } from 'lodash';
 import { VscDebugContinue } from 'react-icons/vsc';
 import short from 'short-uuid';
 import { Seperator } from '../../components/Elements';
@@ -19,10 +20,10 @@ import {
 } from '../../styles/Style';
 import {
 	BOT,
+	CONNECT_PATH,
 	EMPTY_SLOT,
 	GAMES_PATH,
 	INITIAL_HP,
-	PLAYER_ID_KEY,
 	PREPARE,
 	RUNNING,
 } from '../../utils/data';
@@ -30,27 +31,53 @@ import {
 	distributeCards,
 	getMainDeckFirstHalf,
 	getMainDeckSecondHalf,
+	isNotEmpty,
+	isUserConnected,
 	submitRandomSelection,
 	submitRandomSelectionforBot,
 } from '../../utils/helpers';
-import { PlayerType } from '../../utils/interface';
+import { PlayerType, User } from '../../utils/interface';
 
 function Home() {
 	const navigate = useNavigate();
 	const [gameId, setGameId] = useState('');
 	const [disabledButton, setDisabledButton] = useState(false);
 	const [alertMessage, setAlertMessage] = useState('');
+	const [currentUser, setCurrentUser] = useState<User>();
+	const [leaderBoard, setLeaderBoard] = useState<any[]>();
+
+	const setUser = async () => {
+		const user = await isUserConnected();
+		if (isNotEmpty(user.userName)) {
+			console.log('user ', user);
+			setCurrentUser(user);
+			return;
+		}
+		setCurrentUser(undefined);
+	};
+
+	const setLeaderBoardAfterCalc = async () => {
+		let leaderboard: any[] = (await getItemsOnce('leaderboard')) ?? [];
+		leaderboard = orderBy(leaderboard, ['score'], ['asc']).slice(0, 5);
+		setLeaderBoard(leaderBoard);
+	};
+
+	useEffect(() => {
+		setUser();
+		setLeaderBoardAfterCalc();
+	}, []);
 
 	const createGame = async () => {
+		if (isEmpty(currentUser)) {
+			navigate(CONNECT_PATH);
+			return;
+		}
+
 		const gameId = short.generate();
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
 
-		let player1Id = localStorage.getItem(PLAYER_ID_KEY);
-		if (!player1Id) {
-			player1Id = short.generate();
-			localStorage.setItem(PLAYER_ID_KEY, player1Id);
-		}
+		let player1Id = currentUser.id;
 
 		await setItem(GAMES_PATH + gameId, {
 			status: PREPARE,
@@ -149,6 +176,12 @@ function Home() {
 
 	const joinGameAsPlayer = async () => {
 		if (gameId.length === 0) return;
+
+		if (isEmpty(currentUser)) {
+			navigate(CONNECT_PATH);
+			return;
+		}
+
 		const gameData = await getItemsOnce(GAMES_PATH + gameId);
 
 		if (!gameData || gameData.two) {
@@ -158,11 +191,7 @@ function Home() {
 			return;
 		}
 
-		let player2Id = localStorage.getItem(PLAYER_ID_KEY);
-		if (!player2Id) {
-			player2Id = short.generate();
-			localStorage.setItem(PLAYER_ID_KEY, player2Id);
-		}
+		let player2Id = currentUser.id;
 
 		await setItem(GAMES_PATH + gameId + '/two', {
 			id: player2Id,
@@ -197,13 +226,12 @@ function Home() {
 	};
 
 	const returnAsPlayer = async () => {
-		const storedPlayerId = localStorage.getItem(PLAYER_ID_KEY);
-		if (!storedPlayerId) {
-			toast.error('No player ID found.', {
-				position: toast.POSITION.TOP_RIGHT,
-			});
+		if (isEmpty(currentUser)) {
+			navigate(CONNECT_PATH);
 			return;
 		}
+
+		const storedPlayerId = currentUser.id;
 
 		const playerOneId = await getItemsOnce(GAMES_PATH + '/' + gameId + '/one/id');
 		const playerTwoId = await getItemsOnce(GAMES_PATH + '/' + gameId + '/two/id');
@@ -338,6 +366,23 @@ function Home() {
 						</button>
 					</div>
 				</div>
+			</div>
+			<div
+				style={{
+					position: 'absolute',
+					top: '20vh',
+					right: '5vw',
+					...centerStyle,
+					border: `2px solid ${violet}`,
+					borderRadius: 5,
+					width: '15rem',
+				}}>
+				<h5 style={{ color: violet, fontWeight: 'bold' }}>Leader Board</h5>
+				{leaderBoard?.map(user => (
+					<div>
+						{user.score} - {user.userName}
+					</div>
+				))}
 			</div>
 		</>
 	);

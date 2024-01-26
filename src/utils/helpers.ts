@@ -1,8 +1,9 @@
+import { sha256 } from 'js-sha256';
 import { isEmpty, shuffle } from 'lodash';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getGamePath, getItemsOnce, setItem } from '../backend/db';
+import { getGamePath, getItemsOnce, getUserById, setItem } from '../backend/db';
 import {
 	ANIMALS_CARDS,
 	ANIMALS_POINTS,
@@ -12,6 +13,8 @@ import {
 	FINISHED,
 	JOKER,
 	KING,
+	PLAYER_HASH_KEY,
+	PLAYER_ID_KEY,
 	POWERS_CARDS_IDS,
 	POWER_CARDS_OBJECT,
 	PREPARE,
@@ -19,9 +22,10 @@ import {
 	RoleName,
 	TANK,
 } from './data';
-import { AnimalCard, Card, PlayerType, SlotType } from './interface';
+import { AnimalCard, Card, PlayerType, SlotType, User } from './interface';
 
-export const isNotEmpty = (input: string | Array<any>, minLength = 0) => input.length > minLength;
+export const isNotEmpty = (input: string | Array<any>, minLength = 0) =>
+	!!input && input?.length > minLength;
 
 export const waitFor = (delay: number) => new Promise(resolve => setTimeout(resolve, delay));
 
@@ -322,10 +326,10 @@ export const isAnimalInSlots = (slots: SlotType[] = [], cardId?: string): boolea
 	return slots.some(slot => slot?.cardId === cardId);
 };
 
-export const showToast = (msg: string) => {
+export const showToast = (msg: string, time = 1000) => {
 	toast.warning(msg, {
 		position: toast.POSITION.TOP_RIGHT,
-		autoClose: 1000,
+		autoClose: time,
 	});
 };
 
@@ -428,4 +432,24 @@ export const isPowerCardPlayable = (cardId: string, elements: any) => {
 			break;
 	}
 	return true;
+};
+
+export const isUserConnected = async (): Promise<User> => {
+	const playerId = localStorage.getItem(PLAYER_ID_KEY);
+	const playerHash = localStorage.getItem(PLAYER_HASH_KEY);
+
+	if (isEmpty(playerId) || isEmpty(playerHash)) {
+		return {} as User;
+	}
+	const user = await getUserById(playerId!);
+
+	if (isEmpty(user) || user.hash !== playerHash) {
+		return {} as User;
+	}
+
+	return user;
+};
+
+export const getHash = (input: string = '') => {
+	return sha256(input);
 };

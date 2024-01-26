@@ -5,6 +5,7 @@ import { AllCards, AnimalCard, Card } from './interface';
 
 export const SINGUP_PATH = '/signup';
 export const SIGNIN_PATH = '/signin';
+export const CONNECT_PATH = '/connect';
 export const HOME_PATH = '/';
 export const GAME_PATH = '/game/:id';
 export const PROFILE_PATH = '/profile';
@@ -42,6 +43,7 @@ export const JOKER = 'joker';
 
 export const BOT = 'bot';
 export const PLAYER_ID_KEY = 'playerId';
+export const PLAYER_HASH_KEY = 'playerHashKey';
 
 export type ClanName = 'air' | 'earth' | 'fire' | 'water' | 'neutral';
 export type RoleName = 'tank' | 'attacker' | 'king' | 'joker';

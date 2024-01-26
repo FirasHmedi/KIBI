@@ -1,46 +1,43 @@
-import { get, ref } from 'firebase/database';
+import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { IoIosMenu } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { auth, db } from '../firebase';
+import { SignUpButton } from '../components/SignUpButton';
 import Cards from '../pages/cards/Cards';
 import Game from '../pages/game/Game';
 import Home from '../pages/home/Home';
-import { SignIn } from '../pages/registration/SignIn';
-import { SignUp } from '../pages/registration/SignUp';
+import { Connect } from '../pages/registration/Connect';
 import Walkthrough from '../pages/walkthrough/Walkthrough';
 import { appStyle, centerStyle, violet } from '../styles/Style';
-import {
-	CARDS_PATH,
-	GAME_PATH,
-	HOME_PATH,
-	SIGNIN_PATH,
-	SINGUP_PATH,
-	WALKTHROUGH_PATH,
-} from './data';
+import { CARDS_PATH, CONNECT_PATH, GAME_PATH, HOME_PATH, WALKTHROUGH_PATH } from './data';
+import { isNotEmpty, isUserConnected } from './helpers';
+import { User } from './interface';
 
 const Layout = ({ children }: any) => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-	const [currentUser, setCurrentUser] = useState<any>();
-	const navigate = useNavigate();
+	const [currentUser, setCurrentUser] = useState<User>();
+	let location = useLocation();
 
-	const getUsernameByUid = async (uid: string) => {
-		const userRef = ref(db, `users/${uid}`);
-		const snapshot = await get(userRef);
-		if (snapshot.exists()) {
-			return snapshot.val().username;
-		} else {
-			console.error('User does not exist');
-			return null;
+	const setUser = async () => {
+		const user = await isUserConnected();
+		if (isNotEmpty(user.userName)) {
+			console.log('user ', user);
+			setCurrentUser(user);
+			return;
 		}
+		setCurrentUser(undefined);
 	};
+
+	useEffect(() => {
+		setUser();
+	}, [location]);
 
 	const toggleSidebar = () => {
 		setIsSidebarOpen(!isSidebarOpen);
 	};
 
-	const logOut = async () => await auth.signOut();
+	/*const logOut = async () => await auth.signOut();
 
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged(async user => {
@@ -53,7 +50,9 @@ const Layout = ({ children }: any) => {
 		});
 
 		return () => unsubscribe();
-	}, [currentUser]);
+	}, [currentUser]);*/
+
+	console.log(currentUser);
 
 	return (
 		<div style={appStyle}>
@@ -61,7 +60,7 @@ const Layout = ({ children }: any) => {
 				style={{
 					width: '100vw',
 					color: violet,
-					height: '6vh',
+					height: '4vh',
 					display: 'flex',
 					alignItems: 'center',
 				}}>
@@ -74,21 +73,16 @@ const Layout = ({ children }: any) => {
 					<h4 style={{ paddingLeft: '1vw', margin: 0 }}>KIBI</h4>
 				</a>
 
-				<div style={{ marginLeft: 'auto', marginRight: '1vw', display: 'flex', gap: 10 }}>
-					{/*<button onClick={() => navigate(CARDS_PATH)}>
-						<h4 style={{ paddingLeft: '1vw', margin: 0 }}>Cards</h4>
-					</button>*/}
-					{/*<button onClick={() => navigate(WALKTHROUGH_PATH)}>
-						<h4 style={{ paddingLeft: '1vw', margin: 0 }}>Explanation</h4>
-				</button>
-				*/}
-					{/*currentUser ? (
-						<button onClick={() => logOut()}>
-							<h5 style={{ fontWeight: 'bold' }}>{currentUser.username}</h5>
-						</button>
+				<div
+					style={{
+						marginLeft: 'auto',
+						marginRight: '1vw',
+					}}>
+					{!isEmpty(currentUser?.userName) ? (
+						<h5 style={{ fontWeight: 'bold', color: violet }}>{currentUser!.userName}</h5>
 					) : (
 						<SignUpButton />
-					)*/}
+					)}
 				</div>
 			</div>
 
@@ -118,6 +112,43 @@ export const routes = [
 		),
 	},
 	{
+		path: CONNECT_PATH,
+		element: (
+			<Layout>
+				<div
+					style={{
+						...centerStyle,
+						height: '100vh',
+					}}>
+					<Connect />
+				</div>
+			</Layout>
+		),
+	},
+	{
+		path: WALKTHROUGH_PATH,
+		element: (
+			<Layout>
+				<Walkthrough />
+			</Layout>
+		),
+	},
+	{
+		path: CARDS_PATH,
+		element: (
+			<Layout>
+				<Cards />
+			</Layout>
+		),
+	},
+	{
+		path: '*',
+		element: <Navigate to={HOME_PATH} replace />,
+	},
+];
+
+/*
+	{
 		path: SINGUP_PATH,
 		element: (
 			<Layout>
@@ -145,20 +176,4 @@ export const routes = [
 			</Layout>
 		),
 	},
-	{
-		path: WALKTHROUGH_PATH,
-		element: (
-			<Layout>
-				<Walkthrough />
-			</Layout>
-		),
-	},
-	{
-		path: CARDS_PATH,
-		element: (
-			<Layout>
-				<Cards />
-			</Layout>
-		),
-	},
-];
+*/

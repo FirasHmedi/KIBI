@@ -143,6 +143,10 @@ export const removeHpFromPlayer = async (gameId: string, playerType: PlayerType,
 	if (newHp > 0) {
 		return;
 	}
+	await setGameWin(gameId, playerType);
+};
+
+export const setGameWin = async (gameId: string, playerType: PlayerType) => {
 	await setItem(getGamePath(gameId), {
 		winner: getOpponentIdFromCurrentId(playerType),
 		status: FINISHED,
