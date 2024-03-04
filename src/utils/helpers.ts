@@ -152,7 +152,6 @@ export const submitRandomSelection = async (gameId: string, powerCards: string[]
 		o = 0,
 		p = 0;
 	shuffle(ANIMALS_CARDS)
-		.filter(({ role }) => role !== KING)
 		.filter(({ role, id }) => {
 			if (role === KING) {
 				if (i < 2) {
