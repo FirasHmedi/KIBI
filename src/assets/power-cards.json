@@ -11,10 +11,6 @@
 		"gain": 2,
 		"loss": 0
 	},
-	"draw-2": {
-		"description": "Draw 2 cards from the main deck",
-		"name": "Draw 2 cards"
-	},
 	"2-anim-gy": {
 		"description": "Return 2 animals to deck from graveyard",
 		"name": "Return 2 dead animals"

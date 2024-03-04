@@ -272,6 +272,12 @@ className={
 		"gain": 0,
 		"loss": 1
 	}
+
+	"draw-2": {
+	"description": "Draw 2 cards from the main deck",
+	"name": "Draw 2 cards"
+	},
+
 	*/
 
 export {};
