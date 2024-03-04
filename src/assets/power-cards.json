@@ -11,10 +11,6 @@
 		"gain": 2,
 		"loss": 0
 	},
-	"2-anim-gy": {
-		"description": "Return 2 animals to deck from graveyard",
-		"name": "Return 2 dead animals"
-	},
 	"block-pow": {
 		"description": "Block opponent from using power cards",
 		"name": "Block powers",

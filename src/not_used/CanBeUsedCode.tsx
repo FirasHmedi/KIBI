@@ -278,6 +278,12 @@ className={
 	"name": "Draw 2 cards"
 	},
 
+
+	"2-anim-gy": {
+		"description": "Return 2 animals to deck from graveyard",
+		"name": "Return 2 dead animals"
+	},
+
 	*/
 
 export {};
