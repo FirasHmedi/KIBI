@@ -40,16 +40,11 @@ function Sidebar() {
 				<ul>
 					<li>In the first round, Players cant attack.</li>
 					<br />
-					<li>Player attacks once per round. Lion in element can attack 2 animals</li>
-					<br />
-					<li>
-						3 animals defend the opponent (Player cant attack opponent directly if he has 3 animals
-						on board)
-					</li>
+					<li>Player attacks once per round. Lion gives an extra attack in its element</li>
 					<br />
 					<li>
 						Player can attack the opponent if he has no animal to defend, Eagle in element can
-						attack Opponent if he has 1 or 2 animals on Board.
+						attack Opponent directly.
 					</li>
 					<br />
 					<li>
