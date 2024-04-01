@@ -257,7 +257,7 @@ export const AnimalBoardSlot = ({
 	const [canAttack, setcanAttack] = useState(true);
 	const [, drag] = useDrag(
 		() => ({
-			type: 'attackcard',
+			type: 'moveBoardCard',
 			item: { id: cardId, nb: nb },
 			collect: monitor => ({ isDragging: !!monitor.getItem() }),
 		}),
@@ -278,7 +278,7 @@ export const AnimalBoardSlot = ({
 
 	const [, drop] = useDrop(
 		{
-			accept: 'attackcard',
+			accept: 'moveBoardCard',
 			drop: (item: DropItem) => {
 				console.log('animal', item.id, 'attacks', cardId);
 				const animalAId = item.id;
@@ -476,7 +476,7 @@ export const BoardSlot = ({
 	);
 	const [, drop2] = useDrop(
 		{
-			accept: 'attackcard',
+			accept: 'moveBoardCard',
 			drop: (item: DropItem) => {
 				const animalAId = item.id;
 				const animalDId = cardId;

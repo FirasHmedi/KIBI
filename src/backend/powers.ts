@@ -207,7 +207,19 @@ export const sacrificeAnimalToGet3Hp = async (
 		await addHpToPlayer(gameId, playerType, 3);
 	}
 };
-
+export const sacrificeAnimalToGet2Hp = async (
+	gameId: string,
+	playerType: PlayerType,
+	animalId?: string,
+	slotNb?: number
+) => {
+	if (!animalId || isNil(slotNb)) return;
+	const isRemoved = await removeAnimalFromBoard(gameId, playerType, slotNb);
+	if (isRemoved) {
+		await addAnimalToGraveYard(gameId, animalId);
+		await addHpToPlayer(gameId, playerType, 2);
+	}
+};
 export const shieldOwnerPlus2Hp = async (gameId: string, playerType: PlayerType) => {
 	await addHpToPlayer(gameId, playerType, 2);
 };

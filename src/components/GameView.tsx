@@ -27,7 +27,7 @@ import {
 	returnOneAnimalFromGYToDeck,
 	returnOnePowerFromGYToDeck,
 	sacrifice1HpToReviveAnyAnimal,
-	sacrifice3HpToSteal,
+	sacrifice3HpToSteal, sacrificeAnimalToGet2Hp,
 	sacrificeAnimalToGet3Hp,
 	stealCardFromOpponent,
 	switch2Cards,
@@ -678,7 +678,16 @@ export function GameView({
 		hasAttacked.current = true;
 		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalId, isCurrDoubleAP);
 	};
-
+	const sacrificeAnimal=async (animalId:string,slotNb:number)=>{
+		if (!isMyRound) {
+			showToast('Not your round to play');
+			return;
+		}
+		if(spectator || isNil(slotNb) || !isAnimalInSlots(currPSlots, animalId)){
+			return;
+		}
+		await sacrificeAnimalToGet2Hp(gameId,playerType,animalId,slotNb)
+	}
 	const activateMonkeyAbility = (slots: any[] = [], elementType?: ClanName) => {
 		console.log('Try activate monkey ability ', { slots }, { elementType });
 		for (let i = 0; i < slots.length; i++) {
@@ -751,6 +760,7 @@ export function GameView({
 					isCurrDoubleAP={isCurrDoubleAP}
 					setElement={setElement}
 					canAttackOpponent={canAttackOpponent}
+					sacrificeAnimal={sacrificeAnimal}
 				/>
 				<CurrentPView
 					player={currPlayer}

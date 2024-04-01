@@ -21,6 +21,7 @@ interface Props {
 	setElement: () => void;
 	canAttackOpponent?: boolean;
 	attackPlayer: () => void;
+	sacrificeAnimal: any;
 }
 
 export const BoardView = ({
@@ -34,9 +35,18 @@ export const BoardView = ({
 	setElement,
 	canAttackOpponent,
 	attackPlayer,
+	sacrificeAnimal
 }: Props) => {
 	const { mainDeck, currPSlots, oppPSlots, animalGY, powerGY, elementType, activeCardId } = board;
-
+	const [, drop] = useDrop(
+		{
+			accept: 'moveBoardCard',
+			drop: (item: DropItem) => {
+				sacrificeAnimal(item.id,item.nb)
+			},
+		},
+		[localState],
+	);
 	return (
 		<div
 			style={{
@@ -99,7 +109,7 @@ export const BoardView = ({
 			<div style={{ position: 'absolute', right: '0vw', top: '10vh' }}>
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator h='4vh' />
-				<AnimalGraveyard cardsIds={animalGY} />
+				<div ref={drop}><AnimalGraveyard cardsIds={animalGY}  /></div>
 				<Seperator h='4vh' />
 				<PowerGraveyard cardsIds={powerGY} />
 			</div>

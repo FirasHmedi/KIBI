@@ -13,17 +13,20 @@ import {
 	topCardStyle,
 	violet,
 } from '../styles/Style';
-import { DeckSlot } from './Slots';
+import {DeckSlot, DropItem} from './Slots';
 import animalIcon from '/src/assets/icons/animal-icon.svg';
 import monkey from '/src/assets/icons/monkey.svg';
 import powerIcon from '/src/assets/icons/power-icon.svg';
+import {useDrop} from "react-dnd";
+import {sacrificeAnimalToGet2Hp} from "../backend/powers";
 
 export const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
-	return <Graveyard src={powerIcon} cardsIds={cardsIds} />;
+	return <Graveyard  src={powerIcon} cardsIds={cardsIds} />;
 };
 
 export const AnimalGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
-	return <Graveyard src={animalIcon} cardsIds={cardsIds} />;
+
+	return <Graveyard  src={animalIcon} cardsIds={cardsIds} /> ;
 };
 
 export const Graveyard = ({ src, cardsIds = [] }: { src: string; cardsIds: string[] }) => {
