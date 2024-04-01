@@ -272,18 +272,20 @@ className={
 		"gain": 0,
 		"loss": 1
 	}
-
 	"draw-2": {
-	"description": "Draw 2 cards from the main deck",
-	"name": "Draw 2 cards"
+		"description": "Draw 2 cards from the main deck",
+		"name": "Draw 2 cards"
 	},
-
-
 	"2-anim-gy": {
 		"description": "Return 2 animals to deck from graveyard",
 		"name": "Return 2 dead animals"
 	},
-
+	"sacrif-anim-3hp": {
+		"description": "Sacrifice an animal to get 3hp",
+		"name": "Sacrifice an animal",
+		"gain": 3,
+		"loss": 0
+	}
 	*/
 
 export {};

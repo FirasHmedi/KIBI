@@ -225,6 +225,9 @@ export const PowerCardIcon = ({ id }: { id: string }) => {
 		case 'rev-any-anim-1hp':
 			src = revAnyAnimal;
 			break;
+		case 'rev-last-anim':
+			src = revAnyAnimal;
+			break;
 		case 'steal-anim-3hp':
 			src = stealAnimal;
 			h = '2.6rem';

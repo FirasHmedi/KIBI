@@ -1,5 +1,7 @@
 import { useDrop } from 'react-dnd';
-import { centerStyle, flexColumnStyle } from '../styles/Style';
+import { MdPerson } from 'react-icons/md';
+import { TbSword } from 'react-icons/tb';
+import { centerStyle, flexColumnStyle, violet } from '../styles/Style';
 import { isPowerCard } from '../utils/helpers';
 import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
@@ -18,6 +20,7 @@ interface Props {
 	isCurrDoubleAP?: boolean;
 	setElement: () => void;
 	canAttackOpponent?: boolean;
+	attackPlayer: () => void;
 }
 
 export const BoardView = ({
@@ -30,6 +33,7 @@ export const BoardView = ({
 	isCurrDoubleAP,
 	setElement,
 	canAttackOpponent,
+	attackPlayer,
 }: Props) => {
 	const { mainDeck, currPSlots, oppPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 
@@ -72,6 +76,24 @@ export const BoardView = ({
 
 			<button onClick={() => setElement()}>
 				<ElementSlot elementType={elementType} />
+			</button>
+
+			<button
+				style={{
+					position: 'absolute',
+					right: '31vw',
+					top: '60vh',
+					borderRadius: 10,
+					backgroundColor: canAttackOpponent ? violet : 'grey',
+					padding: 6,
+					...centerStyle,
+				}}
+				disabled={!canAttackOpponent}
+				onClick={() => {
+					attackPlayer();
+				}}>
+				<TbSword style={{ fontSize: '1.3rem', color: 'white' }} />
+				<MdPerson style={{ fontSize: '1.2rem', color: 'white' }} />
 			</button>
 
 			<div style={{ position: 'absolute', right: '0vw', top: '10vh' }}>

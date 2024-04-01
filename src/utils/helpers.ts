@@ -140,6 +140,42 @@ export const hasAttackerInElement = (slots: SlotType[] = [], elementType?: ClanN
 	);
 };
 
+export const getMaxAP = (slots: SlotType[] = [], isDoubleAP?: boolean) => {
+	let ap = 1;
+	[slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].forEach(cardId => {
+		const role = getAnimalCard(cardId)?.role;
+		if (role) {
+			const animalAP = getAnimalAP(role, isDoubleAP);
+			if (animalAP > 1) {
+				ap = animalAP;
+			}
+		}
+	});
+	return ap;
+};
+
+export const getCardIdThatAttacksOwner = (
+	slots: SlotType[] = [],
+	hasAttackerInElement?: boolean,
+	elementType?: ClanName,
+) => {
+	let selectedCardId: string = '';
+	[slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].forEach(cardId => {
+		selectedCardId = cardId;
+		if (hasAttackerInElement) {
+			if (isAttackerInElement(cardId, elementType)) {
+				return cardId;
+			}
+		} else {
+			const role = getAnimalCard(cardId)?.role;
+			if (role === KING || role === ATTACKER) {
+				return cardId;
+			}
+		}
+	});
+	return selectedCardId;
+};
+
 export const submitRandomSelection = async (gameId: string, powerCards: string[] = []) => {
 	const oneCardsIds: string[] = [];
 	const twoCardsIds: string[] = [];
@@ -362,6 +398,12 @@ export const isPowerCardPlayable = (cardId: string, elements: any) => {
 			}
 			if (hp < 2) {
 				showToast('Not enough hp to revive animal');
+				return false;
+			}
+			break;
+		case 'rev-last-anim':
+			if (isEmpty(animalGY)) {
+				showToast('No animals to revive');
 				return false;
 			}
 			break;
