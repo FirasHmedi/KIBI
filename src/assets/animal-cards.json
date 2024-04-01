@@ -1,6 +1,6 @@
 {
 	"9-a": {
-		"ability": "Attacks 2 Animals",
+		"ability": "Extra attack for another animal",
 		"clan": "air",
 		"description": "king of air clan",
 		"name": "Lion",
@@ -28,7 +28,7 @@
 		"role": "joker"
 	},
 	"13-a": {
-		"ability": "Attacks 2 Animals",
+		"ability": "Extra attack for another animal",
 		"clan": "fire",
 		"description": "king of fire clan",
 		"name": "Lion",
@@ -56,7 +56,7 @@
 		"role": "joker"
 	},
 	"1-a": {
-		"ability": "Attacks 2 Animals",
+		"ability": "Extra attack for another animal",
 		"clan": "earth",
 		"description": "king of earth clan",
 		"name": "Lion",
@@ -84,7 +84,7 @@
 		"role": "joker"
 	},
 	"5-a": {
-		"ability": "Attacks 2 Animals",
+		"ability": "Extra attack for another animal",
 		"clan": "water",
 		"description": "king of water clan",
 		"name": "Lion",

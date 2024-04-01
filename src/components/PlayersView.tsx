@@ -243,7 +243,7 @@ export const ElementButton = ({ setElement }: any) => (
 		}}
 		onClick={() => setElement()}>
 		<div style={{ zIndex: 1, position: 'relative', top: '3vw' }}>
-			<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+			<GiHeartMinus style={{ color: 'white', width: '0.8rem', height: '0.8rem' }} />
 		</div>
 		<div style={{}}>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>

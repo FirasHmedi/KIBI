@@ -82,18 +82,18 @@ export const BoardView = ({
 				style={{
 					position: 'absolute',
 					right: '31vw',
-					top: '60vh',
+					top: '57vh',
 					borderRadius: 10,
 					backgroundColor: canAttackOpponent ? violet : 'grey',
-					padding: 6,
+					padding: 4,
 					...centerStyle,
 				}}
 				disabled={!canAttackOpponent}
 				onClick={() => {
 					attackPlayer();
 				}}>
-				<TbSword style={{ fontSize: '1.3rem', color: 'white' }} />
-				<MdPerson style={{ fontSize: '1.2rem', color: 'white' }} />
+				<TbSword style={{ fontSize: '1.1rem', color: 'white' }} />
+				<MdPerson style={{ fontSize: '1.1rem', color: 'white' }} />
 			</button>
 
 			<div style={{ position: 'absolute', right: '0vw', top: '10vh' }}>

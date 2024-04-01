@@ -140,6 +140,14 @@ export const hasAttackerInElement = (slots: SlotType[] = [], elementType?: ClanN
 	);
 };
 
+export const hasKingInElement = (slots: SlotType[] = [], elementType?: ClanName) => {
+	return (
+		isKingInElement(slots[0]?.cardId, elementType) ||
+		isKingInElement(slots[1]?.cardId, elementType) ||
+		isKingInElement(slots[2]?.cardId, elementType)
+	);
+};
+
 export const getMaxAP = (slots: SlotType[] = [], isDoubleAP?: boolean) => {
 	let ap = 1;
 	[slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].forEach(cardId => {

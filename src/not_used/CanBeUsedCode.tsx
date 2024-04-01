@@ -286,6 +286,18 @@ className={
 		"gain": 3,
 		"loss": 0
 	}
+
+			const isAttackOwnerEnabled =
+			isAttackAnimalsEnabled &&
+			!isAnimalCard(oppoAnimalId) &&
+			(isAttackerInElement(currAnimalId, elementType) || isOppSlotsEmpty);
+
+			{canAttackOpponent && (
+					<>
+						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
+						<TbSword style={{ color: violet, fontSize: '1.45rem' }} />
+					</>
+				)}
 	*/
 
 export {};

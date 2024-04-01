@@ -1,4 +1,4 @@
-import { FaHeart, FaShield } from 'react-icons/fa6';
+import { FaShield } from 'react-icons/fa6';
 import { GiHeartMinus, GiHeartPlus } from 'react-icons/gi';
 
 import { TbSword } from 'react-icons/tb';
@@ -117,7 +117,7 @@ export const PowerBoardSlot = ({
 					display: 'flex',
 					justifyContent: 'flex-end',
 					alignItems: 'flex-start',
-					height: '1.7rem',
+					height: '1.9rem',
 					paddingRight: 2,
 					paddingTop: 2,
 				}}>
@@ -125,13 +125,13 @@ export const PowerBoardSlot = ({
 				{gainArray.length > 0
 					? gainArray.map(index => (
 							<span key={index}>
-								<GiHeartPlus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+								<GiHeartPlus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 							</span>
 					  ))
 					: lossArray.length > 0
 					? lossArray.map(index => (
 							<span key={index} id={tooltipId}>
-								<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+								<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 							</span>
 					  ))
 					: null}
@@ -212,7 +212,7 @@ export const PowerDeckSlot = ({
 							display: 'flex',
 							justifyContent: 'flex-end',
 							alignItems: 'flex-start',
-							height: '1.7rem',
+							height: '1.9rem',
 							paddingRight: 2,
 							paddingTop: 2,
 						}}>
@@ -220,13 +220,13 @@ export const PowerDeckSlot = ({
 						{gainArray.length > 0
 							? gainArray.map(index => (
 									<span key={index}>
-										<GiHeartPlus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+										<GiHeartPlus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 									</span>
 							  ))
 							: lossArray.length > 0
 							? lossArray.map(index => (
 									<span key={index} id={tooltipId}>
-										<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+										<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 									</span>
 							  ))
 							: null}
@@ -368,7 +368,7 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 				}}>
 				{role === KING && (
 					<span>
-						<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+						<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 					</span>
 				)}
 			</div>
@@ -510,14 +510,7 @@ export const BoardSlot = ({
 					justifyContent: 'center',
 					border: `solid 1px ${lightViolet}`,
 					...centerStyle,
-				}}>
-				{canAttackOpponent && (
-					<>
-						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
-						<TbSword style={{ color: violet, fontSize: '1.45rem' }} />
-					</>
-				)}
-			</div>
+				}}></div>
 		);
 	}
 

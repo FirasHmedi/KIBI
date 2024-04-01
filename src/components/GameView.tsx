@@ -53,9 +53,9 @@ import {
 	getOriginalCardId,
 	getPowerCard,
 	hasAttackerInElement,
+	hasKingInElement,
 	isAnimalCard,
 	isAnimalInSlots,
-	isAttackerInElement,
 	isCard,
 	isGameFinished,
 	isJokerInElement,
@@ -110,7 +110,7 @@ export function GameView({
 
 	const activePowerCard = useRef('');
 	const hasAttacked = useRef(false);
-	const canKingAttackAgain = useRef(false);
+	const hasExtraAttack = useRef(false);
 	const gyTitle = useRef('');
 
 	const openCardsPopup = cardsIdsForPopup?.length > 0;
@@ -543,7 +543,7 @@ export function GameView({
 	};
 
 	const finishRound = async () => {
-		canKingAttackAgain.current = false;
+		hasExtraAttack.current = false;
 		if (isGameFinished(status) || spectator) {
 			return;
 		}
@@ -567,9 +567,7 @@ export function GameView({
 	};
 
 	const isAttackDisabled =
-		!(round.nb >= 3 && isMyRound && currPlayer.canAttack) ||
-		getISlotsAllEmpty(currPSlots) ||
-		(getISlotsAllEmpty(oppPSlots) && canKingAttackAgain.current);
+		!(round.nb >= 3 && isMyRound && currPlayer.canAttack) || getISlotsAllEmpty(currPSlots);
 
 	const canAttackOpponent =
 		round.nb >= 3 &&
@@ -598,16 +596,6 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
-		if (canKingAttackAgain.current && !isKingInElement(currAnimalId, elementType)) {
-			return;
-		}
-		if (
-			canKingAttackAgain.current &&
-			isKingInElement(currAnimalId, elementType) &&
-			!isAnimalInSlots(oppPSlots, oppoAnimalId)
-		) {
-			return;
-		}
 		if (
 			isNil(currAnimalId) ||
 			isGameFinished(status) ||
@@ -633,17 +621,22 @@ export function GameView({
 			return false;
 		}
 
+		if (!isAnimalInSlots(oppPSlots, oppoAnimalId)) {
+			showToast('Attack an opponent animal');
+			return false;
+		}
+
+		if (isKingInElement(currAnimalId, elementType) && hasExtraAttack.current) {
+			showToast('Choose another animal');
+			return false;
+		}
+
 		const isAttackAnimalsEnabled =
 			round.nb >= 3 &&
 			isMyRound &&
 			currPlayer.canAttack &&
 			!hasAttacked.current &&
 			currPSlots[currslotnb]?.canAttack;
-
-		const isAttackOwnerEnabled =
-			isAttackAnimalsEnabled &&
-			!isAnimalCard(oppoAnimalId) &&
-			(isAttackerInElement(currAnimalId, elementType) || isOppSlotsEmpty);
 
 		console.log(
 			'player canAttack',
@@ -654,38 +647,10 @@ export function GameView({
 			'isOppAnimalInSlots',
 			isAnimalInSlots(oppPSlots, oppoAnimalId),
 			{ isAttackAnimalsEnabled },
-			{ isAttackOwnerEnabled },
 		);
-
-		if (isAttackOwnerEnabled && !canKingAttackAgain.current) {
-			// await attackOppHp(currAnimalId!);
-			return;
-		}
-
-		if (!isAnimalCard(oppoAnimalId) && !isAttackOwnerEnabled) {
-			if (!isOppSlotsEmpty) {
-				showToast('Not all slots are empty');
-				return false;
-			}
-			return false;
-		}
 
 		if (isAttackAnimalsEnabled && isAnimalInSlots(oppPSlots, oppoAnimalId)) {
 			return await attackAnimal(currAnimalId, oppoAnimalId, oppslotnb);
-		} else {
-			if (hasAttacked.current) {
-				showToast('Already Attacked');
-				return false;
-			}
-			if (!currPlayer.canAttack) {
-				showToast('Blocked from attacking');
-				return false;
-			}
-			if (!isAnimalInSlots(oppPSlots, oppoAnimalId)) {
-				showToast('Attack an opponent animal');
-				return false;
-			}
-			return false;
 		}
 	};
 
@@ -693,19 +658,20 @@ export function GameView({
 		if (!canAnimalAKillAnimalD(currAnimalId, oppoAnimalId, isCurrDoubleAP)) {
 			return false;
 		}
+
 		hasAttacked.current = true;
 		await attackOppAnimal(gameId, playerType, currAnimalId!, oppoAnimalId!, oppslotnb!);
 
-		const canSecondAttackWithKing =
-			isKingInElement(currAnimalId, elementType) && !canKingAttackAgain.current;
-		if (canSecondAttackWithKing) {
-			canKingAttackAgain.current = true;
+		const canSecondAttack = hasKingInElement(currPSlots, elementType) && !hasExtraAttack.current;
+
+		if (canSecondAttack) {
+			hasExtraAttack.current = true;
 			hasAttacked.current = false;
 			return;
 		}
 
 		hasAttacked.current = true;
-		canKingAttackAgain.current = false;
+		hasExtraAttack.current = false;
 	};
 
 	const attackOppHp = async (animalId: string) => {
@@ -743,7 +709,7 @@ export function GameView({
 
 	const attackState = {
 		round,
-		canKingAttackAgain,
+		hasExtraAttack,
 		currPlayer,
 		oppPlayer,
 		board,
