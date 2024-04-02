@@ -162,26 +162,22 @@ export const getMaxAP = (slots: SlotType[] = [], isDoubleAP?: boolean) => {
 	return ap;
 };
 
-export const getCardIdThatAttacksOwner = (
-	slots: SlotType[] = [],
-	hasAttackerInElement?: boolean,
-	elementType?: ClanName,
-) => {
-	let selectedCardId: string = '';
-	[slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].forEach(cardId => {
-		selectedCardId = cardId;
-		if (hasAttackerInElement) {
-			if (isAttackerInElement(cardId, elementType)) {
-				return cardId;
-			}
-		} else {
-			const role = getAnimalCard(cardId)?.role;
-			if (role === KING || role === ATTACKER) {
-				return cardId;
-			}
+export const getCardIdThatAttacksOwner = (slots: SlotType[] = [], elementType?: ClanName) => {
+	const cardsIds = [slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].filter(cardId =>
+		isAnimalCard(cardId),
+	);
+	const attackerId = cardsIds.find(cardId => isAttackerInElement(cardId, elementType));
+	if (isAnimalCard(attackerId)) {
+		return attackerId;
+	}
+	let selectedCardId: any = null;
+	cardsIds.forEach(cardId => {
+		const role = getAnimalCard(cardId)?.role;
+		if (role === KING || role === ATTACKER) {
+			selectedCardId = cardId;
 		}
 	});
-	return selectedCardId;
+	return selectedCardId ?? cardsIds[0];
 };
 
 export const submitRandomSelection = async (gameId: string, powerCards: string[] = []) => {

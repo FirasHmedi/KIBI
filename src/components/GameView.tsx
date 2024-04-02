@@ -580,14 +580,18 @@ export function GameView({
 		(isOppSlotsEmpty || hasAttackerInElement(currPSlots, elementType));
 
 	const attackPlayer = async () => {
-		if (!canAttackOpponent) {
+		if (
+			!(
+				round.nb >= 3 &&
+				isMyRound &&
+				currPlayer.canAttack &&
+				!hasAttacked.current &&
+				(isOppSlotsEmpty || hasAttackerInElement(currPSlots, elementType))
+			)
+		) {
 			return;
 		}
-		const cardId = getCardIdThatAttacksOwner(
-			currPSlots,
-			hasAttackerInElement(currPSlots, elementType),
-			elementType,
-		);
+		const cardId = getCardIdThatAttacksOwner(currPSlots, elementType);
 		if (isAnimalCard(cardId)) {
 			hasAttacked.current = true;
 			await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), cardId, isCurrDoubleAP);
@@ -633,6 +637,7 @@ export function GameView({
 		if (
 			!isEmpty(lastAnimalIdThatAttacked.current) &&
 			isKingInElement(lastAnimalIdThatAttacked.current, elementType) &&
+			currAnimalId === lastAnimalIdThatAttacked.current &&
 			hasExtraAttack.current
 		) {
 			showToast('Choose another animal');
