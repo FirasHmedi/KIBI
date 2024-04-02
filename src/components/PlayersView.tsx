@@ -95,7 +95,7 @@ export const CurrentPView = ({
 		};
 
 		const cardsToPlay =
-			nbCardsToPlay > 1 ? `${nbCardsToPlay} cards` : nbCardsToPlay === 1 ? '1 card' : 'No cards';
+			nbCardsToPlay > 1 ? `${nbCardsToPlay} 🃁` : nbCardsToPlay === 1 ? '1 🃁' : 'No 🃁';
 
 		const buttonsStyle: CSSProperties = {
 			...CurrPlayerViewButtonsStyle,
