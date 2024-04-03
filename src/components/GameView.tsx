@@ -57,6 +57,7 @@ import {
 	hasKingInElement,
 	isAnimalCard,
 	isAnimalInSlots,
+	isAttackerInElement,
 	isCard,
 	isGameFinished,
 	isJokerInElement,
@@ -602,6 +603,10 @@ export function GameView({
 			cardId === lastAnimalIdThatAttacked.current &&
 			hasExtraAttack.current
 		) {
+			return;
+		}
+
+		if (hasExtraAttack.current && !isOppSlotsEmpty && !isAttackerInElement(cardId, elementType)) {
 			return;
 		}
 
