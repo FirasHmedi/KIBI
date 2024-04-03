@@ -162,9 +162,13 @@ export const getMaxAP = (slots: SlotType[] = [], isDoubleAP?: boolean) => {
 	return ap;
 };
 
-export const getCardIdThatAttacksOwner = (slots: SlotType[] = [], elementType?: ClanName) => {
-	const cardsIds = [slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].filter(cardId =>
-		isAnimalCard(cardId),
+export const getCardIdThatAttacksOwner = (
+	slots: SlotType[] = [],
+	elementType?: ClanName,
+	lastAnimalId?: string,
+) => {
+	const cardsIds = [slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].filter(
+		cardId => isAnimalCard(cardId) && lastAnimalId !== cardId,
 	);
 	const attackerId = cardsIds.find(cardId => isAttackerInElement(cardId, elementType));
 	if (isAnimalCard(attackerId)) {

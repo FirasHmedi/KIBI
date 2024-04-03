@@ -581,20 +581,34 @@ export function GameView({
 
 	const attackPlayer = async () => {
 		if (
-			!(
-				round.nb >= 3 &&
-				isMyRound &&
-				currPlayer.canAttack &&
-				!hasAttacked.current &&
-				(isOppSlotsEmpty || hasAttackerInElement(currPSlots, elementType))
-			)
+			round.nb < 3 ||
+			!isMyRound ||
+			!currPlayer.canAttack ||
+			hasAttacked.current ||
+			(!isOppSlotsEmpty && !hasAttackerInElement(currPSlots, elementType))
 		) {
 			return;
 		}
-		const cardId = getCardIdThatAttacksOwner(currPSlots, elementType);
+
+		const cardId = getCardIdThatAttacksOwner(
+			currPSlots,
+			elementType,
+			lastAnimalIdThatAttacked.current,
+		);
+
+		if (
+			!isEmpty(lastAnimalIdThatAttacked.current) &&
+			isKingInElement(lastAnimalIdThatAttacked.current, elementType) &&
+			cardId === lastAnimalIdThatAttacked.current &&
+			hasExtraAttack.current
+		) {
+			return;
+		}
+
 		if (isAnimalCard(cardId)) {
 			hasAttacked.current = true;
 			await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), cardId, isCurrDoubleAP);
+			handleSecondAttackRule(cardId);
 		}
 	};
 
@@ -675,10 +689,14 @@ export function GameView({
 		hasAttacked.current = true;
 		await attackOppAnimal(gameId, playerType, currAnimalId!, oppoAnimalId!, oppSlotNb!);
 
+		handleSecondAttackRule(currAnimalId!);
+	};
+
+	const handleSecondAttackRule = (cardId: string) => {
 		const canSecondAttack = hasKingInElement(currPSlots, elementType) && !hasExtraAttack.current;
 
 		if (canSecondAttack) {
-			lastAnimalIdThatAttacked.current = currAnimalId!;
+			lastAnimalIdThatAttacked.current = cardId!;
 			hasExtraAttack.current = true;
 			hasAttacked.current = false;
 			return;
