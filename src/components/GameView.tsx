@@ -732,10 +732,10 @@ export function GameView({
 	};
 
 	const openJokerPopup = (lastAnimCard?: string) => {
-		if (isEmpty(animalGY) && isEmpty(powerGY)) {
+		if (isEmpty(animalGY)) {
 			return;
 		}
-		const graveyardCards = [...animalGY, ...powerGY].filter(id => lastAnimCard !== id);
+		const graveyardCards = [...animalGY].filter(id => lastAnimCard !== id);
 		setCardsIdsForPopup(graveyardCards);
 		setIsJokerActive(true);
 	};

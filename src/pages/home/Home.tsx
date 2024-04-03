@@ -57,8 +57,12 @@ function Home() {
 
 	const setLeaderBoardAfterCalc = async () => {
 		let users: any = (await getItemsOnce('users')) ?? {};
-		users = Object.values(users);
-		console.log('hello', users);
+		users = Object.values(users).map(({ score, wins, losses, userName }: any) => ({
+			score,
+			wins,
+			losses,
+			userName,
+		}));
 		users = orderBy(users, ['score'], ['desc']);
 		setLeaderBoard(users);
 	};
