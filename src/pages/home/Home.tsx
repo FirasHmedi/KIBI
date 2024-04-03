@@ -377,7 +377,7 @@ function Home() {
 					borderRadius: 5,
 					width: '15rem',
 				}}>
-				<h5 style={{ color: violet, fontWeight: 'bold' }}>Leader Board</h5>
+				<h5 style={{ color: violet, fontWeight: 'bold' }}>Leaderboard</h5>
 				{leaderBoard?.map(user => (
 					<div>
 						{user.score} - {user.userName}
