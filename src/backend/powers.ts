@@ -181,12 +181,12 @@ export const changeElement = async (
 
 	const currSlots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
 	const isCurrDoubleAP = await are3AnimalsWithSameElement(gameId, currSlots, elementType);
-	await setPlayerDoubleAP(gameId, playerType, isCurrDoubleAP);
+	await setPlayerDoubleAP(gameId, playerType, false);
 
 	const oppPlayerType = getOpponentIdFromCurrentId(playerType);
 	const oppSlots = (await getItemsOnce(getBoardPath(gameId) + oppPlayerType)) ?? [];
 	const isOppDoubleAP = await are3AnimalsWithSameElement(gameId, oppSlots, elementType);
-	await setPlayerDoubleAP(gameId, oppPlayerType, isOppDoubleAP);
+	await setPlayerDoubleAP(gameId, oppPlayerType, false);
 
 	if (playerType) {
 		setElementLoad(gameId, playerType, 0);
