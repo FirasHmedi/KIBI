@@ -38,7 +38,7 @@ export const addAnimalToBoard = async (
 	updatedSlots[slotNb] = { cardId: animalId, canAttack: true };
 	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });
 	const isDoubleAP = await are3AnimalsWithSameElement(gameId, updatedSlots);
-	await setPlayerDoubleAP(gameId, playerType, isDoubleAP);
+	await setPlayerDoubleAP(gameId, playerType, false);
 };
 
 export const setPlayerDoubleAP = async (
