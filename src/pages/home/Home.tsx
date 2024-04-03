@@ -73,7 +73,7 @@ function Home() {
 			return;
 		}
 
-		const gameId = short.generate();
+		const gameId = short.generate().slice(0, 6);
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
 
@@ -121,7 +121,7 @@ function Home() {
 	};
 
 	const playWithGameBot = async () => {
-		const gameId = short.generate();
+		const gameId = short.generate().slice(0, 6);
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
 

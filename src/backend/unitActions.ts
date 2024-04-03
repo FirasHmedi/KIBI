@@ -26,20 +26,17 @@ export const checkIfAnimalExistAddItToGraveYard = async (
 	}
 };
 
-/* Changed canAttack, testing with true */
 export const addAnimalToBoard = async (
 	gameId: string,
 	playerType: PlayerType,
 	slotNb: number,
 	animalId: string,
-	canAttack: boolean = false,
 ) => {
 	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb);
 	const slots = ((await getItemsOnce(getBoardPath(gameId) + playerType)) ?? []) as SlotType[];
 	const updatedSlots = [slots[0] ?? EMPTY_SLOT, slots[1] ?? EMPTY_SLOT, slots[2] ?? EMPTY_SLOT];
 	updatedSlots[slotNb] = { cardId: animalId, canAttack: true };
 	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });
-	// 3 Animals in element
 	const isDoubleAP = await are3AnimalsWithSameElement(gameId, updatedSlots);
 	await setPlayerDoubleAP(gameId, playerType, isDoubleAP);
 };

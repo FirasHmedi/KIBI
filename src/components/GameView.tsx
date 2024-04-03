@@ -316,6 +316,7 @@ export function GameView({
 		console.log('Executing power card ', cardId);
 
 		const { name } = getPowerCard(cardId)!;
+		let lastAnimCard;
 		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
 		activePowerCard.current = cardId;
 
@@ -333,16 +334,10 @@ export function GameView({
 				await switchDeckMinusHp(gameId, playerType);
 				break;
 			case 'rev-last-anim':
-				const lastAnimCard = animalGY[animalGY.length - 1];
+				lastAnimCard = animalGY[animalGY.length - 1];
 				await deleteAnimalCardFromGraveYardById(gameId, lastAnimCard);
 				const slotNbForRevive = getCurrSlotNb();
-				await addAnimalToBoard(gameId, playerType, slotNbForRevive, lastAnimCard!, true);
-				if (isJokerInElement(lastAnimCard, elementType)) {
-					openJokerPopup();
-				}
-				if (isTankInElement(lastAnimCard, elementType)) {
-					await add1Hp(gameId, playerType);
-				}
+				await addAnimalToBoard(gameId, playerType, slotNbForRevive, lastAnimCard!);
 				break;
 			case 'rev-any-anim-1hp':
 				gyTitle.current = 'Choose an animal to revive';
@@ -379,7 +374,7 @@ export function GameView({
 				setCardsIdsForPopup(oppPlayer.cardsIds);
 				return;
 		}
-		await processPostPowerCardPlay();
+		await processPostPowerCardPlay(lastAnimCard);
 	};
 
 	const playPowerCard = async (cardId: string) => {
@@ -399,6 +394,7 @@ export function GameView({
 		console.log('Executing power card ', cardId);
 
 		const { name } = getPowerCard(cardId)!;
+		let lastAnimCard;
 		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
 		activePowerCard.current = cardId;
 		switch (getOriginalCardId(cardId!)) {
@@ -432,16 +428,10 @@ export function GameView({
 				setCardsIdsForPopup(powerGY);
 				return;
 			case 'rev-last-anim':
-				const lastAnimCard = animalGY[animalGY.length - 1];
+				lastAnimCard = animalGY[animalGY.length - 1];
 				await deleteAnimalCardFromGraveYardById(gameId, lastAnimCard);
 				const slotNbForRevive = getCurrSlotNb();
-				await addAnimalToBoard(gameId, playerType, slotNbForRevive, lastAnimCard!, true);
-				if (isJokerInElement(lastAnimCard, elementType)) {
-					openJokerPopup();
-				}
-				if (isTankInElement(lastAnimCard, elementType)) {
-					await add1Hp(gameId, playerType);
-				}
+				await addAnimalToBoard(gameId, playerType, slotNbForRevive, lastAnimCard!);
 				break;
 			case 'rev-any-anim-1hp':
 				gyTitle.current = 'Select an animal to revive';
@@ -473,10 +463,10 @@ export function GameView({
 				return;
 		}
 
-		await processPostPowerCardPlay();
+		await processPostPowerCardPlay(lastAnimCard);
 	};
 
-	const processPostPowerCardPlay = async () => {
+	const processPostPowerCardPlay = async (lastAnimCard?: string) => {
 		setCardsIdsForPopup([]);
 
 		await addPowerToGraveYard(gameId, activePowerCard.current);
@@ -485,6 +475,15 @@ export function GameView({
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 
 		activePowerCard.current = '';
+
+		if (isAnimalCard(lastAnimCard)) {
+			if (isJokerInElement(lastAnimCard, elementType)) {
+				openJokerPopup(lastAnimCard);
+			}
+			if (isTankInElement(lastAnimCard, elementType)) {
+				await add1Hp(gameId, playerType);
+			}
+		}
 	};
 
 	const setElement = async () => {
@@ -732,11 +731,11 @@ export function GameView({
 		}
 	};
 
-	const openJokerPopup = () => {
+	const openJokerPopup = (lastAnimCard?: string) => {
 		if (isEmpty(animalGY) && isEmpty(powerGY)) {
 			return;
 		}
-		const graveyardCards = [...animalGY, ...powerGY];
+		const graveyardCards = [...animalGY, ...powerGY].filter(id => lastAnimCard !== id);
 		setCardsIdsForPopup(graveyardCards);
 		setIsJokerActive(true);
 	};

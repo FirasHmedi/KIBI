@@ -61,9 +61,9 @@ export const placeAnimalOnBoard = async (
 	animalId: string,
 ) => {
 	const animal = getAnimalCard(animalId);
-	await addInfoToLog(gameId, playerType + ' placed' + animal?.name + ' in ' + slotNb);
+	await addInfoToLog(gameId, playerType + ' placed ' + animal?.name + ' in ' + slotNb);
 	await removeCardFromPlayerDeck(gameId, playerType, animalId);
-	await addAnimalToBoard(gameId, playerType, slotNb, animalId, false);
+	await addAnimalToBoard(gameId, playerType, slotNb, animalId);
 };
 
 export const placeKingOnBoard = async (
@@ -84,7 +84,7 @@ export const placeKingOnBoard = async (
 	if (isRemoved) {
 		await addAnimalToGraveYard(gameId, sacrificedAnimalId);
 		await removeCardFromPlayerDeck(gameId, playerType, kingId);
-		await addAnimalToBoard(gameId, playerType, slotNb, kingId, true);
+		await addAnimalToBoard(gameId, playerType, slotNb, kingId);
 	}
 };
 
@@ -215,7 +215,7 @@ export const placeKingWithoutSacrifice = async (
 	slotNb: number,
 ) => {
 	await removeCardFromPlayerDeck(gameId, playerType, kingId);
-	await addAnimalToBoard(gameId, playerType, slotNb, kingId, true);
+	await addAnimalToBoard(gameId, playerType, slotNb, kingId);
 };
 
 export const changeHasAttacked = async (
