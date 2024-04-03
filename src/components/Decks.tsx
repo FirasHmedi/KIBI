@@ -50,7 +50,7 @@ export const CurrentPDeck = ({ cardsIds = [], updateCardsOrder }: CurrentPDeckPr
 			style={{
 				...flexRowStyle,
 				width: '40rem',
-				overflowY: 'auto',
+				overflowY: 'scroll',
 				justifyContent: 'safe center',
 			}}>
 			{cardsIds.map((cardId, index) => (
