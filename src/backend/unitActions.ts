@@ -9,7 +9,8 @@ import {
 } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import { getElementType } from './actions';
-import { getBoardPath, getGamePath, getItemsOnce, getPlayerPath, setItem } from './db';
+import { USERS_PATH, getBoardPath, getGamePath, getItemsOnce, getPlayerPath, setItem } from './db';
+import { getEloRating } from './rating';
 
 export const setActivePowerCard = async (gameId: string, cardId?: string) => {
 	await setItem(getBoardPath(gameId), { activeCardId: cardId });
@@ -147,6 +148,26 @@ export const setGameWin = async (gameId: string, playerType: PlayerType) => {
 	await setItem(getGamePath(gameId), {
 		winner: getOpponentIdFromCurrentId(playerType),
 		status: FINISHED,
+	});
+	const winnerId = (
+		await getItemsOnce(getGamePath(gameId) + getOpponentIdFromCurrentId(playerType))
+	)?.id;
+	const loserId = (await getItemsOnce(getGamePath(gameId) + playerType))?.id;
+	if (!winnerId || !loserId || winnerId === loserId) {
+		return;
+	}
+	const winner = await getItemsOnce(USERS_PATH + winnerId);
+	const loser = await getItemsOnce(USERS_PATH + loserId);
+	const { oneScore, twoScore } = getEloRating(winner.score ?? 1000, loser.score ?? 1000, true);
+	await setItem(USERS_PATH + winnerId, {
+		...winner,
+		score: oneScore,
+		wins: (winner.wins ?? 0) + 1,
+	});
+	await setItem(USERS_PATH + loserId, {
+		...loser,
+		score: twoScore,
+		losses: (loser.losses ?? 0) + 1,
 	});
 };
 

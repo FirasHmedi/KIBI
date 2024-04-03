@@ -47,10 +47,6 @@ function Sidebar() {
 						attack Opponent directly.
 					</li>
 					<br />
-					<li>
-						If the player has 3 animals of the same activated element, All animals AP are doubled.
-					</li>
-					<br />
 					<li>Animals can be sacrificed from the board. Player gets +2hp per sacrifice. </li>
 				</ul>
 			</div>

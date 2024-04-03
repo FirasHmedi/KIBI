@@ -298,6 +298,11 @@ className={
 						<TbSword style={{ color: violet, fontSize: '1.45rem' }} />
 					</>
 				)}
+
+									<br />
+					<li>
+						If the player has 3 animals of the same activated element, All animals AP are doubled.
+					</li>
 	*/
 
 export {};

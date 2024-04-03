@@ -49,7 +49,6 @@ function Home() {
 	const setUser = async () => {
 		const user = await isUserConnected();
 		if (isNotEmpty(user.userName)) {
-			console.log('user ', user);
 			setCurrentUser(user);
 			return;
 		}
@@ -57,9 +56,11 @@ function Home() {
 	};
 
 	const setLeaderBoardAfterCalc = async () => {
-		let leaderboard: any[] = (await getItemsOnce('leaderboard')) ?? [];
-		leaderboard = orderBy(leaderboard, ['score'], ['asc']).slice(0, 5);
-		setLeaderBoard(leaderBoard);
+		let users: any = (await getItemsOnce('users')) ?? {};
+		users = Object.values(users);
+		console.log('hello', users);
+		users = orderBy(users, ['score'], ['desc']);
+		setLeaderBoard(users);
 	};
 
 	useEffect(() => {
@@ -369,19 +370,25 @@ function Home() {
 			</div>
 			<div
 				style={{
+					width: '15rem',
 					position: 'absolute',
 					top: '20vh',
 					right: '5vw',
-					...centerStyle,
-					border: `2px solid ${violet}`,
+					display: 'flex',
+					alignItems: 'center',
 					borderRadius: 5,
-					width: '15rem',
+					flexDirection: 'column',
+					gap: 6,
+					overflowY: 'scroll',
+					maxHeight: '70vh',
 				}}>
-				<h5 style={{ color: violet, fontWeight: 'bold' }}>Leaderboard</h5>
-				{leaderBoard?.map(user => (
-					<div>
-						{user.score} - {user.userName}
-					</div>
+				<h3 style={{ color: violet, fontWeight: 'bold' }}>Leaderboard</h3>
+				{leaderBoard?.map((user, index) => (
+					<h5 key={index} style={{ color: violet, fontWeight: 'semi-bold', ...centerStyle }}>
+						{user.userName} <br /> {user.score}🏆 <br /> {user.wins}⬆ {user.losses}⬇
+						<br />
+						------------------
+					</h5>
 				))}
 			</div>
 		</>
