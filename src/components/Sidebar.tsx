@@ -40,11 +40,13 @@ function Sidebar() {
 				<ul>
 					<li>In the first round, Players cant attack.</li>
 					<br />
-					<li>Player attacks once per round. Lion gives an extra attack in its element</li>
+					<li>
+						Player attacks once per round. Lion in element gives an extra attack to another animal.
+					</li>
 					<br />
 					<li>
-						Player can attack the opponent if he has no animal to defend, Eagle in element can
-						attack Opponent directly.
+						Player can attack the opponent if he has an eagle in element or the opponent has no
+						animals to defend him.
 					</li>
 					<br />
 					<li>Animals can be sacrificed from the board. Player gets +2hp per sacrifice. </li>
