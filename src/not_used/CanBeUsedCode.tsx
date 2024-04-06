@@ -303,6 +303,12 @@ className={
 					<li>
 						If the player has 3 animals of the same activated element, All animals AP are doubled.
 					</li>
+						"switch-decks": {
+		"description": "Switch deck with opponent for 1hp",
+		"name": "Switch decks",
+		"gain": 0,
+		"loss": 1
+	}
 	*/
 
 export {};

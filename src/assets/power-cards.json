@@ -50,11 +50,5 @@
 		"name": "Steal an animal",
 		"gain": 0,
 		"loss": 3
-	},
-	"switch-decks": {
-		"description": "Switch deck with opponent for 1hp",
-		"name": "Switch decks",
-		"gain": 0,
-		"loss": 1
 	}
 }

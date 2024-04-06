@@ -391,7 +391,7 @@ function Home() {
 					<h5 key={index} style={{ color: violet, fontWeight: 'semi-bold', ...centerStyle }}>
 						{user.userName} <br /> {user.score}🏆 <br /> {user.wins}⬆ {user.losses}⬇
 						<br />
-						------------------
+						------
 					</h5>
 				))}
 			</div>
