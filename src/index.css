@@ -51,3 +51,9 @@ span {
 a {
 	text-decoration: none !important;
 }
+
+table,
+th,
+td {
+	border: 1px solid #681b89;
+}

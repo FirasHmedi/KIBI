@@ -35,14 +35,14 @@ export const BoardView = ({
 	setElement,
 	canAttackOpponent,
 	attackPlayer,
-	sacrificeAnimal
+	sacrificeAnimal,
 }: Props) => {
 	const { mainDeck, currPSlots, oppPSlots, animalGY, powerGY, elementType, activeCardId } = board;
 	const [, drop] = useDrop(
 		{
 			accept: 'moveBoardCard',
 			drop: (item: DropItem) => {
-				sacrificeAnimal(item.id,item.nb)
+				sacrificeAnimal(item.id, item.nb);
 			},
 		},
 		[localState],
@@ -80,6 +80,7 @@ export const BoardView = ({
 					attack={attack}
 					attackState={attackState}
 					isDoubleAP={isCurrDoubleAP}
+					sacrificeAnimal={sacrificeAnimal}
 				/>
 			</div>
 			<Seperator w='2vw' />
@@ -88,11 +89,13 @@ export const BoardView = ({
 				<ElementSlot elementType={elementType} />
 			</button>
 
+			<Seperator w='1.5rem' />
+
 			<button
 				style={{
-					position: 'absolute',
-					right: '31vw',
-					top: '57vh',
+					position: 'relative',
+					top: '7rem',
+					right: '4.5rem',
 					borderRadius: 10,
 					backgroundColor: canAttackOpponent ? violet : 'grey',
 					padding: 4,
@@ -109,7 +112,9 @@ export const BoardView = ({
 			<div style={{ position: 'absolute', right: '0vw', top: '10vh' }}>
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator h='4vh' />
-				<div ref={drop}><AnimalGraveyard cardsIds={animalGY}  /></div>
+				<div ref={drop}>
+					<AnimalGraveyard cardsIds={animalGY} />
+				</div>
 				<Seperator h='4vh' />
 				<PowerGraveyard cardsIds={powerGY} />
 			</div>

@@ -50,7 +50,8 @@ export const CurrentPDeck = ({ cardsIds = [], updateCardsOrder }: CurrentPDeckPr
 			style={{
 				...flexRowStyle,
 				width: '40rem',
-				overflowY: 'scroll',
+				overflowY: 'hidden',
+				overflowX: 'scroll',
 				justifyContent: 'safe center',
 			}}>
 			{cardsIds.map((cardId, index) => (
@@ -74,7 +75,7 @@ export const OpponentPDeck = ({
 			style={{
 				...flexRowStyle,
 				width: '24vw',
-				overflowY: 'auto',
+				overflow: 'hidden',
 				justifyContent: 'safe center',
 			}}>
 			{!spectator

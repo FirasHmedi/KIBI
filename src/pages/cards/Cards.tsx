@@ -16,6 +16,7 @@ function Cards() {
 					overflowY: 'auto',
 					paddingLeft: '12vw',
 					paddingRight: '12vw',
+					overflowX: 'hidden',
 				}}>
 				<h3>Animal Cards</h3>
 				<div style={{ display: 'flex', flexWrap: 'wrap', ...centerStyle }}>

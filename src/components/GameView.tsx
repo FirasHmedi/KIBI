@@ -721,6 +721,7 @@ export function GameView({
 		}
 		await sacrificeAnimalToGet2Hp(gameId, playerType, animalId, slotNb);
 	};
+
 	const activateMonkeyAbility = (slots: any[] = [], elementType?: ClanName) => {
 		console.log('Try activate monkey ability ', { slots }, { elementType });
 		for (let i = 0; i < slots.length; i++) {
@@ -770,9 +771,9 @@ export function GameView({
 				style={{
 					...flexColumnStyle,
 					width: '100%',
-					height: '94vh',
+					height: '99vh',
 					justifyContent: 'space-between',
-					paddingBottom: '6vh',
+					paddingBottom: '1vh',
 				}}>
 				<OpponentPView player={oppPlayer} spectator={spectator} />
 

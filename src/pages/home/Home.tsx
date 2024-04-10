@@ -8,6 +8,7 @@ import { getItemsOnce, setItem } from '../../backend/db';
 
 import { isEmpty, orderBy } from 'lodash';
 import { VscDebugContinue } from 'react-icons/vsc';
+import { Tooltip } from 'react-tooltip';
 import short from 'short-uuid';
 import { Seperator } from '../../components/Elements';
 import {
@@ -362,19 +363,10 @@ function Home() {
 							</button>
 						</div>
 					</div>
-					<Seperator h='1vh' />
-					<div style={centerStyle}>
-						<button
-							style={{ color: violet }}
-							onClick={() => window.open('https://discord.gg/CrAy2vKQ', '_blank')}>
-							<h3 style={{ textDecoration: 'underline' }}>Discord server</h3>
-						</button>
-					</div>
 				</div>
 			</div>
 			<div
 				style={{
-					width: '15rem',
 					position: 'absolute',
 					top: '20vh',
 					right: '5vw',
@@ -383,17 +375,28 @@ function Home() {
 					borderRadius: 5,
 					flexDirection: 'column',
 					gap: 6,
-					overflowY: 'scroll',
+					overflowY: 'auto',
 					maxHeight: '70vh',
+					overflowX: 'hidden',
 				}}>
 				<h3 style={{ color: violet, fontWeight: 'bold' }}>Leaderboard</h3>
-				{leaderBoard?.map((user, index) => (
-					<h5 key={index} style={{ color: violet, fontWeight: 'semi-bold', ...centerStyle }}>
-						{user.userName} <br /> {user.score}🏆 <br /> {user.wins}⬆ {user.losses}⬇
-						<br />
-						------
-					</h5>
-				))}
+				<table style={{ width: '12vw' }}>
+					{leaderBoard?.map((user, index) => (
+						<tr>
+							<td style={{ padding: 4 }}>
+								<h5
+									key={index}
+									data-tooltip-id='wl'
+									data-tooltip-content={`wins: ${user.wins} , losses: ${user.losses}`}
+									style={{ color: violet, ...centerStyle }}>
+									{user.userName}
+								</h5>
+								<h6 style={{ color: violet, ...centerStyle }}>{user.score} 🏆</h6>
+								<Tooltip id='wl' />
+							</td>
+						</tr>
+					))}
+				</table>
 			</div>
 		</>
 	);

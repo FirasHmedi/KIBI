@@ -125,7 +125,17 @@ export const CurrentPView = ({
 					{!!nbCardsToPlay && isMyRound && <h5 style={{ color: violet }}>{cardsToPlay} left</h5>}
 					<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
 						{!isConfirmActive ? (
-							<button style={buttonsStyle} disabled={!isMyRound} onClick={handleFinishClick}>
+							<button
+								style={{
+									...buttonsStyle,
+									minWidth: undefined,
+									width: undefined,
+									padding: 2,
+									paddingLeft: 6,
+									paddingRight: 6,
+								}}
+								disabled={!isMyRound}
+								onClick={handleFinishClick}>
 								FINISH
 							</button>
 						) : (

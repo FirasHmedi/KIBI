@@ -30,7 +30,7 @@ export const ElementPopup = ({
 			left: 0,
 			height: '100%',
 			width: '100%',
-			backgroundColor: 'rgba(0, 0, 0, 0.6)',
+			backgroundColor: 'rgba(0, 0, 0, 0.2)',
 			zIndex: 2,
 		}}>
 		<button
@@ -47,7 +47,7 @@ export const ElementPopup = ({
 				color: 'white',
 				...centerStyle,
 			}}>
-			Set Element for 1 {'    '}
+			Change Element for 1 {'    '}
 			<FaHeart style={{ color: 'white', fontSize: '1.3rem', marginLeft: 4 }} />
 		</h2>
 		<div
@@ -158,6 +158,7 @@ export const GameLeftInfo = ({ round, logs }: { round: Round; logs: any[] }) => 
 				width: '15vw',
 				height: '11vh',
 				overflowY: 'auto',
+				overflowX: 'hidden',
 			}}>
 			{logs.map((log, index) => (
 				<h6 key={index} style={{ fontSize: '0.5em' }}>
