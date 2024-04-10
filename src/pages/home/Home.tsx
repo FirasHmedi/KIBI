@@ -4,7 +4,7 @@ import { MdComputer, MdPerson, MdVisibility } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getItemsOnce, setItem } from '../../backend/db';
+import { getItemsOnce, setItem, subscribeToItems } from '../../backend/db';
 
 import { isEmpty, orderBy } from 'lodash';
 import { VscDebugContinue } from 'react-icons/vsc';
@@ -56,8 +56,7 @@ function Home() {
 		setCurrentUser(undefined);
 	};
 
-	const setLeaderBoardAfterCalc = async () => {
-		let users: any = (await getItemsOnce('users')) ?? {};
+	const setLeaderBoardAfterCalc = async (users: any = {}) => {
 		users = Object.values(users).map(({ score, wins, losses, userName }: any) => ({
 			score,
 			wins,
@@ -68,9 +67,13 @@ function Home() {
 		setLeaderBoard(users);
 	};
 
+	const subscribeToUsers = async () => {
+		await subscribeToItems('users', setLeaderBoardAfterCalc);
+	};
+
 	useEffect(() => {
 		setUser();
-		setLeaderBoardAfterCalc();
+		subscribeToUsers();
 	}, []);
 
 	const createGame = async () => {

@@ -78,6 +78,6 @@ export const subscribeToItems = async (path: string, setItemsState: (item: any) 
 		});
 	} catch (e) {
 		console.error('Error getting items: ', e);
-		return [];
+		return null;
 	}
 };
