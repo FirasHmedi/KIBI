@@ -2,7 +2,7 @@
 
 // Function to calculate the Probability
 function getProbabilityOfWinning(rating1: number, rating2: number) {
-	return 1 / (1 + (1.0 * Math.pow(10, rating1 - rating2)) / 400);
+	return 1 / (1 + Math.pow(10, (rating1 - rating2) / 400));
 }
 
 // Function to calculate Elo rating
