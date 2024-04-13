@@ -10,9 +10,11 @@ import Home from '../pages/home/Home';
 import { Connect } from '../pages/registration/Connect';
 import Walkthrough from '../pages/walkthrough/Walkthrough';
 import { appStyle, centerStyle, violet } from '../styles/Style';
-import { CARDS_PATH, CONNECT_PATH, GAME_PATH, HOME_PATH, WALKTHROUGH_PATH } from './data';
+import { CARDS_PATH, CONNECT_PATH, GAME_PATH, HOME_PATH, TOURNAMENT_PATH, WALKTHROUGH_PATH } from './data';
 import { isNotEmpty, isUserConnected } from './helpers';
 import { User } from './interface';
+import { element } from 'prop-types';
+import TournamentPage from '../pages/tournament/tournament';
 
 const Layout = ({ children }: any) => {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -95,6 +97,7 @@ const Layout = ({ children }: any) => {
 };
 
 export const routes = [
+	
 	{
 		path: HOME_PATH,
 		element: (
@@ -138,6 +141,15 @@ export const routes = [
 		element: (
 			<Layout>
 				<Cards />
+			</Layout>
+		),
+	},
+	{
+		
+		path: TOURNAMENT_PATH,
+		element : (
+			<Layout>
+				<TournamentPage />
 			</Layout>
 		),
 	},

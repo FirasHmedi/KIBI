@@ -17,6 +17,7 @@ export const FINISHED = 'finished';
 export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const GAMES_PATH = 'games/';
+export const TOURNAMENT_PATH = '/tournament/:id'
 
 export const ROUND_DURATION = 30; //60
 

@@ -24,6 +24,7 @@ import {
 	CONNECT_PATH,
 	EMPTY_SLOT,
 	GAMES_PATH,
+	TOURNAMENT_PATH,
 	INITIAL_HP,
 	PREPARE,
 	RUNNING,
@@ -274,6 +275,38 @@ function Home() {
 			});
 		}
 	};
+	
+	
+	const createTournamentWithFour = async () => {
+	
+		if ( isEmpty(currentUser)) { 
+			navigate(CONNECT_PATH); 
+			return;
+		}
+	
+		const tournId = short.generate().slice(0, 6);
+		let player1Id = currentUser.id;
+	
+		try {
+			await setItem(`/tournaments/${tournId}/players/${currentUser.userName}`, {
+				id: player1Id,
+				hp: INITIAL_HP,
+				playerName: currentUser.userName,
+				canAttack: true,
+				canPlayPowers: true,
+				status: PREPARE,
+				envLoadNb: 0,
+			});
+
+	
+			navigate('/tournament/' + tournId, tournId)
+		} catch (error) {
+			console.error('Failed to create tournament:', error);
+		}
+	};
+
+	
+	
 	return (
 		<>
 			<ToastContainer />
@@ -316,9 +349,21 @@ function Home() {
 							disabled={disabledButton}
 							onClick={playWithGameBot}>
 							<MdComputer />
-						</button>
+						</button >
+						
 					</div>
+
+
+
+
+					
+
+
+
+
+
 					<Seperator h='1vh' />
+					
 					<div style={centerStyle}>
 						<h3 style={{ color: violet }}>Join</h3>
 						<input
@@ -366,6 +411,89 @@ function Home() {
 							</button>
 						</div>
 					</div>
+
+					<Seperator h='1vh' />
+
+
+
+
+
+
+
+
+
+					<div style={{ ...centerStyle, gap: 15 }}>
+						<h3 style={{ color: violet }}>Create a tournament</h3>
+						{alertMessage && (
+							<div style={{}}>
+								{alertMessage}
+								<button onClick={() => setAlertMessage('')}>Close</button>
+							</div>
+						)}
+						
+						<button style={{
+								...buttonStyle,
+								...homeButtonsStyle,
+							}}
+							disabled={false}
+							onClick={() => createTournamentWithFour()}>
+							create tour 4
+						</button>
+						<button style={{
+								...buttonStyle,
+								...homeButtonsStyle,
+							}}>
+							create tour 8
+						</button>
+					</div>
+
+					<Seperator h='1vh' />
+
+
+
+					<div style={centerStyle}>
+						<h3 style={{ color: violet }}>Join</h3>
+						<input
+							type='text'
+							placeholder='tournament Id'
+							required
+							style={{
+								padding: 10,
+								margin: 10,
+								width: '14vw',
+								height: '2vh',
+								borderRadius: 5,
+								borderWidth: 3,
+								borderColor: violet,
+								fontSize: '1rem',
+								color: violet,
+							}}
+							value={gameId}
+							disabled={disabledButton}
+							onChange={e => setGameId(e.target.value)}
+						/>
+
+						<div style={{ width: '20vw', ...flexRowStyle, gap: 15 }}>
+							<button
+								style={{
+									...buttonStyle,
+									...homeButtonsStyle,
+									fontSize: '1.4em',
+								}}
+								disabled={disabledButton}
+								onClick={() => joinGameAsPlayer()}>
+								<h6>join tourn</h6>
+							</button>
+							<button
+								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.4em' }}
+								disabled={disabledButton}
+								onClick={() => joinGameAsSpectator()}>
+								<MdVisibility />
+							</button>
+							
+						</div>
+					</div>
+
 				</div>
 			</div>
 			<div

@@ -72,6 +72,9 @@ export interface Game {
 	tmp?: any;
 	winner?: PlayerType;
 }
+export interface Tournament {
+	tournId: string;
+}
 
 export interface Board {
 	mainDeck: string[];
