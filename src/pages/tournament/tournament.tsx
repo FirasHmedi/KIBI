@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Tournament } from "../../utils/interface";
+import { Player, Tournament } from "../../utils/interface";
 import { getItemsOnce, subscribeToItems } from "../../backend/db";
 import { TOURNAMENT_PATH } from "../../utils/data";
 import { buttonStyle, homeButtonsStyle, violet } from "../../styles/Style";
@@ -11,7 +11,7 @@ function TournamentPage() {
     const location = useLocation();
     const { tournId ,currentUser} = location.state;
     const [tourn, setTourn] = useState<Tournament>();
-    const [players, setPlayers] = useState([]);
+    const [players, setPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState<string>('');
 
     useEffect(() => {
