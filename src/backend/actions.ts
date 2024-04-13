@@ -66,7 +66,7 @@ export const placeAnimalOnBoard = async (
 	await addAnimalToBoard(gameId, playerType, slotNb, animalId);
 };
 
-export const placeKingOnBoard = async (
+/*export const placeKingOnBoard = async (
 	gameId: string,
 	playerType: PlayerType,
 	kingId: string,
@@ -86,7 +86,7 @@ export const placeKingOnBoard = async (
 		await removeCardFromPlayerDeck(gameId, playerType, kingId);
 		await addAnimalToBoard(gameId, playerType, slotNb, kingId);
 	}
-};
+};*/
 
 export const attackOppAnimal = async (
 	gameId: string,

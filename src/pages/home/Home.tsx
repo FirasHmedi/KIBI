@@ -93,7 +93,7 @@ function Home() {
 			one: {
 				id: player1Id,
 				hp: INITIAL_HP,
-				playerName: 'player1',
+				playerName: currentUser.userName,
 				canAttack: true,
 				canPlayPowers: true,
 				status: PREPARE,
@@ -123,7 +123,7 @@ function Home() {
 		navigate('/game/' + gameId, {
 			state: {
 				gameId: gameId,
-				playerName: 'player1',
+				playerName: currentUser.userName,
 				playerType: PlayerType.ONE,
 			},
 		});
@@ -138,7 +138,7 @@ function Home() {
 			status: PREPARE,
 			one: {
 				hp: INITIAL_HP,
-				playerName: 'player1',
+				playerName: currentUser?.userName ?? 'Anonymous',
 				canAttack: true,
 				canPlayPowers: true,
 				status: PREPARE,
@@ -176,7 +176,7 @@ function Home() {
 		navigate('/game/' + gameId, {
 			state: {
 				gameId: gameId,
-				playerName: 'player1',
+				playerName: currentUser?.userName ?? 'Anonymous',
 				playerType: PlayerType.ONE,
 			},
 		});
@@ -205,7 +205,7 @@ function Home() {
 		await setItem(GAMES_PATH + gameId + '/two', {
 			id: player2Id,
 			hp: INITIAL_HP,
-			playerName: 'player2',
+			playerName: currentUser.userName,
 			canAttack: true,
 			canPlayPowers: true,
 			status: PREPARE,
@@ -215,7 +215,7 @@ function Home() {
 		navigate('game/' + gameId, {
 			state: {
 				gameId: gameId,
-				playerName: 'player2',
+				playerName: currentUser.userName,
 				playerType: PlayerType.TWO,
 			},
 		});
@@ -256,7 +256,7 @@ function Home() {
 			navigate('game/' + gameId, {
 				state: {
 					gameId: gameId,
-					playerName: 'player1',
+					playerName: currentUser.userName,
 					playerType: PlayerType.ONE,
 				},
 			});
@@ -264,7 +264,7 @@ function Home() {
 			navigate('game/' + gameId, {
 				state: {
 					gameId: gameId,
-					playerName: 'player2',
+					playerName: currentUser.userName,
 					playerType: PlayerType.TWO,
 				},
 			});

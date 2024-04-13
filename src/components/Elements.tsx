@@ -6,11 +6,12 @@ import {
 	earthColor,
 	fireColor,
 	flexColumnStyle,
+	lightViolet,
 	violet,
 	waterColor,
 } from '../styles/Style';
-import { AIR, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
-import { Round } from '../utils/interface';
+import { AIR, BOT, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
+import { PlayerType, Round } from '../utils/interface';
 
 export const Seperator = ({ h, w }: { h?: string; w?: string }) => {
 	const height = h ?? '2vh';
@@ -129,46 +130,75 @@ export const RoundView = ({ nb = 1 }: { nb: number }) => (
 			fontWeight: 'bold',
 			color: violet,
 		}}>
-		<h6>ROUND {Math.floor(nb / 2)}</h6>
+		<h6>Round {Math.floor(nb / 2)}</h6>
 	</div>
 );
 
-export const GameLeftInfo = ({ round, logs }: { round: Round; logs: any[] }) => (
-	<div
-		style={{
-			position: 'absolute',
-			left: '1vw',
-			top: '35vh',
-			...flexColumnStyle,
-			gap: 12,
-			alignItems: 'flex-start',
-			color: violet,
-			width: '18vw',
-			fontSize: '1.2em',
-		}}>
-		<div style={{ ...centerStyle }}>
-			<h6>{round.player.toUpperCase()} playing</h6>
-		</div>
-		<RoundView nb={round?.nb} />
+export const GameLeftInfo = ({
+	round,
+	logs,
+	playerOneName,
+	playerTwoName,
+	playerType,
+}: {
+	round: Round;
+	logs: any[];
+	playerOneName: string;
+	playerTwoName: string;
+	playerType: PlayerType;
+}) => {
+	const oppName = (isOne(playerType) ? playerTwoName : playerOneName) ?? BOT;
+	const currName = (isOne(playerType) ? playerOneName : playerTwoName) ?? 'Anonymous';
+	const playing = round.player === playerType ? 'playing' : '';
+	return (
 		<div
 			style={{
+				position: 'absolute',
+				left: '1vw',
+				top: '35vh',
 				...flexColumnStyle,
-				justifyContent: 'flex-start',
+				gap: 12,
 				alignItems: 'flex-start',
-				width: '15vw',
-				height: '11vh',
-				overflowY: 'auto',
-				overflowX: 'hidden',
+				color: violet,
+				width: '18vw',
+				fontSize: '1.2em',
 			}}>
-			{logs.map((log, index) => (
-				<h6 key={index} style={{ fontSize: '0.5em' }}>
-					{logs.length - index}- {log}
+			<div style={{ ...centerStyle }}>
+				<h6>
+					{oppName} {playing}
 				</h6>
-			))}
+			</div>
+			<RoundView nb={round?.nb} />
+			<div
+				style={{
+					...flexColumnStyle,
+					justifyContent: 'flex-start',
+					alignItems: 'flex-start',
+					width: '13vw',
+					height: '11vh',
+					overflowY: 'auto',
+					overflowX: 'hidden',
+					border: `solid 1px ${lightViolet}`,
+				}}>
+				{logs.map((log: string, index) => {
+					const logUpdated = log.replaceAll('one', playerOneName).replaceAll('two', playerTwoName);
+					return (
+						<h6 key={index} style={{ fontSize: '0.5em', color: lightViolet }}>
+							- {logUpdated}
+						</h6>
+					);
+				})}
+			</div>
+			<div style={{ ...centerStyle }}>
+				<h6>
+					{currName} {playing}
+				</h6>
+			</div>
 		</div>
-	</div>
-);
+	);
+};
 
+import { isOne } from '../backend/unitActions';
 import { getOriginalCardId } from '../utils/helpers';
 import twoAnimals from '/src/assets/icons/2-animals.svg';
 import blockAttacks from '/src/assets/icons/block-attacks.svg';

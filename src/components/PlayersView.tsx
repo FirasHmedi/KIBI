@@ -8,7 +8,6 @@ import { Tooltip } from 'react-tooltip';
 import {
 	CurrPlayerViewButtonsStyle,
 	airColor,
-	centerStyle,
 	earthColor,
 	fireColor,
 	flexColumnStyle,
@@ -301,26 +300,7 @@ const CurrPlayerDataView = ({
 	isMyRound?: boolean;
 	isMe?: boolean;
 }) => {
-	const { playerType } = player;
-
-	return (
-		<>
-			{isMe && (
-				<div
-					style={{
-						position: 'absolute',
-						left: '2vh',
-						bottom: '2vh',
-						height: '4vh',
-						...centerStyle,
-						color: violet,
-					}}>
-					<h4>{playerType?.toUpperCase()}</h4>
-				</div>
-			)}
-			<PlayerCanDoView player={player} isMe={isMe} />
-		</>
-	);
+	return <PlayerCanDoView player={player} isMe={isMe} />;
 };
 
 const OpponentDataView = ({ player }: { player: Player }) => {

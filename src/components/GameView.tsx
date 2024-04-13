@@ -41,6 +41,8 @@ import {
 	addPowerToGraveYard,
 	deleteAnimalCardFromGraveYardById,
 	deletePowerCardFromGraveYardById,
+	isOne,
+	isTwo,
 	removeHpFromPlayer,
 } from '../backend/unitActions';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
@@ -763,6 +765,16 @@ export function GameView({
 		elementType,
 	};
 
+	const playerNameOne =
+		(isOne(currPlayer?.playerType) ? currPlayer.playerName : oppPlayer.playerName) ??
+		PlayerType.ONE;
+	const playerNameTwo =
+		(isTwo(currPlayer?.playerType) ? currPlayer.playerName : oppPlayer.playerName) ??
+		PlayerType.TWO;
+
+	const winnerName =
+		(isOne(winner as PlayerType) ? currPlayer.playerName : oppPlayer.playerName) ?? 'Anonymous';
+
 	return (
 		<>
 			<ToastContainer />
@@ -780,7 +792,13 @@ export function GameView({
 					<ElementPopup changeElement={changeEnvWithPopup} />
 				)}
 
-				<GameLeftInfo round={round} logs={logs} />
+				<GameLeftInfo
+					round={round}
+					logs={logs}
+					playerOneName={playerNameOne}
+					playerTwoName={playerNameTwo}
+					playerType={playerType}
+				/>
 
 				<BoardView
 					board={board}
@@ -821,7 +839,7 @@ export function GameView({
 						title={gyTitle}
 					/>
 				)}
-				{isGameFinished(status) && <GameFinished status={status} winner={winner} />}
+				{isGameFinished(status) && <GameFinished status={status} winnerName={winnerName} />}
 				{!isGameFinished(status) && showCountDown.current && (
 					<div
 						style={{

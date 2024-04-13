@@ -298,3 +298,6 @@ export const addOneRound = async (gameId: string, playerType: PlayerType) => {
 	round.nb += 1;
 	await setItem('games/' + gameId + '/round', round);
 };
+
+export const isOne = (playerType?: PlayerType) => playerType === PlayerType.ONE;
+export const isTwo = (playerType?: PlayerType) => playerType === PlayerType.TWO;
