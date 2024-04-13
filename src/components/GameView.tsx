@@ -560,7 +560,6 @@ export function GameView({
 				oppPSlots,
 			);
 			if (oppPlayer?.playerName === BOT) {
-				showCountDown.current = true;
 				await drawCardFromMainDeck(gameId, PlayerType.TWO);
 				await finishRoundBot();
 			}

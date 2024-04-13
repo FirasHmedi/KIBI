@@ -18,7 +18,7 @@ export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const GAMES_PATH = 'games/';
 
-export const ROUND_DURATION = 80; //60
+export const ROUND_DURATION = 30; //60
 
 export const INITIAL_HP = 9;
 

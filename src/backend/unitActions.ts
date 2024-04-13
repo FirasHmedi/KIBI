@@ -158,7 +158,9 @@ export const setGameWin = async (gameId: string, playerType: PlayerType) => {
 	}
 	const winner = await getItemsOnce(USERS_PATH + winnerId);
 	const loser = await getItemsOnce(USERS_PATH + loserId);
+
 	const { oneScore, twoScore } = getEloRating(winner.score ?? 1000, loser.score ?? 1000, true);
+
 	await setItem(USERS_PATH + winnerId, {
 		...winner,
 		score: oneScore,

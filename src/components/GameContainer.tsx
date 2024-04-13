@@ -6,6 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
 import { violet } from '../styles/Style';
+import { BOT } from '../utils/data';
 import { isGameFinished, isGameInPreparation, isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
@@ -105,7 +106,9 @@ export function GameContainer({
 
 	const checkAndDrawCardFromMainDeck = async ({ player, nb }: Round) => {
 		if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {
-			showCountDown.current = true;
+			if (game?.two?.playerName != BOT) {
+				showCountDown.current = true;
+			}
 			await drawCardFromMainDeck(gameId, playerType);
 		}
 	};
