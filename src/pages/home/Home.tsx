@@ -19,15 +19,7 @@ import {
 	homeButtonsStyle,
 	violet,
 } from '../../styles/Style';
-import {
-	BOT,
-	CONNECT_PATH,
-	EMPTY_SLOT,
-	GAMES_PATH,
-	INITIAL_HP,
-	PREPARE,
-	RUNNING,
-} from '../../utils/data';
+import { BOT, CONNECT_PATH, EMPTY_SLOT, GAMES_PATH, PREPARE, RUNNING } from '../../utils/data';
 import {
 	distributeCards,
 	getMainDeckFirstHalf,
@@ -46,6 +38,8 @@ function Home() {
 	const [alertMessage, setAlertMessage] = useState('');
 	const [currentUser, setCurrentUser] = useState<User>();
 	const [leaderBoard, setLeaderBoard] = useState<any[]>();
+	const [INITIAL_HP, setINITIAL_HP] = useState(0);
+	const [ROUND_DURATION, setROUND_DURATION] = useState(0);
 
 	const setUser = async () => {
 		const user = await isUserConnected();
@@ -71,12 +65,20 @@ function Home() {
 		await subscribeToItems('users', setLeaderBoardAfterCalc);
 	};
 
+	const getConstants = async () => {
+		const constants = await getItemsOnce('constants');
+		setINITIAL_HP(constants.INITIAL_HP);
+		setROUND_DURATION(constants.ROUND_DURATION);
+	};
+
 	useEffect(() => {
+		getConstants();
 		setUser();
 		subscribeToUsers();
 	}, []);
 
 	const createGame = async () => {
+		if (!INITIAL_HP) return;
 		if (isEmpty(currentUser)) {
 			navigate(CONNECT_PATH);
 			return;
@@ -125,11 +127,13 @@ function Home() {
 				gameId: gameId,
 				playerName: currentUser.userName,
 				playerType: PlayerType.ONE,
+				ROUND_DURATION,
 			},
 		});
 	};
 
 	const playWithGameBot = async () => {
+		if (!INITIAL_HP) return;
 		const gameId = short.generate().slice(0, 6);
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
@@ -178,12 +182,14 @@ function Home() {
 				gameId: gameId,
 				playerName: currentUser?.userName ?? 'Anonymous',
 				playerType: PlayerType.ONE,
+				ROUND_DURATION,
 			},
 		});
 		await distributeCards(gameId);
 	};
 
 	const joinGameAsPlayer = async () => {
+		if (!INITIAL_HP) return;
 		if (gameId.length === 0) return;
 
 		if (isEmpty(currentUser)) {
@@ -217,6 +223,7 @@ function Home() {
 				gameId: gameId,
 				playerName: currentUser.userName,
 				playerType: PlayerType.TWO,
+				ROUND_DURATION,
 			},
 		});
 		await distributeCards(gameId);
@@ -230,6 +237,7 @@ function Home() {
 				gameId: gameId,
 				spectator: true,
 				playerType: PlayerType.TWO,
+				ROUND_DURATION,
 			},
 		});
 	};
@@ -258,6 +266,7 @@ function Home() {
 					gameId: gameId,
 					playerName: currentUser.userName,
 					playerType: PlayerType.ONE,
+					ROUND_DURATION,
 				},
 			});
 		} else if (playerTwoId === storedPlayerId) {
@@ -266,6 +275,7 @@ function Home() {
 					gameId: gameId,
 					playerName: currentUser.userName,
 					playerType: PlayerType.TWO,
+					ROUND_DURATION,
 				},
 			});
 		} else {

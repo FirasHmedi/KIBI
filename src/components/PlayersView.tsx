@@ -15,7 +15,6 @@ import {
 	violet,
 	waterColor,
 } from '../styles/Style';
-import { ROUND_DURATION } from '../utils/data';
 import { isGameFinished, showToast } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
@@ -30,20 +29,29 @@ export const BlockElement = ({ type }: any) => {
 	else return <img src={BlockAttacksIcon} style={{ height: '3.5rem', width: '3.5rem' }} />;
 };
 
-export const CountDown = ({ finishRound }: any) => (
-	<CountdownCircleTimer
-		isPlaying
-		duration={ROUND_DURATION}
-		colors={`#681b89`}
-		onComplete={() => {
-			if (!!finishRound) finishRound();
-		}}
-		size={40}
-		strokeLinecap='butt'
-		strokeWidth={0.5}>
-		{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
-	</CountdownCircleTimer>
-);
+export const CountDown = ({
+	finishRound,
+	ROUND_DURATION,
+}: {
+	finishRound: () => void;
+	ROUND_DURATION: number;
+}) => {
+	if (!ROUND_DURATION) return;
+	return (
+		<CountdownCircleTimer
+			isPlaying
+			duration={ROUND_DURATION}
+			colors={`#681b89`}
+			onComplete={() => {
+				if (!!finishRound) finishRound();
+			}}
+			size={40}
+			strokeLinecap='butt'
+			strokeWidth={0.5}>
+			{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
+		</CountdownCircleTimer>
+	);
+};
 
 export const CurrentPView = ({
 	player,

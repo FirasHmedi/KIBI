@@ -87,6 +87,7 @@ interface GameViewProps {
 	logs: string[];
 	status: string;
 	winner?: string;
+	ROUND_DURATION: number;
 }
 
 export function GameView({
@@ -100,6 +101,7 @@ export function GameView({
 	logs,
 	status,
 	winner,
+	ROUND_DURATION,
 }: GameViewProps) {
 	const { oppPSlots, currPSlots, elementType, animalGY, powerGY } = board;
 	const playerType = currPlayer.playerType!;
@@ -849,7 +851,7 @@ export function GameView({
 							height: '4vh',
 							...centerStyle,
 						}}>
-						<CountDown finishRound={finishRound} />
+						<CountDown finishRound={finishRound} ROUND_DURATION={ROUND_DURATION} />
 					</div>
 				)}
 			</div>

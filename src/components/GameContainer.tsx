@@ -16,11 +16,13 @@ export function GameContainer({
 	playerType,
 	gameId,
 	spectator,
+	ROUND_DURATION,
 }: {
 	game: Game;
 	playerType: PlayerType;
 	gameId: string;
 	spectator?: boolean;
+	ROUND_DURATION: number;
 }) {
 	const [board, setBoard] = useState<Board>();
 	const [round, setRound] = useState<Round>();
@@ -140,6 +142,7 @@ export function GameContainer({
 				logs={logs}
 				status={game?.status}
 				winner={winner}
+				ROUND_DURATION={ROUND_DURATION}
 			/>
 		</DndProvider>
 	);
