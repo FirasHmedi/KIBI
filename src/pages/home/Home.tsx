@@ -42,6 +42,7 @@ import { PlayerType, User } from '../../utils/interface';
 function Home() {
 	const navigate = useNavigate();
 	const [gameId, setGameId] = useState('');
+	const [tournId,setTournId] = useState('')
 	const [disabledButton, setDisabledButton] = useState(false);
 	const [alertMessage, setAlertMessage] = useState('');
 	const [currentUser, setCurrentUser] = useState<User>();
@@ -274,6 +275,7 @@ function Home() {
 			});
 		}
 	};
+	
 
 	const createTournamentWithFour = async () => {
 		if (isEmpty(currentUser)) {
@@ -294,14 +296,52 @@ function Home() {
 				status: PREPARE,
 				envLoadNb: 0,
 			});
+			await setItem(`/tournaments/${tournId}/creator`,{name : currentUser.userName});
 
 			navigate('/tournament/' + tournId, {
 				state: {
 					tournId,
+					currentUser
 				},
 			});
 		} catch (error) {
 			console.error('Failed to create tournament:', error);
+		}
+	};
+	const joinTournament = async () => {
+		if (isEmpty(currentUser)) {
+			navigate(CONNECT_PATH);
+			return;
+		}
+	
+		const playersPath = `/tournaments/${tournId}/players`;
+		try {
+			const players = await getItemsOnce(playersPath);
+			const numPlayers = Object.keys(players).length;
+	
+			if (numPlayers < 4) {
+				const playerData = {
+					id: currentUser.id,
+					hp: INITIAL_HP,
+					playerName: currentUser.userName,
+					canAttack: true,
+					canPlayPowers: true,
+					status: PREPARE,
+					envLoadNb: 0,
+				};
+				await setItem(`${playersPath}/${currentUser.userName}`, playerData);
+	
+				navigate('/tournament/' + tournId, {
+					state: {
+						tournId,
+					},
+				});
+			} else {
+				toast.error('Tournament already has 4 players.');
+			}
+		} catch (error) {
+			console.error('Error joining tournament:', error);
+			toast.error('Failed to join the tournament.');
 		}
 	};
 
@@ -448,9 +488,9 @@ function Home() {
 								fontSize: '1rem',
 								color: violet,
 							}}
-							value={gameId}
-							disabled={disabledButton}
-							onChange={e => setGameId(e.target.value)}
+							value={tournId}
+							//disabled={disabledButton}
+							onChange={e => setTournId(e.target.value)}
 						/>
 
 						<div style={{ width: '20vw', ...flexRowStyle, gap: 15 }}>
@@ -461,7 +501,7 @@ function Home() {
 									fontSize: '1.4em',
 								}}
 								disabled={disabledButton}
-								onClick={() => joinGameAsPlayer()}>
+								onClick={() => joinTournament()}>
 								<h6>join tourn</h6>
 							</button>
 							<button
