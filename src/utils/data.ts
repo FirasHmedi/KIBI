@@ -41,7 +41,7 @@ export const ATTACKER = 'attacker';
 export const TANK = 'tank';
 export const JOKER = 'joker';
 
-export const BOT = 'bot';
+export const BOT = 'BOT';
 export const PLAYER_ID_KEY = 'playerId';
 export const PLAYER_HASH_KEY = 'playerHashKey';
 

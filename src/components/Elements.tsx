@@ -149,7 +149,8 @@ export const GameLeftInfo = ({
 }) => {
 	const oppName = (isOne(playerType) ? playerTwoName : playerOneName) ?? BOT;
 	const currName = (isOne(playerType) ? playerOneName : playerTwoName) ?? 'Anonymous';
-	const playing = round.player === playerType ? 'playing' : '';
+	const isMePlaying = round.player === playerType ? 'playing' : '';
+	const isOppPlaying = round.player === playerType ? '' : 'playing';
 	return (
 		<div
 			style={{
@@ -165,7 +166,7 @@ export const GameLeftInfo = ({
 			}}>
 			<div style={{ ...centerStyle }}>
 				<h6>
-					{oppName} {playing}
+					{oppName} {isOppPlaying}
 				</h6>
 			</div>
 			<RoundView nb={round?.nb} />
@@ -179,6 +180,8 @@ export const GameLeftInfo = ({
 					overflowY: 'auto',
 					overflowX: 'hidden',
 					border: `solid 1px ${lightViolet}`,
+					padding: 4,
+					borderRadius: 5,
 				}}>
 				{logs.map((log: string, index) => {
 					const logUpdated = log.replaceAll('one', playerOneName).replaceAll('two', playerTwoName);
@@ -191,7 +194,7 @@ export const GameLeftInfo = ({
 			</div>
 			<div style={{ ...centerStyle }}>
 				<h6>
-					{currName} {playing}
+					{currName} {isMePlaying}
 				</h6>
 			</div>
 		</div>
