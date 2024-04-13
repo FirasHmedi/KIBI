@@ -24,7 +24,6 @@ import {
 	CONNECT_PATH,
 	EMPTY_SLOT,
 	GAMES_PATH,
-	TOURNAMENT_PATH,
 	INITIAL_HP,
 	PREPARE,
 	RUNNING,
@@ -275,18 +274,16 @@ function Home() {
 			});
 		}
 	};
-	
-	
+
 	const createTournamentWithFour = async () => {
-	
-		if ( isEmpty(currentUser)) { 
-			navigate(CONNECT_PATH); 
+		if (isEmpty(currentUser)) {
+			navigate(CONNECT_PATH);
 			return;
 		}
-	
+
 		const tournId = short.generate().slice(0, 6);
 		let player1Id = currentUser.id;
-	
+
 		try {
 			await setItem(`/tournaments/${tournId}/players/${currentUser.userName}`, {
 				id: player1Id,
@@ -298,15 +295,16 @@ function Home() {
 				envLoadNb: 0,
 			});
 
-	
-			navigate('/tournament/' + tournId, tournId)
+			navigate('/tournament/' + tournId, {
+				state: {
+					tournId,
+				},
+			});
 		} catch (error) {
 			console.error('Failed to create tournament:', error);
 		}
 	};
 
-	
-	
 	return (
 		<>
 			<ToastContainer />
@@ -349,21 +347,11 @@ function Home() {
 							disabled={disabledButton}
 							onClick={playWithGameBot}>
 							<MdComputer />
-						</button >
-						
+						</button>
 					</div>
 
-
-
-
-					
-
-
-
-
-
 					<Seperator h='1vh' />
-					
+
 					<div style={centerStyle}>
 						<h3 style={{ color: violet }}>Join</h3>
 						<input
@@ -414,14 +402,6 @@ function Home() {
 
 					<Seperator h='1vh' />
 
-
-
-
-
-
-
-
-
 					<div style={{ ...centerStyle, gap: 15 }}>
 						<h3 style={{ color: violet }}>Create a tournament</h3>
 						{alertMessage && (
@@ -430,8 +410,9 @@ function Home() {
 								<button onClick={() => setAlertMessage('')}>Close</button>
 							</div>
 						)}
-						
-						<button style={{
+
+						<button
+							style={{
 								...buttonStyle,
 								...homeButtonsStyle,
 							}}
@@ -439,7 +420,8 @@ function Home() {
 							onClick={() => createTournamentWithFour()}>
 							create tour 4
 						</button>
-						<button style={{
+						<button
+							style={{
 								...buttonStyle,
 								...homeButtonsStyle,
 							}}>
@@ -448,8 +430,6 @@ function Home() {
 					</div>
 
 					<Seperator h='1vh' />
-
-
 
 					<div style={centerStyle}>
 						<h3 style={{ color: violet }}>Join</h3>
@@ -490,10 +470,8 @@ function Home() {
 								onClick={() => joinGameAsSpectator()}>
 								<MdVisibility />
 							</button>
-							
 						</div>
 					</div>
-
 				</div>
 			</div>
 			<div
