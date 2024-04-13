@@ -36,7 +36,7 @@ export const CountDown = ({
 	finishRound: () => void;
 	ROUND_DURATION: number;
 }) => {
-	if (!ROUND_DURATION) return;
+	if (!ROUND_DURATION) return <></>;
 	return (
 		<CountdownCircleTimer
 			isPlaying
