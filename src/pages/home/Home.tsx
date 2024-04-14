@@ -310,6 +310,26 @@ function Home() {
 			console.error('Failed to create tournament:', error);
 		}
 	};
+	const joinTournasSpectator= async () => {
+		if (isEmpty(currentUser)) {
+			navigate(CONNECT_PATH);
+			return;
+		}
+		const watcherPath = `/tournaments/${tournId}/watchers`;
+		try{
+			await setItem(`${watcherPath}/${currentUser.userName}`, {name : currentUser.userName});
+			navigate('/tournament/' + tournId, {
+				state: {
+					tournId,
+					currentUser
+				},
+			});
+
+		}
+		catch (error) {
+			console.error('Error joining tournament:', error);
+		}
+	}
 	const joinTournament = async () => {
 		if (isEmpty(currentUser)) {
 			navigate(CONNECT_PATH);
@@ -510,7 +530,7 @@ function Home() {
 							<button
 								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.4em' }}
 								disabled={disabledButton}
-								onClick={() => joinGameAsSpectator()}>
+								onClick={() => joinTournasSpectator()}>
 								<MdVisibility />
 							</button>
 						</div>
