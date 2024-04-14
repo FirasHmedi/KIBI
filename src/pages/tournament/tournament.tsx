@@ -1,18 +1,25 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Player, Tournament } from "../../utils/interface";
-import { getItemsOnce, subscribeToItems } from "../../backend/db";
-import { TOURNAMENT_PATH } from "../../utils/data";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Player, PlayerType, Tournament } from "../../utils/interface";
+import { getItemsOnce, setItem, subscribeToItems } from "../../backend/db";
+import { CONNECT_PATH, EMPTY_SLOT, GAMES_PATH, INITIAL_HP, PREPARE, RUNNING, TOURNAMENT_PATH } from "../../utils/data";
 import { buttonStyle, homeButtonsStyle, violet } from "../../styles/Style";
 import { ToastContainer, toast } from 'react-toastify';
+import short from 'short-uuid';
+
 import 'react-toastify/dist/ReactToastify.css';
+import { getMainDeckFirstHalf, getMainDeckSecondHalf, submitRandomSelection } from "../../utils/helpers";
+import { isEmpty, shuffle } from "lodash";
 
 function TournamentPage() {
+    const navigate = useNavigate();
     const location = useLocation();
     const { tournId ,currentUser} = location.state;
+    const [tournamentStatus, setTournamentStatus] = useState('');
     const [tourn, setTourn] = useState<Tournament>();
     const [players, setPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState<string>('');
+    const [gamesId,setGamesId] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchTournamentData = async () => {
@@ -23,6 +30,8 @@ function TournamentPage() {
                 getItemsOnce(playersPath),
                 getItemsOnce(creatorPath)
             ]);
+            
+
 
             setPlayers(Object.values(playersData)); 
             setCreator(creatorData); 
@@ -40,15 +49,108 @@ function TournamentPage() {
     }, []);
 
     const isCreator = currentUser && currentUser.userName === creator;
-    const handleBeginClick = () => {
+
+    const game1Players = players.slice(0, 2);
+    const game2Players = players.slice(2, 4);
+    const game1Id= short.generate().slice(0, 6);   
+    const game2Id= short.generate().slice(0, 6);
+    const handleBeginClick = async () => {
         if (players.length !== 4) {
-            console.log("fghjk")
             toast.error('Tournament must have exactly 4 players to begin!');
             return;
         }
 
-        console.log('Tournament started!');
+        try {
+            
+            game1Players[0].playerType = PlayerType.ONE
+            game1Players[1].playerType = PlayerType.TWO
+            game2Players[0].playerType = PlayerType.ONE
+            game2Players[1].playerType = PlayerType.TWO
+
+            
+            const mainDeck1: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
+            const mainDeck2: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
+
+		    const initialPowers1 = mainDeck1.splice(-4, 4);   
+            const initialPowers2 = mainDeck2.splice(-4, 4);     
+  
+            console.log("just1")
+            setItem(GAMES_PATH + game1Id, {
+                status: RUNNING,
+                round: {
+                    player: PlayerType.ONE,
+                    nb: 1,
+                },
+                board: {
+                    mainDeck1,
+                    one: [EMPTY_SLOT, EMPTY_SLOT, EMPTY_SLOT],
+                    two: [EMPTY_SLOT, EMPTY_SLOT, EMPTY_SLOT],
+                },
+                playerToSelect: PlayerType.ONE,
+			initialPowers: initialPowers1,
+            });
+            console.log("just2")
+
+            setItem(GAMES_PATH + game2Id, {
+                status: RUNNING,
+                round: {
+                    player: PlayerType.ONE,
+                    nb: 1,
+                },
+                board: {
+                    mainDeck2,
+                    one: [EMPTY_SLOT, EMPTY_SLOT, EMPTY_SLOT],
+                    two: [EMPTY_SLOT, EMPTY_SLOT, EMPTY_SLOT],
+                },
+                playerToSelect: PlayerType.ONE,
+			initialPowers: initialPowers2,
+            });
+            console.log('just3')
+
+			await setItem(`/tournaments/${tournId}/status`,{name :"started"});
+            console.log("verify")
+            console.log(players)
+            console.log(players.length)
+
+        } catch (error) {
+            console.error('Failed to start tournament:', error);
+            toast.error('Failed to start the tournament.');
+        }
     };
+    useEffect(() => {
+        async function checkTournamentStatus() {
+            try {
+                console.log("hello")
+                const status = await getItemsOnce(`/tournaments/${tournId}/status`);
+                console.log("this is status",status.name)
+                if (status.name === 'started') {
+                    if (currentUser.userName === game1Players[0].playerName || currentUser.userName === game1Players[1].playerName) {
+                        navigate('/game/' + game1Id, {
+                            state: {
+                                gameId: game1Id,
+                                playerName: currentUser.userName,
+                                playerType: currentUser.userName === game1Players[0].playerName ? PlayerType.ONE : PlayerType.TWO,
+                            },
+                        });
+                    }
+                    else {
+                        navigate('/game/' + game2Id, {
+                            state: {
+                                gameId: game2Id,
+                                playerName: currentUser.userName,
+                                playerType: currentUser.userName === game2Players[0].playerName ? PlayerType.ONE : PlayerType.TWO,
+                            },
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking tournament status:', error);
+            }
+        }
+        checkTournamentStatus();
+    }, [tournId, currentUser, navigate]); 
+
+    
 
     return (
         <div>

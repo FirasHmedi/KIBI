@@ -297,11 +297,13 @@ function Home() {
 				envLoadNb: 0,
 			});
 			await setItem(`/tournaments/${tournId}/creator`,{name : currentUser.userName});
+			await setItem(`/tournaments/${tournId}/status`,{name :"waiting"});
 
 			navigate('/tournament/' + tournId, {
 				state: {
 					tournId,
 					currentUser
+
 				},
 			});
 		} catch (error) {
@@ -334,6 +336,7 @@ function Home() {
 				navigate('/tournament/' + tournId, {
 					state: {
 						tournId,
+						currentUser
 					},
 				});
 			} else {
