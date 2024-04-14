@@ -15,7 +15,7 @@ function TournamentPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const { tournId ,currentUser} = location.state;
-    const [tournamentStatus, setTournamentStatus] = useState('');
+    const [tournamentStatus, setTournamentStatus] = useState('waiting');
     const [tourn, setTourn] = useState<Tournament>();
     const [players, setPlayers] = useState<Player[]>([]);
     const [creator, setCreator] = useState<string>('');
@@ -74,7 +74,6 @@ function TournamentPage() {
 		    const initialPowers1 = mainDeck1.splice(-4, 4);   
             const initialPowers2 = mainDeck2.splice(-4, 4);     
   
-            console.log("just1")
             setItem(GAMES_PATH + game1Id, {
                 status: RUNNING,
                 round: {
@@ -89,7 +88,6 @@ function TournamentPage() {
                 playerToSelect: PlayerType.ONE,
 			initialPowers: initialPowers1,
             });
-            console.log("just2")
 
             setItem(GAMES_PATH + game2Id, {
                 status: RUNNING,
@@ -105,12 +103,10 @@ function TournamentPage() {
                 playerToSelect: PlayerType.ONE,
 			initialPowers: initialPowers2,
             });
-            console.log('just3')
 
 			await setItem(`/tournaments/${tournId}/status`,{name :"started"});
-            console.log("verify")
-            console.log(players)
-            console.log(players.length)
+            setTournamentStatus("started")
+            console.log(tournamentStatus)
 
         } catch (error) {
             console.error('Failed to start tournament:', error);
@@ -120,10 +116,7 @@ function TournamentPage() {
     useEffect(() => {
         async function checkTournamentStatus() {
             try {
-                console.log("hello")
-                const status = await getItemsOnce(`/tournaments/${tournId}/status`);
-                console.log("this is status",status.name)
-                if (status.name === 'started') {
+                if (tournamentStatus === 'started') {
                     if (currentUser.userName === game1Players[0].playerName || currentUser.userName === game1Players[1].playerName) {
                         navigate('/game/' + game1Id, {
                             state: {
@@ -148,7 +141,7 @@ function TournamentPage() {
             }
         }
         checkTournamentStatus();
-    }, [tournId, currentUser, navigate]); 
+    }, [tournId, currentUser, navigate,tournamentStatus]); 
 
     
 
