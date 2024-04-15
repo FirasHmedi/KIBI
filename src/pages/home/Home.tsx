@@ -42,7 +42,7 @@ import { PlayerType, User } from '../../utils/interface';
 function Home() {
 	const navigate = useNavigate();
 	const [gameId, setGameId] = useState('');
-	const [tournId,setTournId] = useState('')
+	const [tournId, setTournId] = useState('');
 	const [disabledButton, setDisabledButton] = useState(false);
 	const [alertMessage, setAlertMessage] = useState('');
 	const [currentUser, setCurrentUser] = useState<User>();
@@ -275,9 +275,8 @@ function Home() {
 			});
 		}
 	};
-	
 
-	const createTournamentWithFour = async () => {
+	const createTournament = async (nbPlayers: number) => {
 		if (isEmpty(currentUser)) {
 			navigate(CONNECT_PATH);
 			return;
@@ -287,60 +286,68 @@ function Home() {
 		let player1Id = currentUser.id;
 
 		try {
-			await setItem(`/tournaments/${tournId}/players/${currentUser.userName}`, {
-				id: player1Id,
-				hp: INITIAL_HP,
-				playerName: currentUser.userName,
-				canAttack: true,
-				canPlayPowers: true,
-				status: PREPARE,
-				envLoadNb: 0,
+			await setItem(`/tournaments/${tournId}`, {
+				status: {
+					name: 'waiting',
+				},
+				creator: {
+					name: currentUser.userName,
+					id: currentUser.id,
+				},
+				nbPlayers: nbPlayers,
+				players: {
+					[currentUser.userName]: {
+						id: player1Id,
+						hp: INITIAL_HP,
+						playerName: currentUser.userName,
+						canAttack: true,
+						canPlayPowers: true,
+						status: PREPARE,
+						envLoadNb: 0,
+					},
+				},
 			});
-			await setItem(`/tournaments/${tournId}/creator`,{name : currentUser.userName});
-			await setItem(`/tournaments/${tournId}/status`,{name :"waiting"});
 
 			navigate('/tournament/' + tournId, {
 				state: {
 					tournId,
-					currentUser
-
+					currentUser,
+					nbPlayers,
 				},
 			});
 		} catch (error) {
 			console.error('Failed to create tournament:', error);
 		}
 	};
-	const joinTournasSpectator= async () => {
+	const joinTournasSpectator = async () => {
 		if (isEmpty(currentUser)) {
 			navigate(CONNECT_PATH);
 			return;
 		}
 		const watcherPath = `/tournaments/${tournId}/watchers`;
-		try{
-			await setItem(`${watcherPath}/${currentUser.userName}`, {name : currentUser.userName});
+		try {
+			await setItem(`${watcherPath}/${currentUser.userName}`, { name: currentUser.userName });
 			navigate('/tournament/' + tournId, {
 				state: {
 					tournId,
-					currentUser
+					currentUser,
 				},
 			});
-
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error joining tournament:', error);
 		}
-	}
+	};
 	const joinTournament = async () => {
 		if (isEmpty(currentUser)) {
 			navigate(CONNECT_PATH);
 			return;
 		}
-	
+
 		const playersPath = `/tournaments/${tournId}/players`;
 		try {
 			const players = await getItemsOnce(playersPath);
 			const numPlayers = Object.keys(players).length;
-	
+
 			if (numPlayers < 4) {
 				const playerData = {
 					id: currentUser.id,
@@ -352,15 +359,15 @@ function Home() {
 					envLoadNb: 0,
 				};
 				await setItem(`${playersPath}/${currentUser.userName}`, playerData);
-	
+
 				navigate('/tournament/' + tournId, {
 					state: {
 						tournId,
-						currentUser
+						currentUser,
 					},
 				});
 			} else {
-				toast.error('Tournament already has 4 players.');
+				toast.error('Tournament is full of players.');
 			}
 		} catch (error) {
 			console.error('Error joining tournament:', error);
@@ -413,8 +420,6 @@ function Home() {
 						</button>
 					</div>
 
-					<Seperator h='1vh' />
-
 					<div style={centerStyle}>
 						<h3 style={{ color: violet }}>Join</h3>
 						<input
@@ -463,7 +468,7 @@ function Home() {
 						</div>
 					</div>
 
-					<Seperator h='1vh' />
+					<Seperator h='2vh' />
 
 					<div style={{ ...centerStyle, gap: 15 }}>
 						<h3 style={{ color: violet }}>Create a tournament</h3>
@@ -479,26 +484,26 @@ function Home() {
 								...buttonStyle,
 								...homeButtonsStyle,
 							}}
-							disabled={false}
-							onClick={() => createTournamentWithFour()}>
-							create tour 4
+							onClick={() => createTournament(4)}>
+							<h6>4</h6>
+							<MdPerson />
 						</button>
 						<button
 							style={{
 								...buttonStyle,
 								...homeButtonsStyle,
-							}}>
-							create tour 8
+							}}
+							onClick={() => createTournament(4)}>
+							<h6>8</h6>
+							<MdPerson />
 						</button>
 					</div>
-
-					<Seperator h='1vh' />
 
 					<div style={centerStyle}>
 						<h3 style={{ color: violet }}>Join</h3>
 						<input
 							type='text'
-							placeholder='tournament Id'
+							placeholder='Tournament Id'
 							required
 							style={{
 								padding: 10,
@@ -512,7 +517,6 @@ function Home() {
 								color: violet,
 							}}
 							value={tournId}
-							//disabled={disabledButton}
 							onChange={e => setTournId(e.target.value)}
 						/>
 
@@ -525,7 +529,7 @@ function Home() {
 								}}
 								disabled={disabledButton}
 								onClick={() => joinTournament()}>
-								<h6>join tourn</h6>
+								<MdPerson />
 							</button>
 							<button
 								style={{ ...buttonStyle, ...homeButtonsStyle, fontSize: '1.4em' }}
