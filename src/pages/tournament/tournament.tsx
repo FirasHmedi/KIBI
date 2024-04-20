@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import short from 'short-uuid';
@@ -20,6 +20,10 @@ function TournamentPage() {
 	const [players, setPlayers] = useState<Player[]>([]);
 	const [creator, setCreator] = useState<string>('');
 	const [gamesId, setGamesId] = useState<string[]>([]);
+	const [showTable, setShowTable] = useState(false);
+    const [matches, setMatches] = useState<any>([{}]);
+	const [showMatches, setShowMatches] = useState(false);
+
 
 	useEffect(() => {
 		const fetchTournamentData = async () => {
@@ -48,10 +52,26 @@ function TournamentPage() {
 
 	const isCreator = currentUser && currentUser.userName === creator;
 
-	const game1Players = players.slice(0, 2);
-	const game2Players = players.slice(2, 4);
-	const game1Id = short.generate().slice(0, 6);
-	const game2Id = short.generate().slice(0, 6);
+	const beginTournament = () => {
+		if (players.length !== 4) {
+			toast.error('Tournament must have exactly 4 players to begin!');
+			return;
+		}
+        const game1Players = players.slice(0, 2);
+        const game2Players = players.slice(2, 4);
+        const game1Id = short.generate().slice(0, 6);
+        const game2Id = short.generate().slice(0, 6);
+
+        const newMatches = [
+            { id: game1Id, players: game1Players },
+            { id: game2Id, players: game2Players }
+        ];
+        
+        setMatches(newMatches);
+        setShowMatches(true);
+    };
+	/*
+	
 
 	const beginTournament = async () => {
 		if (players.length !== 4) {
@@ -109,6 +129,7 @@ function TournamentPage() {
 			toast.error('Failed to start the tournament.');
 		}
 	};
+	
 	useEffect(() => {
 		async function checkTournamentStatus() {
 			try {
@@ -146,61 +167,88 @@ function TournamentPage() {
 		}
 		checkTournamentStatus();
 	}, [tournId, currentUser, navigate, tournamentStatus]);
+*/
+return (
+	<div>
+		<h4 style={{ color: 'violet' }}>
+			Tournaments ID: <span style={{ fontSize: '1.2em', userSelect: 'all' }}>{tournId}</span>
+		</h4>
 
-	return (
-		<div>
-			<h4 style={{ color: violet }}>
-				Tournaments ID: <span style={{ fontSize: '1.2em', userSelect: 'all' }}>{tournId}</span>
-			</h4>
+		<div
+			style={{
+				position: 'absolute',
+				top: '20vh',
+				left: '5vw',
+				display: 'flex',
+				alignItems: 'center',
+				borderRadius: 5,
+				flexDirection: 'column',
+				gap: 6,
+				overflowY: 'auto',
+				maxHeight: '70vh',
+				overflowX: 'hidden',
+			}}>
+			<h3 style={{ color: 'violet', fontWeight: 'bold' }}>Players</h3>
+			<table style={{ width: '12vw' }}>
+				<tbody>
+					{players.map((player, index) => (
+						<tr key={index}>
+							<td
+								style={{
+									padding: 4,
+									color: 'violet',
+									display: 'flex',
+									alignItems: 'center',
+									flexDirection: 'column',
+								}}>
+								<h5>{player.playerName}</h5>
+							</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+			{isCreator && (
+				<button
+					style={{
+						 
+						...buttonStyle,
+						...homeButtonsStyle,
+					}}
+					onClick={beginTournament}>
+					Begin Tournament
+				</button>
+			)}
+		</div>
 
+		{showMatches && (
 			<div
 				style={{
 					position: 'absolute',
-					top: '20vh',
-					right: '5vw',
-					display: 'flex',
-					alignItems: 'center',
-					borderRadius: 5,
-					flexDirection: 'column',
-					gap: 6,
-					overflowY: 'auto',
-					maxHeight: '70vh',
-					overflowX: 'hidden',
+					top: '50%',
+					left: '50%',
+					transform: 'translate(-50%, -50%)',
+					textAlign: 'center'
 				}}>
-				<h3 style={{ color: violet, fontWeight: 'bold' }}>Players</h3>
-				<table style={{ width: '12vw' }}>
+				<table>
+					<thead>
+						<tr>
+							<th>Game ID</th>
+							<th>Players</th>
+						</tr>
+					</thead>
 					<tbody>
-						{players.map((player, index) => (
+						{matches.map((match: { id: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; players: any[]; }, index: Key | null | undefined) => (
 							<tr key={index}>
-								<td
-									style={{
-										padding: 4,
-										color: 'violet',
-										display: 'flex',
-										alignItems: 'center',
-										flexDirection: 'column',
-									}}>
-									<h5>{player.playerName}</h5>
-								</td>
+								<td>{match.id}</td>
+								<td>{match.players.map(player => player.playerName).join(', ')}</td>
 							</tr>
 						))}
 					</tbody>
 				</table>
-				{isCreator && (
-					<button
-						style={{
-							...buttonStyle,
-							...homeButtonsStyle,
-							fontSize: '1rem',
-						}}
-						//disabled={!isButtonEnabled}
-						onClick={beginTournament}>
-						Begin Tournament
-					</button>
-				)}
 			</div>
-		</div>
-	);
+		)}
+	</div>
+);
 }
 
 export default TournamentPage;
