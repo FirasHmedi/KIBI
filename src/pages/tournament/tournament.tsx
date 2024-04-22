@@ -57,6 +57,8 @@ function TournamentPage() {
 			toast.error('Tournament must have exactly 4 players to begin!');
 			return;
 		}
+	    setItem(`/tournaments/${tournId}/status`, { name: 'Running' });
+		
         const game1Players = players.slice(0, 2);
         const game2Players = players.slice(2, 4);
         const game1Id = short.generate().slice(0, 6);
@@ -66,20 +68,10 @@ function TournamentPage() {
             { id: game1Id, players: game1Players },
             { id: game2Id, players: game2Players }
         ];
-        
-        setMatches(newMatches);
-        setShowMatches(true);
-    };
-	/*
-	
+        setItem(`/tournaments/${tournId}/games`,{game1: game1Id , game2: game2Id});
+		/*
 
-	const beginTournament = async () => {
-		if (players.length !== 4) {
-			toast.error('Tournament must have exactly 4 players to begin!');
-			return;
-		}
-
-		try {
+        try {
 			game1Players[0].playerType = PlayerType.ONE;
 			game1Players[1].playerType = PlayerType.TWO;
 			game2Players[0].playerType = PlayerType.ONE;
@@ -121,19 +113,39 @@ function TournamentPage() {
 				initialPowers: initialPowers2,
 			});
 
-			await setItem(`/tournaments/${tournId}/status`, { name: 'started' });
+			setItem(`/tournaments/${tournId}/status`, { name: 'started' });
 			setTournamentStatus('started');
 			console.log(tournamentStatus);
 		} catch (error) {
 			console.error('Failed to start tournament:', error);
 			toast.error('Failed to start the tournament.');
 		}
+		*/
 	};
+    /*
+	useEffect(() => {
+		async function checkTournamentStatus() {
+			try {
+				const tournamentStatus = getItemsOnce(`/tournaments/${tournId}/status`)
+				if (tournamentStatus.name === 'Running') {
+					
+				}
+
+			}
+		}
+	})
+	
+	*/
+
+	
+/*
+		
 	
 	useEffect(() => {
 		async function checkTournamentStatus() {
 			try {
-				if (tournamentStatus === 'started') {
+				const tournamentStatus = getItemsOnce(`/tournaments/${tournId}/status`)
+				if (tournamentStatus.name === 'Running') {
 					if (
 						currentUser.userName === game1Players[0].playerName ||
 						currentUser.userName === game1Players[1].playerName
