@@ -2,6 +2,8 @@ import { isNil, reverse } from 'lodash';
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { DndProvider } from 'react-dnd';
+import { TouchBackend } from 'react-dnd-touch-backend'
+
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
@@ -125,7 +127,7 @@ export function GameContainer({
 		return <></>;
 
 	return (
-		<DndProvider backend={HTML5Backend}>
+		<DndProvider backend={TouchBackend}>
 			{isNil(game?.two?.hp) && (
 				<h4 style={{ color: violet }}>
 					Game ID: <span style={{ fontSize: '1.2em', userSelect: 'all' }}>{gameId}</span>
