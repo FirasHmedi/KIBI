@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { flexColumnStyle, violet } from '../styles/Style';
-import { CARDS_PATH, WALKTHROUGH_PATH } from '../utils/data';
+import { CARDS_PATH } from '../utils/data';
 
 function Sidebar() {
 	const navigate = useNavigate();
@@ -19,13 +19,13 @@ function Sidebar() {
 				style={{
 					...flexColumnStyle,
 					backgroundColor: violet,
-					gap: 10,
+					gap: 20,
 				}}>
+				<button onClick={() => window.open('https://discord.gg/CrAy2vKQ', '_blank')}>
+					<h4 style={{ textDecoration: 'underline' }}>Discord server</h4>
+				</button>
 				<button onClick={() => navigate(CARDS_PATH)}>
 					<h4 style={{}}>Cards</h4>
-				</button>
-				<button onClick={() => navigate(WALKTHROUGH_PATH)}>
-					<h4 style={{}}>Walkthrough</h4>
 				</button>
 			</div>
 			<div
@@ -34,14 +34,23 @@ function Sidebar() {
 					justifyContent: 'flex-start',
 					alignItems: 'flex-start',
 					textAlign: 'start',
-					position: 'relative',
-					bottom: 0,
+					fontSize: '0.8rem',
 				}}>
-				<h5 style={{ fontWeight: 'bold' }}>Rules</h5>
-				<h6>- Element activates Animals abilities</h6>
-				<h6>- No attack in first round</h6>
-				<h6>- 3 Animals on board defend their player</h6>
-				<h6>- Player can be attacked if no animal defends him</h6>
+				<h2 style={{ fontWeight: 'bold' }}>Rules</h2>
+				<ul>
+					<li>In the first round, Players cant attack.</li>
+					<br />
+					<li>
+						Player attacks once per round. Lion in element gives an extra attack to another animal.
+					</li>
+					<br />
+					<li>
+						Player can attack the opponent if he has an eagle in element or the opponent has no
+						animals to defend him.
+					</li>
+					<br />
+					<li>Animals can be sacrificed from the board. Player gets +2hp per sacrifice. </li>
+				</ul>
 			</div>
 		</div>
 	);

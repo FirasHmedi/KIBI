@@ -2,10 +2,13 @@ import { isNil, reverse } from 'lodash';
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { DndProvider } from 'react-dnd';
+import { TouchBackend } from 'react-dnd-touch-backend'
+
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
 import { violet } from '../styles/Style';
+import { BOT } from '../utils/data';
 import { isGameFinished, isGameInPreparation, isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
 import { GameView } from './GameView';
@@ -15,11 +18,13 @@ export function GameContainer({
 	playerType,
 	gameId,
 	spectator,
+	ROUND_DURATION,
 }: {
 	game: Game;
 	playerType: PlayerType;
 	gameId: string;
 	spectator?: boolean;
+	ROUND_DURATION: number;
 }) {
 	const [board, setBoard] = useState<Board>();
 	const [round, setRound] = useState<Round>();
@@ -105,7 +110,9 @@ export function GameContainer({
 
 	const checkAndDrawCardFromMainDeck = async ({ player, nb }: Round) => {
 		if (nb > round!?.nb && !!round!.nb && player != round!.player && player === playerType) {
-			showCountDown.current = true;
+			if (game?.two?.playerName != BOT) {
+				showCountDown.current = true;
+			}
 			await drawCardFromMainDeck(gameId, playerType);
 		}
 	};
@@ -120,7 +127,7 @@ export function GameContainer({
 		return <></>;
 
 	return (
-		<DndProvider backend={HTML5Backend}>
+		<DndProvider backend={TouchBackend}>
 			{isNil(game?.two?.hp) && (
 				<h4 style={{ color: violet }}>
 					Game ID: <span style={{ fontSize: '1.2em', userSelect: 'all' }}>{gameId}</span>
@@ -137,6 +144,7 @@ export function GameContainer({
 				logs={logs}
 				status={game?.status}
 				winner={winner}
+				ROUND_DURATION={ROUND_DURATION}
 			/>
 		</DndProvider>
 	);

@@ -8,7 +8,6 @@ import { Tooltip } from 'react-tooltip';
 import {
 	CurrPlayerViewButtonsStyle,
 	airColor,
-	centerStyle,
 	earthColor,
 	fireColor,
 	flexColumnStyle,
@@ -16,7 +15,6 @@ import {
 	violet,
 	waterColor,
 } from '../styles/Style';
-import { ROUND_DURATION } from '../utils/data';
 import { isGameFinished, showToast } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
@@ -31,20 +29,29 @@ export const BlockElement = ({ type }: any) => {
 	else return <img src={BlockAttacksIcon} style={{ height: '3.5rem', width: '3.5rem' }} />;
 };
 
-export const CountDown = ({ finishRound }: any) => (
-	<CountdownCircleTimer
-		isPlaying
-		duration={ROUND_DURATION}
-		colors={`#681b89`}
-		onComplete={() => {
-			if (!!finishRound) finishRound();
-		}}
-		size={40}
-		strokeLinecap='butt'
-		strokeWidth={0.5}>
-		{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
-	</CountdownCircleTimer>
-);
+export const CountDown = ({
+	finishRound,
+	ROUND_DURATION,
+}: {
+	finishRound: () => void;
+	ROUND_DURATION: number;
+}) => {
+	if (!ROUND_DURATION) return <></>;
+	return (
+		<CountdownCircleTimer
+			isPlaying
+			duration={ROUND_DURATION}
+			colors={`#681b89`}
+			onComplete={() => {
+				if (!!finishRound) finishRound();
+			}}
+			size={40}
+			strokeLinecap='butt'
+			strokeWidth={0.5}>
+			{({ remainingTime }) => <h5 style={{ color: violet }}>{remainingTime}</h5>}
+		</CountdownCircleTimer>
+	);
+};
 
 export const CurrentPView = ({
 	player,
@@ -95,7 +102,7 @@ export const CurrentPView = ({
 		};
 
 		const cardsToPlay =
-			nbCardsToPlay > 1 ? `${nbCardsToPlay} cards` : nbCardsToPlay === 1 ? '1 card' : 'No cards';
+			nbCardsToPlay > 1 ? `${nbCardsToPlay} 🃁` : nbCardsToPlay === 1 ? '1 🃁' : 'No 🃁';
 
 		const buttonsStyle: CSSProperties = {
 			...CurrPlayerViewButtonsStyle,
@@ -125,7 +132,17 @@ export const CurrentPView = ({
 					{!!nbCardsToPlay && isMyRound && <h5 style={{ color: violet }}>{cardsToPlay} left</h5>}
 					<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
 						{!isConfirmActive ? (
-							<button style={buttonsStyle} disabled={!isMyRound} onClick={handleFinishClick}>
+							<button
+								style={{
+									...buttonsStyle,
+									minWidth: undefined,
+									width: undefined,
+									padding: 2,
+									paddingLeft: 6,
+									paddingRight: 6,
+								}}
+								disabled={!isMyRound}
+								onClick={handleFinishClick}>
 								FINISH
 							</button>
 						) : (
@@ -243,7 +260,7 @@ export const ElementButton = ({ setElement }: any) => (
 		}}
 		onClick={() => setElement()}>
 		<div style={{ zIndex: 1, position: 'relative', top: '3vw' }}>
-			<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+			<GiHeartMinus style={{ color: 'white', width: '0.8rem', height: '0.8rem' }} />
 		</div>
 		<div style={{}}>
 			<div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -291,26 +308,7 @@ const CurrPlayerDataView = ({
 	isMyRound?: boolean;
 	isMe?: boolean;
 }) => {
-	const { playerType } = player;
-
-	return (
-		<>
-			{isMe && (
-				<div
-					style={{
-						position: 'absolute',
-						left: '2vh',
-						bottom: '2vh',
-						height: '4vh',
-						...centerStyle,
-						color: violet,
-					}}>
-					<h4>{playerType?.toUpperCase()}</h4>
-				</div>
-			)}
-			<PlayerCanDoView player={player} isMe={isMe} />
-		</>
-	);
+	return <PlayerCanDoView player={player} isMe={isMe} />;
 };
 
 const OpponentDataView = ({ player }: { player: Player }) => {

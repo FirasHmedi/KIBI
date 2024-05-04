@@ -40,6 +40,15 @@ export enum PlayerType {
 	TWO = 'two',
 }
 
+export interface User {
+	id: string;
+	userName: string;
+	hash: string;
+	score: number;
+	wins: number;
+	losses: number;
+}
+
 export interface Player {
 	playerType?: PlayerType;
 	cardsIds: string[];

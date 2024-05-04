@@ -78,8 +78,8 @@ export const boardSlotStyle: CSSProperties = {
 	borderRadius: 5,
 	color: 'white',
 	fontSize: '0.85em',
-	height: '6.9rem',
-	width: '5.5rem',
+	height: '6rem',
+	width: '4.7rem',
 	flexShrink: 0,
 };
 

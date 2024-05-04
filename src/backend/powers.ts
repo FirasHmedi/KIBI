@@ -93,7 +93,7 @@ export const sacrifice1HpToReviveAnyAnimal = async (
 	if (!isAnimalCard(animalId) || isNil(slotNb)) return;
 	await removeHpFromPlayer(gameId, playerType, 1);
 	await deleteAnimalCardFromGraveYardById(gameId, animalId!);
-	await addAnimalToBoard(gameId, playerType, slotNb, animalId!, true);
+	await addAnimalToBoard(gameId, playerType, slotNb, animalId!);
 };
 
 export const sacrifice3HpToSteal = async (
@@ -106,7 +106,7 @@ export const sacrifice3HpToSteal = async (
 	if (!animalId || isNil(mySlotNb) || isNil(oppSlotNb)) return;
 	await removeHpFromPlayer(gameId, playerType, 3);
 	await removeAnimalFromBoard(gameId, getOpponentIdFromCurrentId(playerType), oppSlotNb);
-	await addAnimalToBoard(gameId, playerType, mySlotNb, animalId, true);
+	await addAnimalToBoard(gameId, playerType, mySlotNb, animalId);
 };
 
 export const sacrifice1HpToReviveLastAnimal = async (
@@ -121,7 +121,7 @@ export const sacrifice1HpToReviveLastAnimal = async (
 	if (!isEmpty(animalGY)) {
 		const lastAnimalCardId = animalGY[animalGY.length - 1];
 		await deleteAnimalCardFromGraveYardById(gameId, lastAnimalCardId);
-		await addAnimalToBoard(gameId, playerType, slotNb, lastAnimalCardId, true);
+		await addAnimalToBoard(gameId, playerType, slotNb, lastAnimalCardId);
 	}
 };
 
@@ -181,12 +181,12 @@ export const changeElement = async (
 
 	const currSlots = (await getItemsOnce(getBoardPath(gameId) + playerType)) ?? [];
 	const isCurrDoubleAP = await are3AnimalsWithSameElement(gameId, currSlots, elementType);
-	await setPlayerDoubleAP(gameId, playerType, isCurrDoubleAP);
+	await setPlayerDoubleAP(gameId, playerType, false);
 
 	const oppPlayerType = getOpponentIdFromCurrentId(playerType);
 	const oppSlots = (await getItemsOnce(getBoardPath(gameId) + oppPlayerType)) ?? [];
 	const isOppDoubleAP = await are3AnimalsWithSameElement(gameId, oppSlots, elementType);
-	await setPlayerDoubleAP(gameId, oppPlayerType, isOppDoubleAP);
+	await setPlayerDoubleAP(gameId, oppPlayerType, false);
 
 	if (playerType) {
 		setElementLoad(gameId, playerType, 0);
@@ -207,7 +207,19 @@ export const sacrificeAnimalToGet3Hp = async (
 		await addHpToPlayer(gameId, playerType, 3);
 	}
 };
-
+export const sacrificeAnimalToGet2Hp = async (
+	gameId: string,
+	playerType: PlayerType,
+	animalId?: string,
+	slotNb?: number,
+) => {
+	if (!animalId || isNil(slotNb)) return;
+	const isRemoved = await removeAnimalFromBoard(gameId, playerType, slotNb);
+	if (isRemoved) {
+		await addAnimalToGraveYard(gameId, animalId);
+		await addHpToPlayer(gameId, playerType, 2);
+	}
+};
 export const shieldOwnerPlus2Hp = async (gameId: string, playerType: PlayerType) => {
 	await addHpToPlayer(gameId, playerType, 2);
 };

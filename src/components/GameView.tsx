@@ -28,16 +28,21 @@ import {
 	returnOnePowerFromGYToDeck,
 	sacrifice1HpToReviveAnyAnimal,
 	sacrifice3HpToSteal,
+	sacrificeAnimalToGet2Hp,
 	sacrificeAnimalToGet3Hp,
 	stealCardFromOpponent,
 	switch2Cards,
 	switchDeckMinusHp,
 } from '../backend/powers';
 import {
+	addAnimalToBoard,
 	addInfoToLog,
 	addOneRound,
 	addPowerToGraveYard,
+	deleteAnimalCardFromGraveYardById,
 	deletePowerCardFromGraveYardById,
+	isOne,
+	isTwo,
 	removeHpFromPlayer,
 } from '../backend/unitActions';
 import { centerStyle, flexColumnStyle } from '../styles/Style';
@@ -45,11 +50,13 @@ import { BOT, ClanName, EMPTY, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils
 import {
 	canAnimalAKillAnimalD,
 	getAnimalCard,
+	getCardIdThatAttacksOwner,
 	getISlotsAllEmpty,
 	getOpponentIdFromCurrentId,
 	getOriginalCardId,
 	getPowerCard,
 	hasAttackerInElement,
+	hasKingInElement,
 	isAnimalCard,
 	isAnimalInSlots,
 	isAttackerInElement,
@@ -80,6 +87,7 @@ interface GameViewProps {
 	logs: string[];
 	status: string;
 	winner?: string;
+	ROUND_DURATION: number;
 }
 
 export function GameView({
@@ -93,6 +101,7 @@ export function GameView({
 	logs,
 	status,
 	winner,
+	ROUND_DURATION,
 }: GameViewProps) {
 	const { oppPSlots, currPSlots, elementType, animalGY, powerGY } = board;
 	const playerType = currPlayer.playerType!;
@@ -107,7 +116,8 @@ export function GameView({
 
 	const activePowerCard = useRef('');
 	const hasAttacked = useRef(false);
-	const canKingAttackAgain = useRef(false);
+	const hasExtraAttack = useRef(false);
+	const lastAnimalIdThatAttacked = useRef<string>('');
 	const gyTitle = useRef('');
 
 	const openCardsPopup = cardsIdsForPopup?.length > 0;
@@ -310,6 +320,7 @@ export function GameView({
 		console.log('Executing power card ', cardId);
 
 		const { name } = getPowerCard(cardId)!;
+		let lastAnimCard;
 		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
 		activePowerCard.current = cardId;
 
@@ -325,6 +336,12 @@ export function GameView({
 				break;
 			case 'switch-decks':
 				await switchDeckMinusHp(gameId, playerType);
+				break;
+			case 'rev-last-anim':
+				lastAnimCard = animalGY[animalGY.length - 1];
+				await deleteAnimalCardFromGraveYardById(gameId, lastAnimCard);
+				const slotNbForRevive = getCurrSlotNb();
+				await addAnimalToBoard(gameId, playerType, slotNbForRevive, lastAnimCard!);
 				break;
 			case 'rev-any-anim-1hp':
 				gyTitle.current = 'Choose an animal to revive';
@@ -361,7 +378,7 @@ export function GameView({
 				setCardsIdsForPopup(oppPlayer.cardsIds);
 				return;
 		}
-		await processPostPowerCardPlay();
+		await processPostPowerCardPlay(lastAnimCard);
 	};
 
 	const playPowerCard = async (cardId: string) => {
@@ -381,6 +398,7 @@ export function GameView({
 		console.log('Executing power card ', cardId);
 
 		const { name } = getPowerCard(cardId)!;
+		let lastAnimCard;
 		await setPowerCardAsActive(gameId, playerType, cardId!, name!);
 		activePowerCard.current = cardId;
 		switch (getOriginalCardId(cardId!)) {
@@ -413,6 +431,12 @@ export function GameView({
 				await addPowerToGraveYard(gameId, activePowerCard.current);
 				setCardsIdsForPopup(powerGY);
 				return;
+			case 'rev-last-anim':
+				lastAnimCard = animalGY[animalGY.length - 1];
+				await deleteAnimalCardFromGraveYardById(gameId, lastAnimCard);
+				const slotNbForRevive = getCurrSlotNb();
+				await addAnimalToBoard(gameId, playerType, slotNbForRevive, lastAnimCard!);
+				break;
 			case 'rev-any-anim-1hp':
 				gyTitle.current = 'Select an animal to revive';
 				setCardsIdsForPopup(animalGY);
@@ -443,10 +467,10 @@ export function GameView({
 				return;
 		}
 
-		await processPostPowerCardPlay();
+		await processPostPowerCardPlay(lastAnimCard);
 	};
 
-	const processPostPowerCardPlay = async () => {
+	const processPostPowerCardPlay = async (lastAnimCard?: string) => {
 		setCardsIdsForPopup([]);
 
 		await addPowerToGraveYard(gameId, activePowerCard.current);
@@ -455,6 +479,15 @@ export function GameView({
 		setNbCardsToPlay(nbCardsToPlay => (nbCardsToPlay > 1 ? nbCardsToPlay - 1 : 0));
 
 		activePowerCard.current = '';
+
+		if (isAnimalCard(lastAnimCard)) {
+			if (isJokerInElement(lastAnimCard, elementType)) {
+				openJokerPopup(lastAnimCard);
+			}
+			if (isTankInElement(lastAnimCard, elementType)) {
+				await add1Hp(gameId, playerType);
+			}
+		}
 	};
 
 	const setElement = async () => {
@@ -516,7 +549,8 @@ export function GameView({
 	};
 
 	const finishRound = async () => {
-		canKingAttackAgain.current = false;
+		hasExtraAttack.current = false;
+		lastAnimalIdThatAttacked.current = '';
 		if (isGameFinished(status) || spectator) {
 			return;
 		}
@@ -530,12 +564,58 @@ export function GameView({
 				oppPSlots,
 			);
 			if (oppPlayer?.playerName === BOT) {
-				showCountDown.current = true;
 				await drawCardFromMainDeck(gameId, PlayerType.TWO);
 				await finishRoundBot();
 			}
 		} catch (e) {
 			console.error(e);
+		}
+	};
+
+	const isAttackDisabled =
+		!(round.nb >= 3 && isMyRound && currPlayer.canAttack) || getISlotsAllEmpty(currPSlots);
+
+	const canAttackOpponent =
+		round.nb >= 3 &&
+		isMyRound &&
+		currPlayer.canAttack &&
+		!hasAttacked.current &&
+		(isOppSlotsEmpty || hasAttackerInElement(currPSlots, elementType));
+
+	const attackPlayer = async () => {
+		if (
+			round.nb < 3 ||
+			!isMyRound ||
+			!currPlayer.canAttack ||
+			hasAttacked.current ||
+			(!isOppSlotsEmpty && !hasAttackerInElement(currPSlots, elementType))
+		) {
+			return;
+		}
+
+		const cardId = getCardIdThatAttacksOwner(
+			currPSlots,
+			elementType,
+			lastAnimalIdThatAttacked.current,
+		);
+
+		if (
+			!isEmpty(lastAnimalIdThatAttacked.current) &&
+			isKingInElement(lastAnimalIdThatAttacked.current, elementType) &&
+			cardId === lastAnimalIdThatAttacked.current &&
+			hasExtraAttack.current
+		) {
+			return;
+		}
+
+		if (hasExtraAttack.current && !isOppSlotsEmpty && !isAttackerInElement(cardId, elementType)) {
+			return;
+		}
+
+		if (isAnimalCard(cardId)) {
+			hasAttacked.current = true;
+			await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), cardId, isCurrDoubleAP);
+			handleSecondAttackRule(cardId);
 		}
 	};
 
@@ -545,16 +625,6 @@ export function GameView({
 		currslotnb?: number,
 		oppslotnb?: number,
 	) => {
-		if (canKingAttackAgain.current && !isKingInElement(currAnimalId, elementType)) {
-			return;
-		}
-		if (
-			canKingAttackAgain.current &&
-			isKingInElement(currAnimalId, elementType) &&
-			!isAnimalInSlots(oppPSlots, oppoAnimalId)
-		) {
-			return;
-		}
 		if (
 			isNil(currAnimalId) ||
 			isGameFinished(status) ||
@@ -580,17 +650,27 @@ export function GameView({
 			return false;
 		}
 
+		if (!isAnimalInSlots(oppPSlots, oppoAnimalId)) {
+			showToast('Attack an opponent animal');
+			return false;
+		}
+
+		if (
+			!isEmpty(lastAnimalIdThatAttacked.current) &&
+			isKingInElement(lastAnimalIdThatAttacked.current, elementType) &&
+			currAnimalId === lastAnimalIdThatAttacked.current &&
+			hasExtraAttack.current
+		) {
+			showToast('Choose another animal');
+			return false;
+		}
+
 		const isAttackAnimalsEnabled =
 			round.nb >= 3 &&
 			isMyRound &&
 			currPlayer.canAttack &&
 			!hasAttacked.current &&
 			currPSlots[currslotnb]?.canAttack;
-
-		const isAttackOwnerEnabled =
-			isAttackAnimalsEnabled &&
-			!isAnimalCard(oppoAnimalId) &&
-			(isAttackerInElement(currAnimalId, elementType) || isOppSlotsEmpty);
 
 		console.log(
 			'player canAttack',
@@ -601,63 +681,48 @@ export function GameView({
 			'isOppAnimalInSlots',
 			isAnimalInSlots(oppPSlots, oppoAnimalId),
 			{ isAttackAnimalsEnabled },
-			{ isAttackOwnerEnabled },
 		);
-
-		if (isAttackOwnerEnabled && !canKingAttackAgain.current) {
-			await attackOppHp(currAnimalId!);
-			return;
-		}
-
-		if (!isAnimalCard(oppoAnimalId) && !isAttackOwnerEnabled) {
-			if (!isOppSlotsEmpty) {
-				showToast('Not all slots are empty');
-				return false;
-			}
-			return false;
-		}
 
 		if (isAttackAnimalsEnabled && isAnimalInSlots(oppPSlots, oppoAnimalId)) {
 			return await attackAnimal(currAnimalId, oppoAnimalId, oppslotnb);
-		} else {
-			if (hasAttacked.current) {
-				showToast('Already Attacked');
-				return false;
-			}
-			if (!currPlayer.canAttack) {
-				showToast('Blocked from attacking');
-				return false;
-			}
-			if (!isAnimalInSlots(oppPSlots, oppoAnimalId)) {
-				showToast('Attack an opponent animal');
-				return false;
-			}
-			return false;
 		}
 	};
 
-	const attackAnimal = async (currAnimalId?: string, oppoAnimalId?: string, oppslotnb?: number) => {
+	const attackAnimal = async (currAnimalId?: string, oppoAnimalId?: string, oppSlotNb?: number) => {
 		if (!canAnimalAKillAnimalD(currAnimalId, oppoAnimalId, isCurrDoubleAP)) {
 			return false;
 		}
-		hasAttacked.current = true;
-		await attackOppAnimal(gameId, playerType, currAnimalId!, oppoAnimalId!, oppslotnb!);
 
-		const canSecondAttackWithKing =
-			isKingInElement(currAnimalId, elementType) && !canKingAttackAgain.current;
-		if (canSecondAttackWithKing) {
-			canKingAttackAgain.current = true;
+		hasAttacked.current = true;
+		await attackOppAnimal(gameId, playerType, currAnimalId!, oppoAnimalId!, oppSlotNb!);
+
+		handleSecondAttackRule(currAnimalId!);
+	};
+
+	const handleSecondAttackRule = (cardId: string) => {
+		const canSecondAttack = hasKingInElement(currPSlots, elementType) && !hasExtraAttack.current;
+
+		if (canSecondAttack) {
+			lastAnimalIdThatAttacked.current = cardId!;
+			hasExtraAttack.current = true;
 			hasAttacked.current = false;
 			return;
 		}
 
 		hasAttacked.current = true;
-		canKingAttackAgain.current = false;
+		hasExtraAttack.current = false;
+		lastAnimalIdThatAttacked.current = '';
 	};
 
-	const attackOppHp = async (animalId: string) => {
-		hasAttacked.current = true;
-		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), animalId, isCurrDoubleAP);
+	const sacrificeAnimal = async (animalId: string, slotNb: number) => {
+		if (!isMyRound) {
+			showToast('Not your round to play');
+			return;
+		}
+		if (spectator || isNil(slotNb) || !isAnimalInSlots(currPSlots, animalId)) {
+			return;
+		}
+		await sacrificeAnimalToGet2Hp(gameId, playerType, animalId, slotNb);
 	};
 
 	const activateMonkeyAbility = (slots: any[] = [], elementType?: ClanName) => {
@@ -670,11 +735,11 @@ export function GameView({
 		}
 	};
 
-	const openJokerPopup = () => {
-		if (isEmpty(animalGY) && isEmpty(powerGY)) {
+	const openJokerPopup = (lastAnimCard?: string) => {
+		if (isEmpty(animalGY)) {
 			return;
 		}
-		const graveyardCards = [...animalGY, ...powerGY];
+		const graveyardCards = [...animalGY].filter(id => lastAnimCard !== id);
 		setCardsIdsForPopup(graveyardCards);
 		setIsJokerActive(true);
 	};
@@ -690,7 +755,8 @@ export function GameView({
 
 	const attackState = {
 		round,
-		canKingAttackAgain,
+		hasExtraAttack,
+		lastAnimalIdThatAttacked,
 		currPlayer,
 		oppPlayer,
 		board,
@@ -701,15 +767,15 @@ export function GameView({
 		elementType,
 	};
 
-	const isAttackDisabled =
-		!(round.nb >= 3 && isMyRound && currPlayer.canAttack) || getISlotsAllEmpty(currPSlots);
+	const playerNameOne =
+		(isOne(currPlayer?.playerType) ? currPlayer.playerName : oppPlayer.playerName) ??
+		PlayerType.ONE;
+	const playerNameTwo =
+		(isTwo(currPlayer?.playerType) ? currPlayer.playerName : oppPlayer.playerName) ??
+		PlayerType.TWO;
 
-	const canAttackOpponent =
-		round.nb >= 3 &&
-		isMyRound &&
-		currPlayer.canAttack &&
-		!hasAttacked.current &&
-		(isOppSlotsEmpty || hasAttackerInElement(currPSlots, elementType));
+	const winnerName =
+		(isOne(winner as PlayerType) ? currPlayer.playerName : oppPlayer.playerName) ?? 'Anonymous';
 
 	return (
 		<>
@@ -718,9 +784,9 @@ export function GameView({
 				style={{
 					...flexColumnStyle,
 					width: '100%',
-					height: '94vh',
+					height: '99vh',
 					justifyContent: 'space-between',
-					paddingBottom: '6vh',
+					paddingBottom: '1vh',
 				}}>
 				<OpponentPView player={oppPlayer} spectator={spectator} />
 
@@ -728,7 +794,13 @@ export function GameView({
 					<ElementPopup changeElement={changeEnvWithPopup} />
 				)}
 
-				<GameLeftInfo round={round} logs={logs} />
+				<GameLeftInfo
+					round={round}
+					logs={logs}
+					playerOneName={playerNameOne}
+					playerTwoName={playerNameTwo}
+					playerType={playerType}
+				/>
 
 				<BoardView
 					board={board}
@@ -736,11 +808,13 @@ export function GameView({
 					playCard={playCard}
 					localState={localState}
 					attack={attack}
+					attackPlayer={attackPlayer}
 					attackState={attackState}
 					isOppDoubleAP={isOppDoubleAP}
 					isCurrDoubleAP={isCurrDoubleAP}
 					setElement={setElement}
 					canAttackOpponent={canAttackOpponent}
+					sacrificeAnimal={sacrificeAnimal}
 				/>
 				<CurrentPView
 					player={currPlayer}
@@ -767,7 +841,7 @@ export function GameView({
 						title={gyTitle}
 					/>
 				)}
-				{isGameFinished(status) && <GameFinished status={status} winner={winner} />}
+				{isGameFinished(status) && <GameFinished status={status} winnerName={winnerName} />}
 				{!isGameFinished(status) && showCountDown.current && (
 					<div
 						style={{
@@ -777,7 +851,7 @@ export function GameView({
 							height: '4vh',
 							...centerStyle,
 						}}>
-						<CountDown finishRound={finishRound} />
+						<CountDown finishRound={finishRound} ROUND_DURATION={ROUND_DURATION} />
 					</div>
 				)}
 			</div>

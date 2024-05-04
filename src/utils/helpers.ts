@@ -1,8 +1,9 @@
+import { sha256 } from 'js-sha256';
 import { isEmpty, shuffle } from 'lodash';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getGamePath, getItemsOnce, setItem } from '../backend/db';
+import { getGamePath, getItemsOnce, getUserById, setItem } from '../backend/db';
 import {
 	ANIMALS_CARDS,
 	ANIMALS_POINTS,
@@ -12,6 +13,8 @@ import {
 	FINISHED,
 	JOKER,
 	KING,
+	PLAYER_HASH_KEY,
+	PLAYER_ID_KEY,
 	POWERS_CARDS_IDS,
 	POWER_CARDS_OBJECT,
 	PREPARE,
@@ -19,9 +22,10 @@ import {
 	RoleName,
 	TANK,
 } from './data';
-import { AnimalCard, Card, PlayerType, SlotType } from './interface';
+import { AnimalCard, Card, PlayerType, SlotType, User } from './interface';
 
-export const isNotEmpty = (input: string | Array<any>, minLength = 0) => input.length > minLength;
+export const isNotEmpty = (input: string | Array<any>, minLength = 0) =>
+	!!input && input?.length > minLength;
 
 export const waitFor = (delay: number) => new Promise(resolve => setTimeout(resolve, delay));
 
@@ -118,6 +122,8 @@ export const canAnimalAKillAnimalD = (aID?: string, dID?: string, isDoubleAP: bo
 	return true;
 };
 
+  
+
 export const getISlotsAllEmpty = (slots: SlotType[] = []) =>
 	!isAnimalCard(slots[0]?.cardId) &&
 	!isAnimalCard(slots[1]?.cardId) &&
@@ -134,6 +140,50 @@ export const hasAttackerInElement = (slots: SlotType[] = [], elementType?: ClanN
 		isAttackerInElement(slots[1]?.cardId, elementType) ||
 		isAttackerInElement(slots[2]?.cardId, elementType)
 	);
+};
+
+export const hasKingInElement = (slots: SlotType[] = [], elementType?: ClanName) => {
+	return (
+		isKingInElement(slots[0]?.cardId, elementType) ||
+		isKingInElement(slots[1]?.cardId, elementType) ||
+		isKingInElement(slots[2]?.cardId, elementType)
+	);
+};
+
+export const getMaxAP = (slots: SlotType[] = [], isDoubleAP?: boolean) => {
+	let ap = 1;
+	[slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].forEach(cardId => {
+		const role = getAnimalCard(cardId)?.role;
+		if (role) {
+			const animalAP = getAnimalAP(role, isDoubleAP);
+			if (animalAP > 1) {
+				ap = animalAP;
+			}
+		}
+	});
+	return ap;
+};
+
+export const getCardIdThatAttacksOwner = (
+	slots: SlotType[] = [],
+	elementType?: ClanName,
+	lastAnimalId?: string,
+) => {
+	const cardsIds = [slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].filter(
+		cardId => isAnimalCard(cardId) && lastAnimalId !== cardId,
+	);
+	const attackerId = cardsIds.find(cardId => isAttackerInElement(cardId, elementType));
+	if (isAnimalCard(attackerId)) {
+		return attackerId;
+	}
+	let selectedCardId: any = null;
+	cardsIds.forEach(cardId => {
+		const role = getAnimalCard(cardId)?.role;
+		if (role === KING || role === ATTACKER) {
+			selectedCardId = cardId;
+		}
+	});
+	return selectedCardId ?? cardsIds[0];
 };
 
 export const submitRandomSelection = async (gameId: string, powerCards: string[] = []) => {
@@ -322,10 +372,10 @@ export const isAnimalInSlots = (slots: SlotType[] = [], cardId?: string): boolea
 	return slots.some(slot => slot?.cardId === cardId);
 };
 
-export const showToast = (msg: string) => {
+export const showToast = (msg: string, time = 1000) => {
 	toast.warning(msg, {
 		position: toast.POSITION.TOP_RIGHT,
-		autoClose: 1000,
+		autoClose: time,
 	});
 };
 
@@ -358,6 +408,12 @@ export const isPowerCardPlayable = (cardId: string, elements: any) => {
 			}
 			if (hp < 2) {
 				showToast('Not enough hp to revive animal');
+				return false;
+			}
+			break;
+		case 'rev-last-anim':
+			if (isEmpty(animalGY)) {
+				showToast('No animals to revive');
 				return false;
 			}
 			break;
@@ -428,4 +484,24 @@ export const isPowerCardPlayable = (cardId: string, elements: any) => {
 			break;
 	}
 	return true;
+};
+
+export const isUserConnected = async (): Promise<User> => {
+	const playerId = localStorage.getItem(PLAYER_ID_KEY);
+	const playerHash = localStorage.getItem(PLAYER_HASH_KEY);
+
+	if (isEmpty(playerId) || isEmpty(playerHash)) {
+		return {} as User;
+	}
+	const user = await getUserById(playerId!);
+
+	if (isEmpty(user) || user.hash !== playerHash) {
+		return {} as User;
+	}
+
+	return user;
+};
+
+export const getHash = (input: string = '') => {
+	return sha256(input);
 };

@@ -1,4 +1,4 @@
-import { FaHeart, FaShield } from 'react-icons/fa6';
+import { FaShield } from 'react-icons/fa6';
 import { GiHeartMinus, GiHeartPlus } from 'react-icons/gi';
 
 import { TbSword } from 'react-icons/tb';
@@ -69,6 +69,8 @@ interface SlotProps {
 	attackState?: any;
 	opponent?: boolean;
 	canAttackOpponent?: boolean;
+	canSacrifice?: boolean;
+	sacrificeAnimalFun?: any;
 }
 
 interface DeckSlotProps {
@@ -117,7 +119,7 @@ export const PowerBoardSlot = ({
 					display: 'flex',
 					justifyContent: 'flex-end',
 					alignItems: 'flex-start',
-					height: '1.7rem',
+					height: '1.9rem',
 					paddingRight: 2,
 					paddingTop: 2,
 				}}>
@@ -125,13 +127,13 @@ export const PowerBoardSlot = ({
 				{gainArray.length > 0
 					? gainArray.map(index => (
 							<span key={index}>
-								<GiHeartPlus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+								<GiHeartPlus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 							</span>
 					  ))
 					: lossArray.length > 0
 					? lossArray.map(index => (
 							<span key={index} id={tooltipId}>
-								<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+								<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 							</span>
 					  ))
 					: null}
@@ -212,7 +214,7 @@ export const PowerDeckSlot = ({
 							display: 'flex',
 							justifyContent: 'flex-end',
 							alignItems: 'flex-start',
-							height: '1.7rem',
+							height: '1.9rem',
 							paddingRight: 2,
 							paddingTop: 2,
 						}}>
@@ -220,13 +222,13 @@ export const PowerDeckSlot = ({
 						{gainArray.length > 0
 							? gainArray.map(index => (
 									<span key={index}>
-										<GiHeartPlus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+										<GiHeartPlus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 									</span>
 							  ))
 							: lossArray.length > 0
 							? lossArray.map(index => (
 									<span key={index} id={tooltipId}>
-										<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+										<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 									</span>
 							  ))
 							: null}
@@ -257,7 +259,7 @@ export const AnimalBoardSlot = ({
 	const [canAttack, setcanAttack] = useState(true);
 	const [, drag] = useDrag(
 		() => ({
-			type: 'attackcard',
+			type: 'moveBoardCard',
 			item: { id: cardId, nb: nb },
 			collect: monitor => ({ isDragging: !!monitor.getItem() }),
 		}),
@@ -278,7 +280,7 @@ export const AnimalBoardSlot = ({
 
 	const [, drop] = useDrop(
 		{
-			accept: 'attackcard',
+			accept: 'moveBoardCard',
 			drop: (item: DropItem) => {
 				console.log('animal', item.id, 'attacks', cardId);
 				const animalAId = item.id;
@@ -323,7 +325,7 @@ export const AnimalBoardSlot = ({
 					}}>
 					<img
 						src={animalsPics[name.toLowerCase() as keyof typeof animalsPics]}
-						style={{ width: '4.2rem', height: '3.2rem' }}></img>
+						style={{ width: '4rem', height: '3rem' }}></img>
 				</div>
 			)}
 
@@ -333,18 +335,18 @@ export const AnimalBoardSlot = ({
 					width: '100%',
 					justifyContent: 'space-evenly',
 					alignItems: 'center',
-					fontSize: '1.2rem',
+					fontSize: '1rem',
 					backgroundColor: CLANS[clan!]?.color,
 					height: '2rem',
 				}}>
 				<div style={{ ...centerStyle, gap: 2 }}>
 					<h4>{isDoubleAP ? ap * 2 : ap}</h4>
-					<TbSword style={{ fontSize: '1.45rem' }} />
+					<TbSword style={{ fontSize: '1.25rem' }} />
 				</div>
 
 				<div style={{ ...centerStyle, gap: 2 }}>
 					<h4>{hp}</h4>
-					<FaShield />
+					<FaShield style={{ fontSize: '1rem' }} />
 				</div>
 			</div>
 		</div>
@@ -368,7 +370,7 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 				}}>
 				{role === KING && (
 					<span>
-						<GiHeartMinus style={{ color: 'white', width: '1.3rem', height: '1.3rem' }} />
+						<GiHeartMinus style={{ color: 'white', width: '1rem', height: '1rem' }} />
 					</span>
 				)}
 			</div>
@@ -451,6 +453,9 @@ export const AnimalDeckSlot = ({
 	);
 };
 
+import sacrificeAnimalGrey from '/src/assets/icons/sacrifice-animal-grey.svg';
+import sacrificeAnimalViolet from '/src/assets/icons/sacrifice-animal-violet.svg';
+
 export const BoardSlot = ({
 	cardId,
 	nb,
@@ -461,6 +466,8 @@ export const BoardSlot = ({
 	attackState,
 	opponent,
 	canAttackOpponent,
+	sacrificeAnimalFun,
+	canSacrifice = true,
 }: SlotProps) => {
 	const [, drop] = useDrop(
 		{
@@ -476,7 +483,7 @@ export const BoardSlot = ({
 	);
 	const [, drop2] = useDrop(
 		{
-			accept: 'attackcard',
+			accept: 'moveBoardCard',
 			drop: (item: DropItem) => {
 				const animalAId = item.id;
 				const animalDId = cardId;
@@ -489,14 +496,41 @@ export const BoardSlot = ({
 
 	if (isAnimalCard(cardId)) {
 		return (
-			<div ref={drop}>
-				<AnimalBoardSlot
-					cardId={cardId!}
-					isDoubleAP={isDoubleAP}
-					attack={attack}
-					nb={nb}
-					attackState={attackState}
-				/>
+			<div style={{ ...flexColumnStyle, alignItems: 'center' }}>
+				<div ref={drop}>
+					<AnimalBoardSlot
+						cardId={cardId!}
+						isDoubleAP={isDoubleAP}
+						attack={attack}
+						nb={nb}
+						attackState={attackState}
+					/>
+				</div>
+				{canSacrifice && !opponent && (
+					<button
+						style={{
+							position: 'relative',
+							top: '1rem',
+							marginBottom: '-1rem',
+							borderRadius: 10,
+							...centerStyle,
+						}}
+						disabled={!canSacrifice}
+						onClick={() => {
+							sacrificeAnimalFun(cardId, nb);
+						}}>
+						<img
+							id='sacrificeButton'
+							src={sacrificeAnimalViolet}
+							style={{ width: '1.4rem', height: '1.4rem' }}
+						/>
+						<Tooltip
+							style={{ fontSize: '0.5rem' }}
+							anchorSelect={'#sacrificeButton'}
+							content={'Sacrifice for 2HP'}
+						/>
+					</button>
+				)}
 			</div>
 		);
 	}
@@ -510,25 +544,33 @@ export const BoardSlot = ({
 					justifyContent: 'center',
 					border: `solid 1px ${lightViolet}`,
 					...centerStyle,
-				}}>
-				{canAttackOpponent && (
-					<>
-						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
-						<TbSword style={{ color: violet, fontSize: '1.45rem' }} />
-					</>
-				)}
-			</div>
+				}}></div>
 		);
 	}
 
 	return (
-		<div
-			ref={drop}
-			style={{
-				...boardSlotStyle,
-				justifyContent: 'center',
-				border: `solid 1px ${lightViolet}`,
-			}}></div>
+		<div style={{ ...flexColumnStyle, alignItems: 'center' }}>
+			<div
+				ref={drop}
+				style={{
+					...boardSlotStyle,
+					justifyContent: 'center',
+					border: `solid 1px ${lightViolet}`,
+				}}></div>
+			{!opponent && (
+				<button
+					style={{
+						position: 'relative',
+						top: '1rem',
+						marginBottom: '-1rem',
+						borderRadius: 10,
+						...centerStyle,
+					}}
+					disabled={true}>
+					<img src={sacrificeAnimalGrey} style={{ width: '1.4rem', height: '1.4rem' }} />
+				</button>
+			)}
+		</div>
 	);
 };
 
@@ -595,11 +637,10 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 				...centerStyle,
 				borderRadius: 5,
 				backgroundColor: elementType !== 'neutral' ? CLANS[elementType!]?.color : undefined,
-				border: elementType === 'neutral' ? `solid 1px ${lightViolet}` : undefined,
 				color: 'white',
 				flexDirection: 'column',
-				height: '4.6vw',
-				width: '4.6vw',
+				height: '3.2rem',
+				width: '3.2rem',
 				justifyContent: 'center',
 				flexShrink: 0,
 				fontSize: '1em',
@@ -617,15 +658,15 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 					<div style={{ display: 'flex', flexDirection: 'row' }}>
 						<div
 							style={{
-								width: '1.2vw',
-								height: '1.2vw',
+								width: '1.6rem',
+								height: '1.6rem',
 								backgroundColor: fireColor,
 								borderTopLeftRadius: 5,
 							}}></div>
 						<div
 							style={{
-								width: '1.2vw',
-								height: '1.2vw',
+								width: '1.6rem',
+								height: '1.6rem',
 								backgroundColor: airColor,
 								borderTopRightRadius: 5,
 							}}></div>
@@ -633,15 +674,15 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 					<div style={{ display: 'flex', flexDirection: 'row' }}>
 						<div
 							style={{
-								width: '1.2vw',
-								height: '1.2vw',
+								width: '1.6rem',
+								height: '1.6rem',
 								backgroundColor: waterColor,
 								borderBottomLeftRadius: 5,
 							}}></div>
 						<div
 							style={{
-								width: '1.2vw',
-								height: '1.2vw',
+								width: '1.6rem',
+								height: '1.6rem',
 								backgroundColor: earthColor,
 								borderBottomRightRadius: 5,
 							}}></div>
@@ -662,6 +703,7 @@ export const BoardSlots = ({
 	attack,
 	attackState,
 	canAttackOpponent,
+	sacrificeAnimal,
 }: {
 	slots: SlotType[];
 	opponent?: boolean;
@@ -673,6 +715,7 @@ export const BoardSlots = ({
 	attack?: any;
 	attackState?: any;
 	canAttackOpponent?: boolean;
+	sacrificeAnimal?: any;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -701,6 +744,7 @@ export const BoardSlots = ({
 						attackState={attackState}
 						opponent={opponent}
 						canAttackOpponent={canAttackOpponent}
+						sacrificeAnimalFun={sacrificeAnimal}
 					/>
 				</div>
 			))}

@@ -272,6 +272,43 @@ className={
 		"gain": 0,
 		"loss": 1
 	}
+	"draw-2": {
+		"description": "Draw 2 cards from the main deck",
+		"name": "Draw 2 cards"
+	},
+	"2-anim-gy": {
+		"description": "Return 2 animals to deck from graveyard",
+		"name": "Return 2 dead animals"
+	},
+	"sacrif-anim-3hp": {
+		"description": "Sacrifice an animal to get 3hp",
+		"name": "Sacrifice an animal",
+		"gain": 3,
+		"loss": 0
+	}
+
+			const isAttackOwnerEnabled =
+			isAttackAnimalsEnabled &&
+			!isAnimalCard(oppoAnimalId) &&
+			(isAttackerInElement(currAnimalId, elementType) || isOppSlotsEmpty);
+
+			{canAttackOpponent && (
+					<>
+						<FaHeart style={{ color: violet, fontSize: '1.1rem' }} />
+						<TbSword style={{ color: violet, fontSize: '1.45rem' }} />
+					</>
+				)}
+
+									<br />
+					<li>
+						If the player has 3 animals of the same activated element, All animals AP are doubled.
+					</li>
+						"switch-decks": {
+		"description": "Switch deck with opponent for 1hp",
+		"name": "Switch decks",
+		"gain": 0,
+		"loss": 1
+	}
 	*/
 
 export {};

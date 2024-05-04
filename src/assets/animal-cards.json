@@ -1,6 +1,6 @@
 {
 	"9-a": {
-		"ability": "Attacks 2 Animals",
+		"ability": "Extra attack for another animal",
 		"clan": "air",
 		"description": "king of air clan",
 		"name": "Lion",
@@ -21,14 +21,14 @@
 		"ability": "+1hp per round"
 	},
 	"12-a": {
-		"ability": "Move graveyard card to deck",
+		"ability": "Move dead animal to deck",
 		"clan": "air",
 		"description": "joker of air clan",
 		"name": "Monkey",
 		"role": "joker"
 	},
 	"13-a": {
-		"ability": "Attacks 2 Animals",
+		"ability": "Extra attack for another animal",
 		"clan": "fire",
 		"description": "king of fire clan",
 		"name": "Lion",
@@ -49,14 +49,14 @@
 		"ability": "+1hp per round"
 	},
 	"16-a": {
-		"ability": "Move graveyard card to deck",
+		"ability": "Move dead animal to deck",
 		"clan": "fire",
 		"description": "joker of fire clan",
 		"name": "Monkey",
 		"role": "joker"
 	},
 	"1-a": {
-		"ability": "Attacks 2 Animals",
+		"ability": "Extra attack for another animal",
 		"clan": "earth",
 		"description": "king of earth clan",
 		"name": "Lion",
@@ -77,14 +77,14 @@
 		"ability": "+1hp per round"
 	},
 	"4-a": {
-		"ability": "Move graveyard card to deck",
+		"ability": "Move dead animal to deck",
 		"clan": "earth",
 		"description": "joker of earth clan",
 		"name": "Monkey",
 		"role": "joker"
 	},
 	"5-a": {
-		"ability": "Attacks 2 Animals",
+		"ability": "Extra attack for another animal",
 		"clan": "water",
 		"description": "king of water clan",
 		"name": "Lion",
@@ -105,7 +105,7 @@
 		"ability": "+1hp per round"
 	},
 	"8-a": {
-		"ability": "Move graveyard card to deck",
+		"ability": "Move dead animal to deck",
 		"clan": "water",
 		"description": "joker of water clan",
 		"name": "Monkey",

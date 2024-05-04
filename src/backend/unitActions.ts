@@ -9,7 +9,8 @@ import {
 } from '../utils/helpers';
 import { PlayerType, SlotType } from '../utils/interface';
 import { getElementType } from './actions';
-import { getBoardPath, getGamePath, getItemsOnce, getPlayerPath, setItem } from './db';
+import { USERS_PATH, getBoardPath, getGamePath, getItemsOnce, getPlayerPath, setItem } from './db';
+import { getEloRating } from './rating';
 
 export const setActivePowerCard = async (gameId: string, cardId?: string) => {
 	await setItem(getBoardPath(gameId), { activeCardId: cardId });
@@ -26,22 +27,19 @@ export const checkIfAnimalExistAddItToGraveYard = async (
 	}
 };
 
-/* Changed canAttack, testing with true */
 export const addAnimalToBoard = async (
 	gameId: string,
 	playerType: PlayerType,
 	slotNb: number,
 	animalId: string,
-	canAttack: boolean = false,
 ) => {
 	await checkIfAnimalExistAddItToGraveYard(gameId, playerType, slotNb);
 	const slots = ((await getItemsOnce(getBoardPath(gameId) + playerType)) ?? []) as SlotType[];
 	const updatedSlots = [slots[0] ?? EMPTY_SLOT, slots[1] ?? EMPTY_SLOT, slots[2] ?? EMPTY_SLOT];
 	updatedSlots[slotNb] = { cardId: animalId, canAttack: true };
 	await setItem(getBoardPath(gameId), { [`${playerType}`]: updatedSlots });
-	// 3 Animals in element
 	const isDoubleAP = await are3AnimalsWithSameElement(gameId, updatedSlots);
-	await setPlayerDoubleAP(gameId, playerType, isDoubleAP);
+	await setPlayerDoubleAP(gameId, playerType, false);
 };
 
 export const setPlayerDoubleAP = async (
@@ -143,9 +141,35 @@ export const removeHpFromPlayer = async (gameId: string, playerType: PlayerType,
 	if (newHp > 0) {
 		return;
 	}
+	await setGameWin(gameId, playerType);
+};
+
+export const setGameWin = async (gameId: string, playerType: PlayerType) => {
 	await setItem(getGamePath(gameId), {
 		winner: getOpponentIdFromCurrentId(playerType),
 		status: FINISHED,
+	});
+	const winnerId = (
+		await getItemsOnce(getGamePath(gameId) + getOpponentIdFromCurrentId(playerType))
+	)?.id;
+	const loserId = (await getItemsOnce(getGamePath(gameId) + playerType))?.id;
+	if (!winnerId || !loserId || winnerId === loserId) {
+		return;
+	}
+	const winner = await getItemsOnce(USERS_PATH + winnerId);
+	const loser = await getItemsOnce(USERS_PATH + loserId);
+
+	const { oneScore, twoScore } = getEloRating(winner.score ?? 1000, loser.score ?? 1000, true);
+
+	await setItem(USERS_PATH + winnerId, {
+		...winner,
+		score: oneScore,
+		wins: (winner.wins ?? 0) + 1,
+	});
+	await setItem(USERS_PATH + loserId, {
+		...loser,
+		score: twoScore,
+		losses: (loser.losses ?? 0) + 1,
 	});
 };
 
@@ -274,3 +298,6 @@ export const addOneRound = async (gameId: string, playerType: PlayerType) => {
 	round.nb += 1;
 	await setItem('games/' + gameId + '/round', round);
 };
+
+export const isOne = (playerType?: PlayerType) => playerType === PlayerType.ONE;
+export const isTwo = (playerType?: PlayerType) => playerType === PlayerType.TWO;

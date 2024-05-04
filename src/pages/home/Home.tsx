@@ -1,12 +1,14 @@
 import shuffle from 'lodash/shuffle';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MdComputer, MdPerson, MdVisibility } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getItemsOnce, setItem } from '../../backend/db';
+import { getItemsOnce, setItem, subscribeToItems } from '../../backend/db';
 
+import { isEmpty, orderBy } from 'lodash';
 import { VscDebugContinue } from 'react-icons/vsc';
+import { Tooltip } from 'react-tooltip';
 import short from 'short-uuid';
 import { Seperator } from '../../components/Elements';
 import {
@@ -17,35 +19,83 @@ import {
 	homeButtonsStyle,
 	violet,
 } from '../../styles/Style';
-import { BOT, EMPTY_SLOT, GAMES_PATH, INITIAL_HP, PREPARE, RUNNING } from '../../utils/data';
+import { BOT, CONNECT_PATH, EMPTY_SLOT, GAMES_PATH, PREPARE, RUNNING } from '../../utils/data';
 import {
 	distributeCards,
 	getMainDeckFirstHalf,
 	getMainDeckSecondHalf,
+	isNotEmpty,
+	isUserConnected,
 	submitRandomSelection,
 	submitRandomSelectionforBot,
 } from '../../utils/helpers';
-import { PlayerType } from '../../utils/interface';
+import { PlayerType, User } from '../../utils/interface';
 
 function Home() {
 	const navigate = useNavigate();
 	const [gameId, setGameId] = useState('');
 	const [disabledButton, setDisabledButton] = useState(false);
 	const [alertMessage, setAlertMessage] = useState('');
+	const [currentUser, setCurrentUser] = useState<User>();
+	const [leaderBoard, setLeaderBoard] = useState<any[]>();
+	const [INITIAL_HP, setINITIAL_HP] = useState(0);
+	const [ROUND_DURATION, setROUND_DURATION] = useState(0);
+
+	const setUser = async () => {
+		const user = await isUserConnected();
+		if (isNotEmpty(user.userName)) {
+			setCurrentUser(user);
+			return;
+		}
+		setCurrentUser(undefined);
+	};
+
+	const setLeaderBoardAfterCalc = async (users: any = {}) => {
+		users = Object.values(users).map(({ score, wins, losses, userName }: any) => ({
+			score,
+			wins,
+			losses,
+			userName,
+		}));
+		users = orderBy(users, ['score'], ['desc']);
+		setLeaderBoard(users);
+	};
+
+	const subscribeToUsers = async () => {
+		await subscribeToItems('users', setLeaderBoardAfterCalc);
+	};
+
+	const getConstants = async () => {
+		const constants = await getItemsOnce('constants');
+		setINITIAL_HP(constants.INITIAL_HP);
+		setROUND_DURATION(constants.ROUND_DURATION);
+	};
+
+	useEffect(() => {
+		getConstants();
+		setUser();
+		subscribeToUsers();
+	}, []);
 
 	const createGame = async () => {
-		const gameId = short.generate();
-		const player1Id = short.generate();
+		if (!INITIAL_HP) return;
+		if (isEmpty(currentUser)) {
+			navigate(CONNECT_PATH);
+			return;
+		}
+
+		const gameId = short.generate().slice(0, 6);
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
-		localStorage.setItem('playerId', player1Id);
+
+		let player1Id = currentUser.id;
 
 		await setItem(GAMES_PATH + gameId, {
 			status: PREPARE,
 			one: {
 				id: player1Id,
 				hp: INITIAL_HP,
-				playerName: 'player1',
+				playerName: currentUser.userName,
 				canAttack: true,
 				canPlayPowers: true,
 				status: PREPARE,
@@ -75,14 +125,16 @@ function Home() {
 		navigate('/game/' + gameId, {
 			state: {
 				gameId: gameId,
-				playerName: 'player1',
+				playerName: currentUser.userName,
 				playerType: PlayerType.ONE,
+				ROUND_DURATION,
 			},
 		});
 	};
 
 	const playWithGameBot = async () => {
-		const gameId = short.generate();
+		if (!INITIAL_HP) return;
+		const gameId = short.generate().slice(0, 6);
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
 
@@ -90,7 +142,7 @@ function Home() {
 			status: PREPARE,
 			one: {
 				hp: INITIAL_HP,
-				playerName: 'player1',
+				playerName: currentUser?.userName ?? 'Anonymous',
 				canAttack: true,
 				canPlayPowers: true,
 				status: PREPARE,
@@ -128,15 +180,23 @@ function Home() {
 		navigate('/game/' + gameId, {
 			state: {
 				gameId: gameId,
-				playerName: 'player1',
+				playerName: currentUser?.userName ?? 'Anonymous',
 				playerType: PlayerType.ONE,
+				ROUND_DURATION,
 			},
 		});
 		await distributeCards(gameId);
 	};
 
 	const joinGameAsPlayer = async () => {
+		if (!INITIAL_HP) return;
 		if (gameId.length === 0) return;
+
+		if (isEmpty(currentUser)) {
+			navigate(CONNECT_PATH);
+			return;
+		}
+
 		const gameData = await getItemsOnce(GAMES_PATH + gameId);
 
 		if (!gameData || gameData.two) {
@@ -145,14 +205,13 @@ function Home() {
 			});
 			return;
 		}
-		const player2Id = short.generate();
 
-		localStorage.setItem('playerId', player2Id);
+		let player2Id = currentUser.id;
 
 		await setItem(GAMES_PATH + gameId + '/two', {
 			id: player2Id,
 			hp: INITIAL_HP,
-			playerName: 'player2',
+			playerName: currentUser.userName,
 			canAttack: true,
 			canPlayPowers: true,
 			status: PREPARE,
@@ -162,8 +221,9 @@ function Home() {
 		navigate('game/' + gameId, {
 			state: {
 				gameId: gameId,
-				playerName: 'player2',
+				playerName: currentUser.userName,
 				playerType: PlayerType.TWO,
+				ROUND_DURATION,
 			},
 		});
 		await distributeCards(gameId);
@@ -177,18 +237,18 @@ function Home() {
 				gameId: gameId,
 				spectator: true,
 				playerType: PlayerType.TWO,
+				ROUND_DURATION,
 			},
 		});
 	};
 
 	const returnAsPlayer = async () => {
-		const storedPlayerId = localStorage.getItem('playerId');
-		if (!storedPlayerId) {
-			toast.error('No player ID found in local storage.', {
-				position: toast.POSITION.TOP_RIGHT,
-			});
+		if (isEmpty(currentUser)) {
+			navigate(CONNECT_PATH);
 			return;
 		}
+
+		const storedPlayerId = currentUser.id;
 
 		const playerOneId = await getItemsOnce(GAMES_PATH + '/' + gameId + '/one/id');
 		const playerTwoId = await getItemsOnce(GAMES_PATH + '/' + gameId + '/two/id');
@@ -204,16 +264,18 @@ function Home() {
 			navigate('game/' + gameId, {
 				state: {
 					gameId: gameId,
-					playerName: 'player1',
+					playerName: currentUser.userName,
 					playerType: PlayerType.ONE,
+					ROUND_DURATION,
 				},
 			});
 		} else if (playerTwoId === storedPlayerId) {
 			navigate('game/' + gameId, {
 				state: {
 					gameId: gameId,
-					playerName: 'player2',
+					playerName: currentUser.userName,
 					playerType: PlayerType.TWO,
+					ROUND_DURATION,
 				},
 			});
 		} else {
@@ -268,7 +330,7 @@ function Home() {
 					</div>
 					<Seperator h='1vh' />
 					<div style={centerStyle}>
-						<h3 style={{ color: violet }}>Join a game</h3>
+						<h3 style={{ color: violet }}>Join</h3>
 						<input
 							type='text'
 							placeholder='Game Id'
@@ -276,11 +338,13 @@ function Home() {
 							style={{
 								padding: 10,
 								margin: 10,
-								width: '24vw',
+								width: '14vw',
 								height: '2vh',
 								borderRadius: 5,
 								borderWidth: 3,
 								borderColor: violet,
+								fontSize: '1rem',
+								color: violet,
 							}}
 							value={gameId}
 							disabled={disabledButton}
@@ -313,6 +377,39 @@ function Home() {
 						</div>
 					</div>
 				</div>
+			</div>
+			<div
+				style={{
+					position: 'absolute',
+					top: '20vh',
+					right: '5vw',
+					display: 'flex',
+					alignItems: 'center',
+					borderRadius: 5,
+					flexDirection: 'column',
+					gap: 6,
+					overflowY: 'auto',
+					maxHeight: '70vh',
+					overflowX: 'hidden',
+				}}>
+				<h3 style={{ color: violet, fontWeight: 'bold' }}>Leaderboard</h3>
+				<table style={{ width: '12vw' }}>
+					{leaderBoard?.map((user, index) => (
+						<tr>
+							<td style={{ padding: 4 }}>
+								<h5
+									key={index}
+									data-tooltip-id='wl'
+									data-tooltip-content={`wins: ${user.wins} , losses: ${user.losses}`}
+									style={{ color: violet, ...centerStyle }}>
+									{user.userName}
+								</h5>
+								<h6 style={{ color: violet, ...centerStyle }}>{user.score} 🏆</h6>
+								<Tooltip id='wl' />
+							</td>
+						</tr>
+					))}
+				</table>
 			</div>
 		</>
 	);

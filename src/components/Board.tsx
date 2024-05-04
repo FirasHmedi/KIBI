@@ -1,5 +1,7 @@
 import { useDrop } from 'react-dnd';
-import { centerStyle, flexColumnStyle } from '../styles/Style';
+import { MdPerson } from 'react-icons/md';
+import { TbSword } from 'react-icons/tb';
+import { centerStyle, flexColumnStyle, violet } from '../styles/Style';
 import { isPowerCard } from '../utils/helpers';
 import { Board } from '../utils/interface';
 import { MainDeck } from './Decks';
@@ -18,6 +20,8 @@ interface Props {
 	isCurrDoubleAP?: boolean;
 	setElement: () => void;
 	canAttackOpponent?: boolean;
+	attackPlayer: () => void;
+	sacrificeAnimal: any;
 }
 
 export const BoardView = ({
@@ -30,9 +34,19 @@ export const BoardView = ({
 	isCurrDoubleAP,
 	setElement,
 	canAttackOpponent,
+	attackPlayer,
+	sacrificeAnimal,
 }: Props) => {
 	const { mainDeck, currPSlots, oppPSlots, animalGY, powerGY, elementType, activeCardId } = board;
-
+	const [, drop] = useDrop(
+		{
+			accept: 'moveBoardCard',
+			drop: (item: DropItem) => {
+				sacrificeAnimal(item.id, item.nb);
+			},
+		},
+		[localState],
+	);
 	return (
 		<div
 			style={{
@@ -66,6 +80,7 @@ export const BoardView = ({
 					attack={attack}
 					attackState={attackState}
 					isDoubleAP={isCurrDoubleAP}
+					sacrificeAnimal={sacrificeAnimal}
 				/>
 			</div>
 			<Seperator w='2vw' />
@@ -74,10 +89,32 @@ export const BoardView = ({
 				<ElementSlot elementType={elementType} />
 			</button>
 
+			<Seperator w='1.5rem' />
+
+			<button
+				style={{
+					position: 'relative',
+					top: '7rem',
+					right: '4.5rem',
+					borderRadius: 10,
+					backgroundColor: canAttackOpponent ? violet : 'grey',
+					padding: 4,
+					...centerStyle,
+				}}
+				disabled={!canAttackOpponent}
+				onClick={() => {
+					attackPlayer();
+				}}>
+				<TbSword style={{ fontSize: '1.1rem', color: 'white' }} />
+				<MdPerson style={{ fontSize: '1.1rem', color: 'white' }} />
+			</button>
+
 			<div style={{ position: 'absolute', right: '0vw', top: '10vh' }}>
 				<MainDeck nbCards={mainDeck.length} />
 				<Seperator h='4vh' />
-				<AnimalGraveyard cardsIds={animalGY} />
+				<div ref={drop}>
+					<AnimalGraveyard cardsIds={animalGY} />
+				</div>
 				<Seperator h='4vh' />
 				<PowerGraveyard cardsIds={powerGY} />
 			</div>

@@ -20,7 +20,6 @@ body,
 	background-color: '#bdc3c7';
 }
 
-div,
 h1,
 h2,
 h3,
@@ -51,4 +50,10 @@ span {
 
 a {
 	text-decoration: none !important;
+}
+
+table,
+th,
+td {
+	border: 1px solid #681b89;
 }

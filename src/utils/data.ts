@@ -5,6 +5,7 @@ import { AllCards, AnimalCard, Card } from './interface';
 
 export const SINGUP_PATH = '/signup';
 export const SIGNIN_PATH = '/signin';
+export const CONNECT_PATH = '/connect';
 export const HOME_PATH = '/';
 export const GAME_PATH = '/game/:id';
 export const PROFILE_PATH = '/profile';
@@ -17,9 +18,9 @@ export const READY = 'ready';
 export const PREPARE = 'prepare';
 export const GAMES_PATH = 'games/';
 
-export const ROUND_DURATION = 80; //60
+// export const ROUND_DURATION = 30; //60
 
-export const INITIAL_HP = 9;
+// export const INITIAL_HP = 9;
 
 export const ENV_MAX_LOAD = 1;
 
@@ -40,7 +41,9 @@ export const ATTACKER = 'attacker';
 export const TANK = 'tank';
 export const JOKER = 'joker';
 
-export const BOT = 'bot';
+export const BOT = 'BOT';
+export const PLAYER_ID_KEY = 'playerId';
+export const PLAYER_HASH_KEY = 'playerHashKey';
 
 export type ClanName = 'air' | 'earth' | 'fire' | 'water' | 'neutral';
 export type RoleName = 'tank' | 'attacker' | 'king' | 'joker';

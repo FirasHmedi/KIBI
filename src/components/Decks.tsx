@@ -50,7 +50,8 @@ export const CurrentPDeck = ({ cardsIds = [], updateCardsOrder }: CurrentPDeckPr
 			style={{
 				...flexRowStyle,
 				width: '40rem',
-				overflowY: 'auto',
+				overflowY: 'hidden',
+				overflowX: 'scroll',
 				justifyContent: 'safe center',
 			}}>
 			{cardsIds.map((cardId, index) => (
@@ -73,8 +74,8 @@ export const OpponentPDeck = ({
 		<div
 			style={{
 				...flexRowStyle,
-				width: '30vw',
-				overflowY: 'auto',
+				width: '24vw',
+				overflow: 'hidden',
 				justifyContent: 'safe center',
 			}}>
 			{!spectator
@@ -93,7 +94,7 @@ export const OpponentPDeck = ({
 };
 
 export const OpponentDeckView = ({ nbCards = 0 }: { nbCards: number }) => {
-	const name = nbCards > 1 ? `${nbCards} cards` : nbCards === 1 ? '1 card' : 'No cards';
+	const name = nbCards > 1 ? `${nbCards} 🂠` : nbCards === 1 ? '1 🃁' : 'No 🃁';
 	return (
 		<div
 			style={{
@@ -109,7 +110,7 @@ export const OpponentDeckView = ({ nbCards = 0 }: { nbCards: number }) => {
 };
 
 export const MainDeck = ({ nbCards = 0 }: { nbCards: number }) => {
-	const name = nbCards > 1 ? `${nbCards} cards` : nbCards === 1 ? '1 card' : 'No cards';
+	const name = nbCards > 1 ? `${nbCards}  🃁` : nbCards === 1 ? '1 🃁' : 'No 🃁';
 	return (
 		<div
 			style={{
@@ -119,7 +120,7 @@ export const MainDeck = ({ nbCards = 0 }: { nbCards: number }) => {
 				gap: 2,
 			}}>
 			<h5>{name} </h5>
-			<img src={mainDeck} style={{ height: '4rem' }} />
+			<img src={mainDeck} style={{ height: '3rem' }} />
 		</div>
 	);
 };

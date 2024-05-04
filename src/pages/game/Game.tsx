@@ -8,7 +8,7 @@ import { Game } from '../../utils/interface';
 
 function GamePage() {
 	const location = useLocation();
-	const { gameId, playerType, spectator } = location.state;
+	const { gameId, playerType, spectator, ROUND_DURATION } = location.state;
 	const [game, setGame] = useState<Game>();
 
 	const subscribeToGame = async () => {
@@ -27,7 +27,13 @@ function GamePage() {
 				justifyContent: 'flex-start',
 				height: '100%',
 			}}>
-			<GameContainer game={game!} gameId={gameId} playerType={playerType} spectator={spectator} />
+			<GameContainer
+				game={game!}
+				gameId={gameId}
+				playerType={playerType}
+				spectator={spectator}
+				ROUND_DURATION={ROUND_DURATION}
+			/>
 		</div>
 	);
 }

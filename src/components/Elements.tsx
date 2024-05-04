@@ -6,11 +6,12 @@ import {
 	earthColor,
 	fireColor,
 	flexColumnStyle,
+	lightViolet,
 	violet,
 	waterColor,
 } from '../styles/Style';
-import { AIR, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
-import { Round } from '../utils/interface';
+import { AIR, BOT, ClanName, EARTH, FIRE, WATER, elementsIcons } from '../utils/data';
+import { PlayerType, Round } from '../utils/interface';
 
 export const Seperator = ({ h, w }: { h?: string; w?: string }) => {
 	const height = h ?? '2vh';
@@ -30,7 +31,7 @@ export const ElementPopup = ({
 			left: 0,
 			height: '100%',
 			width: '100%',
-			backgroundColor: 'rgba(0, 0, 0, 0.6)',
+			backgroundColor: 'rgba(0, 0, 0, 0.2)',
 			zIndex: 2,
 		}}>
 		<button
@@ -47,7 +48,7 @@ export const ElementPopup = ({
 				color: 'white',
 				...centerStyle,
 			}}>
-			Set Element for 1 {'    '}
+			Change Element for 1 {'    '}
 			<FaHeart style={{ color: 'white', fontSize: '1.3rem', marginLeft: 4 }} />
 		</h2>
 		<div
@@ -129,45 +130,78 @@ export const RoundView = ({ nb = 1 }: { nb: number }) => (
 			fontWeight: 'bold',
 			color: violet,
 		}}>
-		<h6>ROUND {Math.floor(nb / 2)}</h6>
+		<h6>Round {Math.floor(nb / 2)}</h6>
 	</div>
 );
 
-export const GameLeftInfo = ({ round, logs }: { round: Round; logs: any[] }) => (
-	<div
-		style={{
-			position: 'absolute',
-			left: '1vw',
-			top: '35vh',
-			...flexColumnStyle,
-			gap: 12,
-			alignItems: 'flex-start',
-			color: violet,
-			width: '18vw',
-			fontSize: '1.2em',
-		}}>
-		<div style={{ ...centerStyle }}>
-			<h6>{round.player.toUpperCase()} playing</h6>
-		</div>
-		<RoundView nb={round?.nb} />
+export const GameLeftInfo = ({
+	round,
+	logs,
+	playerOneName,
+	playerTwoName,
+	playerType,
+}: {
+	round: Round;
+	logs: any[];
+	playerOneName: string;
+	playerTwoName: string;
+	playerType: PlayerType;
+}) => {
+	const oppName = (isOne(playerType) ? playerTwoName : playerOneName) ?? BOT;
+	const currName = (isOne(playerType) ? playerOneName : playerTwoName) ?? 'Anonymous';
+	const isMePlaying = round.player === playerType ? 'playing' : '';
+	const isOppPlaying = round.player === playerType ? '' : 'playing';
+	return (
 		<div
 			style={{
+				position: 'absolute',
+				left: '1vw',
+				top: '35vh',
 				...flexColumnStyle,
-				justifyContent: 'flex-start',
+				gap: 12,
 				alignItems: 'flex-start',
-				width: '15vw',
-				height: '11vh',
-				overflowY: 'auto',
+				color: violet,
+				width: '18vw',
+				fontSize: '1.2em',
 			}}>
-			{logs.map((log, index) => (
-				<h6 key={index} style={{ fontSize: '0.5em' }}>
-					{logs.length - index}- {log}
+			<div style={{ ...centerStyle }}>
+				<h6>
+					{oppName} {isOppPlaying}
 				</h6>
-			))}
+			</div>
+			<RoundView nb={round?.nb} />
+			<div
+				style={{
+					...flexColumnStyle,
+					justifyContent: 'flex-start',
+					alignItems: 'flex-start',
+					width: '13vw',
+					height: '11vh',
+					overflowY: 'auto',
+					overflowX: 'hidden',
+					border: `solid 1px ${lightViolet}`,
+					padding: 4,
+					borderRadius: 5,
+				}}>
+				{logs.map((log: string, index) => {
+					const logUpdated = log.replaceAll('one', playerOneName).replaceAll('two', playerTwoName);
+					return (
+						<h6 key={index} style={{ fontSize: '0.5em', color: lightViolet }}>
+							- {logUpdated}
+						</h6>
+					);
+				})}
+			</div>
+			<div style={{ ...centerStyle }}>
+				<h6>
+					{currName} {isMePlaying}
+				</h6>
+			</div>
 		</div>
-	</div>
-);
+	);
+};
 
+import { isOne } from '../backend/unitActions';
 import { getOriginalCardId } from '../utils/helpers';
 import twoAnimals from '/src/assets/icons/2-animals.svg';
 import blockAttacks from '/src/assets/icons/block-attacks.svg';
@@ -223,6 +257,9 @@ export const PowerCardIcon = ({ id }: { id: string }) => {
 			w = '2.6rem';
 			break;
 		case 'rev-any-anim-1hp':
+			src = revAnyAnimal;
+			break;
+		case 'rev-last-anim':
 			src = revAnyAnimal;
 			break;
 		case 'steal-anim-3hp':
