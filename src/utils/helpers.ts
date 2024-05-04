@@ -121,11 +121,6 @@ export const canAnimalAKillAnimalD = (aID?: string, dID?: string, isDoubleAP: bo
 	}
 	return true;
 };
-export function isMobile() {
-	const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-	// checks for mobile devices
-	return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
-  }
 
   
 
