@@ -1,7 +1,7 @@
-import {isEmpty} from 'lodash';
-import {getBoardPath, getItemsOnce} from '../backend/db';
-import {getAnimalCard, isAnimalCard, isAttacker, isKing} from '../utils/helpers';
-import {getBotDeck, getBotSlots, getElementFromDb, getPlayerSlots} from './datafromDB';
+import { isEmpty } from 'lodash';
+import { getBoardPath, getItemsOnce } from '../backend/db';
+import { getAnimalCard, isAnimalCard, isAttacker, isKing } from '../utils/helpers';
+import { getBotDeck, getBotSlots, getElementFromDb, getPlayerSlots } from './datafromDB';
 
 export const canAttackOwner = async (gameId: string) => {
 	const playerSlots = await getPlayerSlots(gameId);
@@ -9,7 +9,8 @@ export const canAttackOwner = async (gameId: string) => {
 	const currentElement = await getElementFromDb(gameId);
 
 	const playerBoardCondition =
-		playerSlots.filter((slot: { cardId: string | undefined }) => isAnimalCard(slot?.cardId)).length < 3;
+		playerSlots.filter((slot: { cardId: string | undefined }) => isAnimalCard(slot?.cardId))
+			.length < 3;
 
 	const botHasAttackerInElement = botSlots.some((slot: { cardId: string | undefined }) => {
 		const card = getAnimalCard(slot?.cardId);
@@ -23,7 +24,9 @@ export const canPlayResetBoardCard = async (gameId: string) => {
 	const botSlots = await getBotSlots(gameId);
 	const opponentSlots = await getPlayerSlots(gameId);
 
-	const botHasNoAnimalsOnBoard = botSlots?.every((slot: { cardId: string }) => !isAnimalCard(slot?.cardId));
+	const botHasNoAnimalsOnBoard = botSlots?.every(
+		(slot: { cardId: string }) => !isAnimalCard(slot?.cardId),
+	);
 
 	const opponentHasAnimalsOnBoard = opponentSlots?.some((slot: { cardId: string | undefined }) =>
 		isAnimalCard(slot?.cardId),
@@ -36,11 +39,15 @@ export const canPlayPlaceKingCard = async (gameId: string) => {
 	const botSlots = await getBotSlots(gameId);
 	const botDeck = await getBotDeck(gameId);
 
-	const hasEmptySlot = botSlots.some((slot: { cardId: string | undefined }) => !isAnimalCard(slot?.cardId));
+	const hasEmptySlot = botSlots.some(
+		(slot: { cardId: string | undefined }) => !isAnimalCard(slot?.cardId),
+	);
 
 	const hasKingInDeck = botDeck.some(isKing);
 
-	const hasNoKingOnBoard = !botSlots.some((slot: { cardId: string | undefined }) => isKing(slot?.cardId));
+	const hasNoKingOnBoard = !botSlots.some((slot: { cardId: string | undefined }) =>
+		isKing(slot?.cardId),
+	);
 
 	return hasEmptySlot && hasKingInDeck && hasNoKingOnBoard;
 };
@@ -52,17 +59,24 @@ export const canPlayReviveAnimalCard = async (gameId: string) => {
 	const currentElement = await getElementFromDb(gameId);
 	if (isEmpty(botGY)) return false;
 
-	const hasEmptySlot = botSlots.some((slot: { cardId: string | undefined }) => !isAnimalCard(slot?.cardId));
+	const hasEmptySlot = botSlots.some(
+		(slot: { cardId: string | undefined }) => !isAnimalCard(slot?.cardId),
+	);
 
 	const canReviveKing =
 		hasEmptySlot &&
 		!botSlots.some((slot: { cardId: string | undefined }) => isKing(slot?.cardId)) &&
-		botGY.some((card: string | undefined) => isKing(card) && getAnimalCard(card)?.clan === currentElement);
+		botGY.some(
+			(card: string | undefined) => isKing(card) && getAnimalCard(card)?.clan === currentElement,
+		);
 
 	const canReviveAttacker =
 		hasEmptySlot &&
 		(await canAttackOwner(gameId)) &&
-		botGY.some((card: string | undefined) => isAttacker(card) && getAnimalCard(card)?.clan === currentElement);
+		botGY.some(
+			(card: string | undefined) =>
+				isAttacker(card) && getAnimalCard(card)?.clan === currentElement,
+		);
 
 	return (
 		(botSlots.every((slot: { cardId: string | undefined }) => !isAnimalCard(slot?.cardId)) &&
@@ -115,7 +129,8 @@ export const canPlayReviveAnyPowerCard = async (gameId: string) => {
 			case 'one-sacrif-anim-3hp':
 				return (
 					card.hp >= 2 &&
-					botSlots.filter((slot: { cardId: string | undefined }) => isAnimalCard(slot.cardId)).length >= 2
+					botSlots.filter((slot: { cardId: string | undefined }) => isAnimalCard(slot.cardId))
+						.length >= 2
 				);
 			case 'one-block-att':
 			case 'one-block-pow':
@@ -132,7 +147,9 @@ export const canPlayStealAnimalCard = async (gameId: string) => {
 	const botHP = await getItemsOnce('/games/' + gameId + '/board/two/hp');
 	const botSlots = await getBotSlots(gameId);
 	const opponentSlots = await getPlayerSlots(gameId);
-	if (isEmpty(botSlots)|| isEmpty(opponentSlots)){return false;}
+	if (isEmpty(botSlots) || isEmpty(opponentSlots)) {
+		return false;
+	}
 
 	if (botHP < 6) {
 		return false;
@@ -141,9 +158,15 @@ export const canPlayStealAnimalCard = async (gameId: string) => {
 	if (botSlots.some((slot: { cardId: string | undefined }) => isKing(slot?.cardId))) {
 		return false;
 	}
-	const opponentHasKing = opponentSlots.some((slot: { cardId: string | undefined }) => isKing(slot?.cardId));
-	const botHasNoAttacker = !botSlots.some((slot: { cardId: string | undefined }) => isAttacker(slot?.cardId));
-	const opponentHasAttacker = opponentSlots.some((slot: { cardId: string | undefined }) => isAttacker(slot?.cardId));
+	const opponentHasKing = opponentSlots.some((slot: { cardId: string | undefined }) =>
+		isKing(slot?.cardId),
+	);
+	const botHasNoAttacker = !botSlots.some((slot: { cardId: string | undefined }) =>
+		isAttacker(slot?.cardId),
+	);
+	const opponentHasAttacker = opponentSlots.some((slot: { cardId: string | undefined }) =>
+		isAttacker(slot?.cardId),
+	);
 
 	return opponentHasKing || (botHasNoAttacker && opponentHasAttacker);
 };
@@ -153,7 +176,8 @@ export const canPlayPlaceTwoAnimalsCard = async (gameId: string) => {
 	const botHP = await getItemsOnce('/games/' + gameId + '/board/two/hp');
 
 	const hasTwoEmptySlots =
-		botSlots.filter((slot: { cardId: string | undefined }) => !isAnimalCard(slot?.cardId)).length >= 2;
+		botSlots.filter((slot: { cardId: string | undefined }) => !isAnimalCard(slot?.cardId)).length >=
+		2;
 
 	const hasMinimumHP = botHP >= 4;
 

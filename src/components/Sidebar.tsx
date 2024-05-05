@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { flexColumnStyle, violet } from '../styles/Style';
-import { CARDS_PATH } from '../utils/data';
+import { CARDS_PATH, WALKTHROUGH_PATH } from '../utils/data';
 
 function Sidebar() {
 	const navigate = useNavigate();
@@ -21,11 +21,14 @@ function Sidebar() {
 					backgroundColor: violet,
 					gap: 20,
 				}}>
-				<button onClick={() => window.open('https://discord.gg/CrAy2vKQ', '_blank')}>
+				<button onClick={() => window.open('https://discord.gg/CHAQFv3w4N', '_blank')}>
 					<h4 style={{ textDecoration: 'underline' }}>Discord server</h4>
 				</button>
 				<button onClick={() => navigate(CARDS_PATH)}>
 					<h4 style={{}}>Cards</h4>
+				</button>
+				<button onClick={() => navigate(WALKTHROUGH_PATH)}>
+					<h4 style={{}}>Walkthrough</h4>
 				</button>
 			</div>
 			<div

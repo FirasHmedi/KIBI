@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { subscribeToItems } from '../../backend/db';
@@ -12,12 +13,19 @@ function GamePage() {
 	const [game, setGame] = useState<Game>();
 
 	const subscribeToGame = async () => {
+		if (isEmpty(gameId)) {
+			return;
+		}
 		await subscribeToItems(GAMES_PATH + gameId, setGame);
 	};
 
 	useEffect(() => {
 		subscribeToGame();
 	}, []);
+
+	if (isEmpty(gameId) || isEmpty(playerType)) {
+		return <></>;
+	}
 
 	return (
 		<div

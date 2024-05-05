@@ -52,8 +52,6 @@ const Layout = ({ children }: any) => {
 		return () => unsubscribe();
 	}, [currentUser]);*/
 
-	console.log(currentUser);
-
 	return (
 		<div style={appStyle}>
 			<div

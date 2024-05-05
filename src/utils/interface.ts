@@ -40,6 +40,14 @@ export enum PlayerType {
 	TWO = 'two',
 }
 
+export enum JoinType {
+	ONE = 'one',
+	TWO = 'two',
+	RETURN_ONE = 'return-one',
+	RETURN_TWO = 'return-two',
+	WATCHER = 'watcher',
+}
+
 export interface User {
 	id: string;
 	userName: string;

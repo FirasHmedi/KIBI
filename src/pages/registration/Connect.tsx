@@ -1,13 +1,18 @@
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import { createUser, getUserByUserName } from '../../backend/db';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import { createUser, getItemsOnce, getUserByUserName } from '../../backend/db';
 import { buttonStyle, flexColumnStyle, homeButtonsStyle, violet } from '../../styles/Style';
-import { PLAYER_HASH_KEY, PLAYER_ID_KEY } from '../../utils/data';
+import { GAMES_PATH, PLAYER_HASH_KEY, PLAYER_ID_KEY } from '../../utils/data';
 import { getHash, isUserConnected, showToast } from '../../utils/helpers';
+import { JoinType, PlayerType } from '../../utils/interface';
+import { joinGameAsPlayerTwoImpl, joinGameAsSpectatorImpl } from '../../utils/join';
 
 export const Connect = () => {
+	const location = useLocation();
+	const [searchParams, setSearchParams] = useSearchParams();
+	const { gameId, playerType, joinType } = location?.state ?? {};
 	const navigate = useNavigate();
 
 	const [userName, setUserName] = useState('');
@@ -18,27 +23,79 @@ export const Connect = () => {
 
 	const connect = async () => {
 		try {
-			const hash = getHash(userName + ':' + psw);
-
-			const user = await getUserByUserName(userName);
+			const authHash = getHash(userName + ':' + psw);
+			let isAuth = false;
+			let user = await getUserByUserName(userName);
 
 			if (isEmpty(user)) {
-				await createUser(userName, hash);
-				return navigate('/');
+				user = await createUser(userName, authHash);
+				isAuth = true;
 			}
 
-			if (user.hash === hash) {
+			if (user.hash === authHash) {
 				localStorage.setItem(PLAYER_ID_KEY, user.id);
-				localStorage.setItem(PLAYER_HASH_KEY, hash);
-				return navigate('/');
+				localStorage.setItem(PLAYER_HASH_KEY, authHash);
+				isAuth = true;
+			}
+			console.log({ isAuth, gameId, playerType, joinType, user });
+
+			if (!isAuth) {
+				showToast('Username is taken or password is incorrect', 1500);
 			}
 
-			showToast('Username is taken or password is incorrect', 1500);
+			const gameIdFromParam = searchParams.get('gameId');
+			const { INITIAL_HP, ROUND_DURATION } = (await getItemsOnce('constants')) ?? {};
+
+			if (gameIdFromParam) {
+				await joinGameAsPlayerTwoImpl(gameIdFromParam, INITIAL_HP, user, ROUND_DURATION, navigate);
+				return;
+			}
+
+			if (gameId && playerType === PlayerType.TWO) {
+				if (joinType === JoinType.TWO) {
+					await joinGameAsPlayerTwoImpl(gameId, INITIAL_HP, user, ROUND_DURATION, navigate);
+					return;
+				}
+			}
+
+			navigate('/');
 		} catch (error) {}
 	};
 
-	const redirectToHome = async () => {
+	const handleRedirection = async () => {
 		const user = await isUserConnected();
+		const gameIdFromParam = searchParams.get('gameId');
+
+		if (gameIdFromParam) {
+			const gameData = await getItemsOnce(GAMES_PATH + gameIdFromParam);
+			if (!gameData) {
+				toast.error('Game does not exist.', {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+				return;
+			}
+
+			const constants = await getItemsOnce('constants');
+
+			if (gameData.two) {
+				await joinGameAsSpectatorImpl(gameIdFromParam, constants.ROUND_DURATION, navigate);
+				return;
+			}
+
+			if (isEmpty(user?.id)) {
+				setLoading(false);
+				return;
+			}
+
+			await joinGameAsPlayerTwoImpl(
+				gameIdFromParam,
+				constants.INITIAL_HP,
+				user,
+				constants.ROUND_DURATION,
+				navigate,
+			);
+			return;
+		}
 		setLoading(false);
 		if (!isEmpty(user)) {
 			return navigate('/');
@@ -46,12 +103,10 @@ export const Connect = () => {
 	};
 
 	useEffect(() => {
-		redirectToHome();
+		handleRedirection();
 	}, []);
 
-	if (loading) {
-		return <></>;
-	}
+	if (loading) return <></>;
 
 	return (
 		<>

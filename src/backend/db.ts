@@ -35,17 +35,21 @@ export const getUserByUserName = async (userName: string): Promise<User> => {
 export const createUser = async (userName: string, hash: string) => {
 	const userId = short.generate();
 
-	await setItem(USERS_PATH + userId, {
+	const user = {
 		id: userId,
 		userName,
 		hash,
 		score: 1000,
 		wins: 0,
 		losses: 0,
-	});
+	} as User;
+
+	await setItem(USERS_PATH + userId, user);
 
 	localStorage.setItem(PLAYER_ID_KEY, userId);
 	localStorage.setItem(PLAYER_HASH_KEY, hash);
+
+	return user;
 };
 
 export const setItem = async (path: string, item: any) => {

@@ -3,9 +3,10 @@ import isEmpty from 'lodash/isEmpty';
 import { useEffect, useRef, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { toast } from 'react-toastify';
 import { drawCardFromMainDeck, revertMainDeck } from '../backend/actions';
 import { getItemsOnce } from '../backend/db';
-import { violet } from '../styles/Style';
+import { CurrPlayerViewButtonsStyle, violet } from '../styles/Style';
 import { BOT } from '../utils/data';
 import { isGameFinished, isGameInPreparation, isGameRunning } from '../utils/helpers';
 import { Board, DefaultBoard, Game, Player, PlayerType, Round } from '../utils/interface';
@@ -115,6 +116,15 @@ export function GameContainer({
 		}
 	};
 
+	const copyGameLink = () => {
+		const link = window.location.host + '/connect?gameId=' + gameId;
+		navigator.clipboard.writeText(link);
+		toast.success('Copied', {
+			position: toast.POSITION.TOP_RIGHT,
+			autoClose: 500,
+		});
+	};
+
 	if (
 		(!isGameFinished(game?.status) && !isGameRunning(game?.status)) ||
 		!board ||
@@ -127,9 +137,18 @@ export function GameContainer({
 	return (
 		<DndProvider backend={HTML5Backend}>
 			{isNil(game?.two?.hp) && (
-				<h4 style={{ color: violet }}>
-					Game ID: <span style={{ fontSize: '1.2em', userSelect: 'all' }}>{gameId}</span>
-				</h4>
+				<button
+					onClick={() => copyGameLink()}
+					style={{
+						...CurrPlayerViewButtonsStyle,
+						minWidth: undefined,
+						width: undefined,
+						padding: 8,
+						backgroundColor: violet,
+						fontSize: '1rem',
+					}}>
+					GAME LINK
+				</button>
 			)}
 			<GameView
 				round={game?.round}

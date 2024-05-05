@@ -1,50 +1,70 @@
-import { centerStyle, flexColumnStyle, violet } from '../../styles/Style';
+import { flexColumnStyle, violet } from '../../styles/Style';
 
 function WalkThrough() {
 	return (
 		<div
 			style={{
 				...flexColumnStyle,
-				...centerStyle,
 				color: violet,
-				overflowY: 'hidden',
+				overflowY: 'scroll',
 				height: '100%',
 				paddingLeft: '4vw',
 				paddingRight: '4vw',
-				paddingTop: '1vh',
-				paddingBottom: '1vh',
+				alignItems: 'flex-start',
+				textAlign: 'left',
 			}}>
-			<p>
-				1V1 game, each player has cards and health, The first player that reaches 0hp loses. The
-				cards are divided into 2 types: Animal cards and Power cards. It is played round by round,
-				the first player plays his cards, may attack, then the second player gets the turn and do
-				the same. Player health decreases when he gets a direct hit from an animal. Animal cards
-				Divided into 4 colors (Red, Blue, Yellow and Green) Each color contains 4 animals (KING,
-				ATTACKER, TANK and JOKER) Each Animal has Attack points (AP) and defense points (DP) Each
-				animal has AP and DP, an animal can attack an animal if his AP more than DP King (2AP, 2DP)
-				/ Attacker (2AP, 1DP) / Tank (1AP, 2DP) / Joker (1AP, 1DP) Power cards There are 12 power
-				cards that have an ability that can influence the game At the start each player has 2 power
-				cards and in each round he gets a random power card from the main Deck Element: activates
-				all animals abilities in board, each player can change it in his round and it affects all
-				animals board. To change element, player needs to sacrifice 2hp Animals abilities: Lion
-				ability is to attack two animals Eagle ability is to attack opponent player Whale ability is
-				to add +1hp to owner each round Monkey ability is to steal a card from the opponent deck
-				Animal can attack and kill an animal with same or less DP than his AP. Rules You can only
-				attack once in a round 3 animals defend player (you can’t attack player if he has 3 animals
-				on board) The animals abilities can be used only if their element is activated Player can
-				play 2 cards each round (first round 3 cards) If the player has 3 animals of the same color
-				and the element is activated, each animal AP is doubled. Gameplay Before the start of the
-				game, each player has 8 animals and 2 power card (randomly) The game contains player Decks,
-				the board and graveyards Player deck contains animal and power cards The board divided into
-				5 elements: 6 slots, animal graveyard, power graveyard, element slot and the main deck The 6
-				slots: each player has 3 where he can place his animals Animal graveyard contains the
-				animals that are killed Power graveyard contains the power card that are used Element slot
-				indicate which element is activated, at the start of the game, it is neutral The main deck
-				contains power cards, each round the player to play get one power card Each player has 9HP,
-				the game ends when one of the players reaches 0 hp Each round, the player gets a power card
-				from the main deck, he can play 2 cards except in first round, he can play 3 To change the
-				element, you must sacrifice 2 hp You can attack the opponent’s placed animals or the
-				opponent directly if he doesn't have any animal to defend
+			<h4>Overview of the Game</h4>
+			<p style={{ fontSize: '0.9rem' }}>
+				1 vs 1 card game where each player has a set of cards and a health total. The goal is to
+				reduce the opponent's health to zero to win the game. The game is played in rounds, and each
+				player takes turns playing cards and making moves.
+			</p>
+
+			<h4>Card Types</h4>
+			<p style={{ fontSize: '0.9rem' }}>
+				Animal Cards: <br />
+				contains Attack Points (AP) and Defense Points (DP). There are four types of animals in four
+				colors: King (2AP, 2DP) Attacker (2AP, 1DP) Tank (1AP, 2DP) Joker (1AP, 1DP) <br />
+				Power Cards: <br />
+				These are special cards that affect gameplay, offering various abilities. Players start with
+				two power cards and draw an additional one each round.
+			</p>
+
+			<h4>Game Setup</h4>
+			<p style={{ fontSize: '0.9rem' }}>
+				Each player begins with 7 health points (HP). Players start with a hand of 8 animal cards
+				and 2 power cards, drawn at random. The game board features 6 slots for animal cards (3 for
+				each player), a main deck for drawing power cards, and separate graveyards for animal and
+				power cards.
+			</p>
+
+			<h4>Gameplay</h4>
+			<p style={{ fontSize: '0.9rem' }}>
+				Round Structure: On their turn, a player can play up to two cards (three on the first
+				round). <br />
+				Combat: Players can use their animal cards to attack either the opponent’s animals or the
+				opponent directly if it’s possible. <br />
+				Element Slot: An element slot on the board determines the active element. Players have the
+				option to change the current element at the cost of sacrificing 1 HP. Once an element is
+				activated, it enables the abilities of any animal of that element.
+			</p>
+
+			<h4>Animal Abilities (Activated by Element)</h4>
+			<p style={{ fontSize: '0.9rem' }}>
+				Lion: Extra attack for another animal. <br />
+				Eagle: Can attack the opponent player directly.
+				<br />
+				Whale: Adds +1 HP to the owner each round. <br />
+				Monkey: return animal from the graveyard.
+			</p>
+
+			<h4>End of Game</h4>
+			<p style={{ fontSize: '0.9rem' }}>The game ends when one player's health reaches zero. </p>
+			<p style={{ fontSize: '0.9rem' }}>
+				Each round involves strategic decision-making about which cards to play, whether to attack
+				or defend, and how best to use power cards to influence the game. <br />
+				The dynamic of changing elements and leveraging animal abilities based on these elements
+				adds a layer of depth to the strategy.
 			</p>
 		</div>
 	);

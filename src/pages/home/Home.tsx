@@ -29,7 +29,8 @@ import {
 	submitRandomSelection,
 	submitRandomSelectionforBot,
 } from '../../utils/helpers';
-import { PlayerType, User } from '../../utils/interface';
+import { JoinType, PlayerType, User } from '../../utils/interface';
+import { joinGameAsPlayerTwoImpl, joinGameAsSpectatorImpl } from '../../utils/join';
 
 function Home() {
 	const navigate = useNavigate();
@@ -188,58 +189,27 @@ function Home() {
 		await distributeCards(gameId);
 	};
 
-	const joinGameAsPlayer = async () => {
-		if (!INITIAL_HP) return;
+	const joinGameAsPlayerTwo = async () => {
 		if (gameId.length === 0) return;
 
 		if (isEmpty(currentUser)) {
-			navigate(CONNECT_PATH);
-			return;
-		}
-
-		const gameData = await getItemsOnce(GAMES_PATH + gameId);
-
-		if (!gameData || gameData.two) {
-			toast.error('Game is full or does not exist.', {
-				position: toast.POSITION.TOP_RIGHT,
+			navigate(CONNECT_PATH, {
+				state: {
+					gameId: gameId,
+					playerType: PlayerType.TWO,
+					joinType: JoinType.TWO,
+				},
 			});
 			return;
 		}
 
-		let player2Id = currentUser.id;
-
-		await setItem(GAMES_PATH + gameId + '/two', {
-			id: player2Id,
-			hp: INITIAL_HP,
-			playerName: currentUser.userName,
-			canAttack: true,
-			canPlayPowers: true,
-			status: PREPARE,
-			envLoadNb: 0,
-		});
 		setDisabledButton(true);
-		navigate('game/' + gameId, {
-			state: {
-				gameId: gameId,
-				playerName: currentUser.userName,
-				playerType: PlayerType.TWO,
-				ROUND_DURATION,
-			},
-		});
-		await distributeCards(gameId);
+		await joinGameAsPlayerTwoImpl(gameId, INITIAL_HP, currentUser, ROUND_DURATION, navigate);
 	};
 
 	const joinGameAsSpectator = async () => {
-		if (gameId.length === 0) return;
 		setDisabledButton(true);
-		navigate('game/' + gameId, {
-			state: {
-				gameId: gameId,
-				spectator: true,
-				playerType: PlayerType.TWO,
-				ROUND_DURATION,
-			},
-		});
+		await joinGameAsSpectatorImpl(gameId, ROUND_DURATION, navigate);
 	};
 
 	const returnAsPlayer = async () => {
@@ -359,7 +329,7 @@ function Home() {
 									fontSize: '1.4em',
 								}}
 								disabled={disabledButton}
-								onClick={() => joinGameAsPlayer()}>
+								onClick={() => joinGameAsPlayerTwo()}>
 								<h6>TWO</h6>
 							</button>
 							<button
@@ -394,21 +364,23 @@ function Home() {
 				}}>
 				<h3 style={{ color: violet, fontWeight: 'bold' }}>Leaderboard</h3>
 				<table style={{ width: '12vw' }}>
-					{leaderBoard?.map((user, index) => (
-						<tr>
-							<td style={{ padding: 4 }}>
-								<h5
-									key={index}
-									data-tooltip-id='wl'
-									data-tooltip-content={`wins: ${user.wins} , losses: ${user.losses}`}
-									style={{ color: violet, ...centerStyle }}>
-									{user.userName}
-								</h5>
-								<h6 style={{ color: violet, ...centerStyle }}>{user.score} 🏆</h6>
-								<Tooltip id='wl' />
-							</td>
-						</tr>
-					))}
+					<tbody>
+						{leaderBoard?.map((user, index) => (
+							<tr key={index}>
+								<td style={{ padding: 4 }}>
+									<h5
+										key={index}
+										data-tooltip-id='wl'
+										data-tooltip-content={`wins: ${user.wins} , losses: ${user.losses}`}
+										style={{ color: violet, ...centerStyle }}>
+										{user.userName}
+									</h5>
+									<h6 style={{ color: violet, ...centerStyle }}>{user.score} 🏆</h6>
+									<Tooltip id='wl' />
+								</td>
+							</tr>
+						))}
+					</tbody>
 				</table>
 			</div>
 		</>
