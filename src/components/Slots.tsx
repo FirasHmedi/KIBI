@@ -1,7 +1,7 @@
 import { FaShield } from 'react-icons/fa6';
-import { GiHeartMinus, GiHeartPlus } from 'react-icons/gi';
+import { GiHeartMinus, GiHeartPlus, GiShieldOpposition } from 'react-icons/gi';
 
-import { TbSword } from 'react-icons/tb';
+import { TbSword, TbSwords } from 'react-icons/tb';
 
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
@@ -300,6 +300,8 @@ export const AnimalBoardSlot = ({
 	if (!name || !clan || !role) return <></>;
 
 	const { hp, ap } = ANIMALS_POINTS[role];
+	const aps = [...Array(ap ?? 1).keys()];
+	const hps = [...Array(hp ?? 1).keys()];
 	const ref = useRef(null);
 	drag(drop(ref));
 
@@ -339,14 +341,20 @@ export const AnimalBoardSlot = ({
 					backgroundColor: CLANS[clan!]?.color,
 					height: '2rem',
 				}}>
-				<div style={{ ...centerStyle, gap: 2 }}>
-					<h4>{isDoubleAP ? ap * 2 : ap}</h4>
-					<TbSword style={{ fontSize: '1.25rem' }} />
+				<div style={{ ...centerStyle }}>
+					{ap === 1 ? (
+						<TbSword style={{ fontSize: '1.1rem' }} />
+					) : (
+						<TbSwords style={{ fontSize: '1.1rem' }} />
+					)}
 				</div>
 
-				<div style={{ ...centerStyle, gap: 2 }}>
-					<h4>{hp}</h4>
-					<FaShield style={{ fontSize: '1rem' }} />
+				<div style={{ ...centerStyle }}>
+					{hp === 1 ? (
+						<FaShield style={{ fontSize: '1rem' }} />
+					) : (
+						<GiShieldOpposition style={{ fontSize: '1.3rem' }} />
+					)}
 				</div>
 			</div>
 		</div>
@@ -388,13 +396,20 @@ const AnimalDeckSlotView = ({ cardId, role, name, ability }: any) => {
 					paddingBottom: 4,
 					fontSize: '0.9rem',
 				}}>
-				<div style={{ ...centerStyle, gap: 2 }}>
-					<h4>{ap}</h4>
-					<TbSword style={{ fontSize: '1.1rem' }} />
+				<div style={{ ...centerStyle }}>
+					{ap === 1 ? (
+						<TbSword style={{ fontSize: '1.1rem' }} />
+					) : (
+						<TbSwords style={{ fontSize: '1.1rem' }} />
+					)}
 				</div>
-				<div style={{ ...centerStyle, gap: 2 }}>
-					<h4>{hp}</h4>
-					<FaShield />
+
+				<div style={{ ...centerStyle }}>
+					{hp === 1 ? (
+						<FaShield style={{ fontSize: '1rem' }} />
+					) : (
+						<GiShieldOpposition style={{ fontSize: '1.3rem' }} />
+					)}
 				</div>
 				<Tooltip
 					anchorSelect={`#${roleTooltipId}`}

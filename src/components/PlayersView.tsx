@@ -182,6 +182,8 @@ export const CurrentPView = ({
 		hpRef.current = hp;
 	}, [hp]);
 
+	const hearts = [...Array(hpRef.current ?? 0).keys()];
+
 	return (
 		<div
 			style={{
@@ -209,12 +211,10 @@ export const CurrentPView = ({
 							...flexRowStyle,
 							alignItems: 'center',
 						}}>
-						<div style={{ width: '3rem' }}>
-							{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
-						</div>
 						<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
-							<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
-							<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
+							{hearts.map(h => (
+								<FaHeart key={h} style={{ color: violet, fontSize: '1.3rem', margin: 1 }} />
+							))}
 						</div>
 					</div>
 				)}
@@ -331,6 +331,8 @@ const OpponentDataView = ({ player }: { player: Player }) => {
 		hpRef.current = hp;
 	}, [hp]);
 
+	const hearts = [...Array(hpRef.current ?? 0).keys()];
+
 	return (
 		<div
 			style={{
@@ -350,23 +352,12 @@ const OpponentDataView = ({ player }: { player: Player }) => {
 					gap: 1,
 				}}>
 				{!isNil(hp) && (
-					<div
-						style={{
-							...flexRowStyle,
-							alignItems: 'center',
-							gap: 8,
-						}}>
-						<div style={{ width: '3rem' }}>
-							{hpChange ? <h4 style={{ fontSize: '1.7rem' }}>{hpChange}</h4> : <div />}
-						</div>
-						<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
-							<h4 style={{ fontSize: '1.7rem' }}> {hpRef.current}</h4>
-							<FaHeart style={{ color: violet, fontSize: '1.3rem' }} />
-						</div>
+					<div style={{ ...flexRowStyle, alignItems: 'center', justifyContent: 'center' }}>
+						{hearts.map(h => (
+							<FaHeart key={h} style={{ color: violet, fontSize: '1.3rem', margin: 1 }} />
+						))}
 					</div>
 				)}
-
-				<div style={{ width: '3rem' }}></div>
 			</div>
 			<PlayerCanDoView player={player} />
 		</div>

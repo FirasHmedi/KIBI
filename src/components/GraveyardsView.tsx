@@ -13,20 +13,17 @@ import {
 	topCardStyle,
 	violet,
 } from '../styles/Style';
-import {DeckSlot, DropItem} from './Slots';
+import { DeckSlot } from './Slots';
 import animalIcon from '/src/assets/icons/animal-icon.svg';
 import monkey from '/src/assets/icons/monkey.svg';
 import powerIcon from '/src/assets/icons/power-icon.svg';
-import {useDrop} from "react-dnd";
-import {sacrificeAnimalToGet2Hp} from "../backend/powers";
 
 export const PowerGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
-	return <Graveyard  src={powerIcon} cardsIds={cardsIds} />;
+	return <Graveyard src={powerIcon} cardsIds={cardsIds} />;
 };
 
 export const AnimalGraveyard = ({ cardsIds }: { cardsIds: string[] }) => {
-
-	return <Graveyard  src={animalIcon} cardsIds={cardsIds} /> ;
+	return <Graveyard src={animalIcon} cardsIds={cardsIds} />;
 };
 
 export const Graveyard = ({ src, cardsIds = [] }: { src: string; cardsIds: string[] }) => {
@@ -50,8 +47,10 @@ export const Graveyard = ({ src, cardsIds = [] }: { src: string; cardsIds: strin
 					marginBottom: 6,
 					justifyContent: 'center',
 				}}>
-				<h4 style={{ paddingLeft: 4 }}>{cardsNb}</h4>
-				<img src={src} style={{ width: '1.4rem', height: '1.4rem', paddingLeft: 4 }} />
+				{cardsNb > 0 && <h4 style={{ paddingLeft: 4 }}>{cardsNb} </h4>}
+				{cardsNb === 0 && (
+					<img src={src} style={{ width: '1.4rem', height: '1.4rem', paddingLeft: 4 }} />
+				)}
 				<GiTombstone
 					style={{
 						width: '1.4rem',
