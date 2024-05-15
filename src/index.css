@@ -48,6 +48,25 @@ span {
 	user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
+/* width */
+::-webkit-scrollbar {
+	width: 1px;
+	height: 6px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+	border-radius: 10px;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #bdc1c6;
+	border-radius: 10px;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #bdc1c6;
+}
+
 a {
 	text-decoration: none !important;
 }
@@ -55,5 +74,5 @@ a {
 table,
 th,
 td {
-	border: 1px solid #681b89;
+	border: 1px solid #ea7ffb;
 }

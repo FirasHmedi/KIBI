@@ -5,8 +5,8 @@ export const darkGrey = '#333230';
 export const softGrey = '#FBFAF5'; // f4dcc0 c7bfaf
 export const black = '#000000';
 export const primaryBlue = '#2980b9';
-export const violet = '#681b89'; //#681b89 #501569 8e44ad
-export const lightViolet = 'rgba(142, 68, 173, 0.3)';
+export const violet = '#EA7FFB'; //#EA7FFB #501569 8e44ad EA7FFB  EA7FFB
+export const lightViolet = '#EA7FFB'; // rgba(142, 68, 173, 0.3)
 
 export const greyBackground = '#ecf0f1';
 
@@ -16,6 +16,11 @@ export const airColor = '#27ae60'; // #27ae60 #2ecc71
 export const earthColor = '#f39c12';
 export const neutralColor = '#95a5a6';
 export const selectedColor = '#575757';
+
+// dark theme
+export const blackBackground = '#202124';
+export const darkLightViolet = '#EA7FFB';
+export const darkLightGrey = '#BDC1C6';
 
 export const flexRowStyle: CSSProperties = {
 	display: 'flex',
@@ -39,7 +44,7 @@ export const centerStyle: CSSProperties = {
 };
 
 export const appStyle: CSSProperties = {
-	backgroundColor: greyBackground,
+	backgroundColor: blackBackground,
 	height: '100vh',
 };
 

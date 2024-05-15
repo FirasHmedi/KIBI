@@ -41,7 +41,7 @@ export const CountDown = ({
 		<CountdownCircleTimer
 			isPlaying
 			duration={ROUND_DURATION}
-			colors={`#681b89`}
+			colors={`#EA7FFB`}
 			onComplete={() => {
 				if (!!finishRound) finishRound();
 			}}
