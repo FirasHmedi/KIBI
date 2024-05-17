@@ -135,7 +135,7 @@ function Home() {
 
 	const playWithGameBot = async () => {
 		if (!INITIAL_HP) return;
-		const gameId = short.generate().slice(0, 6);
+		const gameId = 'bot-' + short.generate().slice(0, 6);
 		const mainDeck: string[] = shuffle([...getMainDeckFirstHalf(), ...getMainDeckSecondHalf()]);
 		const initialPowers = mainDeck.splice(-4, 4);
 

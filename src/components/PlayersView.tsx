@@ -15,10 +15,9 @@ import {
 	violet,
 	waterColor,
 } from '../styles/Style';
-import { isGameFinished, showToast } from '../utils/helpers';
+import { isGameFinished } from '../utils/helpers';
 import { Player, Round } from '../utils/interface';
 import { CurrentPDeck, OpponentPDeck } from './Decks';
-import { Seperator } from './Elements';
 import './styles.css';
 import BlockAttacksIcon from '/src/assets/icons/block-attacks-violet.svg';
 import BlockPowersIcon from '/src/assets/icons/block-pow-violet.svg';
@@ -88,12 +87,13 @@ export const CurrentPView = ({
 		}
 
 		const handleFinishClick = () => {
-			if (hasAttacked.current || isAttackDisabled) {
+			finishRound();
+			/*if (hasAttacked.current || isAttackDisabled) {
 				finishRound();
 			} else {
 				setIsConfirmActive(true);
 				showToast("Don't forget to attack");
-			}
+			}*/
 		};
 
 		const handleConfirmClick = () => {
@@ -118,47 +118,41 @@ export const CurrentPView = ({
 				style={{
 					position: 'absolute',
 					right: '18vw',
-					bottom: '14vh',
-					...flexRowStyle,
+					bottom: '10vh',
+					...flexColumnStyle,
 					justifyContent: 'flex-end',
 					alignItems: 'flex-end',
+					width: '8vw',
 				}}>
-				<Seperator w='1vw' />
-				<div
-					style={{
-						...flexColumnStyle,
-						width: '8vw',
-					}}>
-					{!!nbCardsToPlay && isMyRound && <h5 style={{ color: violet }}>{cardsToPlay} left</h5>}
-					<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-						{!isConfirmActive ? (
+				{!!nbCardsToPlay && isMyRound && <h5 style={{ color: violet }}>{cardsToPlay} left</h5>}
+				<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+					{!isConfirmActive ? (
+						<button
+							style={{
+								...buttonsStyle,
+								minWidth: undefined,
+								width: undefined,
+								padding: 2,
+								paddingLeft: 6,
+								paddingRight: 6,
+							}}
+							disabled={!isMyRound}
+							onClick={handleFinishClick}>
+							FINISH
+						</button>
+					) : (
+						<>
 							<button
-								style={{
-									...buttonsStyle,
-									minWidth: undefined,
-									width: undefined,
-									padding: 2,
-									paddingLeft: 6,
-									paddingRight: 6,
-								}}
+								style={buttonsStyle}
 								disabled={!isMyRound}
-								onClick={handleFinishClick}>
-								FINISH
+								onClick={handleConfirmClick}
+								data-tooltip-id='confirm-tooltip'
+								data-tooltip-content="Don't forget to attack">
+								CONFIRM
 							</button>
-						) : (
-							<>
-								<button
-									style={buttonsStyle}
-									disabled={!isMyRound}
-									onClick={handleConfirmClick}
-									data-tooltip-id='confirm-tooltip'
-									data-tooltip-content="Don't forget to attack">
-									CONFIRM
-								</button>
-								<Tooltip id='confirm-tooltip' />
-							</>
-						)}
-					</div>
+							<Tooltip id='confirm-tooltip' />
+						</>
+					)}
 				</div>
 			</div>
 		);
@@ -182,7 +176,7 @@ export const CurrentPView = ({
 		hpRef.current = hp;
 	}, [hp]);
 
-	const hearts = [...Array(hpRef.current ?? 0).keys()];
+	const hearts = hpRef.current > 0 ? [...Array(hpRef.current).keys()] : [];
 
 	return (
 		<div
@@ -192,8 +186,6 @@ export const CurrentPView = ({
 				justifyContent: 'center',
 				gap: 8,
 			}}>
-			<Buttons />
-
 			<CurrPlayerDataView player={player} isMyRound={isMyRound} isMe={true} />
 
 			<div
@@ -219,7 +211,8 @@ export const CurrentPView = ({
 					</div>
 				)}
 			</div>
-			<EmptyElement width='5vw' />
+
+			<Buttons />
 		</div>
 	);
 };
@@ -236,7 +229,6 @@ export const OpponentPView = ({ player, spectator }: { player: Player; spectator
 			}}>
 			<OpponentDataView player={player} />
 			<OpponentPDeck cardsIds={player?.cardsIds} spectator={spectator} />
-			{spectator && <EmptyElement />}
 		</div>
 	);
 };
@@ -331,7 +323,7 @@ const OpponentDataView = ({ player }: { player: Player }) => {
 		hpRef.current = hp;
 	}, [hp]);
 
-	const hearts = [...Array(hpRef.current ?? 0).keys()];
+	const hearts = hpRef.current > 0 ? [...Array(hpRef.current).keys()] : [];
 
 	return (
 		<div
@@ -371,15 +363,15 @@ const PlayerCanDoView = ({ player, isMe }: { player: Player; isMe?: boolean }) =
 			style={{
 				...flexColumnStyle,
 				position: 'absolute',
-				left: '11vw',
-				bottom: isMe ? '10vh' : undefined,
-				top: isMe ? undefined : '6vh',
+				left: '14vw',
+				bottom: isMe ? '4vh' : undefined,
+				top: isMe ? undefined : '4vh',
 				width: '12vw',
 				gap: 12,
 				fontSize: '1.1em',
 				color: violet,
 			}}>
-			{canAttack === false && canPlayPowers === false ? (
+			{canAttack === true && canPlayPowers === true ? (
 				<div style={{ ...flexColumnStyle, gap: 8 }}>
 					<BlockElement type='att' />
 					<BlockElement type='pow' />

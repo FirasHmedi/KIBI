@@ -63,7 +63,6 @@ import {
 	isCard,
 	isGameFinished,
 	isJokerInElement,
-	isKingInElement,
 	isPowerCard,
 	isPowerCardPlayable,
 	isTankInElement,
@@ -116,6 +115,7 @@ export function GameView({
 
 	const activePowerCard = useRef('');
 	const hasAttacked = useRef(false);
+	const hasAttackedOpp = useRef(false);
 	const hasExtraAttack = useRef(false);
 	const lastAnimalIdThatAttacked = useRef<string>('');
 	const gyTitle = useRef('');
@@ -140,6 +140,7 @@ export function GameView({
 
 		setNbCardsToPlay(2);
 		hasAttacked.current = false;
+		hasAttackedOpp.current = false;
 	}, [round.nb]);
 
 	const getCurrSlotNb = () => {
@@ -572,14 +573,17 @@ export function GameView({
 		}
 	};
 
-	const isAttackDisabled =
-		!(round.nb >= 3 && isMyRound && currPlayer.canAttack) || getISlotsAllEmpty(currPSlots);
+	const simpleCanAttackCondts =
+		round.nb >= 3 && isMyRound && currPlayer.canAttack && !hasAttacked.current;
+
+	const isAttackDisabled = !simpleCanAttackCondts || getISlotsAllEmpty(currPSlots);
+
+	const attackerAttackTwice =
+		isAttackerInElement(lastAnimalIdThatAttacked.current, elementType) && !isOppSlotsEmpty;
 
 	const canAttackOpponent =
-		round.nb >= 3 &&
-		isMyRound &&
-		currPlayer.canAttack &&
-		!hasAttacked.current &&
+		simpleCanAttackCondts &&
+		!attackerAttackTwice &&
 		(isOppSlotsEmpty || hasAttackerInElement(currPSlots, elementType));
 
 	const attackPlayer = async () => {
@@ -599,24 +603,14 @@ export function GameView({
 			lastAnimalIdThatAttacked.current,
 		);
 
-		if (
-			!isEmpty(lastAnimalIdThatAttacked.current) &&
-			isKingInElement(lastAnimalIdThatAttacked.current, elementType) &&
-			cardId === lastAnimalIdThatAttacked.current &&
-			hasExtraAttack.current
-		) {
+		if (!isAnimalCard(cardId) || cardId === lastAnimalIdThatAttacked.current) {
 			return;
 		}
 
-		if (hasExtraAttack.current && !isOppSlotsEmpty && !isAttackerInElement(cardId, elementType)) {
-			return;
-		}
-
-		if (isAnimalCard(cardId)) {
-			hasAttacked.current = true;
-			await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), cardId, isCurrDoubleAP);
-			handleSecondAttackRule(cardId);
-		}
+		hasAttacked.current = true;
+		await attackOwner(gameId, getOpponentIdFromCurrentId(playerType), cardId, isCurrDoubleAP);
+		hasAttackedOpp.current = true;
+		handleSecondAttackRule(cardId);
 	};
 
 	const attack = async (
@@ -655,29 +649,18 @@ export function GameView({
 			return false;
 		}
 
-		if (
-			!isEmpty(lastAnimalIdThatAttacked.current) &&
-			isKingInElement(lastAnimalIdThatAttacked.current, elementType) &&
-			currAnimalId === lastAnimalIdThatAttacked.current &&
-			hasExtraAttack.current
-		) {
+		if (currAnimalId === lastAnimalIdThatAttacked.current) {
 			showToast('Choose another animal');
 			return false;
 		}
 
 		const isAttackAnimalsEnabled =
-			round.nb >= 3 &&
-			isMyRound &&
-			currPlayer.canAttack &&
-			!hasAttacked.current &&
-			currPSlots[currslotnb]?.canAttack;
+			round.nb >= 3 && isMyRound && currPlayer.canAttack && !hasAttacked.current;
 
 		console.log(
-			'player canAttack',
+			'p canAttack',
 			currPlayer.canAttack,
 			{ hasAttacked },
-			'animal canAttack ',
-			currPSlots[currslotnb]?.canAttack,
 			'isOppAnimalInSlots',
 			isAnimalInSlots(oppPSlots, oppoAnimalId),
 			{ isAttackAnimalsEnabled },
@@ -775,7 +758,8 @@ export function GameView({
 		PlayerType.TWO;
 
 	const winnerName =
-		(isOne(winner as PlayerType) ? currPlayer.playerName : oppPlayer.playerName) ?? 'Anonymous';
+		((winner as PlayerType) === playerType ? currPlayer.playerName : oppPlayer.playerName) ??
+		'Anonymous';
 
 	return (
 		<>
@@ -824,7 +808,7 @@ export function GameView({
 					spectator={spectator}
 					updateCardsOrder={updateCardsOrder}
 					hasAttacked={hasAttacked}
-					isConfirmActive={isConfirmActive}
+					isConfirmActive={false}
 					setIsConfirmActive={setIsConfirmActive}
 					isAttackDisabled={isAttackDisabled}
 					status={status}

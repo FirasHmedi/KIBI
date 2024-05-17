@@ -664,7 +664,7 @@ export const ElementSlot = ({ elementType }: { elementType?: ClanName }) => {
 				<img
 					src={elementsIcons[elementType!]}
 					style={{
-						height: '6vh',
+						height: '4vh',
 						backgroundSize: 'cover',
 						backgroundPosition: 'center',
 					}}></img>

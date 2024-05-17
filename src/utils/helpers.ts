@@ -127,6 +127,13 @@ export const getISlotsAllEmpty = (slots: SlotType[] = []) =>
 	!isAnimalCard(slots[1]?.cardId) &&
 	!isAnimalCard(slots[2]?.cardId);
 
+export const gotTwoOrMoreAnimals = (slots: SlotType[] = []) => {
+	const animal0 = isAnimalCard(slots[0]?.cardId);
+	const animal1 = isAnimalCard(slots[1]?.cardId);
+	const animal2 = isAnimalCard(slots[2]?.cardId);
+	return (animal0 && animal1) || (animal1 && animal2) || (animal0 && animal2);
+};
+
 export const getIsSlotsAllFilled = (slots: SlotType[] = []) =>
 	isAnimalCard(slots[0]?.cardId) &&
 	isAnimalCard(slots[1]?.cardId) &&

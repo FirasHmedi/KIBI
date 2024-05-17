@@ -158,7 +158,7 @@ export const GameLeftInfo = ({
 				left: '1vw',
 				top: '35vh',
 				...flexColumnStyle,
-				gap: 12,
+				gap: 18,
 				alignItems: 'flex-start',
 				color: violet,
 				width: '18vw',
@@ -176,18 +176,16 @@ export const GameLeftInfo = ({
 					justifyContent: 'flex-start',
 					alignItems: 'flex-start',
 					width: '13vw',
-					height: '11vh',
+					height: '8vh',
 					overflowY: 'auto',
 					overflowX: 'hidden',
-					border: `solid 1px ${lightViolet}`,
-					padding: 4,
-					borderRadius: 5,
+					padding: 0,
 				}}>
 				{logs.map((log: string, index) => {
 					const logUpdated = log.replaceAll('one', playerOneName).replaceAll('two', playerTwoName);
 					return (
 						<h6 key={index} style={{ fontSize: '0.5em', color: lightViolet }}>
-							- {logUpdated}
+							+ {logUpdated}
 						</h6>
 					);
 				})}
