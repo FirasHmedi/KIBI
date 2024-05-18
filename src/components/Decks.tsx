@@ -74,7 +74,7 @@ export const OpponentPDeck = ({
 		<div
 			style={{
 				...flexRowStyle,
-				width: '24vw',
+				width: '18vw',
 				overflow: 'hidden',
 				justifyContent: 'safe center',
 			}}>

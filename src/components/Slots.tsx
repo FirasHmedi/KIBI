@@ -48,9 +48,9 @@ export const SlotBack = ({ shadow }: { shadow?: boolean }) => (
 			backgroundColor: violet,
 			color: 'white',
 			...centerStyle,
-			height: '7vh',
-			width: '3vw',
-			fontSize: '0.9em',
+			height: '4vh',
+			width: '1.8vw',
+			fontSize: '0.8em',
 			boxShadow: shadow ? '6px 6px 0px 0px #7f26a4' : undefined,
 		}}>
 		<h5>K</h5>
@@ -258,14 +258,14 @@ export const AnimalBoardSlot = ({
 	attackState?: any;
 }) => {
 	const [canAttack, setcanAttack] = useState(true);
-	const [, drag] = useDrag(
+	/*const [, drag] = useDrag(
 		() => ({
 			type: 'moveBoardCard',
 			item: { id: cardId, nb: nb },
 			collect: monitor => ({ isDragging: !!monitor.getItem() }),
 		}),
 		[cardId, nb, attackState],
-	);
+	);*/
 
 	const vibrateStyle = {
 		animation: 'vibrate 0.5s linear',
@@ -304,7 +304,7 @@ export const AnimalBoardSlot = ({
 	const aps = [...Array(ap ?? 1).keys()];
 	const hps = [...Array(hp ?? 1).keys()];
 	const ref = useRef(null);
-	drag(drop(ref));
+	// drag(drop(ref));
 
 	return (
 		<div

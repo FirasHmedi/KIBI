@@ -223,9 +223,6 @@ export const OpponentPView = ({ player, spectator }: { player: Player; spectator
 		<div
 			style={{
 				...flexColumnStyle,
-				width: '20vw',
-				alignItems: 'center',
-				justifyContent: 'safe center',
 				gap: 10,
 			}}>
 			<OpponentDataView player={player} />

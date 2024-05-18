@@ -164,7 +164,7 @@ export const closeButtonStyle: CSSProperties = {
 };
 
 export const topCardStyle: CSSProperties = {
-	boxShadow: '6px 6px 0px 0px #7f26a4',
+	boxShadow: '2px 2px 0px 0px #7f26a4',
 	borderRadius: 5,
 	alignSelf: 'center',
 };
