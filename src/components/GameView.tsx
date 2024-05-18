@@ -50,6 +50,7 @@ import { BOT, ClanName, EMPTY, KING, POWER_CARDS_WITH_2_SELECTS } from '../utils
 import {
 	canAnimalAKillAnimalD,
 	getAnimalCard,
+	getCardIdThatAttacksAnimal,
 	getCardIdThatAttacksOwner,
 	getISlotsAllEmpty,
 	getOpponentIdFromCurrentId,
@@ -613,11 +614,20 @@ export function GameView({
 		handleSecondAttackRule(cardId);
 	};
 
+	const attackAnimalFun = async (oppoAnimalId: string, oppSlotNb: number) => {
+		const { cardId, slotNb } =
+			getCardIdThatAttacksAnimal(currPSlots, lastAnimalIdThatAttacked.current) ?? {};
+		if (!isAnimalCard(cardId)) {
+			return;
+		}
+		await attack(cardId, oppoAnimalId, slotNb, oppSlotNb);
+	};
+
 	const attack = async (
 		currAnimalId?: string,
 		oppoAnimalId?: string,
 		currslotnb?: number,
-		oppslotnb?: number,
+		oppSlotNb?: number,
 	) => {
 		if (
 			isNil(currAnimalId) ||
@@ -667,7 +677,7 @@ export function GameView({
 		);
 
 		if (isAttackAnimalsEnabled && isAnimalInSlots(oppPSlots, oppoAnimalId)) {
-			return await attackAnimal(currAnimalId, oppoAnimalId, oppslotnb);
+			return await attackAnimal(currAnimalId, oppoAnimalId, oppSlotNb);
 		}
 	};
 
@@ -799,6 +809,8 @@ export function GameView({
 					setElement={setElement}
 					canAttackOpponent={canAttackOpponent}
 					sacrificeAnimal={sacrificeAnimal}
+					canAttackAnimal={!isAttackDisabled}
+					attackAnimalFun={attackAnimalFun}
 				/>
 				<CurrentPView
 					player={currPlayer}

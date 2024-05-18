@@ -10,6 +10,7 @@ import {
 	airColor,
 	boardSlotStyle,
 	centerStyle,
+	darkViolet,
 	deckSlotStyle,
 	earthColor,
 	fireColor,
@@ -69,8 +70,10 @@ interface SlotProps {
 	attackState?: any;
 	opponent?: boolean;
 	canAttackOpponent?: boolean;
+	canAttackAnimal?: boolean;
 	canSacrifice?: boolean;
 	sacrificeAnimalFun?: any;
+	attackAnimalFun?: any;
 }
 
 interface DeckSlotProps {
@@ -245,10 +248,8 @@ export const PowerDeckSlot = ({
 
 export const AnimalBoardSlot = ({
 	cardId,
-	attack,
 	nb,
 	attackState,
-	isDoubleAP,
 }: {
 	cardId: string;
 	isDoubleAP?: boolean;
@@ -282,17 +283,17 @@ export const AnimalBoardSlot = ({
 		{
 			accept: 'moveBoardCard',
 			drop: (item: DropItem) => {
-				console.log('animal', item.id, 'attacks', cardId);
+				/*console.log('animal', item.id, 'attacks', cardId);
 				const animalAId = item.id;
 				const animalDId = cardId;
 				attack(animalAId, animalDId, item.nb, nb).then((isAttackValid: boolean) => {
 					if (!isAttackValid) {
 						setcanAttack(false);
 					}
-				});
+				});*/
 			},
 		},
-		[cardId, attackState],
+		[],
 	);
 
 	const { clan, name, role } = getAnimalCard(cardId)!;
@@ -468,6 +469,7 @@ export const AnimalDeckSlot = ({
 	);
 };
 
+import { isEmpty } from 'lodash';
 import sacrificeAnimalGrey from '/src/assets/icons/sacrifice-animal-grey.svg';
 import sacrificeAnimalViolet from '/src/assets/icons/sacrifice-animal-violet.svg';
 
@@ -477,10 +479,11 @@ export const BoardSlot = ({
 	isDoubleAP,
 	playCard,
 	localState,
-	attack,
+	attackAnimalFun,
 	attackState,
 	opponent,
 	canAttackOpponent,
+	canAttackAnimal,
 	sacrificeAnimalFun,
 	canSacrifice = true,
 }: SlotProps) => {
@@ -500,33 +503,27 @@ export const BoardSlot = ({
 		{
 			accept: 'moveBoardCard',
 			drop: (item: DropItem) => {
-				const animalAId = item.id;
+				/*const animalAId = item.id;
 				const animalDId = cardId;
 				console.log(animalAId, ' attacks ', animalDId);
-				attack(animalAId, animalDId, item.nb, nb);
+				attack(animalAId, animalDId, item.nb, nb);*/
 			},
 		},
-		[cardId, attackState],
+		[],
 	);
 
 	if (isAnimalCard(cardId)) {
 		return (
 			<div style={{ ...flexColumnStyle, alignItems: 'center' }}>
 				<div ref={drop}>
-					<AnimalBoardSlot
-						cardId={cardId!}
-						isDoubleAP={isDoubleAP}
-						attack={attack}
-						nb={nb}
-						attackState={attackState}
-					/>
+					<AnimalBoardSlot cardId={cardId!} nb={nb} attackState={attackState} />
 				</div>
 				{canSacrifice && !opponent && (
 					<button
 						style={{
 							position: 'relative',
-							top: '1rem',
-							marginBottom: '-1rem',
+							top: '0.5rem',
+
 							borderRadius: 10,
 							...centerStyle,
 						}}
@@ -546,23 +543,56 @@ export const BoardSlot = ({
 						/>
 					</button>
 				)}
+				{opponent && (
+					<button
+						style={{
+							position: 'relative',
+							top: '0.5rem',
+							borderRadius: 10,
+							...centerStyle,
+							padding: 4,
+							backgroundColor: canAttackAnimal ? darkViolet : 'grey',
+						}}
+						disabled={!canAttackAnimal}
+						onClick={() => {
+							if (isEmpty(cardId) || nb == null) return;
+							attackAnimalFun(cardId, nb);
+						}}>
+						<TbSword style={{ fontSize: '1.2rem', color: 'white' }} />
+					</button>
+				)}
 			</div>
 		);
 	}
 
 	if (opponent) {
 		return (
-			<div
-				ref={drop2}
-				style={{
-					...boardSlotStyle,
-					justifyContent: 'center',
-					border: `solid 1px ${lightViolet}`,
-					...centerStyle,
-				}}></div>
+			<div style={{ ...flexColumnStyle, alignItems: 'center' }}>
+				<div
+					ref={drop2}
+					style={{
+						...boardSlotStyle,
+						justifyContent: 'center',
+						border: `solid 1px ${lightViolet}`,
+						...centerStyle,
+					}}></div>
+				<button
+					style={{
+						position: 'relative',
+						top: '0.5rem',
+						borderRadius: 10,
+						...centerStyle,
+						backgroundColor: 'grey',
+						padding: 4,
+					}}
+					disabled={true}>
+					<TbSword style={{ fontSize: '1.2rem', color: 'white' }} />
+				</button>
+			</div>
 		);
 	}
 
+	// current slots
 	return (
 		<div style={{ ...flexColumnStyle, alignItems: 'center' }}>
 			<div
@@ -576,8 +606,8 @@ export const BoardSlot = ({
 				<button
 					style={{
 						position: 'relative',
-						top: '1rem',
-						marginBottom: '-1rem',
+						top: '0.5rem',
+
 						borderRadius: 10,
 						...centerStyle,
 					}}
@@ -719,6 +749,8 @@ export const BoardSlots = ({
 	attackState,
 	canAttackOpponent,
 	sacrificeAnimal,
+	canAttackAnimal,
+	attackAnimalFun,
 }: {
 	slots: SlotType[];
 	opponent?: boolean;
@@ -731,6 +763,8 @@ export const BoardSlots = ({
 	attackState?: any;
 	canAttackOpponent?: boolean;
 	sacrificeAnimal?: any;
+	canAttackAnimal?: any;
+	attackAnimalFun?: any;
 }) => {
 	const compoundSlots = [slots[0], slots[1], slots[2]];
 	// @ts-ignore
@@ -759,6 +793,8 @@ export const BoardSlots = ({
 						attackState={attackState}
 						opponent={opponent}
 						canAttackOpponent={canAttackOpponent}
+						canAttackAnimal={canAttackAnimal}
+						attackAnimalFun={attackAnimalFun}
 						sacrificeAnimalFun={sacrificeAnimal}
 					/>
 				</div>

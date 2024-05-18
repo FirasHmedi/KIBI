@@ -8,6 +8,7 @@ import { Tooltip } from 'react-tooltip';
 import {
 	CurrPlayerViewButtonsStyle,
 	airColor,
+	darkViolet,
 	earthColor,
 	fireColor,
 	flexColumnStyle,
@@ -106,7 +107,7 @@ export const CurrentPView = ({
 
 		const buttonsStyle: CSSProperties = {
 			...CurrPlayerViewButtonsStyle,
-			backgroundColor: isMyRound ? violet : 'grey',
+			backgroundColor: isMyRound ? darkViolet : 'grey',
 		};
 
 		if (isGameFinished(status)) {
@@ -371,7 +372,7 @@ const PlayerCanDoView = ({ player, isMe }: { player: Player; isMe?: boolean }) =
 				fontSize: '1.1em',
 				color: violet,
 			}}>
-			{canAttack === true && canPlayPowers === true ? (
+			{canAttack === false && canPlayPowers === false ? (
 				<div style={{ ...flexColumnStyle, gap: 8 }}>
 					<BlockElement type='att' />
 					<BlockElement type='pow' />

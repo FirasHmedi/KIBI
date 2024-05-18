@@ -191,6 +191,23 @@ export const getCardIdThatAttacksOwner = (
 	return selectedCardId ?? cardsIds[0];
 };
 
+export const getCardIdThatAttacksAnimal = (slots: SlotType[] = [], lastAnimalId?: string) => {
+	const cardsIds = [slots[0]?.cardId, slots[1]?.cardId, slots[2]?.cardId].filter(
+		cardId => isAnimalCard(cardId) && lastAnimalId !== cardId,
+	);
+	if (cardsIds.length === 0) return;
+	let selectedCardId: any = null;
+	cardsIds.forEach(cardId => {
+		const role = getAnimalCard(cardId)?.role;
+		if (role === KING || role === ATTACKER) {
+			selectedCardId = cardId;
+		}
+	});
+	const finalCardId = selectedCardId ?? cardsIds[0];
+	const slotNb = finalCardId === slots[0]?.cardId ? 0 : finalCardId === slots[1]?.cardId ? 1 : 2;
+	return { cardId: finalCardId, slotNb };
+};
+
 export const submitRandomSelection = async (gameId: string, powerCards: string[] = []) => {
 	const oneCardsIds: string[] = [];
 	const twoCardsIds: string[] = [];
