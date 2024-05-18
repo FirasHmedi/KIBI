@@ -75,7 +75,7 @@ export const OpponentPDeck = ({
 			style={{
 				...flexRowStyle,
 				width: '18vw',
-				overflow: 'hidden',
+				overflow: spectator ? 'scroll' : 'hidden',
 				justifyContent: 'safe center',
 			}}>
 			{!spectator
